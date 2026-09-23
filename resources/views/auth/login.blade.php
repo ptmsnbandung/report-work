@@ -584,6 +584,11 @@
         <!-- Login Form -->
         <form method="POST" action="{{ route('login.post') }}" id="loginForm">
             @csrf
+            @if(request()->has('redirect'))
+                <input type="hidden" name="redirect_url" value="{{ request('redirect') }}">
+            @elseif(session()->has('url.intended'))
+                <input type="hidden" name="redirect_url" value="{{ session('url.intended') }}">
+            @endif
 
             <!-- Email -->
             <div class="mb-3">

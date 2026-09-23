@@ -17,10 +17,14 @@ class AuthController extends Controller
     /**
      * Tampilkan halaman login.
      */
-    public function showLoginForm(): View|RedirectResponse
+    public function showLoginForm(Request $request): View|RedirectResponse
     {
         if (Auth::check()) {
             return redirect()->route('dashboard');
+        }
+
+        if ($request->has('redirect')) {
+            session()->put('url.intended', $request->input('redirect'));
         }
 
         return view('auth.login');
@@ -53,9 +57,15 @@ class AuthController extends Controller
             ]);
         }
 
+        $targetRedirect = $request->input('redirect_url') ?: session('url.intended');
+
         $request->session()->regenerate();
 
-        // Role-based redirect
+        if ($targetRedirect) {
+            return redirect()->to($targetRedirect);
+        }
+
+        // Default role-based redirect
         return redirect()->intended(route('dashboard'));
     }
 

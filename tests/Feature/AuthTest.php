@@ -69,6 +69,37 @@ class AuthTest extends TestCase
     }
 
     /**
+     * Test user is redirected to intended ticket URL after login.
+     */
+    public function test_user_is_redirected_to_intended_url_after_login(): void
+    {
+        $user = User::where('email', 'teknis@connecti.id')->first();
+
+        // 1. Test redirect via session url.intended
+        $response = $this->withSession(['url.intended' => '/tiket/5'])
+            ->post('/login', [
+                'email' => $user->email,
+                'password' => 'password',
+            ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect('/tiket/5');
+
+        // Logout for next test
+        $this->post('/logout');
+
+        // 2. Test redirect via redirect_url input / query param
+        $response2 = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'redirect_url' => '/tiket/12',
+        ]);
+
+        $this->assertAuthenticated();
+        $response2->assertRedirect('/tiket/12');
+    }
+
+    /**
      * Test dashboard renders for all roles with customized data.
      */
     public function test_dashboard_renders_for_each_role(): void
