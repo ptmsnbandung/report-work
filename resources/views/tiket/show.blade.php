@@ -25,36 +25,42 @@
 
     /* ── FULLSCREEN MODE ── */
     .wa-chat-container.wa-fullscreen {
-        position: fixed;
-        inset: 0;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
         z-index: 99999;
         border-radius: 0 !important;
-        border: none;
-        box-shadow: none;
+        border: none !important;
+        box-shadow: none !important;
         width: 100% !important;
-        height: 100dvh !important;
-        max-height: 100dvh !important;
-        display: flex;
-        flex-direction: column;
+        height: 100% !important;
+        max-height: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
     }
 
     .wa-chat-container.wa-fullscreen #timelineWrapper {
-        flex: 1;
-        min-height: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        flex: 1 1 0 !important;
+        min-height: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
     }
 
     .wa-chat-container.wa-fullscreen .wa-chat-stream {
-        flex: 1;
+        flex: 1 1 0 !important;
         min-height: 0 !important;
         max-height: none !important;
         height: auto !important;
+        overflow-y: auto !important;
     }
 
     .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
-        flex-shrink: 0;
+        flex-shrink: 0 !important;
+        flex-grow: 0 !important;
     }
 
     /* Sembunyikan bottom nav, sidebar, footer saat fullscreen */
