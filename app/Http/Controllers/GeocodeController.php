@@ -48,25 +48,36 @@ class GeocodeController extends Controller
                     $data = $response->json();
                     $addr = $data['address'] ?? [];
 
-                    $road = $addr['road'] ?? $addr['pedestrian'] ?? $addr['street'] ?? '';
+                    $road = $addr['road'] ?? $addr['pedestrian'] ?? $addr['street'] ?? $addr['residential'] ?? '';
                     $houseNumber = $addr['house_number'] ?? '';
                     $roadLine = trim(($houseNumber ? "No {$houseNumber} " : "") . $road);
-                    if (!$roadLine) {
-                        $roadLine = $addr['suburb'] ?? $addr['neighbourhood'] ?? $addr['hamlet'] ?? 'Lokasi Terdeteksi';
-                    }
 
-                    $village = $addr['suburb'] ?? $addr['village'] ?? $addr['neighbourhood'] ?? $addr['quarter'] ?? '';
+                    $village = $addr['village'] ?? $addr['suburb'] ?? $addr['neighbourhood'] ?? $addr['quarter'] ?? '';
                     $district = $addr['city_district'] ?? $addr['subdistrict'] ?? $addr['municipality'] ?? $addr['county'] ?? '';
-                    if ($district && !str_starts_with(strtolower($district), 'kecamatan') && !str_starts_with(strtolower($district), 'kec.')) {
+                    if ($district && !preg_match('/^(kecamatan|kec\.)/i', $district)) {
                         $district = 'Kecamatan ' . $district;
                     }
 
                     $city = $addr['city'] ?? $addr['town'] ?? $addr['regency'] ?? $addr['county'] ?? '';
-                    if ($city && !str_starts_with(strtolower($city), 'kota') && !str_starts_with(strtolower($city), 'kabupaten') && !str_starts_with(strtolower($city), 'kab.')) {
+                    if ($city && !preg_match('/^(kota|kabupaten|kab\.)/i', $city)) {
                         $city = 'Kota ' . $city;
                     }
 
-                    $state = $addr['state'] ?? $addr['province'] ?? $addr['region'] ?? 'Indonesia';
+                    $state = $addr['state'] ?? $addr['province'] ?? $addr['region'] ?? 'Jawa Barat';
+
+                    // Buat baris unik tanpa duplikasi kata/kelurahan
+                    $rawLines = array_filter([$roadLine, $village, $district, $city, $state]);
+                    $uniqueLines = [];
+                    foreach ($rawLines as $line) {
+                        $trimmed = trim($line);
+                        if ($trimmed !== '' && !in_array($trimmed, $uniqueLines, true)) {
+                            $uniqueLines[] = $trimmed;
+                        }
+                    }
+
+                    if (empty($uniqueLines)) {
+                        $uniqueLines = ['Titik Lokasi Lapangan', 'Indonesia'];
+                    }
 
                     return [
                         'success'           => true,
@@ -78,13 +89,7 @@ class GeocodeController extends Controller
                         'state'             => $state,
                         'latitude'          => $lat,
                         'longitude'         => $lng,
-                        'formatted_lines'   => array_values(array_filter([
-                            $roadLine,
-                            $village,
-                            $district,
-                            $city,
-                            $state,
-                        ])),
+                        'formatted_lines'   => $uniqueLines,
                     ];
                 }
             } catch (\Throwable $e) {

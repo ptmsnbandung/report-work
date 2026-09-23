@@ -787,6 +787,81 @@
         outline-offset: 2px !important;
     }
 
+    /* ── PHOTO LIGHTBOX MODAL PRO ── */
+    .photo-lightbox-modal .modal-dialog {
+        max-width: 95vw;
+        margin: 1rem auto;
+    }
+    .photo-lightbox-content {
+        background: rgba(11, 20, 36, 0.96) !important;
+        backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 20px !important;
+        overflow: hidden;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+    .photo-lightbox-header {
+        background: rgba(15, 23, 42, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.75rem 1.15rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .btn-lightbox-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        text-decoration: none !important;
+    }
+    .btn-lightbox-action:hover {
+        background: rgba(44, 127, 255, 0.4);
+        border-color: rgba(44, 127, 255, 0.7);
+        transform: scale(1.05);
+    }
+    .btn-lightbox-close {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.22);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #fca5a5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-lightbox-close:hover {
+        background: rgba(239, 68, 68, 0.5);
+        color: #ffffff;
+        transform: scale(1.05);
+    }
+    .photo-lightbox-body {
+        padding: 0.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #020617;
+        min-height: 250px;
+    }
+    .photo-lightbox-img {
+        max-height: 80vh;
+        max-width: 100%;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    }
+
     /* ═══════════════════════════════════════════════════════════════════
        ELEGANT TICKET DETAIL HERO & METRIC TILES
        ═══════════════════════════════════════════════════════════════════ */
@@ -2572,15 +2647,27 @@
 @endif
 
 <!-- ── MODAL ZOOM PHOTO LIGHTBOX ── -->
-<div class="modal fade" id="photoZoomModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content bg-dark border-0">
-            <div class="modal-header border-0 py-2">
-                <span class="text-white small fw-semibold" id="photoZoomTitle">Foto Lapangan</span>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div class="modal fade photo-lightbox-modal" id="photoZoomModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content photo-lightbox-content">
+            <div class="photo-lightbox-header">
+                <div class="d-flex align-items-center gap-2 overflow-hidden me-2">
+                    <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-50 px-2 py-1 rounded-pill small">
+                        <i class="bi bi-camera-fill me-1"></i>Foto Lapangan
+                    </span>
+                    <span class="text-white fw-semibold small text-truncate" id="photoZoomTitle">Foto Dokumentasi</span>
+                </div>
+                <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                    <a href="#" id="photoZoomDownloadBtn" target="_blank" download="foto-lapangan.jpg" class="btn-lightbox-action" title="Buka / Unduh Foto Asli">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                    <button type="button" class="btn-lightbox-close" data-bs-dismiss="modal" title="Tutup">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
-            <div class="modal-body text-center p-0">
-                <img src="#" id="photoZoomImg" class="img-fluid rounded-bottom" style="max-height: 80vh;" alt="Zoom Foto">
+            <div class="photo-lightbox-body">
+                <img src="#" id="photoZoomImg" class="photo-lightbox-img" alt="Zoom Foto Lapangan">
             </div>
         </div>
     </div>
@@ -2674,11 +2761,13 @@
 function zoomPhoto(url, title) {
     const zoomImg = document.getElementById('photoZoomImg');
     const zoomTitle = document.getElementById('photoZoomTitle');
+    const zoomDownloadBtn = document.getElementById('photoZoomDownloadBtn');
     const modalEl = document.getElementById('photoZoomModal');
 
     if (zoomImg && modalEl) {
         zoomImg.src = url;
         if (zoomTitle) zoomTitle.textContent = title || 'Foto Dokumentasi Kronologis';
+        if (zoomDownloadBtn) zoomDownloadBtn.href = url;
         const modal = new bootstrap.Modal(modalEl);
         modal.show();
     }
@@ -2718,17 +2807,74 @@ function getMsnLogo() {
     });
 }
 
-function getDeviceCoordinates(timeoutMs = 4000) {
-    return new Promise((resolve) => {
-        if (!navigator.geolocation) return resolve(null);
-        navigator.geolocation.getCurrentPosition(
-            (pos) => resolve({
+// Global cached GPS for instant watermark acquisition
+let _lastDetectedGps = null;
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            _lastDetectedGps = {
                 latitude: pos.coords.latitude,
                 longitude: pos.coords.longitude,
-                accuracy: pos.coords.accuracy
-            }),
-            (err) => resolve(null),
-            { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 30000 }
+                accuracy: pos.coords.accuracy,
+                timestamp: Date.now()
+            };
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+}
+
+function getDeviceCoordinates(timeoutMs = 7000) {
+    return new Promise((resolve) => {
+        // 1. Cek apakah ada input koordinat terpilih dari form
+        const latInput = document.getElementById('latitude') || document.getElementById('waChatLatitude');
+        const lngInput = document.getElementById('longitude') || document.getElementById('waChatLongitude');
+        if (latInput && lngInput && latInput.value && lngInput.value) {
+            const latVal = parseFloat(latInput.value);
+            const lngVal = parseFloat(lngInput.value);
+            if (!isNaN(latVal) && !isNaN(lngVal)) {
+                return resolve({ latitude: latVal, longitude: lngVal, accuracy: 10 });
+            }
+        }
+
+        // 2. Cek apakah ada cache GPS aktif (< 2 menit)
+        if (_lastDetectedGps && (Date.now() - _lastDetectedGps.timestamp < 120000)) {
+            return resolve(_lastDetectedGps);
+        }
+
+        // 3. Request fresh GPS location
+        if (!navigator.geolocation) return resolve(_lastDetectedGps || null);
+        
+        let isResolved = false;
+        const timer = setTimeout(() => {
+            if (!isResolved) {
+                isResolved = true;
+                resolve(_lastDetectedGps || null);
+            }
+        }, timeoutMs);
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                if (!isResolved) {
+                    isResolved = true;
+                    clearTimeout(timer);
+                    _lastDetectedGps = {
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude,
+                        accuracy: pos.coords.accuracy,
+                        timestamp: Date.now()
+                    };
+                    resolve(_lastDetectedGps);
+                }
+            },
+            (err) => {
+                if (!isResolved) {
+                    isResolved = true;
+                    clearTimeout(timer);
+                    resolve(_lastDetectedGps || null);
+                }
+            },
+            { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 60000 }
         );
     });
 }
@@ -2829,7 +2975,7 @@ function formatGpsDateTime(date = new Date()) {
 
 function formatGpsCoords(lat, lng) {
     const latStr = Math.abs(lat).toFixed(5) + (lat < 0 ? 'S' : 'N');
-    const lngStr = Math.abs(lng).toFixed(5) + (lng < 0 ? 'E' : 'W');
+    const lngStr = Math.abs(lng).toFixed(5) + (lng >= 0 ? 'E' : 'W');
     return `${latStr} ${lngStr}`;
 }
 
@@ -2854,7 +3000,7 @@ function compressImageFile(file, customOptions = {}) {
             if (options.latitude && options.longitude) {
                 gpsPromise = Promise.resolve({ latitude: options.latitude, longitude: options.longitude });
             } else {
-                gpsPromise = getDeviceCoordinates(3500);
+                gpsPromise = getDeviceCoordinates(7000);
             }
         }
 
