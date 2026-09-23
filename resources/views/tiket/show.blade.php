@@ -20,7 +20,57 @@
         box-shadow: var(--neu-flat, 7px 7px 16px #c2ccd9, -7px -7px 16px #ffffff);
         display: flex;
         flex-direction: column;
+        transition: border-radius 0.25s ease;
     }
+
+    /* ── FULLSCREEN MODE ── */
+    .wa-chat-container.wa-fullscreen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        border-radius: 0 !important;
+        border: none;
+        box-shadow: none;
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-chat-stream {
+        min-height: 0 !important;
+        max-height: none !important;
+        flex: 1;
+        height: 0;
+    }
+
+    /* Tombol fullscreen */
+    .wa-fullscreen-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid rgba(203, 213, 225, 0.6);
+        background: rgba(255,255,255,0.6);
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.18s, color 0.18s, transform 0.15s;
+        backdrop-filter: blur(4px);
+    }
+
+    .wa-fullscreen-btn:hover {
+        background: rgba(44, 127, 255, 0.12);
+        color: #2C7FFF;
+        border-color: rgba(44, 127, 255, 0.35);
+        transform: scale(1.08);
+    }
+
+    .wa-fullscreen-btn:active {
+        transform: scale(0.93);
+    }
+
 
     .wa-chat-header {
         background: var(--neu-surface, #e6ecf4);
@@ -1086,6 +1136,11 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Tombol Fullscreen -->
+                            <button id="btnWaFullscreen" class="wa-fullscreen-btn" title="Perbesar chat">
+                                <i class="bi bi-arrows-fullscreen" id="icoWaFullscreen"></i>
+                            </button>
 
                         </div>
 
@@ -3859,6 +3914,59 @@ document.addEventListener('DOMContentLoaded', function() {
                 top: stream.scrollHeight + 500,
                 behavior: 'smooth'
             });
+        }
+    });
+
+    // ── 17. FULLSCREEN CHAT TOGGLE ──
+    const btnWaFullscreen = document.getElementById('btnWaFullscreen');
+    const icoWaFullscreen = document.getElementById('icoWaFullscreen');
+    const waContainer    = document.querySelector('.wa-chat-container');
+
+    function enterWaFullscreen() {
+        if (!waContainer) return;
+        waContainer.classList.add('wa-fullscreen');
+        if (icoWaFullscreen) {
+            icoWaFullscreen.classList.remove('bi-arrows-fullscreen');
+            icoWaFullscreen.classList.add('bi-fullscreen-exit');
+        }
+        if (btnWaFullscreen) btnWaFullscreen.title = 'Perkecil chat';
+        document.body.style.overflow = 'hidden';
+
+        // Scroll stream ke bawah setelah resize selesai
+        requestAnimationFrame(() => {
+            const stream = document.getElementById('timelineList');
+            if (stream) stream.scrollTop = stream.scrollHeight;
+        });
+    }
+
+    function exitWaFullscreen() {
+        if (!waContainer) return;
+        waContainer.classList.remove('wa-fullscreen');
+        if (icoWaFullscreen) {
+            icoWaFullscreen.classList.remove('bi-fullscreen-exit');
+            icoWaFullscreen.classList.add('bi-arrows-fullscreen');
+        }
+        if (btnWaFullscreen) btnWaFullscreen.title = 'Perbesar chat';
+        document.body.style.overflow = '';
+
+        requestAnimationFrame(() => {
+            const stream = document.getElementById('timelineList');
+            if (stream) stream.scrollTop = stream.scrollHeight;
+        });
+    }
+
+    btnWaFullscreen?.addEventListener('click', function() {
+        if (waContainer && waContainer.classList.contains('wa-fullscreen')) {
+            exitWaFullscreen();
+        } else {
+            enterWaFullscreen();
+        }
+    });
+
+    // Tekan Escape untuk keluar dari fullscreen
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && waContainer && waContainer.classList.contains('wa-fullscreen')) {
+            exitWaFullscreen();
         }
     });
 });
