@@ -26,6 +26,7 @@ class KronologisBaruNotification extends Notification
     {
         $url = route('tiket.show', $this->tiket->id);
         $userNama = $this->kronologis->user ? $this->kronologis->user->name : 'Teknis';
+        $cleanInfo = preg_replace('/^>\s*/m', '', (string) $this->kronologis->informasi);
 
         return (new MailMessage)
             ->subject("[UPDATE KOORDINASI] {$this->tiket->no_tiket}")
@@ -33,20 +34,21 @@ class KronologisBaruNotification extends Notification
             ->line("Ada update koordinasi terbaru pada tiket **{$this->tiket->no_tiket}** ({$this->tiket->backbone_segment}):")
             ->line("Waktu: " . ($this->kronologis->timestamp ? $this->kronologis->timestamp->format('H:i') . ' WIB' : '-'))
             ->line("Oleh: {$userNama}")
-            ->line("Informasi: {$this->kronologis->informasi}")
+            ->line("Informasi: {$cleanInfo}")
             ->action('Lihat Timeline Tiket', $url);
     }
 
     public function toDatabase(object $notifiable): array
     {
         $userNama = $this->kronologis->user ? $this->kronologis->user->name : 'Teknis';
+        $cleanInfo = preg_replace('/^>\s*/m', '', (string) $this->kronologis->informasi);
 
         return [
             'type' => 'KRONOLOGIS_BARU',
             'id_tiket' => $this->tiket->id,
             'no_tiket' => $this->tiket->no_tiket,
             'title' => "Update Koordinasi - {$this->tiket->no_tiket}",
-            'message' => "{$userNama}: {$this->kronologis->informasi}",
+            'message' => "{$userNama}: {$cleanInfo}",
             'icon' => 'bi-chat-dots-fill',
             'color' => 'info',
             'url' => route('tiket.show', $this->tiket->id),

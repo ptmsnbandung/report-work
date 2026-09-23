@@ -134,7 +134,7 @@
                                         </small>
                                     </div>
                                     <div class="text-muted text-truncate mt-0.5" style="font-size:0.73rem;">
-                                        {{ $nData['message'] ?? '' }}
+                                        {{ preg_replace('/:\s*>\s*/', ': ', (string) ($nData['message'] ?? '')) }}
                                     </div>
                                 </div>
                                 @if($isUnread)

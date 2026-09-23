@@ -342,7 +342,7 @@
                     {{ $krono->timestamp->format('d/m/Y H:i') }}
                 </td>
                 <td>{{ $krono->user?->name ?? 'User' }} <small style="color: #64748b;">({{ $krono->user?->role }})</small></td>
-                <td>{{ $krono->informasi }}</td>
+                <td>{{ preg_replace('/^>\s*/m', '', $krono->informasi) }}</td>
             </tr>
             @empty
             <tr>

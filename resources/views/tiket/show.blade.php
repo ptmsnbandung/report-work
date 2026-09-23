@@ -1655,7 +1655,7 @@
                                                     $rawInfo = $krono->informasi ?? '';
                                                     $quoteSender = null;
                                                     $quoteText = null;
-                                                    if (preg_match('/^>\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i', $rawInfo, $quoteMatches)) {
+                                                    if (preg_match('/^>?\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i', $rawInfo, $quoteMatches)) {
                                                         $quoteSender = $quoteMatches[1];
                                                         $quoteText = $quoteMatches[2];
                                                         $rawInfo = substr($rawInfo, strlen($quoteMatches[0]));
@@ -3891,8 +3891,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let str = text;
         let quoteHtml = '';
 
-        // Deteksi format kutipan balasan: > [Membalas Sender]: Pesan Asli\n\n
-        const quoteMatch = str.match(/^>\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i);
+        // Deteksi format kutipan balasan: [Membalas Sender]: Pesan Asli\n\n (atau legacy > [Membalas...])
+        const quoteMatch = str.match(/^>?\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i);
         if (quoteMatch) {
             const sender = rawEscape(quoteMatch[1]);
             const quoteContent = rawEscape(quoteMatch[2]);
@@ -4536,7 +4536,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (copyBtn) {
             e.preventDefault();
             const text = copyBtn.getAttribute('data-text') || '';
-            const cleanText = text.replace(/^>\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '');
+            const cleanText = text.replace(/^>?\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '');
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(cleanText).then(() => {
                     showCopyToast('Pesan berhasil disalin!');
@@ -4556,7 +4556,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const id = replyBtn.getAttribute('data-id');
             const sender = replyBtn.getAttribute('data-sender') || 'User';
             const rawText = replyBtn.getAttribute('data-text') || '';
-            const cleanSnippet = rawText.replace(/^>\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '').replace(/\n/g, ' ').trim();
+            const cleanSnippet = rawText.replace(/^>?\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '').replace(/\n/g, ' ').trim();
 
             activeReplyData = {
                 id: id,
@@ -5145,7 +5145,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Pasang teks kutipan jika sedang membalas pesan (Reply)
             if (activeReplyData) {
                 const snippet = (activeReplyData.text || '').substring(0, 80).replace(/\n/g, ' ');
-                const quotedText = `> [Membalas ${activeReplyData.sender}]: ${snippet}\n\n` + textVal;
+                const quotedText = `[Membalas ${activeReplyData.sender}]: ${snippet}\n\n` + textVal;
                 formData.set('informasi', quotedText);
                 cancelReply();
             }

@@ -287,7 +287,7 @@
                             </div>
 
                             <p class="text-secondary small mb-2.5" style="line-height: 1.5; font-size: 0.82rem;">
-                                {{ $data['message'] ?? '' }}
+                                {{ preg_replace('/:\s*>\s*/', ': ', (string) ($data['message'] ?? '')) }}
                             </p>
 
                             <!-- Actions Row -->
