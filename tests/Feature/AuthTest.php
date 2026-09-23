@@ -73,7 +73,7 @@ class AuthTest extends TestCase
      */
     public function test_dashboard_renders_for_each_role(): void
     {
-        $roles = ['admin', 'helpdesk', 'teknis', 'client'];
+        $roles = ['admin', 'helpdesk', 'teknis', 'sa_cs'];
 
         foreach ($roles as $role) {
             $user = User::where('role', $role)->first();

@@ -17,7 +17,6 @@ class RoleAccessTest extends TestCase
     protected User $helpdesk;
     protected User $teknis;
     protected User $saCs;
-    protected User $client;
     protected Tiket $tiket;
 
     protected function setUp(): void
@@ -28,7 +27,6 @@ class RoleAccessTest extends TestCase
         $this->helpdesk = User::factory()->create(['role' => 'helpdesk', 'is_active' => true]);
         $this->teknis = User::factory()->create(['role' => 'teknis', 'is_active' => true]);
         $this->saCs = User::factory()->create(['role' => 'sa_cs', 'is_active' => true]);
-        $this->client = User::factory()->create(['role' => 'client', 'is_active' => true]);
 
         MasterSla::create([
             'backbone_segment' => 'SW Test - SW Test 2',
@@ -108,17 +106,5 @@ class RoleAccessTest extends TestCase
         // SA/CS cannot create ticket or access master
         $this->actingAs($this->saCs)->get('/tiket/create')->assertStatus(403);
         $this->actingAs($this->saCs)->get('/master/users')->assertStatus(403);
-    }
-
-    public function test_client_access_matrix(): void
-    {
-        $this->actingAs($this->client)->get('/dashboard')->assertStatus(200);
-        $this->actingAs($this->client)->get('/tiket')->assertStatus(200);
-        $this->actingAs($this->client)->get("/tiket/{$this->tiket->id}")->assertStatus(200);
-        $this->actingAs($this->client)->get('/notifications')->assertStatus(200);
-
-        // Client cannot create ticket or access master
-        $this->actingAs($this->client)->get('/tiket/create')->assertStatus(403);
-        $this->actingAs($this->client)->get('/master/users')->assertStatus(403);
     }
 }

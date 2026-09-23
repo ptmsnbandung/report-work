@@ -106,7 +106,7 @@ class NotificationServiceTest extends TestCase
         Notification::fake();
 
         $saCs = User::factory()->create(['role' => 'sa_cs', 'is_active' => true]);
-        $client = User::factory()->create(['role' => 'client', 'is_active' => true]);
+        $teknis = User::factory()->create(['role' => 'teknis', 'is_active' => true]);
         $closer = User::factory()->create(['role' => 'helpdesk', 'is_active' => true]);
 
         $tiket = Tiket::create([
@@ -126,7 +126,7 @@ class NotificationServiceTest extends TestCase
         $this->notificationService->notifyTiketClosed($tiket);
 
         Notification::assertSentTo(
-            [$saCs, $client],
+            [$saCs, $teknis],
             TiketClosedNotification::class
         );
     }

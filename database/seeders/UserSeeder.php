@@ -44,11 +44,11 @@ class UserSeeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'PT Mitra Sejahtera (Client)',
-                'email' => 'client@connecti.id',
+                'name' => 'Sarah Agustina (CS/SA)',
+                'email' => 'sacs@connecti.id',
                 'password' => Hash::make('password'),
-                'role' => 'client',
-                'phone' => '081566778899',
+                'role' => 'sa_cs',
+                'phone' => '081455667788',
                 'is_active' => true,
             ],
         ];

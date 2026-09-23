@@ -6,7 +6,6 @@
         'teknis' => 'TEKNIS',
         'helpdesk' => 'HELPDESK',
         'sa_cs' => 'SA & CS',
-        'client' => 'CLIENT',
         default => strtoupper($currentUser?->role_short ?? $roleSlug),
     };
 
@@ -15,7 +14,6 @@
         'teknis' => 'background:#f0fdfa; color:#0f766e; border:1px solid #99f6e4;',
         'helpdesk' => 'background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;',
         'sa_cs' => 'background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;',
-        'client' => 'background:#fefce8; color:#a16207; border:1px solid #fef08a;',
         default => 'background:#f1f5f9; color:#475569; border:1px solid #cbd5e1;',
     };
 @endphp

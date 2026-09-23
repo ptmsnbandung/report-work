@@ -28,40 +28,34 @@
 
     <!-- ── ROLE SUMMARY METRICS ── -->
     <div class="row g-3 mb-4">
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-4 col-lg">
             <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
                 <div class="text-muted small fw-semibold">Total User</div>
                 <div class="fs-4 fw-bold text-dark">{{ $users->total() }}</div>
             </div>
         </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-4 col-lg">
             <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
                 <div class="text-muted small fw-semibold">Admin NOC</div>
                 <div class="fs-4 fw-bold text-primary">{{ $roleStats['admin'] ?? 0 }}</div>
             </div>
         </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-4 col-lg">
             <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
                 <div class="text-muted small fw-semibold">HelpDesk</div>
                 <div class="fs-4 fw-bold text-teal">{{ $roleStats['helpdesk'] ?? 0 }}</div>
             </div>
         </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-6 col-lg">
             <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
                 <div class="text-muted small fw-semibold">Tim Teknis</div>
                 <div class="fs-4 fw-bold text-warning">{{ $roleStats['teknis'] ?? 0 }}</div>
             </div>
         </div>
-        <div class="col-6 col-md-2">
+        <div class="col-6 col-md-6 col-lg">
             <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
                 <div class="text-muted small fw-semibold">SA / CS</div>
                 <div class="fs-4 fw-bold text-purple" style="color: #9333ea;">{{ $roleStats['sa_cs'] ?? 0 }}</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-2">
-            <div class="card border-0 shadow-sm rounded-4 p-3 text-center">
-                <div class="text-muted small fw-semibold">Client</div>
-                <div class="fs-4 fw-bold text-secondary">{{ $roleStats['client'] ?? 0 }}</div>
             </div>
         </div>
     </div>
@@ -81,7 +75,6 @@
                     <option value="helpdesk" {{ $roleFilter === 'helpdesk' ? 'selected' : '' }}>HelpDesk</option>
                     <option value="teknis" {{ $roleFilter === 'teknis' ? 'selected' : '' }}>Team Teknis</option>
                     <option value="sa_cs" {{ $roleFilter === 'sa_cs' ? 'selected' : '' }}>SA / CS</option>
-                    <option value="client" {{ $roleFilter === 'client' ? 'selected' : '' }}>Client</option>
                 </select>
                 @if($search || $roleFilter)
                     <a href="{{ route('master.users.index') }}" class="btn btn-sm btn-light border"><i class="bi bi-x me-1"></i>Reset</a>
@@ -113,7 +106,6 @@
                             'helpdesk' => 'info',
                             'teknis' => 'warning',
                             'sa_cs' => 'secondary',
-                            'client' => 'dark',
                             default => 'light',
                         };
                     @endphp
@@ -221,7 +213,6 @@
                                                     <option value="helpdesk" {{ $u->role === 'helpdesk' ? 'selected' : '' }}>HelpDesk</option>
                                                     <option value="teknis" {{ $u->role === 'teknis' ? 'selected' : '' }}>Team Teknis</option>
                                                     <option value="sa_cs" {{ $u->role === 'sa_cs' ? 'selected' : '' }}>SA / CS</option>
-                                                    <option value="client" {{ $u->role === 'client' ? 'selected' : '' }}>Client</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
@@ -321,7 +312,6 @@
                                 <option value="teknis" selected>Team Teknis Lapangan</option>
                                 <option value="helpdesk">HelpDesk NOC</option>
                                 <option value="sa_cs">SA / CS</option>
-                                <option value="client">Client / Pelanggan</option>
                                 <option value="admin">Admin NOC</option>
                             </select>
                         </div>

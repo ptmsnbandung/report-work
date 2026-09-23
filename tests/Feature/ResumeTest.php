@@ -41,7 +41,7 @@ class ResumeTest extends TestCase
         ]);
 
         $this->client = User::factory()->create([
-            'role' => 'client',
+            'role' => 'sa_cs',
             'is_active' => true,
         ]);
 

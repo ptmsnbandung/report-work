@@ -65,9 +65,9 @@ class ManuverCoreTest extends TestCase
         $this->assertDatabaseMissing('manuver_core', ['id' => $manuver->id]);
     }
 
-    public function test_client_cannot_add_manuver_core(): void
+    public function test_sa_cs_cannot_add_manuver_core(): void
     {
-        $client = User::factory()->create(['role' => 'client']);
+        $saCs = User::factory()->create(['role' => 'sa_cs']);
         $helpdesk = User::factory()->create(['role' => 'helpdesk']);
         $tiket = Tiket::create([
             'no_tiket' => 'BDG-20260921-011',
@@ -78,7 +78,7 @@ class ManuverCoreTest extends TestCase
             'created_by' => $helpdesk->id,
         ]);
 
-        $response = $this->actingAs($client)->post(route('tiket.manuver-core.store', $tiket->id), [
+        $response = $this->actingAs($saCs)->post(route('tiket.manuver-core.store', $tiket->id), [
             'titik' => 'JC1',
             'core_asal' => 'Tube 2 Core 1',
             'core_tujuan' => 'Tube 2 Core 1',

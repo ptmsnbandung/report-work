@@ -130,7 +130,7 @@ class NotificationService
         $closerId = $tiket->closed_by;
 
         $recipients = User::where('is_active', true)
-            ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs', 'client'])
+            ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
             ->when($closerId, fn($q) => $q->where('id', '!=', $closerId))
             ->get();
 

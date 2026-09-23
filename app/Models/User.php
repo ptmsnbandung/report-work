@@ -77,7 +77,6 @@ class User extends Authenticatable
             'helpdesk' => 'HelpDesk NOC / SA & CS',
             'teknis' => 'Team Teknis Lapangan',
             'sa_cs' => 'HelpDesk NOC / SA & CS',
-            'client' => 'Client / Pelanggan',
             default => ucfirst($this->role),
         };
     }
@@ -92,7 +91,6 @@ class User extends Authenticatable
             'helpdesk' => 'Helpdesk',
             'teknis' => 'Teknis',
             'sa_cs' => 'Helpdesk',
-            'client' => 'Client',
             default => ucfirst($this->role),
         };
     }

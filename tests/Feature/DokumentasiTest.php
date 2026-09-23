@@ -72,9 +72,9 @@ class DokumentasiTest extends TestCase
         $this->assertDatabaseMissing('dokumentasi', ['id' => $doc->id]);
     }
 
-    public function test_client_cannot_upload_dokumentasi(): void
+    public function test_sa_cs_cannot_upload_dokumentasi(): void
     {
-        $client = User::factory()->create(['role' => 'client']);
+        $saCs = User::factory()->create(['role' => 'sa_cs']);
         $helpdesk = User::factory()->create(['role' => 'helpdesk']);
         $tiket = Tiket::create([
             'no_tiket' => 'BDG-20260921-008',
@@ -85,7 +85,7 @@ class DokumentasiTest extends TestCase
             'created_by' => $helpdesk->id,
         ]);
 
-        $response = $this->actingAs($client)->post(route('tiket.dokumentasi.store', $tiket->id), [
+        $response = $this->actingAs($saCs)->post(route('tiket.dokumentasi.store', $tiket->id), [
             'kategori' => 'Hasil Jointing',
         ]);
 
