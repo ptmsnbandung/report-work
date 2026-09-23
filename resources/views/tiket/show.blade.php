@@ -31,15 +31,30 @@
         border-radius: 0 !important;
         border: none;
         box-shadow: none;
+        width: 100% !important;
         height: 100dvh !important;
         max-height: 100dvh !important;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .wa-chat-container.wa-fullscreen #timelineWrapper {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
     .wa-chat-container.wa-fullscreen .wa-chat-stream {
+        flex: 1;
         min-height: 0 !important;
         max-height: none !important;
-        flex: 1;
-        height: 0;
+        height: auto !important;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
+        flex-shrink: 0;
     }
 
     /* Tombol fullscreen */
