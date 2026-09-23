@@ -1264,6 +1264,95 @@
         border-radius: 10px;
         border: 1px solid #e2e8f0;
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       HERO HEADER ACTIONS BAR & BUTTONS (CLEAN & MODERN)
+       ═══════════════════════════════════════════════════════════════════ */
+    .tiket-hero-actions {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .btn-tiket-hero {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        height: 36px;
+        padding: 0 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border-radius: 50rem;
+        transition: all 0.18s ease;
+        text-decoration: none;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    /* 1. Default / Back / Dropdown: Frosted Glass */
+    .btn-tiket-hero-ghost {
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: #f8fafc !important;
+        border-color: rgba(255, 255, 255, 0.22) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .btn-tiket-hero-ghost:hover, .btn-tiket-hero-ghost:focus {
+        background: rgba(255, 255, 255, 0.22) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.45) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+    }
+
+    /* 2. WhatsApp: Modern WhatsApp Emerald Gradient */
+    .btn-tiket-hero-wa {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    .btn-tiket-hero-wa:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    /* 3. Edit: Amber/Warning Accent */
+    .btn-tiket-hero-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    .btn-tiket-hero-warning:hover {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4) !important;
+    }
+
+    /* 4. Closing Tiket: Solid Teal / Blue-Green Accent */
+    .btn-tiket-hero-success {
+        background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .btn-tiket-hero-success:hover {
+        background: linear-gradient(135deg, #0f766e 0%, #115e59 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4) !important;
+    }
+
+    .btn-tiket-hero:active {
+        transform: translateY(1px) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    }
 </style>
 @endpush
 
@@ -1315,38 +1404,41 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex align-items-center flex-wrap gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
-                    <a href="{{ route('tiket.index') }}" class="btn btn-hero-action btn-sm rounded-pill px-3.5">
-                        <i class="bi bi-arrow-left me-1"></i> Kembali
+                <div class="tiket-hero-actions w-100 w-md-auto justify-content-start justify-content-md-end">
+                    <a href="{{ route('tiket.index') }}" class="btn-tiket-hero btn-tiket-hero-ghost">
+                        <i class="bi bi-arrow-left"></i>
+                        <span>Kembali</span>
                     </a>
 
                     @if(auth()->user()->hasRole(['admin', 'helpdesk']))
-                    <button type="button" class="btn btn-sm rounded-pill px-3.5 shadow-xs fw-bold text-white d-inline-flex align-items-center gap-1.5"
+                    <button type="button" class="btn-tiket-hero btn-tiket-hero-wa"
                             id="btnCopyWaBroadcast"
-                            title="Salin notifikasi tugas untuk ditempel ke Grup WhatsApp"
-                            style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); border: none;">
+                            title="Salin notifikasi tugas untuk ditempel ke Grup WhatsApp">
                         <i class="bi bi-whatsapp"></i>
                         <span>Salin Info WA</span>
                     </button>
                     @endif
 
                     @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'OPEN')
-                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="btn btn-warning btn-sm rounded-pill px-3.5 shadow-xs text-dark fw-bold">
-                        <i class="bi bi-pencil-square me-1"></i> Edit
+                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="btn-tiket-hero btn-tiket-hero-warning">
+                        <i class="bi bi-pencil-square"></i>
+                        <span>Edit</span>
                     </a>
                     @endif
 
                     @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
-                    <button type="button" class="btn btn-success btn-sm rounded-pill px-3.5 shadow-xs fw-bold"
+                    <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
                             data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                        <i class="bi bi-check-circle-fill me-1"></i> Closing Tiket
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Closing Tiket</span>
                     </button>
                     @endif
 
                     <!-- Export Buttons -->
-                    <div class="btn-group position-relative" style="z-index: 5;">
-                        <button type="button" class="btn btn-hero-action btn-sm dropdown-toggle rounded-pill px-3.5" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-download me-1"></i> Export Laporan
+                    <div class="dropdown position-relative d-inline-block" style="z-index: 5;">
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-download"></i>
+                            <span>Export Laporan</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1" style="min-width: 220px;">
                             <li>
