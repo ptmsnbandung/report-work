@@ -3155,7 +3155,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.getElementById('krono-item-' + k.id)) return;
 
         // Cek apakah perlu menambahkan date divider baru
-        const lastDivider = stream.querySelector('.wa-date-divider:last-of-type .wa-date-chip');
+        // Gunakan querySelectorAll + last item karena :last-of-type tidak bekerja dengan class selector
+        const allDividers = stream.querySelectorAll('.wa-date-divider .wa-date-chip');
+        const lastDivider = allDividers.length > 0 ? allDividers[allDividers.length - 1] : null;
         const lastDateText = lastDivider ? lastDivider.textContent.trim() : '';
         if (k.formatted_date && (!lastDateText || !lastDateText.includes(k.formatted_date))) {
             stream.insertAdjacentHTML('beforeend', `
