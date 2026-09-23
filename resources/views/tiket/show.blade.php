@@ -1002,14 +1002,20 @@
         outline-offset: 2px !important;
     }
 
-    /* ── PHOTO LIGHTBOX MODAL PRO ── */
+    /* ── MODALS & PHOTO LIGHTBOX (ON TOP OF FULLSCREEN CHAT Z-INDEX 99999) ── */
+    .modal {
+        z-index: 100005 !important;
+    }
+    .modal-backdrop {
+        z-index: 100000 !important;
+    }
     .photo-lightbox-modal {
-        z-index: 1070 !important;
+        z-index: 100010 !important;
     }
     .photo-lightbox-modal .modal-dialog {
         max-width: 95vw;
         margin: 1rem auto;
-        z-index: 1071 !important;
+        z-index: 100015 !important;
     }
     .photo-lightbox-content {
         background: rgba(11, 20, 36, 0.96) !important;
