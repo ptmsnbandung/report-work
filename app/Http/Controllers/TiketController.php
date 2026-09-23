@@ -7,6 +7,7 @@ use App\Http\Requests\StoreTiketRequest;
 use App\Http\Requests\UpdateTiketRequest;
 use App\Models\MasterSla;
 use App\Models\Tiket;
+use App\Models\User;
 use App\Services\TiketService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -100,7 +101,20 @@ class TiketController extends Controller
             'dokumentasis',
         ]);
 
-        return view('tiket.show', compact('tiket'));
+        $mentionableUsers = User::where('is_active', true)
+            ->orderBy('name')
+            ->get()
+            ->map(function ($u) {
+                return [
+                    'id'         => $u->id,
+                    'name'       => $u->name,
+                    'role'       => $u->role_short,
+                    'avatar_url' => $u->avatar_url,
+                    'initial'    => strtoupper(substr($u->name, 0, 1)),
+                ];
+            });
+
+        return view('tiket.show', compact('tiket', 'mentionableUsers'));
     }
 
     /**

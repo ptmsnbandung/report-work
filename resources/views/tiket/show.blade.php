@@ -870,6 +870,114 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       WHATSAPP-STYLE @MENTION USER AUTOCOMPLETE DROPDOWN
+       ═══════════════════════════════════════════════════════════════════ */
+    .wa-mention-dropdown {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        width: min(320px, calc(100vw - 40px));
+        max-height: 240px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(203, 213, 225, 0.9);
+        border-radius: 14px;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2), 0 2px 8px rgba(0,0,0,0.06);
+        margin-bottom: 8px;
+        z-index: 1050;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: waMentionSlideUp 0.16s ease-out;
+    }
+
+    @keyframes waMentionSlideUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .wa-mention-header {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #64748b;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .wa-mention-list {
+        overflow-y: auto;
+        max-height: 195px;
+        padding: 0.25rem 0;
+    }
+
+    .wa-mention-item {
+        padding: 0.45rem 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        cursor: pointer;
+        transition: background 0.12s ease;
+        user-select: none;
+    }
+
+    .wa-mention-item:hover,
+    .wa-mention-item.active {
+        background: #e0f2fe;
+    }
+
+    .wa-mention-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .wa-mention-avatar-initial {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .wa-mention-name {
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: #0f172a;
+        line-height: 1.25;
+    }
+
+    .wa-mention-role {
+        font-size: 0.68rem;
+        color: #64748b;
+    }
+
+    .wa-mention-tag-highlight {
+        color: #0284c7;
+        font-weight: 700;
+        background: rgba(2, 132, 199, 0.12);
+        padding: 1px 5px;
+        border-radius: 4px;
+        display: inline-block;
+        margin: 0 1px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        ELEGANT TICKET DETAIL HERO & METRIC TILES
        ═══════════════════════════════════════════════════════════════════ */
     .tiket-metric-tile {
@@ -1336,7 +1444,7 @@
                                                 </div>
 
                                                 <!-- Message Text Body -->
-                                                <div class="wa-msg-text">{{ $krono->informasi }}</div>
+                                                <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($krono->informasi))) !!}</div>
 
                                                 <!-- Attached Photo (WhatsApp Media Card) -->
                                                 @if($krono->foto_url)
@@ -1462,8 +1570,16 @@
                             </div>
 
                             <!-- Text Input Area & Attachment Chips -->
-                            <div class="wa-input-wrapper">
-                                <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi lapangan..." required></textarea>
+                            <div class="wa-input-wrapper position-relative">
+                                <!-- WhatsApp @Mention User Autocomplete Popup -->
+                                <div id="waMentionDropdown" class="wa-mention-dropdown d-none">
+                                    <div class="wa-mention-header">
+                                        <i class="bi bi-at text-primary"></i> Tag Anggota Tim
+                                    </div>
+                                    <div class="wa-mention-list" id="waMentionList"></div>
+                                </div>
+
+                                <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi lapangan... (@ untuk tag)" required></textarea>
                                 <!-- Attachment Previews Bar (shows when photo or location is attached) -->
                                 <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
                                     <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
@@ -3467,11 +3583,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return nameColors[Math.abs(hash) % nameColors.length];
     }
 
-    function escapeHtml(text) {
+    const MENTIONABLE_USERS = @json($mentionableUsers ?? []);
+
+    function formatMessageWithMentions(text) {
         if (!text) return '';
         const div = document.createElement('div');
         div.textContent = text;
-        return div.innerHTML.replace(/\n/g, '<br>');
+        let safe = div.innerHTML.replace(/\n/g, '<br>');
+        return safe.replace(/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/g, function(match) {
+            return `<span class="wa-mention-tag-highlight">${match}</span>`;
+        });
+    }
+
+    function escapeHtml(text) {
+        return formatMessageWithMentions(text);
     }
 
     const currentUserId = {{ auth()->id() ?? 0 }};
@@ -3504,7 +3629,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         </div>
 
-                        <div class="wa-msg-text">${escapeHtml(k.informasi || '')}</div>
+                        <div class="wa-msg-text">${formatMessageWithMentions(k.informasi || '')}</div>
 
                         ${k.foto_url ? `
                         <div class="wa-media-card" onclick="zoomPhoto('${k.foto_url}', '${k.kategori} - ${k.formatted_time}')">
@@ -4035,9 +4160,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const btnRemoveWaLocation = document.getElementById('btnRemoveWaLocation');
         const btnWaSendMsg = document.getElementById('btnWaSendMsg');
 
+        const waMentionDropdown = document.getElementById('waMentionDropdown');
+        const waMentionList = document.getElementById('waMentionList');
+
         let currentWaCompressedPhoto = null;
         let waCompressionPromise = null;
         let currentPhotoMode = 'watermark'; // 'watermark' | 'plain' | 'gallery'
+
+        let activeMentionIndex = 0;
+        let filteredMentionUsers = [];
+        let mentionStartIndex = -1;
 
         // Auto-expand textarea on typing
         waChatTextInput?.addEventListener('input', function() {
@@ -4045,8 +4177,159 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.height = Math.min(this.scrollHeight, 100) + 'px';
         });
 
-        // Enter key to submit (Shift+Enter for newline)
+        function showMentionDropdown(query, startIndex) {
+            if (!waMentionDropdown || !waMentionList) return;
+
+            const q = query.toLowerCase().trim();
+            filteredMentionUsers = MENTIONABLE_USERS.filter(u => {
+                const nameMatch = (u.name || '').toLowerCase().includes(q);
+                const roleMatch = (u.role || '').toLowerCase().includes(q);
+                return nameMatch || roleMatch;
+            });
+
+            if (filteredMentionUsers.length === 0) {
+                hideMentionDropdown();
+                return;
+            }
+
+            mentionStartIndex = startIndex;
+            activeMentionIndex = 0;
+
+            waMentionList.innerHTML = filteredMentionUsers.map((u, idx) => `
+                <div class="wa-mention-item ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                    ${u.avatar_url 
+                        ? `<img src="${u.avatar_url}" alt="${u.name}" class="wa-mention-avatar">`
+                        : `<div class="wa-mention-avatar-initial">${u.initial || 'U'}</div>`
+                    }
+                    <div class="wa-mention-info flex-grow-1 overflow-hidden">
+                        <div class="wa-mention-name text-truncate">${u.name}</div>
+                        <div class="wa-mention-role text-truncate">${u.role || '-'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            waMentionDropdown.classList.remove('d-none');
+        }
+
+        function hideMentionDropdown() {
+            if (waMentionDropdown) {
+                waMentionDropdown.classList.add('d-none');
+            }
+            filteredMentionUsers = [];
+            mentionStartIndex = -1;
+            activeMentionIndex = 0;
+        }
+
+        function updateMentionActiveItem() {
+            if (!waMentionList) return;
+            const items = waMentionList.querySelectorAll('.wa-mention-item');
+            items.forEach((el, idx) => {
+                if (idx === activeMentionIndex) {
+                    el.classList.add('active');
+                    el.scrollIntoView({ block: 'nearest' });
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+        }
+
+        function insertMention(user) {
+            if (!waChatTextInput || mentionStartIndex === -1 || !user) return;
+
+            const val = waChatTextInput.value;
+            const cursorPos = waChatTextInput.selectionStart;
+            
+            const before = val.substring(0, mentionStartIndex);
+            const after = val.substring(cursorPos);
+            const mentionText = `@${user.name} `;
+
+            waChatTextInput.value = before + mentionText + after;
+            const newCursorPos = before.length + mentionText.length;
+            waChatTextInput.setSelectionRange(newCursorPos, newCursorPos);
+            
+            // Trigger auto-expand & input
+            waChatTextInput.dispatchEvent(new Event('input'));
+            hideMentionDropdown();
+            waChatTextInput.focus();
+        }
+
+        function checkMentionTrigger() {
+            if (!waChatTextInput) return;
+            const val = waChatTextInput.value;
+            const cursorPos = waChatTextInput.selectionStart;
+
+            const textBeforeCursor = val.substring(0, cursorPos);
+            const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+
+            if (lastAtIndex !== -1) {
+                const charBeforeAt = lastAtIndex > 0 ? textBeforeCursor[lastAtIndex - 1] : ' ';
+                const textBetween = textBeforeCursor.substring(lastAtIndex + 1);
+
+                if ((/\s/.test(charBeforeAt) || lastAtIndex === 0) && !textBetween.includes('\n') && textBetween.length <= 30) {
+                    showMentionDropdown(textBetween, lastAtIndex);
+                    return;
+                }
+            }
+
+            hideMentionDropdown();
+        }
+
+        // Input & Click triggers for @mentions
+        waChatTextInput?.addEventListener('input', function() {
+            checkMentionTrigger();
+        });
+
+        waChatTextInput?.addEventListener('click', function() {
+            checkMentionTrigger();
+        });
+
+        // Click on mention list item
+        waMentionList?.addEventListener('mousedown', function(e) {
+            e.preventDefault(); // Prevent blur on textarea
+            const item = e.target.closest('.wa-mention-item');
+            if (item) {
+                const idx = parseInt(item.getAttribute('data-index'), 10);
+                if (!isNaN(idx) && filteredMentionUsers[idx]) {
+                    insertMention(filteredMentionUsers[idx]);
+                }
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (waMentionDropdown && !waMentionDropdown.contains(e.target) && e.target !== waChatTextInput) {
+                hideMentionDropdown();
+            }
+        });
+
+        // Keydown handler (Arrow keys, Enter, Tab, Escape, Submit)
         waChatTextInput?.addEventListener('keydown', function(e) {
+            // Jika dropdown mention sedang aktif
+            if (waMentionDropdown && !waMentionDropdown.classList.contains('d-none') && filteredMentionUsers.length > 0) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeMentionIndex = (activeMentionIndex + 1) % filteredMentionUsers.length;
+                    updateMentionActiveItem();
+                    return;
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeMentionIndex = (activeMentionIndex - 1 + filteredMentionUsers.length) % filteredMentionUsers.length;
+                    updateMentionActiveItem();
+                    return;
+                } else if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    if (filteredMentionUsers[activeMentionIndex]) {
+                        insertMention(filteredMentionUsers[activeMentionIndex]);
+                    }
+                    return;
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    hideMentionDropdown();
+                    return;
+                }
+            }
+
+            // Enter key to submit (Shift+Enter for newline)
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (this.value.trim().length > 0 || (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || currentWaCompressedPhoto) {
