@@ -331,9 +331,8 @@
         <thead>
             <tr>
                 <th style="width: 22%;">Waktu (WIB)</th>
-                <th style="width: 15%;">Kategori</th>
-                <th style="width: 18%;">PIC / Teknis</th>
-                <th style="width: 45%;">Informasi & Catatan Lapangan</th>
+                <th style="width: 23%;">PIC / Teknis</th>
+                <th style="width: 55%;">Informasi & Catatan Lapangan</th>
             </tr>
         </thead>
         <tbody>
@@ -342,13 +341,12 @@
                 <td style="font-family: monospace; font-size: 7.5pt;">
                     {{ $krono->timestamp->format('d/m/Y H:i') }}
                 </td>
-                <td><span class="badge badge-primary">{{ $krono->kategori }}</span></td>
                 <td>{{ $krono->user?->name ?? 'User' }} <small style="color: #64748b;">({{ $krono->user?->role }})</small></td>
                 <td>{{ $krono->informasi }}</td>
             </tr>
             @empty
             <tr>
-                <td colspan="4" style="text-align: center; color: #94a3b8;">Belum ada update kronologis</td>
+                <td colspan="3" style="text-align: center; color: #94a3b8;">Belum ada update kronologis</td>
             </tr>
             @endforelse
         </tbody>
