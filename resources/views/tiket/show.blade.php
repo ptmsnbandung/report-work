@@ -5579,9 +5579,13 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     const btnWaFullscreen = document.getElementById('btnWaFullscreen');
     const icoWaFullscreen = document.getElementById('icoWaFullscreen');
     const waContainer    = document.querySelector('.wa-chat-container');
+    let savedWindowScrollY = 0;
 
     function enterWaFullscreen() {
         if (!waContainer) return;
+        // Simpan posisi scroll halaman saat ini sebelum masuk mode fixed fullscreen
+        savedWindowScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+
         waContainer.classList.add('wa-fullscreen');
         document.body.classList.add('wa-chat-fullscreen-active');
         if (icoWaFullscreen) {
@@ -5609,7 +5613,17 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         if (btnWaFullscreen) btnWaFullscreen.title = 'Perbesar chat';
         document.body.style.overflow = '';
 
+        // Pertahankan posisi scroll halaman tepat di elemen chat, tidak melompat ke paling atas halaman
         requestAnimationFrame(() => {
+            if (savedWindowScrollY > 0) {
+                window.scrollTo({
+                    top: savedWindowScrollY,
+                    behavior: 'instant'
+                });
+            } else {
+                waContainer.scrollIntoView({ behavior: 'instant', block: 'nearest' });
+            }
+
             const stream = document.getElementById('timelineList');
             if (stream) stream.scrollTop = stream.scrollHeight;
         });
