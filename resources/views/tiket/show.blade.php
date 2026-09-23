@@ -604,8 +604,8 @@
             border-radius: 14px;
         }
         .wa-chat-stream {
-            min-height: clamp(380px, calc(100dvh - 300px), 650px);
-            max-height: clamp(380px, calc(100dvh - 300px), 650px);
+            min-height: clamp(420px, calc(100dvh - 210px), 750px);
+            max-height: clamp(420px, calc(100dvh - 210px), 750px);
             padding: 0.75rem 0.65rem 0.85rem 0.65rem !important;
             gap: 0.6rem;
         }
