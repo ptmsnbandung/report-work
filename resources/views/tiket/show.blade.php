@@ -471,6 +471,7 @@
 
     .wa-input-wrapper {
         flex-grow: 1;
+        min-width: 0;
         background: #ffffff;
         border: 1px solid rgba(203, 213, 225, 0.8);
         border-radius: 20px;
@@ -1282,10 +1283,10 @@
                                 <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi lapangan..." required></textarea>
                                 <!-- Attachment Previews Bar (shows when photo or location is attached) -->
                                 <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
-                                    <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill">
+                                    <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
                                         <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
                                         <i class="bi bi-image text-primary" id="waPhotoDefaultIcon"></i>
-                                        <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 110px;">foto.jpg</span>
+                                        <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">foto.jpg</span>
                                         <span id="waPhotoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
                                             <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
                                         </span>
@@ -3563,8 +3564,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Tampilkan chip dengan status sedang mengompres
                 if (waPhotoSizeBadge) {
-                    waPhotoSizeBadge.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill py-0.5 px-2';
-                    waPhotoSizeBadge.innerHTML = '<span class="spinner-border spinner-border-sm me-1" style="width: 0.55rem; height: 0.55rem;"></span> Mengompres...';
+                    waPhotoSizeBadge.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill py-0.5 px-1.5';
+                    waPhotoSizeBadge.innerHTML = '<span class="spinner-border spinner-border-sm me-1" style="width: 0.5rem; height: 0.5rem;"></span>...';
                 }
                 if (waPhotoPreviewChip) {
                     waPhotoPreviewChip.classList.remove('d-none');
@@ -3593,9 +3594,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const compSize = formatFileSize(compressedFile.size);
 
                     if (waPhotoSizeBadge) {
-                        waPhotoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-2';
-                        waPhotoSizeBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${compSize} (Terkompres)`;
-                        waPhotoSizeBadge.title = `Ukuran asli ${origSize} berhasil dikompresi menjadi ${compSize}`;
+                        waPhotoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5';
+                        waPhotoSizeBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${compSize}`;
+                        waPhotoSizeBadge.title = `Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
                     }
 
                     if (waPhotoThumb) {
