@@ -1418,13 +1418,24 @@
                                         </button>
                                     </li>
                                     <li>
-                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraFoto">
+                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraWatermark">
                                             <div class="wa-attach-icon bg-success-subtle text-success">
                                                 <i class="bi bi-camera-fill"></i>
                                             </div>
                                             <div>
-                                                <div class="fw-bold small text-dark">Ambil Foto (Kamera)</div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Potret langsung menggunakan kamera</div>
+                                                <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
+                                                <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp & Alamat</div>
+                                            </div>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraPolos">
+                                            <div class="wa-attach-icon bg-info-subtle text-info">
+                                                <i class="bi bi-camera"></i>
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold small text-dark">Kamera Polos (Tanpa Watermark)</div>
+                                                <div class="text-muted" style="font-size: 0.7rem;">Potret langsung foto kamera original</div>
                                             </div>
                                         </button>
                                     </li>
@@ -3982,7 +3993,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const waChatLat = document.getElementById('waChatLatitude');
         const waChatLng = document.getElementById('waChatLongitude');
         const btnWaUploadFoto = document.getElementById('btnWaUploadFoto');
-        const btnWaCameraFoto = document.getElementById('btnWaCameraFoto');
+        const btnWaCameraWatermark = document.getElementById('btnWaCameraWatermark');
+        const btnWaCameraPolos = document.getElementById('btnWaCameraPolos');
         const btnWaShareLocation = document.getElementById('btnWaShareLocation');
         const waAttachmentPreviewBar = document.getElementById('waAttachmentPreviewBar');
         const waPhotoPreviewChip = document.getElementById('waPhotoPreviewChip');
@@ -3998,6 +4010,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let currentWaCompressedPhoto = null;
         let waCompressionPromise = null;
+        let currentPhotoMode = 'watermark'; // 'watermark' | 'plain' | 'gallery'
 
         // Auto-expand textarea on typing
         waChatTextInput?.addEventListener('input', function() {
@@ -4015,16 +4028,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Upload Foto (Galeri)
+        // 1. Upload Foto (Galeri)
         btnWaUploadFoto?.addEventListener('click', function() {
+            currentPhotoMode = 'gallery';
             if (waChatFotoInput) {
                 waChatFotoInput.removeAttribute('capture');
                 waChatFotoInput.click();
             }
         });
 
-        // Ambil Foto (Kamera HP/Webcam)
-        btnWaCameraFoto?.addEventListener('click', function() {
+        // 2. Kamera GPS (Dengan Logo MSN, Timestamp & Alamat)
+        btnWaCameraWatermark?.addEventListener('click', function() {
+            currentPhotoMode = 'watermark';
+            if (waChatFotoInput) {
+                waChatFotoInput.setAttribute('capture', 'environment');
+                waChatFotoInput.click();
+            }
+        });
+
+        // 3. Kamera Polos (Tanpa Watermark)
+        btnWaCameraPolos?.addEventListener('click', function() {
+            currentPhotoMode = 'plain';
             if (waChatFotoInput) {
                 waChatFotoInput.setAttribute('capture', 'environment');
                 waChatFotoInput.click();
@@ -4057,12 +4081,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     } catch(e) {}
                 }
 
-                // Proses kompresi & watermark GPS otomatis di background
+                const isWatermark = (currentPhotoMode === 'watermark');
+
+                // Proses kompresi & watermark GPS (jika mode watermark dipilih)
                 waCompressionPromise = compressImageFile(originalFile, {
                     maxWidth: 1600,
                     maxHeight: 1600,
                     quality: 0.82,
-                    withWatermark: true,
+                    withWatermark: isWatermark,
                     onLocationDetected: (coords) => {
                         if (waChatLat && !waChatLat.value) waChatLat.value = coords.latitude.toFixed(7);
                         if (waChatLng && !waChatLng.value) waChatLng.value = coords.longitude.toFixed(7);
@@ -4074,9 +4100,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     const compSize = formatFileSize(compressedFile.size);
 
                     if (waPhotoSizeBadge) {
-                        waPhotoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5';
-                        waPhotoSizeBadge.innerHTML = `<i class="bi bi-shield-check me-1"></i>GPS Stamp &bull; ${compSize}`;
-                        waPhotoSizeBadge.title = `Foto telah diberi GPS Timestamp & Logo MSN. Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
+                        if (isWatermark) {
+                            waPhotoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5';
+                            waPhotoSizeBadge.innerHTML = `<i class="bi bi-shield-check me-1"></i>GPS Stamp &bull; ${compSize}`;
+                            waPhotoSizeBadge.title = `Foto telah diberi GPS Timestamp & Logo MSN. Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
+                        } else {
+                            waPhotoSizeBadge.className = 'badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill py-0.5 px-1.5';
+                            waPhotoSizeBadge.innerHTML = `<i class="bi bi-camera me-1"></i>Foto Polos &bull; ${compSize}`;
+                            waPhotoSizeBadge.title = `Foto kamera asli tanpa watermark. Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
+                        }
                     }
 
                     if (waPhotoThumb) {
