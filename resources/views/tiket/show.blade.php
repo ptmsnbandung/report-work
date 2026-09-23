@@ -3099,7 +3099,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 knownCount = res.count;
                 const badgeEl = document.getElementById('kronologisCountBadge');
                 if (badgeEl) badgeEl.textContent = knownCount;
-                renderTimelineFromData(res.data);
+                updateTimelineFromData(res.data);
             }
         })
         .catch(err => console.debug('Timeline polling error:', err));
@@ -3186,12 +3186,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`;
     }
 
-    function appendSingleKronoToTimeline(k) {
+    function appendSingleKronoToTimeline(k, isSelf = true) {
         if (!k || !k.id) return;
 
-        knownCount = (knownCount || 0) + 1;
-        const badgeEl = document.getElementById('kronologisCountBadge');
-        if (badgeEl) badgeEl.textContent = knownCount;
+        // Jangan append jika sudah ada di DOM
+        if (document.getElementById('krono-item-' + k.id)) return;
 
         const wrapper = document.getElementById('timelineWrapper');
         let stream = document.getElementById('timelineList');
@@ -3207,11 +3206,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!stream) return;
 
-        // Jangan append jika sudah ada di DOM
-        if (document.getElementById('krono-item-' + k.id)) return;
+        // Cek apakah posisi scroll stream saat ini sedang berada di dekat bawah
+        const isNearBottom = (stream.scrollHeight - stream.scrollTop - stream.clientHeight) < 200;
 
         // Cek apakah perlu menambahkan date divider baru
-        // Gunakan querySelectorAll + last item karena :last-of-type tidak bekerja dengan class selector
         const allDividers = stream.querySelectorAll('.wa-date-divider .wa-date-chip');
         const lastDivider = allDividers.length > 0 ? allDividers[allDividers.length - 1] : null;
         const lastDateText = lastDivider ? lastDivider.textContent.trim() : '';
@@ -3224,19 +3222,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>`);
         }
 
-        // Simpan posisi window agar tidak melompat saat DOM berubah
+        // Simpan posisi scroll window agar tidak melompat
         const savedWindowY = window.scrollY || window.pageYOffset;
 
         stream.insertAdjacentHTML('beforeend', buildSingleKronoHtml(k));
 
-        // Restore window posisi, lalu scroll stream ke bawah
+        // Pertahankan posisi scroll window
         window.scrollTo(0, savedWindowY);
-        stream.scrollTop = stream.scrollHeight;
 
-        requestAnimationFrame(() => {
+        // Hanya auto-scroll stream jika user sedang di bawah atau pengirim adalah diri sendiri
+        if (isNearBottom || isSelf) {
             stream.scrollTop = stream.scrollHeight;
-            window.scrollTo(0, savedWindowY);
-        });
+            requestAnimationFrame(() => {
+                stream.scrollTop = stream.scrollHeight;
+                window.scrollTo(0, savedWindowY);
+            });
+        }
 
         // Highlight pesan baru
         const newEl = document.getElementById('krono-item-' + k.id);
@@ -3245,10 +3246,41 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => newEl.classList.remove('wa-bubble-new-highlight'), 4000);
         }
 
-        // Fokus ke textarea tanpa scroll window (hanya di desktop, mobile biarkan keyboard tertutup)
-        const waChatInput = document.getElementById('waChatTextInput');
-        if (waChatInput && window.innerWidth >= 768) {
-            waChatInput.focus({ preventScroll: true });
+        // Fokus ke textarea hanya jika user sendiri yang baru mengirim pesan (desktop)
+        if (isSelf) {
+            const waChatInput = document.getElementById('waChatTextInput');
+            if (waChatInput && window.innerWidth >= 768) {
+                waChatInput.focus({ preventScroll: true });
+            }
+        }
+
+        checkStreamScroll(stream);
+    }
+
+    function updateTimelineFromData(items) {
+        if (!items || items.length === 0) {
+            renderTimelineFromData(items);
+            return;
+        }
+
+        const stream = document.getElementById('timelineList');
+        if (!stream) {
+            renderTimelineFromData(items);
+            return;
+        }
+
+        let newItemsCount = 0;
+        items.forEach(k => {
+            if (!document.getElementById('krono-item-' + k.id)) {
+                appendSingleKronoToTimeline(k, false);
+                newItemsCount++;
+            }
+        });
+
+        // Jika jumlah pesan di DOM berbeda (misal ada pesan yang dihapus oleh admin), re-render full
+        const domCount = document.querySelectorAll('.wa-msg-row').length;
+        if (newItemsCount === 0 && items.length !== domCount) {
+            renderTimelineFromData(items);
         }
     }
 
