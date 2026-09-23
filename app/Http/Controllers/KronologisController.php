@@ -68,10 +68,30 @@ class KronologisController extends Controller
             $kronologis = $this->kronologisService->addKronologis($tiket, $request->validated(), $request->user(), $foto);
 
             if ($request->wantsJson() || $request->ajax()) {
+                $kronologis->load('user');
                 return response()->json([
                     'success' => true,
                     'message' => 'Update kronologis berhasil ditambahkan.',
-                    'data'    => $kronologis,
+                    'data'    => [
+                        'id'               => $kronologis->id,
+                        'timestamp'        => $kronologis->timestamp->toIso8601String(),
+                        'formatted_time'   => $kronologis->timestamp->format('H:i') . ' WIB',
+                        'formatted_date'   => $kronologis->timestamp->translatedFormat('l, d F Y'),
+                        'date_key'         => $kronologis->timestamp->format('Y-m-d'),
+                        'user_id'          => $kronologis->user_id,
+                        'user_name'        => $kronologis->user?->name ?? 'User',
+                        'user_role'        => $kronologis->user?->role_short ?? '-',
+                        'kategori'         => $kronologis->kategori,
+                        'kategori_label'   => $kronologis->kategori_label,
+                        'kategori_badge'   => $kronologis->kategori_badge,
+                        'kategori_icon'    => $kronologis->kategori_icon,
+                        'informasi'        => $kronologis->informasi,
+                        'foto_url'         => $kronologis->foto_url ? asset($kronologis->foto_url) : null,
+                        'latitude'         => $kronologis->latitude,
+                        'longitude'        => $kronologis->longitude,
+                        'has_coordinates'  => $kronologis->has_coordinates,
+                        'google_maps_url'  => $kronologis->google_maps_url,
+                    ],
                 ]);
             }
 
