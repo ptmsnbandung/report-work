@@ -268,8 +268,11 @@
                         <div class="flex-grow-1 overflow-hidden">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1 mb-1">
                                 <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                    @php
+                                        $notifTitle = preg_replace('/^Update\s*\[.*?\]\s*-\s*/i', 'Update Koordinasi - ', $data['title'] ?? 'Pemberitahuan Sistem');
+                                    @endphp
                                     <h6 class="fw-bold mb-0 text-navy" style="font-size: 0.92rem;">
-                                        {{ $data['title'] ?? 'Pemberitahuan Sistem' }}
+                                        {{ $notifTitle }}
                                     </h6>
                                     @if($isUnread)
                                         <span class="badge rounded-pill fw-bold" style="background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; font-size: 0.62rem; padding: 2px 7px;">

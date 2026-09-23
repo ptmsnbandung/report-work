@@ -28,10 +28,9 @@ class KronologisBaruNotification extends Notification
         $userNama = $this->kronologis->user ? $this->kronologis->user->name : 'Teknis';
 
         return (new MailMessage)
-            ->subject("[UPDATE KRONOLOGIS] {$this->tiket->no_tiket} - {$this->kronologis->kategori}")
+            ->subject("[UPDATE KOORDINASI] {$this->tiket->no_tiket}")
             ->greeting("Halo {$notifiable->name},")
-            ->line("Ada update kronologis terbaru pada tiket **{$this->tiket->no_tiket}** ({$this->tiket->backbone_segment}):")
-            ->line("Kategori: [{$this->kronologis->kategori}]")
+            ->line("Ada update koordinasi terbaru pada tiket **{$this->tiket->no_tiket}** ({$this->tiket->backbone_segment}):")
             ->line("Waktu: " . ($this->kronologis->timestamp ? $this->kronologis->timestamp->format('H:i') . ' WIB' : '-'))
             ->line("Oleh: {$userNama}")
             ->line("Informasi: {$this->kronologis->informasi}")
@@ -46,9 +45,9 @@ class KronologisBaruNotification extends Notification
             'type' => 'KRONOLOGIS_BARU',
             'id_tiket' => $this->tiket->id,
             'no_tiket' => $this->tiket->no_tiket,
-            'title' => "Update [{$this->kronologis->kategori}] - {$this->tiket->no_tiket}",
+            'title' => "Update Koordinasi - {$this->tiket->no_tiket}",
             'message' => "{$userNama}: {$this->kronologis->informasi}",
-            'icon' => 'bi-clock-history',
+            'icon' => 'bi-chat-dots-fill',
             'color' => 'info',
             'url' => route('tiket.show', $this->tiket->id),
             'created_at' => now()->toIso8601String(),

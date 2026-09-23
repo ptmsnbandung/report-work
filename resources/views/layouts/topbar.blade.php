@@ -123,8 +123,11 @@
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">
                                     <div class="d-flex justify-content-between align-items-center">
+                                        @php
+                                            $topNotifTitle = preg_replace('/^Update\s*\[.*?\]\s*-\s*/i', 'Update Koordinasi - ', $nData['title'] ?? 'Notifikasi');
+                                        @endphp
                                         <div class="fw-bold text-truncate" style="font-size:0.8rem;color:#1e293b;max-width:180px;">
-                                            {{ $nData['title'] ?? 'Notifikasi' }}
+                                            {{ $topNotifTitle }}
                                         </div>
                                         <small class="text-muted" style="font-size:0.65rem;">
                                             {{ $notif->created_at ? $notif->created_at->diffForHumans(null, true) : '' }}

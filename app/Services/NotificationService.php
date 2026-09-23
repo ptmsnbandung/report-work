@@ -74,7 +74,7 @@ class NotificationService
                     'id_tiket' => $tiket->id,
                     'tipe' => 'INAPP',
                     'penerima' => "{$u->name} ({$u->role})",
-                    'pesan' => "Update Kronologis [{$kronologis->kategori}] pada tiket {$tiket->no_tiket}",
+                    'pesan' => "Update Koordinasi pada tiket {$tiket->no_tiket}",
                     'status' => 'SENT',
                 ]);
             }
