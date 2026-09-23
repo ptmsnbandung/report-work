@@ -65,6 +65,12 @@
         display: none !important;
     }
 
+    /* Hapus padding-bottom bawaan mobile agar input menempel di paling bawah */
+    body.wa-chat-fullscreen-active {
+        padding-bottom: 0 !important;
+        overflow: hidden !important;
+    }
+
     /* Tombol fullscreen */
     .wa-fullscreen-btn {
         width: 32px;
