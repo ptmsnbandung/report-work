@@ -1579,7 +1579,7 @@
                                     <div class="wa-mention-list" id="waMentionList"></div>
                                 </div>
 
-                                <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi lapangan... (@ untuk tag)" required></textarea>
+                                <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
                                 <!-- Attachment Previews Bar (shows when photo or location is attached) -->
                                 <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
                                     <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
