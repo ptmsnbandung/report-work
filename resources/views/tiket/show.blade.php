@@ -2894,72 +2894,7 @@ async function getReverseGeocodeLines(lat, lng) {
     return ['Titik Lokasi Lapangan', 'Indonesia'];
 }
 
-function lon2tile(lon, zoom) { return Math.floor((lon + 180) / 360 * Math.pow(2, zoom)); }
-function lat2tile(lat, zoom) { return Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)); }
 
-function loadMapTile(lat, lng, zoom = 16) {
-    return new Promise((resolve) => {
-        const x = lon2tile(lng, zoom);
-        const y = lat2tile(lat, zoom);
-        const tileUrl = `https://a.basemaps.cartocdn.com/rastertiles/voyager/${zoom}/${x}/${y}.png`;
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => resolve(img);
-        img.onerror = () => {
-            const osmImg = new Image();
-            osmImg.crossOrigin = 'anonymous';
-            osmImg.onload = () => resolve(osmImg);
-            osmImg.onerror = () => resolve(null);
-            osmImg.src = `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`;
-        };
-        img.src = tileUrl;
-    });
-}
-
-function roundRectPath(ctx, x, y, width, height, radius) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-}
-
-function drawPinMarker(ctx, cx, cy, pinScale = 1.0) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(pinScale, pinScale);
-
-    // Pin shadow
-    ctx.beginPath();
-    ctx.ellipse(0, 15, 6, 2.5, 0, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.fill();
-
-    // Red Pin Head with needle down
-    ctx.beginPath();
-    ctx.arc(0, 0, 9, Math.PI, 0, false);
-    ctx.lineTo(0, 15);
-    ctx.closePath();
-    ctx.fillStyle = '#ef4444';
-    ctx.fill();
-    ctx.strokeStyle = '#991b1b';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Center white dot
-    ctx.beginPath();
-    ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-
-    ctx.restore();
-}
 
 function formatGpsDateTime(date = new Date()) {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -3052,52 +2987,10 @@ function compressImageFile(file, customOptions = {}) {
                     const lat = gpsCoords ? gpsCoords.latitude : -6.91746;
                     const lng = gpsCoords ? gpsCoords.longitude : 107.61912;
 
-                    // Ambil Mini Map Tile dan Alamat Reverse Geocode secara paralel
-                    const [mapImg, addrLines] = await Promise.all([
-                        loadMapTile(lat, lng, 16),
-                        getReverseGeocodeLines(lat, lng)
-                    ]);
+                    // Ambil Alamat Reverse Geocode
+                    const addrLines = await getReverseGeocodeLines(lat, lng);
 
-                    // 2. Mini Map Lokasi di Pojok Kiri Bawah
-                    const mapSize = Math.max(140, Math.min(280, Math.round(width * 0.22)));
-                    const mapMargin = Math.round(width * 0.035);
-                    const mapX = mapMargin;
-                    const mapY = height - mapSize - mapMargin;
-
-                    ctx.save();
-                    // Shadow di belakang frame peta
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-                    ctx.shadowBlur = 12;
-                    ctx.shadowOffsetY = 3;
-                    roundRectPath(ctx, mapX, mapY, mapSize, mapSize, 12);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fill();
-                    ctx.restore();
-
-                    // Gambar tile peta di dalam frame
-                    ctx.save();
-                    roundRectPath(ctx, mapX + 3, mapY + 3, mapSize - 6, mapSize - 6, 9);
-                    ctx.clip();
-                    if (mapImg) {
-                        ctx.drawImage(mapImg, mapX + 3, mapY + 3, mapSize - 6, mapSize - 6);
-                    } else {
-                        ctx.fillStyle = '#e2e8f0';
-                        ctx.fillRect(mapX + 3, mapY + 3, mapSize - 6, mapSize - 6);
-                    }
-                    ctx.restore();
-
-                    // Pin Lokasi Merah di tengah Mini Map
-                    const pinX = mapX + mapSize / 2;
-                    const pinY = mapY + mapSize / 2 - 5;
-                    const pinScale = Math.max(0.75, Math.min(1.25, mapSize / 180));
-                    drawPinMarker(ctx, pinX, pinY, pinScale);
-
-                    // Badge teks kecil "Maps" di sudut kiri bawah peta
-                    ctx.font = `bold ${Math.max(9, Math.round(mapSize * 0.065))}px sans-serif`;
-                    ctx.fillStyle = 'rgba(71, 85, 105, 0.9)';
-                    ctx.fillText('Maps', mapX + 8, mapY + mapSize - 7);
-
-                    // 3. Teks Timestamp, Koordinat & Alamat di Pojok Kanan Bawah
+                    // 2. Teks Timestamp, Koordinat & Alamat di Pojok Kanan Bawah
                     const textRight = width - Math.round(width * 0.035);
                     const baseFontSize = Math.max(13, Math.min(26, Math.round(width * 0.021)));
                     const lineHeight = Math.round(baseFontSize * 1.32);
