@@ -29,6 +29,7 @@ class KronologisController extends Controller
                 return [
                     'id'               => $krono->id,
                     'timestamp'        => $krono->timestamp->toIso8601String(),
+                    'created_at'       => $krono->created_at?->toIso8601String() ?? $krono->timestamp->toIso8601String(),
                     'formatted_time'   => $krono->timestamp->format('H:i') . ' WIB',
                     'formatted_date'   => $krono->timestamp->translatedFormat('l, d F Y'),
                     'date_key'         => $krono->timestamp->format('Y-m-d'),
@@ -76,6 +77,7 @@ class KronologisController extends Controller
                     'data'    => [
                         'id'               => $kronologis->id,
                         'timestamp'        => $kronologis->timestamp->toIso8601String(),
+                        'created_at'       => $kronologis->created_at?->toIso8601String() ?? $kronologis->timestamp->toIso8601String(),
                         'formatted_time'   => $kronologis->timestamp->format('H:i') . ' WIB',
                         'formatted_date'   => $kronologis->timestamp->translatedFormat('l, d F Y'),
                         'date_key'         => $kronologis->timestamp->format('Y-m-d'),
@@ -116,7 +118,7 @@ class KronologisController extends Controller
     }
 
     /**
-     * Update catatan kronologis (Admin atau Pembuat Pesan)
+     * Update catatan kronologis (Admin atau Pembuat Pesan - Maksimal 5 Menit)
      */
     public function update(Request $request, Tiket $tiket, Kronologis $kronologis): RedirectResponse|JsonResponse
     {
@@ -131,6 +133,21 @@ class KronologisController extends Controller
             return redirect()
                 ->route('tiket.show', $tiket->id)
                 ->with('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengedit catatan ini.');
+        }
+
+        // Batas waktu edit: hanya bisa diedit dalam waktu 5 menit setelah pesan dibuat
+        $sentTime = $kronologis->created_at ?: $kronologis->timestamp;
+        if ($sentTime && $sentTime->addMinutes(5)->isPast()) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Batas waktu edit pesan telah habis (hanya dapat diedit dalam waktu 5 menit setelah terkirim).',
+                ], 422);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Batas waktu edit pesan telah habis (hanya dapat diedit dalam waktu 5 menit setelah terkirim).');
         }
 
         $validated = $request->validate([
@@ -151,6 +168,7 @@ class KronologisController extends Controller
                     'data'    => [
                         'id'               => $kronologis->id,
                         'timestamp'        => $kronologis->timestamp->toIso8601String(),
+                        'created_at'       => $kronologis->created_at?->toIso8601String() ?? $kronologis->timestamp->toIso8601String(),
                         'formatted_time'   => $kronologis->timestamp->format('H:i') . ' WIB',
                         'formatted_date'   => $kronologis->timestamp->translatedFormat('l, d F Y'),
                         'date_key'         => $kronologis->timestamp->format('Y-m-d'),

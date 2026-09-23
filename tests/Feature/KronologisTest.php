@@ -196,4 +196,32 @@ class KronologisTest extends TestCase
             'informasi' => 'Catatan diedit oleh admin.',
         ]);
     }
+
+    public function test_user_cannot_update_kronologis_after_five_minutes(): void
+    {
+        $krono = Kronologis::create([
+            'id_tiket'   => $this->tiket->id,
+            'timestamp'  => Carbon::now()->subMinutes(10),
+            'user_id'    => $this->teknis->id,
+            'kategori'   => 'IZIN',
+            'informasi'  => 'Catatan 10 menit lalu.',
+        ]);
+
+        $krono->created_at = Carbon::now()->subMinutes(10);
+        $krono->save();
+
+        $response = $this->actingAs($this->teknis)->putJson("/tiket/{$this->tiket->id}/kronologis/{$krono->id}", [
+            'informasi' => 'Mencoba mengedit catatan yang sudah kedaluwarsa.',
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJson([
+                'success' => false,
+            ]);
+
+        $this->assertDatabaseHas('kronologis', [
+            'id' => $krono->id,
+            'informasi' => 'Catatan 10 menit lalu.',
+        ]);
+    }
 }

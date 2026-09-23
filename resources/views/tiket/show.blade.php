@@ -1626,7 +1626,12 @@
                                                                 </button>
                                                             </li>
                                                             @endif
-                                                            @if($tiket->status !== 'CLOSE' && ($isMe || auth()->user()->hasRole('admin')))
+                                                            @php
+                                                                $sentMoment = $krono->created_at ?? $krono->timestamp;
+                                                                $diffMinutes = $sentMoment ? $sentMoment->diffInMinutes(now()) : 999;
+                                                                $canEditMessage = ($tiket->status !== 'CLOSE') && ($isMe || auth()->user()->hasRole('admin')) && ($diffMinutes <= 5);
+                                                            @endphp
+                                                            @if($canEditMessage)
                                                             <li>
                                                                 <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-edit" data-id="{{ $krono->id }}" data-text="{{ e($krono->informasi) }}">
                                                                     <i class="bi bi-pencil-square text-warning"></i> Edit
@@ -3913,7 +3918,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const senderColor = getSenderColor(k.user_name);
             const userAvatar = k.user_avatar || null;
             const senderDisplayName = isMe ? 'Anda' : (k.user_name || 'User');
-            const canEdit = !isTiketClosed && (isMe || isAdmin);
+            const sentMoment = k.created_at ? new Date(k.created_at) : (k.timestamp ? new Date(k.timestamp) : new Date());
+            const diffMinutes = (Date.now() - sentMoment.getTime()) / (1000 * 60);
+            const canEdit = !isTiketClosed && (isMe || isAdmin) && (diffMinutes <= 5);
             const canReply = !isTiketClosed && canChat;
             const safeInfoAttr = rawEscape(k.informasi || '');
 
