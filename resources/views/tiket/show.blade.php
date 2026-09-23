@@ -959,12 +959,12 @@
 
     /* ── PHOTO LIGHTBOX MODAL PRO ── */
     .photo-lightbox-modal {
-        z-index: 100005 !important;
+        z-index: 1070 !important;
     }
     .photo-lightbox-modal .modal-dialog {
         max-width: 95vw;
         margin: 1rem auto;
-        z-index: 100006 !important;
+        z-index: 1071 !important;
     }
     .photo-lightbox-content {
         background: rgba(11, 20, 36, 0.96) !important;
@@ -973,9 +973,6 @@
         border-radius: 20px !important;
         overflow: hidden;
         box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
-    }
-    body.modal-open .modal-backdrop {
-        z-index: 100000 !important;
     }
     .photo-lightbox-header {
         background: rgba(15, 23, 42, 0.85);

@@ -1806,6 +1806,7 @@ h6 { font-size: 0.95rem; }
     height: 100% !important;
     min-width: 100% !important;
     min-height: 100% !important;
+    z-index: 1050 !important;
 }
 
 .modal {
@@ -1816,6 +1817,7 @@ h6 { font-size: 0.95rem; }
     bottom: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    z-index: 1060 !important;
 }
 
 /* ─── ELEGANT BREADCRUMB CAPSULE & STYLES ───────────────────────────────── */

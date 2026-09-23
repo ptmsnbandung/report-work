@@ -77,20 +77,20 @@
     @include('components.confirm-modal')
 
     <!-- Logout Confirmation Modal -->
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true" style="z-index: 1065;">
         <div class="modal-dialog modal-dialog-centered modal-sm">
-            <div class="modal-content border-0">
+            <div class="modal-content rounded-4 shadow-lg border-0">
                 <div class="modal-body text-center p-4">
-                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width:48px; height:48px; background:#fef2f2; color:#ef4444; font-size:1.25rem;">
+                    <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width:52px; height:52px; background:#fee2e2; color:#ef4444; font-size:1.35rem;">
                         <i class="bi bi-box-arrow-right"></i>
                     </div>
-                    <h6 class="fw-bold mb-1 text-dark" style="font-size:0.95rem;">Konfirmasi Logout</h6>
-                    <p class="text-muted small mb-4" style="font-size:0.8rem;">Apakah Anda yakin ingin keluar dari sistem?</p>
+                    <h6 class="fw-bold mb-1 text-dark" style="font-size:1rem;">Konfirmasi Logout</h6>
+                    <p class="text-muted small mb-4" style="font-size:0.82rem;">Apakah Anda yakin ingin keluar dari sistem?</p>
                     <div class="d-flex justify-content-center gap-2">
-                        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-2" data-bs-dismiss="modal">Batal</button>
-                        <form method="POST" action="{{ route('logout') }}">
+                        <button type="button" class="btn btn-light btn-sm px-3 rounded-pill fw-semibold flex-grow-1" data-bs-dismiss="modal">Batal</button>
+                        <form method="POST" action="{{ route('logout') }}" class="flex-grow-1">
                             @csrf
-                            <button type="submit" class="btn btn-danger btn-sm px-3 rounded-2">Keluar</button>
+                            <button type="submit" class="btn btn-danger btn-sm px-3 rounded-pill fw-semibold w-100">Keluar</button>
                         </form>
                     </div>
                 </div>
