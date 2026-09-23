@@ -1,0 +1,143 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\PushSubscription;
+use App\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Minishlink\WebPush\Subscription;
+use Minishlink\WebPush\WebPush;
+
+class WebPushService
+{
+    protected ?WebPush $webPush = null;
+    protected ?string $publicKey;
+    protected ?string $privateKey;
+    protected ?string $subject;
+
+    public function __construct()
+    {
+        $this->publicKey = config('services.vapid.public_key', env('VAPID_PUBLIC_KEY'));
+        $this->privateKey = config('services.vapid.private_key', env('VAPID_PRIVATE_KEY'));
+        $this->subject = config('services.vapid.subject', env('VAPID_SUBJECT', 'mailto:admin@ptmsn.co.id'));
+
+        if ($this->publicKey && $this->privateKey) {
+            try {
+                $this->webPush = new WebPush([
+                    'VAPID' => [
+                        'subject' => $this->subject,
+                        'publicKey' => $this->publicKey,
+                        'privateKey' => $this->privateKey,
+                    ],
+                ]);
+                $this->webPush->setReuseVAPIDHeaders(true);
+            } catch (\Throwable $e) {
+                Log::warning('Failed to initialize WebPush service: ' . $e->getMessage());
+                $this->webPush = null;
+            }
+        }
+    }
+
+    /**
+     * Dapatkan Public Key VAPID untuk pendaftaran di sisi browser (Client)
+     */
+    public function getPublicKey(): ?string
+    {
+        return $this->publicKey;
+    }
+
+    /**
+     * Kirim notifikasi Web Push ke beberapa user
+     *
+     * @param Collection|array|User $users
+     * @param string $title
+     * @param string $message
+     * @param string $url
+     * @param string|null $icon
+     * @return int Jumlah notifikasi yang berhasil dikirim
+     */
+    public function sendToUsers(Collection|array|User $users, string $title, string $message, string $url = '/', ?string $icon = null): int
+    {
+        if (!$this->webPush) {
+            Log::info("[WebPush Disabled/Unconfigured] Target: {$title} - {$message}");
+            return 0;
+        }
+
+        $userIds = [];
+        if ($users instanceof User) {
+            $userIds = [$users->id];
+        } elseif ($users instanceof Collection) {
+            $userIds = $users->pluck('id')->all();
+        } elseif (is_array($users)) {
+            $userIds = array_map(fn($u) => $u instanceof User ? $u->id : $u, $users);
+        }
+
+        if (empty($userIds)) {
+            return 0;
+        }
+
+        $subscriptions = PushSubscription::whereIn('user_id', $userIds)->get();
+
+        if ($subscriptions->isEmpty()) {
+            return 0;
+        }
+
+        $payload = json_encode([
+            'title' => $title,
+            'body' => $message,
+            'icon' => $icon ?: asset('assets/logo-msn BG Trans - Copy2.png'),
+            'badge' => asset('assets/logo-msn BG Trans - Copy2.png'),
+            'url' => $url,
+            'data' => [
+                'url' => $url,
+                'timestamp' => now()->timestamp,
+            ],
+        ]);
+
+        $sentCount = 0;
+        $staleSubscriptions = [];
+
+        foreach ($subscriptions as $sub) {
+            try {
+                $webPushSub = Subscription::create([
+                    'endpoint' => $sub->endpoint,
+                    'publicKey' => $sub->public_key,
+                    'authToken' => $sub->auth_token,
+                    'contentEncoding' => $sub->content_encoding ?: 'aesgcm',
+                ]);
+
+                $this->webPush->queueNotification($webPushSub, $payload);
+            } catch (\Throwable $e) {
+                Log::warning("[WebPush Queue Error] Sub ID {$sub->id}: " . $e->getMessage());
+            }
+        }
+
+        try {
+            foreach ($this->webPush->flush() as $report) {
+                $endpoint = $report->getRequest()->getUri()->__toString();
+
+                if ($report->isSuccess()) {
+                    $sentCount++;
+                } else {
+                    $statusCode = $report->getResponse()?->getStatusCode();
+                    Log::warning("[WebPush Delivery Failed] {$statusCode}: {$report->getReason()} on {$endpoint}");
+
+                    // Jika token perangkat sudah kadaluarsa (404/410), tandai untuk dihapus
+                    if (in_array($statusCode, [404, 410], true)) {
+                        $staleSubscriptions[] = $endpoint;
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::error("[WebPush Flush Exception] " . $e->getMessage());
+        }
+
+        // Bersihkan token yang sudah tidak aktif di browser/HP user
+        if (!empty($staleSubscriptions)) {
+            PushSubscription::whereIn('endpoint', $staleSubscriptions)->delete();
+        }
+
+        return $sentCount;
+    }
+}

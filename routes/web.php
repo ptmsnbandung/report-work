@@ -156,6 +156,12 @@ Route::middleware(['auth', 'role'])->group(function () {
         Route::patch('/users/{user}/toggle-active', [\App\Http\Controllers\Master\MasterUserController::class, 'toggleActive'])->name('users.toggle_active');
         Route::post('/users/{user}/reset-password', [\App\Http\Controllers\Master\MasterUserController::class, 'resetPassword'])->name('users.reset_password');
     });
+
+    // Web Push Notification Device Subscription Routes
+    Route::get('/push/vapid-public-key', [\App\Http\Controllers\PushSubscriptionController::class, 'vapidPublicKey'])->name('push.vapid');
+    Route::post('/push/subscribe', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push.subscribe');
+    Route::post('/push/unsubscribe', [\App\Http\Controllers\PushSubscriptionController::class, 'destroy'])->name('push.unsubscribe');
+    Route::post('/push/test', [\App\Http\Controllers\PushSubscriptionController::class, 'testPush'])->name('push.test');
 });
 
 

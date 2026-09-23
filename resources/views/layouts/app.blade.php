@@ -183,8 +183,123 @@
                 .catch(() => {});
             }
             setInterval(pollNotifications, 30000);
+
+            // ── WEB PUSH NOTIFICATION REGISTRATION (VAPID / GOOGLE FCM) ──
+            function urlBase64ToUint8Array(base64String) {
+                const padding = '='.repeat((4 - base64String.length % 4) % 4);
+                const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+                const rawData = window.atob(base64);
+                const outputArray = new Uint8Array(rawData.length);
+                for (let i = 0; i < rawData.length; ++i) {
+                    outputArray[i] = rawData.charCodeAt(i);
+                }
+                return outputArray;
+            }
+
+            async function registerServiceWorkerAndPush() {
+                if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+                try {
+                    const reg = await navigator.serviceWorker.register('/sw.js');
+                    
+                    if (Notification.permission === 'granted') {
+                        subscribeDeviceToPush(reg);
+                    } else if (Notification.permission === 'default') {
+                        const promptBanner = document.getElementById('webPushPromptBanner');
+                        if (promptBanner && !sessionStorage.getItem('dismiss_push_prompt')) {
+                            promptBanner.classList.remove('d-none');
+                        }
+                    }
+                } catch (e) {
+                    console.debug('ServiceWorker registration note:', e);
+                }
+            }
+
+            async function subscribeDeviceToPush(registration) {
+                try {
+                    const reg = registration || await navigator.serviceWorker.ready;
+                    const res = await fetch('{{ route('push.vapid') }}');
+                    const data = await res.json();
+                    if (!data.public_key) return;
+
+                    const convertedKey = urlBase64ToUint8Array(data.public_key);
+                    const sub = await reg.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: convertedKey
+                    });
+
+                    await fetch('{{ route('push.subscribe') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(sub.toJSON())
+                    });
+
+                    const promptBanner = document.getElementById('webPushPromptBanner');
+                    if (promptBanner) promptBanner.classList.add('d-none');
+                } catch (err) {
+                    console.warn('Subscription error:', err);
+                }
+            }
+
+            window.enableWebPush = async function() {
+                if (!('Notification' in window)) {
+                    alert('Browser Anda tidak mendukung notifikasi Web Push.');
+                    return;
+                }
+                const perm = await Notification.requestPermission();
+                if (perm === 'granted') {
+                    const reg = await navigator.serviceWorker.ready;
+                    await subscribeDeviceToPush(reg);
+                    alert('Notifikasi HP berhasil diaktifkan! Anda akan menerima update tiket langsung di perangkat ini.');
+                } else {
+                    alert('Izin notifikasi ditolak. Anda dapat mengaktifkannya lewat pengaturan browser (ikon gembok di URL bar).');
+                }
+            };
+
+            document.getElementById('btnEnableWebPush')?.addEventListener('click', window.enableWebPush);
+            document.getElementById('btnDismissWebPush')?.addEventListener('click', function() {
+                document.getElementById('webPushPromptBanner')?.classList.add('d-none');
+                sessionStorage.setItem('dismiss_push_prompt', '1');
+            });
+
+            @auth
+            registerServiceWorkerAndPush();
+            @endauth
         });
     </script>
+
+    <!-- Web Push Permission Floating Prompt -->
+    @auth
+    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 360px;">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 100%); color: #fff; border: 1px solid rgba(255,255,255,0.15);">
+            <div class="card-body p-3.5">
+                <div class="d-flex align-items-start gap-2.5">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; background: rgba(44, 127, 255, 0.25); color: #38bdf8; font-size: 1.2rem;">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">Aktifkan Notifikasi HP</h6>
+                        <p class="small text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.4;">
+                            Dapatkan pemberitahuan tiket baru &amp; pesan koordinasi langsung ke HP Anda secara instan.
+                        </p>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold shadow-xs" id="btnEnableWebPush" style="font-size: 0.74rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
+                                <i class="bi bi-check-circle-fill me-1"></i> Izinkan
+                            </button>
+                            <button type="button" class="btn btn-link text-white-50 btn-sm text-decoration-none p-0" id="btnDismissWebPush" style="font-size: 0.74rem;">
+                                Nanti Saja
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endauth
 
     @stack('scripts')
 </body>

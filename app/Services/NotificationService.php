@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\Notification;
 class NotificationService
 {
     public function __construct(
-        protected WhatsAppService $waService
+        protected WhatsAppService $waService,
+        protected WebPushService $webPushService
     ) {}
 
     /**
@@ -43,6 +44,18 @@ class NotificationService
                     'pesan' => "Tiket Baru Open: {$tiket->no_tiket} - {$tiket->backbone_segment}",
                     'status' => 'SENT',
                 ]);
+            }
+
+            // Web Push Notification ke HP & Browser pengguna
+            try {
+                $this->webPushService->sendToUsers(
+                    $recipients,
+                    "🚨 Tiket Baru: {$tiket->no_tiket}",
+                    "Gangguan di {$tiket->backbone_segment}. Target SLA: {$tiket->sla_target_minutes} mnt.",
+                    route('tiket.show', $tiket->id)
+                );
+            } catch (\Throwable $e) {
+                Log::warning('WebPush failed for new ticket: ' . $e->getMessage());
             }
         }
 
@@ -77,6 +90,20 @@ class NotificationService
                     'pesan' => "Update Koordinasi pada tiket {$tiket->no_tiket}",
                     'status' => 'SENT',
                 ]);
+            }
+
+            // Web Push Notification ke HP & Browser pengguna
+            try {
+                $senderName = $kronologis->user ? $kronologis->user->name : 'Teknis';
+                $cleanInfo = preg_replace('/^>\s*/m', '', (string) $kronologis->informasi);
+                $this->webPushService->sendToUsers(
+                    $recipients,
+                    "💬 {$tiket->no_tiket} - {$senderName}",
+                    $cleanInfo ?: 'Pembaruan koordinasi lapangan.',
+                    route('tiket.show', $tiket->id)
+                );
+            } catch (\Throwable $e) {
+                Log::warning('WebPush failed for new kronologis: ' . $e->getMessage());
             }
         }
 
@@ -145,6 +172,18 @@ class NotificationService
                     'pesan' => "Tiket Closed: {$tiket->no_tiket} - MTTR: {$tiket->formatted_mttr} ({$tiket->sla_status})",
                     'status' => 'SENT',
                 ]);
+            }
+
+            // Web Push Notification ke HP & Browser pengguna
+            try {
+                $this->webPushService->sendToUsers(
+                    $recipients,
+                    "✅ Tiket Closed: {$tiket->no_tiket}",
+                    "Perbaikan {$tiket->backbone_segment} selesai. MTTR: {$tiket->formatted_mttr} ({$tiket->sla_status}).",
+                    route('tiket.show', $tiket->id)
+                );
+            } catch (\Throwable $e) {
+                Log::warning('WebPush failed for closed ticket: ' . $e->getMessage());
             }
         }
 

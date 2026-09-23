@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'vapid' => [
+        'public_key' => env('VAPID_PUBLIC_KEY', 'BIeHMPvxMq1udSWe4JdN2g1VhHx5R9pApaXmIdOQ25P0iZ4C09x6V8FOpQepayrNobG6TCopfEli8YJ6GPEu6R4'),
+        'private_key' => env('VAPID_PRIVATE_KEY', 'jcRK7F2XSJWbwM1PgFTgx2pouBnwxQDa1rt39Zc6rSU'),
+        'subject' => env('VAPID_SUBJECT', 'mailto:admin@ptmsn.co.id'),
+    ],
+
+    'whatsapp' => [
+        'api_url' => env('WA_API_URL', 'https://api.fonnte.com/send'),
+        'api_key' => env('WA_API_KEY', ''),
+        'simulate' => env('WA_SIMULATE', true),
+    ],
+
 ];

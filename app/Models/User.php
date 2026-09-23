@@ -129,4 +129,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Kronologis::class, 'user_id');
     }
+
+    /**
+     * Perangkat web push subscriptions milik user.
+     */
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class, 'user_id');
+    }
 }

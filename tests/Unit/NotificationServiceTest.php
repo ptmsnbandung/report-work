@@ -10,6 +10,7 @@ use App\Notifications\KronologisBaruNotification;
 use App\Notifications\TiketBaruNotification;
 use App\Notifications\TiketClosedNotification;
 use App\Services\NotificationService;
+use App\Services\WebPushService;
 use App\Services\WhatsAppService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,12 +23,14 @@ class NotificationServiceTest extends TestCase
 
     protected NotificationService $notificationService;
     protected WhatsAppService $waService;
+    protected WebPushService $webPushService;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->waService = new WhatsAppService();
-        $this->notificationService = new NotificationService($this->waService);
+        $this->webPushService = $this->createMock(WebPushService::class);
+        $this->notificationService = new NotificationService($this->waService, $this->webPushService);
     }
 
     public function test_whatsapp_phone_number_formatting(): void
