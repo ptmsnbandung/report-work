@@ -2991,9 +2991,10 @@ function compressImageFile(file, customOptions = {}) {
                     const addrLines = await getReverseGeocodeLines(lat, lng);
 
                     // 2. Teks Timestamp, Koordinat & Alamat di Pojok Kanan Bawah
-                    const textRight = width - Math.round(width * 0.035);
-                    const baseFontSize = Math.max(13, Math.min(26, Math.round(width * 0.021)));
-                    const lineHeight = Math.round(baseFontSize * 1.32);
+                    const textRight = width - Math.round(width * 0.04);
+                    // Perbesar ukuran font (sebelumnya ~0.021, kini diperbesar menjadi ~0.034 agar jelas dan terbaca tajam)
+                    const baseFontSize = Math.max(18, Math.min(46, Math.round(width * 0.034)));
+                    const lineHeight = Math.round(baseFontSize * 1.36);
 
                     const fullLines = [
                         formatGpsDateTime(),
@@ -3004,12 +3005,13 @@ function compressImageFile(file, customOptions = {}) {
                     ctx.save();
                     ctx.textAlign = 'right';
                     ctx.textBaseline = 'bottom';
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
-                    ctx.shadowBlur = 6;
-                    ctx.shadowOffsetX = 1;
-                    ctx.shadowOffsetY = 1;
+                    // Shadow kuat agar teks kontras di latar terang maupun gelap
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                    ctx.shadowBlur = Math.max(6, Math.round(baseFontSize * 0.35));
+                    ctx.shadowOffsetX = Math.max(1.5, Math.round(baseFontSize * 0.08));
+                    ctx.shadowOffsetY = Math.max(1.5, Math.round(baseFontSize * 0.08));
 
-                    let currentBottomY = height - Math.round(width * 0.035);
+                    let currentBottomY = height - Math.round(width * 0.04);
 
                     // Gambar dari baris terbawah ke atas
                     for (let idx = fullLines.length - 1; idx >= 0; idx--) {
@@ -3017,9 +3019,9 @@ function compressImageFile(file, customOptions = {}) {
                         if (!lineText) continue;
 
                         if (idx === 0 || idx === 1) {
-                            ctx.font = `600 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                            ctx.font = `700 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
                         } else {
-                            ctx.font = `500 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                            ctx.font = `600 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
                         }
 
                         ctx.fillStyle = '#ffffff';
