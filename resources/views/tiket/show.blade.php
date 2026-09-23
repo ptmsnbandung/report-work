@@ -694,8 +694,22 @@
 
     /* Mobile Responsiveness */
     @media (max-width: 767.98px) {
+        .card:has(#tiketTabContent) {
+            margin-bottom: 0.15rem !important;
+            padding-bottom: 0 !important;
+        }
+        .card:has(#tiketTabContent) .card-body {
+            padding-bottom: 0 !important;
+        }
         .wa-chat-container {
             border-radius: 14px;
+            margin-bottom: 0 !important;
+        }
+        .app-content {
+            padding-bottom: 0.25rem !important;
+        }
+        body {
+            padding-bottom: calc(var(--bottom-nav-height, 86px) - 20px) !important;
         }
         .wa-chat-stream {
             min-height: clamp(420px, calc(100dvh - 210px), 750px);
@@ -1107,7 +1121,7 @@
     </div>
 
     <!-- ── TABBED NAVIGATION (MOBILE SCROLLABLE) ── -->
-    <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-5 pb-4 mb-md-4 pb-md-0">
+    <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-1 pb-0 mb-md-4 pb-md-0">
         <div class="card-header bg-white p-2 border-bottom">
             <ul class="nav nav-tabs-mobile" id="tiketTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -1155,7 +1169,7 @@
             </ul>
         </div>
 
-        <div class="card-body p-1 p-sm-2.5 p-md-4">
+        <div class="card-body p-1 pb-1 p-sm-2.5 p-md-4">
             <div class="tab-content" id="tiketTabContent">
 
                 <!-- ════ TAB 1: KRONOLOGIS (FASE 3 - WHATSAPP CHAT FEED) ════ -->
