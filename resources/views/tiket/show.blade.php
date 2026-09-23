@@ -788,9 +788,13 @@
     }
 
     /* ── PHOTO LIGHTBOX MODAL PRO ── */
+    .photo-lightbox-modal {
+        z-index: 100005 !important;
+    }
     .photo-lightbox-modal .modal-dialog {
         max-width: 95vw;
         margin: 1rem auto;
+        z-index: 100006 !important;
     }
     .photo-lightbox-content {
         background: rgba(11, 20, 36, 0.96) !important;
@@ -799,6 +803,9 @@
         border-radius: 20px !important;
         overflow: hidden;
         box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+    }
+    body.modal-open .modal-backdrop {
+        z-index: 100000 !important;
     }
     .photo-lightbox-header {
         background: rgba(15, 23, 42, 0.85);
@@ -2769,20 +2776,40 @@
 @push('scripts')
 <script>
 // Zoom Photo in Lightbox Modal
-function zoomPhoto(url, title) {
+window.zoomPhoto = function(url, title) {
+    if (!url || url === '#' || url === 'null' || url === 'undefined') return;
+
     const zoomImg = document.getElementById('photoZoomImg');
     const zoomTitle = document.getElementById('photoZoomTitle');
     const zoomDownloadBtn = document.getElementById('photoZoomDownloadBtn');
     const modalEl = document.getElementById('photoZoomModal');
 
-    if (zoomImg && modalEl) {
-        zoomImg.src = url;
+    if (modalEl) {
+        if (modalEl.parentElement !== document.body) {
+            document.body.appendChild(modalEl);
+        }
+        if (zoomImg) zoomImg.src = url;
         if (zoomTitle) zoomTitle.textContent = title || 'Foto Dokumentasi Kronologis';
         if (zoomDownloadBtn) zoomDownloadBtn.href = url;
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
+        const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        bsModal.show();
     }
-}
+};
+
+// Global Delegated Click Listener for any chat media card
+document.addEventListener('click', function(e) {
+    const mediaCard = e.target.closest('.wa-media-card');
+    if (mediaCard) {
+        const img = mediaCard.querySelector('.wa-media-img');
+        if (img && img.src && img.src !== '#' && !img.src.endsWith('/#')) {
+            const bubbleEl = mediaCard.closest('.wa-bubble');
+            const titleEl = bubbleEl ? bubbleEl.querySelector('.wa-bubble-sender') : null;
+            const timeEl = bubbleEl ? bubbleEl.querySelector('.wa-msg-time') : null;
+            const title = (titleEl ? titleEl.textContent.trim() : 'Foto Lapangan') + (timeEl ? ' - ' + timeEl.textContent.trim() : '');
+            window.zoomPhoto(img.src, title);
+        }
+    }
+});
 
 // Format file size helper
 function formatFileSize(bytes) {
