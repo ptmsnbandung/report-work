@@ -3423,16 +3423,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const isLatest = (!window.location.hash || window.location.hash.startsWith('#krono-item-')) &&
                              (targetEl === stream?.lastElementChild || targetEl.nextElementSibling === null || newKronoId || hasKronoSuccess);
 
-            const performScroll = () => {
+            const performScroll = (instant = true) => {
                 if (!targetEl) return;
 
-                // A. Scroll internal container (#timelineList) secara presisi
+                // A. Scroll internal container (#timelineList) secara presisi ke pesan target/bawah
                 if (stream) {
                     if (isLatest) {
-                        // Untuk pesan terbaru, scroll stream maksimal ke bawah dengan clearance penuh
+                        // Untuk pesan terbaru, scroll stream maksimal ke bawah
                         stream.scrollTo({
-                            top: stream.scrollHeight + 350,
-                            behavior: 'smooth'
+                            top: stream.scrollHeight + 500,
+                            behavior: instant ? 'auto' : 'smooth'
                         });
                     } else {
                         const streamRect = stream.getBoundingClientRect();
@@ -3440,12 +3440,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         const relativeTop = targetRect.top - streamRect.top + stream.scrollTop;
                         stream.scrollTo({
                             top: Math.max(0, relativeTop - (stream.clientHeight / 2) + (targetEl.clientHeight / 2)),
-                            behavior: 'smooth'
+                            behavior: instant ? 'auto' : 'smooth'
                         });
                     }
                 }
 
-                // B. Scroll outer window agar chat feed & container nyaman di layar tanpa celah kosong di bawah
+                // B. Posisikan window outer LANGSUNG secara instan (menghilangkan efek meluncur dari atas)
                 const chatContainer = document.querySelector('.wa-chat-container') || targetEl;
                 const chatRect = chatContainer.getBoundingClientRect();
                 const currentWindowY = window.pageYOffset || document.documentElement.scrollTop;
@@ -3454,7 +3454,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 window.scrollTo({
                     top: desiredWindowY,
-                    behavior: 'smooth'
+                    behavior: 'auto'
                 });
             };
 
@@ -3464,22 +3464,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetEl.classList.remove('wa-bubble-new-highlight');
             }, 4000);
 
-            // Eksekusi scroll bertahap untuk mengantisipasi load gambar & layout reflow
-            setTimeout(performScroll, 80);
-            setTimeout(performScroll, 320);
-            setTimeout(performScroll, 700);
+            // Eksekusi scroll instan langsung tanpa delay visual dari atas
+            performScroll(true);
+            setTimeout(() => performScroll(true), 50);
+            setTimeout(() => performScroll(false), 300);
 
             // Jika ada gambar di dalam chat stream yang masih loading, re-scroll setelah gambar selesai dimuat
             if (stream) {
                 const streamImgs = stream.querySelectorAll('img');
                 streamImgs.forEach(img => {
                     if (!img.complete) {
-                        img.addEventListener('load', performScroll, { once: true });
+                        img.addEventListener('load', () => performScroll(true), { once: true });
                     }
                 });
             }
 
-            window.addEventListener('load', performScroll, { once: true });
+            window.addEventListener('load', () => performScroll(true), { once: true });
         }
     }
 
