@@ -2698,8 +2698,143 @@ function formatFileSize(bytes) {
  * Mengubah foto beresolusi tinggi (5MB-25MB) dari kamera HP menjadi ~150KB - 450KB
  * dengan kualitas visual tajam dan siap diupload tanpa kendala ukuran.
  */
-function compressImageFile(file, customOptions = {}) {
+// ═══════════════════════════════════════════════════════════════════
+// GPS TIMESTAMP CAMERA WATERMARK & AUTO-COMPRESSION ENGINE
+// Menyematkan Logo MSN (kanan atas), Mini Map Lokasi (kiri bawah),
+// dan Waktu + Koordinat + Alamat Lengkap otomatis (kanan bawah)
+// ═══════════════════════════════════════════════════════════════════
+const MSN_LOGO_SRC = "{{ asset('assets/logo-msn BG Trans - Copy2.png') }}";
+const REVERSE_GEOCODE_URL = "{{ route('api.reverse-geocode') }}";
+
+let cachedMsnLogo = null;
+function getMsnLogo() {
+    if (cachedMsnLogo) return Promise.resolve(cachedMsnLogo);
     return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => { cachedMsnLogo = img; resolve(img); };
+        img.onerror = () => resolve(null);
+        img.src = MSN_LOGO_SRC;
+    });
+}
+
+function getDeviceCoordinates(timeoutMs = 4000) {
+    return new Promise((resolve) => {
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+            (pos) => resolve({
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                accuracy: pos.coords.accuracy
+            }),
+            (err) => resolve(null),
+            { enableHighAccuracy: true, timeout: timeoutMs, maximumAge: 30000 }
+        );
+    });
+}
+
+async function getReverseGeocodeLines(lat, lng) {
+    try {
+        const res = await fetch(`${REVERSE_GEOCODE_URL}?lat=${lat}&lng=${lng}`, {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.formatted_lines && data.formatted_lines.length > 0) {
+                return data.formatted_lines;
+            }
+        }
+    } catch (e) {}
+    return ['Titik Lokasi Lapangan', 'Indonesia'];
+}
+
+function lon2tile(lon, zoom) { return Math.floor((lon + 180) / 360 * Math.pow(2, zoom)); }
+function lat2tile(lat, zoom) { return Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * Math.pow(2, zoom)); }
+
+function loadMapTile(lat, lng, zoom = 16) {
+    return new Promise((resolve) => {
+        const x = lon2tile(lng, zoom);
+        const y = lat2tile(lat, zoom);
+        const tileUrl = `https://a.basemaps.cartocdn.com/rastertiles/voyager/${zoom}/${x}/${y}.png`;
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => {
+            const osmImg = new Image();
+            osmImg.crossOrigin = 'anonymous';
+            osmImg.onload = () => resolve(osmImg);
+            osmImg.onerror = () => resolve(null);
+            osmImg.src = `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`;
+        };
+        img.src = tileUrl;
+    });
+}
+
+function roundRectPath(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
+function drawPinMarker(ctx, cx, cy, pinScale = 1.0) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(pinScale, pinScale);
+
+    // Pin shadow
+    ctx.beginPath();
+    ctx.ellipse(0, 15, 6, 2.5, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fill();
+
+    // Red Pin Head with needle down
+    ctx.beginPath();
+    ctx.arc(0, 0, 9, Math.PI, 0, false);
+    ctx.lineTo(0, 15);
+    ctx.closePath();
+    ctx.fillStyle = '#ef4444';
+    ctx.fill();
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Center white dot
+    ctx.beginPath();
+    ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function formatGpsDateTime(date = new Date()) {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const pad = (n) => String(n).padStart(2, '0');
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+    return `${month} ${day}, ${year} ${hours}:${minutes}:${seconds}`;
+}
+
+function formatGpsCoords(lat, lng) {
+    const latStr = Math.abs(lat).toFixed(5) + (lat < 0 ? 'S' : 'N');
+    const lngStr = Math.abs(lng).toFixed(5) + (lng < 0 ? 'E' : 'W');
+    return `${latStr} ${lngStr}`;
+}
+
+function compressImageFile(file, customOptions = {}) {
+    return new Promise(async (resolve) => {
         if (!file || !file.type.startsWith('image/')) {
             return resolve(file);
         }
@@ -2708,18 +2843,28 @@ function compressImageFile(file, customOptions = {}) {
             maxWidth: 1600,
             maxHeight: 1600,
             quality: 0.82,
-            maxSizeMB: 0.8,
+            withWatermark: true,
             ...customOptions
         };
 
+        // Mulai ambil logo dan GPS secara paralel saat foto dimuat
+        const logoPromise = options.withWatermark ? getMsnLogo() : Promise.resolve(null);
+        let gpsPromise = null;
+        if (options.withWatermark) {
+            if (options.latitude && options.longitude) {
+                gpsPromise = Promise.resolve({ latitude: options.latitude, longitude: options.longitude });
+            } else {
+                gpsPromise = getDeviceCoordinates(3500);
+            }
+        }
+
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             const img = new Image();
-            img.onload = function() {
+            img.onload = async function() {
                 let width = img.naturalWidth || img.width;
                 let height = img.naturalHeight || img.height;
 
-                // Hitung aspek rasio agar tidak terdistorsi
                 if (width > options.maxWidth || height > options.maxHeight) {
                     if (width > height) {
                         height = Math.round((height * options.maxWidth) / width);
@@ -2728,9 +2873,6 @@ function compressImageFile(file, customOptions = {}) {
                         width = Math.round((width * options.maxHeight) / height);
                         height = options.maxHeight;
                     }
-                } else if (file.size <= options.maxSizeMB * 1024 * 1024 && file.type === 'image/jpeg') {
-                    // File sudah kecil dan dimensi aman
-                    return resolve(file);
                 }
 
                 const canvas = document.createElement('canvas');
@@ -2742,12 +2884,123 @@ function compressImageFile(file, customOptions = {}) {
                 ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // Convert to JPEG blob with quality 0.82
+                // ── WATERMARK OVERLAY (LOGO MSN, MINI MAP, GPS TIMESTAMP & ALAMAT) ──
+                if (options.withWatermark) {
+                    const [logoImg, gpsCoords] = await Promise.all([logoPromise, gpsPromise]);
+
+                    // 1. Logo MSN di Pojok Kanan Atas
+                    if (logoImg) {
+                        const logoW = Math.max(120, Math.min(260, Math.round(width * 0.17)));
+                        const logoH = Math.round(logoW * (logoImg.naturalHeight / (logoImg.naturalWidth || 1)));
+                        const logoX = width - logoW - Math.round(width * 0.03);
+                        const logoY = Math.round(width * 0.03);
+
+                        ctx.save();
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+                        ctx.shadowBlur = 8;
+                        ctx.drawImage(logoImg, logoX, logoY, logoW, logoH);
+                        ctx.restore();
+                    }
+
+                    // Koordinat default (jika GPS tidak aktif gunakan koordinat Kota Bandung / Jawa Barat)
+                    const lat = gpsCoords ? gpsCoords.latitude : -6.91746;
+                    const lng = gpsCoords ? gpsCoords.longitude : 107.61912;
+
+                    // Ambil Mini Map Tile dan Alamat Reverse Geocode secara paralel
+                    const [mapImg, addrLines] = await Promise.all([
+                        loadMapTile(lat, lng, 16),
+                        getReverseGeocodeLines(lat, lng)
+                    ]);
+
+                    // 2. Mini Map Lokasi di Pojok Kiri Bawah
+                    const mapSize = Math.max(140, Math.min(280, Math.round(width * 0.22)));
+                    const mapMargin = Math.round(width * 0.035);
+                    const mapX = mapMargin;
+                    const mapY = height - mapSize - mapMargin;
+
+                    ctx.save();
+                    // Shadow di belakang frame peta
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                    ctx.shadowBlur = 12;
+                    ctx.shadowOffsetY = 3;
+                    roundRectPath(ctx, mapX, mapY, mapSize, mapSize, 12);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fill();
+                    ctx.restore();
+
+                    // Gambar tile peta di dalam frame
+                    ctx.save();
+                    roundRectPath(ctx, mapX + 3, mapY + 3, mapSize - 6, mapSize - 6, 9);
+                    ctx.clip();
+                    if (mapImg) {
+                        ctx.drawImage(mapImg, mapX + 3, mapY + 3, mapSize - 6, mapSize - 6);
+                    } else {
+                        ctx.fillStyle = '#e2e8f0';
+                        ctx.fillRect(mapX + 3, mapY + 3, mapSize - 6, mapSize - 6);
+                    }
+                    ctx.restore();
+
+                    // Pin Lokasi Merah di tengah Mini Map
+                    const pinX = mapX + mapSize / 2;
+                    const pinY = mapY + mapSize / 2 - 5;
+                    const pinScale = Math.max(0.75, Math.min(1.25, mapSize / 180));
+                    drawPinMarker(ctx, pinX, pinY, pinScale);
+
+                    // Badge teks kecil "Maps" di sudut kiri bawah peta
+                    ctx.font = `bold ${Math.max(9, Math.round(mapSize * 0.065))}px sans-serif`;
+                    ctx.fillStyle = 'rgba(71, 85, 105, 0.9)';
+                    ctx.fillText('Maps', mapX + 8, mapY + mapSize - 7);
+
+                    // 3. Teks Timestamp, Koordinat & Alamat di Pojok Kanan Bawah
+                    const textRight = width - Math.round(width * 0.035);
+                    const baseFontSize = Math.max(13, Math.min(26, Math.round(width * 0.021)));
+                    const lineHeight = Math.round(baseFontSize * 1.32);
+
+                    const fullLines = [
+                        formatGpsDateTime(),
+                        formatGpsCoords(lat, lng),
+                        ...addrLines
+                    ];
+
+                    ctx.save();
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'bottom';
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
+                    ctx.shadowBlur = 6;
+                    ctx.shadowOffsetX = 1;
+                    ctx.shadowOffsetY = 1;
+
+                    let currentBottomY = height - Math.round(width * 0.035);
+
+                    // Gambar dari baris terbawah ke atas
+                    for (let idx = fullLines.length - 1; idx >= 0; idx--) {
+                        const lineText = fullLines[idx];
+                        if (!lineText) continue;
+
+                        if (idx === 0 || idx === 1) {
+                            ctx.font = `600 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                        } else {
+                            ctx.font = `500 ${baseFontSize}px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
+                        }
+
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(lineText, textRight, currentBottomY);
+                        currentBottomY -= lineHeight;
+                    }
+                    ctx.restore();
+
+                    // Kirim info koordinat yang terdeteksi jika ada callback
+                    if (gpsCoords && options.onLocationDetected) {
+                        try {
+                            options.onLocationDetected(gpsCoords);
+                        } catch(e) {}
+                    }
+                }
+
+                // Convert to JPEG blob
                 canvas.toBlob(
                     function(blob) {
-                        if (!blob || blob.size >= file.size) {
-                            return resolve(file);
-                        }
+                        if (!blob) return resolve(file);
 
                         let cleanName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
                         const compressedFile = new File([blob], cleanName, {
@@ -2761,14 +3014,10 @@ function compressImageFile(file, customOptions = {}) {
                     options.quality
                 );
             };
-            img.onerror = function() {
-                resolve(file);
-            };
+            img.onerror = function() { resolve(file); };
             img.src = e.target.result;
         };
-        reader.onerror = function() {
-            resolve(file);
-        };
+        reader.onerror = function() { resolve(file); };
         reader.readAsDataURL(file);
     });
 }
@@ -2817,7 +3066,17 @@ document.addEventListener('DOMContentLoaded', function() {
         fotoInput.addEventListener('change', async function() {
             const file = this.files[0];
             if (file) {
-                const compressed = await compressImageFile(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+                const compressed = await compressImageFile(file, {
+                    maxWidth: 1600,
+                    maxHeight: 1600,
+                    quality: 0.82,
+                    withWatermark: true,
+                    onLocationDetected: (coords) => {
+                        if (latInput && !latInput.value) latInput.value = coords.latitude.toFixed(7);
+                        if (lngInput && !lngInput.value) lngInput.value = coords.longitude.toFixed(7);
+                        if (locationStatus) locationStatus.innerHTML = '<span class="text-success"><i class="bi bi-geo-alt-fill"></i> Lokasi GPS otomatis terdeteksi dari kamera</span>';
+                    }
+                });
                 if (window.DataTransfer) {
                     const dt = new DataTransfer();
                     dt.items.add(compressed);
@@ -3757,11 +4016,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     } catch(e) {}
                 }
 
-                // Proses kompresi gambar otomatis di background
+                // Proses kompresi & watermark GPS otomatis di background
                 waCompressionPromise = compressImageFile(originalFile, {
                     maxWidth: 1600,
                     maxHeight: 1600,
-                    quality: 0.82
+                    quality: 0.82,
+                    withWatermark: true,
+                    onLocationDetected: (coords) => {
+                        if (waChatLat && !waChatLat.value) waChatLat.value = coords.latitude.toFixed(7);
+                        if (waChatLng && !waChatLng.value) waChatLng.value = coords.longitude.toFixed(7);
+                    }
                 }).then(compressedFile => {
                     currentWaCompressedPhoto = compressedFile;
 
@@ -3770,8 +4034,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     if (waPhotoSizeBadge) {
                         waPhotoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5';
-                        waPhotoSizeBadge.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i>${compSize}`;
-                        waPhotoSizeBadge.title = `Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
+                        waPhotoSizeBadge.innerHTML = `<i class="bi bi-shield-check me-1"></i>GPS Stamp &bull; ${compSize}`;
+                        waPhotoSizeBadge.title = `Foto telah diberi GPS Timestamp & Logo MSN. Ukuran asli ${origSize} dikompresi menjadi ${compSize}`;
                     }
 
                     if (waPhotoThumb) {

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumentasiController;
+use App\Http\Controllers\GeocodeController;
 use App\Http\Controllers\KronologisController;
 use App\Http\Controllers\ManuverCoreController;
 use App\Http\Controllers\MaterialController;
@@ -105,6 +106,9 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::delete('/manuver-core/{manuverCore}', [ManuverCoreController::class, 'destroy'])
         ->middleware('role:admin,helpdesk,teknis')
         ->name('tiket.manuver-core.destroy');
+
+    // API Helper (Geocoding & Reverse Geocode)
+    Route::get('/api/reverse-geocode', [GeocodeController::class, 'reverse'])->name('api.reverse-geocode');
 
     // Modul MTTR / SLA & Reporting (Fase 6)
     Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
