@@ -4653,20 +4653,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const tiketUrl = "{{ route('tiket.show', $tiket->id) }}";
 
             const waText = 
-`🚨 *PEMBERITAHUAN TUGAS BARU - GANGGUAN BACKBONE* 🚨
-━━━━━━━━━━━━━━━━━━━━━
-🎫 *No. Tiket:* ${noTiket}
-💥 *Dampak:* ${statusLink}
-📍 *Segment:* ${segment}
-📊 *Status:* ${statusTiket}
-⏱️ *Waktu Open:* ${tglOpen}
-🎯 *Target SLA:* ${targetSla}
-📝 *Deskripsi / Info:* ${deskripsi}
-━━━━━━━━━━━━━━━━━━━━━
-🔗 *Link Update & Detail Tiket:*
+`*NOTIFIKASI PENUGASAN TIKET GANGGUAN*
+*PT MEDIA SOLUSI NETWORK*
+─────────────────────────────
+*No. Tiket* : ${noTiket}
+*Segment* : ${segment}
+*Dampak Link* : ${statusLink}
+*Status Tiket* : ${statusTiket}
+*Waktu Open* : ${tglOpen}
+*Target SLA* : ${targetSla}
+*Deskripsi* : ${deskripsi}
+─────────────────────────────
+*Tautan Detail & Update Tiket:*
 ${tiketUrl}
 
-_Mohon tim teknis segera merapat dan update koordinasi langsung di link sistem tiket di atas. Terima kasih._`;
+_Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui laporan kronologis pekerjaan pada tautan di atas._`;
 
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(waText).then(() => {
