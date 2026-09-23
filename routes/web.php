@@ -66,6 +66,9 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/tiket/{tiket}/kronologis', [KronologisController::class, 'store'])
         ->middleware('role:admin,helpdesk,teknis')
         ->name('tiket.kronologis.store');
+    Route::put('/tiket/{tiket}/kronologis/{kronologis}', [KronologisController::class, 'update'])
+        ->middleware('role:admin,helpdesk,teknis')
+        ->name('tiket.kronologis.update');
     Route::delete('/tiket/{tiket}/kronologis/{kronologis}', [KronologisController::class, 'destroy'])
         ->middleware('role:admin')
         ->name('tiket.kronologis.destroy');

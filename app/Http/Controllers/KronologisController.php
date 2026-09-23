@@ -116,6 +116,80 @@ class KronologisController extends Controller
     }
 
     /**
+     * Update catatan kronologis (Admin atau Pembuat Pesan)
+     */
+    public function update(Request $request, Tiket $tiket, Kronologis $kronologis): RedirectResponse|JsonResponse
+    {
+        if (!$request->user()->hasRole('admin') && $kronologis->user_id !== $request->user()->id) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak. Anda tidak memiliki izin untuk mengedit catatan ini.',
+                ], 403);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Akses ditolak. Anda tidak memiliki izin untuk mengedit catatan ini.');
+        }
+
+        $validated = $request->validate([
+            'informasi' => 'required|string|max:5000',
+        ]);
+
+        try {
+            $kronologis->update([
+                'informasi' => $validated['informasi'],
+            ]);
+
+            $kronologis->load('user');
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pesan kronologis berhasil diperbarui.',
+                    'data'    => [
+                        'id'               => $kronologis->id,
+                        'timestamp'        => $kronologis->timestamp->toIso8601String(),
+                        'formatted_time'   => $kronologis->timestamp->format('H:i') . ' WIB',
+                        'formatted_date'   => $kronologis->timestamp->translatedFormat('l, d F Y'),
+                        'date_key'         => $kronologis->timestamp->format('Y-m-d'),
+                        'user_id'          => $kronologis->user_id,
+                        'user_name'        => $kronologis->user?->name ?? 'User',
+                        'user_role'        => $kronologis->user?->role_short ?? '-',
+                        'user_avatar'      => $kronologis->user?->avatar_url,
+                        'kategori'         => $kronologis->kategori,
+                        'kategori_label'   => $kronologis->kategori_label,
+                        'kategori_badge'   => $kronologis->kategori_badge,
+                        'kategori_icon'    => $kronologis->kategori_icon,
+                        'informasi'        => $kronologis->informasi,
+                        'foto_url'         => $kronologis->foto_url ? asset($kronologis->foto_url) : null,
+                        'latitude'         => $kronologis->latitude,
+                        'longitude'        => $kronologis->longitude,
+                        'has_coordinates'  => $kronologis->has_coordinates,
+                        'google_maps_url'  => $kronologis->google_maps_url,
+                    ],
+                ]);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('success', 'Pesan kronologis berhasil diperbarui.');
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal memperbarui kronologis: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui kronologis: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Hapus catatan kronologis (Admin Only)
      */
     public function destroy(Request $request, Tiket $tiket, Kronologis $kronologis): RedirectResponse|JsonResponse

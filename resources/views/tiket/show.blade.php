@@ -335,6 +335,176 @@
         flex-shrink: 0;
     }
 
+    .wa-bubble-menu-wrapper {
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .wa-msg-menu-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        padding: 2px 4px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: all 0.15s ease;
+        opacity: 0.6;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .wa-bubble:hover .wa-msg-menu-btn,
+    .wa-msg-menu-btn:focus,
+    .wa-msg-menu-btn[aria-expanded="true"] {
+        opacity: 1;
+        color: #1e293b;
+        background: rgba(0, 0, 0, 0.06);
+    }
+
+    .wa-msg-dropdown-menu {
+        min-width: 165px;
+        border-radius: 12px !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        padding: 0.35rem !important;
+        font-size: 0.82rem;
+        z-index: 1050 !important;
+    }
+
+    .wa-msg-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.45rem 0.65rem;
+        border-radius: 8px;
+        color: #334155;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .wa-msg-dropdown-item:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .wa-msg-dropdown-item.text-danger:hover {
+        background: #fee2e2;
+        color: #dc2626 !important;
+    }
+
+    /* Reply Quoted Box (inside chat bubble & above chat input) */
+    .wa-reply-preview-bar {
+        background: #f8fafc;
+        border-left: 4px solid #2C7FFF;
+        border-radius: 6px;
+        padding: 0.35rem 0.65rem;
+        margin-bottom: 0.35rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        animation: fadeInDown 0.2s ease;
+    }
+
+    .wa-reply-preview-content {
+        flex-grow: 1;
+        overflow: hidden;
+    }
+
+    .wa-reply-preview-sender {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #2C7FFF;
+        line-height: 1.2;
+    }
+
+    .wa-reply-preview-text {
+        font-size: 0.73rem;
+        color: #64748b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.3;
+    }
+
+    .wa-quote-box {
+        background: rgba(0, 0, 0, 0.04);
+        border-left: 3.5px solid #0284c7;
+        border-radius: 6px;
+        padding: 0.3rem 0.55rem;
+        margin-bottom: 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .wa-bubble-outgoing .wa-quote-box {
+        background: rgba(44, 127, 255, 0.08);
+        border-left-color: #1b39da;
+    }
+
+    .wa-quote-sender {
+        font-weight: 700;
+        font-size: 0.72rem;
+        color: #0284c7;
+        margin-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+    }
+
+    .wa-bubble-outgoing .wa-quote-sender {
+        color: #1b39da;
+    }
+
+    .wa-quote-text {
+        color: #475569;
+        font-style: normal;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 60px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .wa-copy-toast {
+        position: fixed;
+        bottom: 85px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        background: rgba(15, 23, 42, 0.92);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 8px 18px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        z-index: 9999;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .wa-copy-toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
     /* WhatsApp-style Kategori Tags */
     .wa-kategori-tag {
         font-size: 0.65rem;
@@ -1432,7 +1602,7 @@
                                             @endif
 
                                             <div class="wa-bubble {{ $isMe ? 'wa-bubble-outgoing' : 'wa-bubble-incoming' }}">
-                                                <!-- Bubble Header: Sender, Role & Category Tag -->
+                                                <!-- Bubble Header: Sender, Role & 3-Dots Action Menu -->
                                                 <div class="wa-bubble-header">
                                                     <div class="wa-sender-info">
                                                         <span class="wa-sender-name" style="color: {{ $isMe ? '#0f766e' : $senderColor }};">
@@ -1441,10 +1611,61 @@
                                                         <span class="wa-role-pill">{{ $krono->user?->role_short ?? '-' }}</span>
                                                     </div>
 
+                                                    <!-- 3-Dots Message Action Dropdown -->
+                                                    <div class="dropdown wa-bubble-menu-wrapper">
+                                                        <button type="button" class="wa-msg-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan pesan">
+                                                            <i class="bi bi-three-dots-vertical"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end wa-msg-dropdown-menu shadow border-0">
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-copy" data-id="{{ $krono->id }}" data-text="{{ e($krono->informasi) }}">
+                                                                    <i class="bi bi-clipboard text-primary"></i> Salin
+                                                                </button>
+                                                            </li>
+                                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="{{ $krono->id }}" data-sender="{{ $isMe ? 'Anda' : ($krono->user?->name ?? 'User') }}" data-text="{{ e($krono->informasi) }}">
+                                                                    <i class="bi bi-reply-fill text-info"></i> Balas
+                                                                </button>
+                                                            </li>
+                                                            @endif
+                                                            @if($tiket->status !== 'CLOSE' && ($isMe || auth()->user()->hasRole('admin')))
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-edit" data-id="{{ $krono->id }}" data-text="{{ e($krono->informasi) }}">
+                                                                    <i class="bi bi-pencil-square text-warning"></i> Edit
+                                                                </button>
+                                                            </li>
+                                                            @endif
+                                                            @if(auth()->user()->hasRole('admin'))
+                                                            <li><hr class="dropdown-divider my-1"></li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item text-danger btn-action-delete" data-id="{{ $krono->id }}">
+                                                                    <i class="bi bi-trash3-fill"></i> Hapus
+                                                                </button>
+                                                            </li>
+                                                            @endif
+                                                        </ul>
+                                                    </div>
                                                 </div>
 
-                                                <!-- Message Text Body -->
-                                                <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($krono->informasi))) !!}</div>
+                                                <!-- Message Body with Quoted Reply & Mention Highlights -->
+                                                @php
+                                                    $rawInfo = $krono->informasi ?? '';
+                                                    $quoteSender = null;
+                                                    $quoteText = null;
+                                                    if (preg_match('/^>\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i', $rawInfo, $quoteMatches)) {
+                                                        $quoteSender = $quoteMatches[1];
+                                                        $quoteText = $quoteMatches[2];
+                                                        $rawInfo = substr($rawInfo, strlen($quoteMatches[0]));
+                                                    }
+                                                @endphp
+                                                @if($quoteSender)
+                                                <div class="wa-quote-box">
+                                                    <div class="wa-quote-sender"><i class="bi bi-reply-fill me-1"></i>{{ $quoteSender }}</div>
+                                                    <div class="wa-quote-text">{{ $quoteText }}</div>
+                                                </div>
+                                                @endif
+                                                <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($rawInfo))) !!}</div>
 
                                                 <!-- Attached Photo (WhatsApp Media Card) -->
                                                 @if($krono->foto_url)
@@ -1577,6 +1798,15 @@
                                         <i class="bi bi-at text-primary"></i> Tag Anggota Tim
                                     </div>
                                     <div class="wa-mention-list" id="waMentionList"></div>
+                                </div>
+
+                                <!-- WhatsApp Reply Bar Preview (shows when replying to a message) -->
+                                <div id="waReplyPreviewBar" class="wa-reply-preview-bar d-none">
+                                    <div class="wa-reply-preview-content">
+                                        <div class="wa-reply-preview-sender" id="waReplySenderText">Membalas User</div>
+                                        <div class="wa-reply-preview-text" id="waReplySnippetText">Isi pesan yang dibalas...</div>
+                                    </div>
+                                    <button type="button" class="btn-close" style="font-size: 0.6rem;" id="btnCancelWaReply" title="Batalkan Balasan"></button>
                                 </div>
 
                                 <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
@@ -2780,6 +3010,57 @@
 </div>
 @endif
 
+<!-- ── MODAL EDIT PESAN KOORDINASI ── -->
+<div class="modal fade" id="editKronoMsgModal" tabindex="-1" aria-labelledby="editKronoMsgModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow-lg border-0">
+            <div class="modal-header border-bottom py-3 bg-light rounded-top-4">
+                <h6 class="modal-title fw-bold text-dark d-flex align-items-center gap-2 mb-0" id="editKronoMsgModalLabel">
+                    <i class="bi bi-pencil-square text-warning fs-5"></i> Edit Pesan Koordinasi
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formEditKronoMsg">
+                <div class="modal-body py-3">
+                    <input type="hidden" id="editKronoId" value="">
+                    <div class="mb-2">
+                        <label for="editKronoTextInput" class="form-label small fw-semibold text-muted">Isi Pesan</label>
+                        <textarea id="editKronoTextInput" class="form-control rounded-3" rows="4" required placeholder="Tulis perbaikan isi pesan koordinasi..." style="font-size: 0.88rem; resize: vertical;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-top py-2.5 bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-light rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4" id="btnSaveEditKrono">
+                        <i class="bi bi-check-lg me-1"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL KONFIRMASI HAPUS PESAN KOORDINASI ── -->
+<div class="modal fade" id="deleteKronoMsgModal" tabindex="-1" aria-labelledby="deleteKronoMsgModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 shadow-lg border-0 text-center p-3">
+            <div class="modal-body py-2">
+                <div class="rounded-circle bg-danger-subtle text-danger d-inline-flex align-items-center justify-content-center mb-3" style="width: 48px; height: 48px; font-size: 1.35rem;">
+                    <i class="bi bi-trash3-fill"></i>
+                </div>
+                <h6 class="fw-bold text-dark mb-1">Hapus Pesan?</h6>
+                <p class="text-muted small mb-0">Apakah Anda yakin ingin menghapus catatan koordinasi ini? Tindakan tidak dapat dibatalkan.</p>
+                <input type="hidden" id="deleteKronoId" value="">
+            </div>
+            <div class="d-flex gap-2 justify-content-center mt-3">
+                <button type="button" class="btn btn-light rounded-pill px-3 flex-grow-1" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-danger rounded-pill px-3 flex-grow-1" id="btnConfirmDeleteKrono">
+                    <i class="bi bi-trash3 me-1"></i> Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ── MODAL ZOOM PHOTO LIGHTBOX ── -->
 <div class="modal fade photo-lightbox-modal" id="photoZoomModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -3584,32 +3865,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const MENTIONABLE_USERS = @json($mentionableUsers ?? []);
-
-    function formatMessageWithMentions(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        let safe = div.innerHTML.replace(/\n/g, '<br>');
-        return safe.replace(/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/g, function(match) {
-            return `<span class="wa-mention-tag-highlight">${match}</span>`;
-        });
-    }
-
-    function escapeHtml(text) {
-        return formatMessageWithMentions(text);
-    }
-
+    const isTiketClosed = {{ $tiket->status === 'CLOSE' ? 'true' : 'false' }};
+    const canChat = {{ auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']) ? 'true' : 'false' }};
     const currentUserId = {{ auth()->id() ?? 0 }};
     const isAdmin = {{ auth()->user()->hasRole('admin') ? 'true' : 'false' }};
     const destroyUrlBase = "{{ url('/tiket/' . $tiket->id . '/kronologis') }}";
     const csrfToken = "{{ csrf_token() }}";
 
+    function rawEscape(str) {
+        if (!str) return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return String(str).replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    function formatMessageWithMentions(text) {
+        if (!text) return '';
+        let str = text;
+        let quoteHtml = '';
+
+        // Deteksi format kutipan balasan: > [Membalas Sender]: Pesan Asli\n\n
+        const quoteMatch = str.match(/^>\s*\[Membalas\s+([^\]]+)\]:\s*([^\n]+)\n+/i);
+        if (quoteMatch) {
+            const sender = rawEscape(quoteMatch[1]);
+            const quoteContent = rawEscape(quoteMatch[2]);
+            quoteHtml = `<div class="wa-quote-box"><div class="wa-quote-sender"><i class="bi bi-reply-fill me-1"></i>${sender}</div><div class="wa-quote-text">${quoteContent}</div></div>`;
+            str = str.substring(quoteMatch[0].length);
+        }
+
+        let safe = rawEscape(str).replace(/\n/g, '<br>');
+        let formatted = safe.replace(/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/g, function(match) {
+            return `<span class="wa-mention-tag-highlight">${match}</span>`;
+        });
+
+        return quoteHtml + formatted;
+    }
+
+    function escapeHtml(text) {
+        return rawEscape(text);
+    }
+
     function buildSingleKronoHtml(k) {
             const isMe = (k.user_id === currentUserId);
             const initials = (k.user_name || 'U').substring(0, 2).toUpperCase();
             const senderColor = getSenderColor(k.user_name);
-            const kategoriLower = (k.kategori || 'lain').toLowerCase();
             const userAvatar = k.user_avatar || null;
+            const senderDisplayName = isMe ? 'Anda' : (k.user_name || 'User');
+            const canEdit = !isTiketClosed && (isMe || isAdmin);
+            const canReply = !isTiketClosed && canChat;
+            const safeInfoAttr = rawEscape(k.informasi || '');
 
             return `
                 <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" id="krono-item-${k.id}">
@@ -3619,14 +3928,47 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>` : ''}
 
                     <div class="wa-bubble ${isMe ? 'wa-bubble-outgoing' : 'wa-bubble-incoming'}">
+                        <!-- Bubble Header: Sender, Role & 3-Dots Action Menu -->
                         <div class="wa-bubble-header">
                             <div class="wa-sender-info">
                                 <span class="wa-sender-name" style="color: ${isMe ? '#0f766e' : senderColor};">
-                                    ${isMe ? 'Anda' : (k.user_name || 'User')}
+                                    ${senderDisplayName}
                                 </span>
                                 <span class="wa-role-pill">${k.user_role || '-'}</span>
                             </div>
 
+                            <!-- 3-Dots Action Menu -->
+                            <div class="dropdown wa-bubble-menu-wrapper">
+                                <button type="button" class="wa-msg-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan pesan">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end wa-msg-dropdown-menu shadow border-0">
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-copy" data-id="${k.id}" data-text="${safeInfoAttr}">
+                                            <i class="bi bi-clipboard text-primary"></i> Salin
+                                        </button>
+                                    </li>
+                                    ${canReply ? `
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${k.id}" data-sender="${rawEscape(senderDisplayName)}" data-text="${safeInfoAttr}">
+                                            <i class="bi bi-reply-fill text-info"></i> Balas
+                                        </button>
+                                    </li>` : ''}
+                                    ${canEdit ? `
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-edit" data-id="${k.id}" data-text="${safeInfoAttr}">
+                                            <i class="bi bi-pencil-square text-warning"></i> Edit
+                                        </button>
+                                    </li>` : ''}
+                                    ${isAdmin ? `
+                                    <li><hr class="dropdown-divider my-1"></li>
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item text-danger btn-action-delete" data-id="${k.id}">
+                                            <i class="bi bi-trash3-fill"></i> Hapus
+                                        </button>
+                                    </li>` : ''}
+                                </ul>
+                            </div>
                         </div>
 
                         <div class="wa-msg-text">${formatMessageWithMentions(k.informasi || '')}</div>
@@ -4137,6 +4479,256 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ── 14B. MESSAGE ACTIONS: SALIN, BALAS, EDIT, HAPUS (3-DOTS MENU) ──
+    let activeReplyData = null;
+    const waReplyPreviewBar = document.getElementById('waReplyPreviewBar');
+    const waReplySenderText = document.getElementById('waReplySenderText');
+    const waReplySnippetText = document.getElementById('waReplySnippetText');
+    const btnCancelWaReply = document.getElementById('btnCancelWaReply');
+
+    function showCopyToast(msg = 'Pesan berhasil disalin!') {
+        let toast = document.getElementById('waCopyToast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'waCopyToast';
+            toast.className = 'wa-copy-toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerHTML = `<i class="bi bi-clipboard-check-fill text-success fs-6"></i> <span>${msg}</span>`;
+        toast.classList.add('show');
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2200);
+    }
+
+    function cancelReply() {
+        activeReplyData = null;
+        if (waReplyPreviewBar) waReplyPreviewBar.classList.add('d-none');
+    }
+
+    btnCancelWaReply?.addEventListener('click', cancelReply);
+
+    function copyFallback(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showCopyToast('Pesan berhasil disalin!');
+        } catch (err) {
+            alert('Gagal menyalin pesan.');
+        }
+        document.body.removeChild(textarea);
+    }
+
+    // Delegated click handler for 3-dots dropdown options
+    document.addEventListener('click', function(e) {
+        // 1. SALIN
+        const copyBtn = e.target.closest('.btn-action-copy');
+        if (copyBtn) {
+            e.preventDefault();
+            const text = copyBtn.getAttribute('data-text') || '';
+            const cleanText = text.replace(/^>\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '');
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(cleanText).then(() => {
+                    showCopyToast('Pesan berhasil disalin!');
+                }).catch(() => {
+                    copyFallback(cleanText);
+                });
+            } else {
+                copyFallback(cleanText);
+            }
+            return;
+        }
+
+        // 2. BALAS / REPLY
+        const replyBtn = e.target.closest('.btn-action-reply');
+        if (replyBtn) {
+            e.preventDefault();
+            const id = replyBtn.getAttribute('data-id');
+            const sender = replyBtn.getAttribute('data-sender') || 'User';
+            const rawText = replyBtn.getAttribute('data-text') || '';
+            const cleanSnippet = rawText.replace(/^>\s*\[Membalas\s+([^\]]+)\]:\s*[^\n]+\n+/i, '').replace(/\n/g, ' ').trim();
+
+            activeReplyData = {
+                id: id,
+                sender: sender,
+                text: cleanSnippet
+            };
+
+            if (waReplySenderText) waReplySenderText.textContent = 'Membalas ' + sender;
+            if (waReplySnippetText) waReplySnippetText.textContent = cleanSnippet || 'Pesan lampiran/foto';
+            if (waReplyPreviewBar) waReplyPreviewBar.classList.remove('d-none');
+
+            const chatInput = document.getElementById('waChatTextInput');
+            if (chatInput) {
+                chatInput.focus();
+                chatInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            return;
+        }
+
+        // 3. EDIT
+        const editBtn = e.target.closest('.btn-action-edit');
+        if (editBtn) {
+            e.preventDefault();
+            const id = editBtn.getAttribute('data-id');
+            const rawText = editBtn.getAttribute('data-text') || '';
+            
+            const editModalEl = document.getElementById('editKronoMsgModal');
+            const editIdInput = document.getElementById('editKronoId');
+            const editTextInput = document.getElementById('editKronoTextInput');
+
+            if (editModalEl && editIdInput && editTextInput) {
+                editIdInput.value = id;
+                editTextInput.value = rawText;
+                const modalInstance = bootstrap.Modal.getOrCreateInstance(editModalEl);
+                modalInstance.show();
+            }
+            return;
+        }
+
+        // 4. HAPUS
+        const deleteBtn = e.target.closest('.btn-action-delete');
+        if (deleteBtn) {
+            e.preventDefault();
+            const id = deleteBtn.getAttribute('data-id');
+            const deleteModalEl = document.getElementById('deleteKronoMsgModal');
+            const deleteIdInput = document.getElementById('deleteKronoId');
+
+            if (deleteModalEl && deleteIdInput) {
+                deleteIdInput.value = id;
+                const modalInstance = bootstrap.Modal.getOrCreateInstance(deleteModalEl);
+                modalInstance.show();
+            }
+            return;
+        }
+    });
+
+    // Form Edit Message Modal Submit Handler
+    const formEditKronoMsg = document.getElementById('formEditKronoMsg');
+    const btnSaveEditKrono = document.getElementById('btnSaveEditKrono');
+    formEditKronoMsg?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const id = document.getElementById('editKronoId')?.value;
+        const textVal = document.getElementById('editKronoTextInput')?.value.trim();
+        if (!id || !textVal) return;
+
+        if (btnSaveEditKrono) {
+            btnSaveEditKrono.disabled = true;
+            btnSaveEditKrono.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menyimpan...';
+        }
+
+        fetch(`${destroyUrlBase}/${id}`, {
+            method: 'PUT',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ informasi: textVal })
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (btnSaveEditKrono) {
+                btnSaveEditKrono.disabled = false;
+                btnSaveEditKrono.innerHTML = '<i class="bi bi-check-lg me-1"></i> Simpan Perubahan';
+            }
+
+            if (res.success) {
+                const editModalEl = document.getElementById('editKronoMsgModal');
+                if (editModalEl) {
+                    const modalInstance = bootstrap.Modal.getInstance(editModalEl);
+                    modalInstance?.hide();
+                }
+
+                // Update text di DOM bubble
+                const rowEl = document.getElementById('krono-item-' + id);
+                if (rowEl) {
+                    const textEl = rowEl.querySelector('.wa-msg-text');
+                    if (textEl) {
+                        textEl.innerHTML = formatMessageWithMentions(textVal);
+                    }
+                    rowEl.querySelectorAll('.btn-action-copy, .btn-action-reply, .btn-action-edit').forEach(b => {
+                        b.setAttribute('data-text', textVal);
+                    });
+                    rowEl.classList.add('wa-bubble-new-highlight');
+                    setTimeout(() => rowEl.classList.remove('wa-bubble-new-highlight'), 3000);
+                }
+
+                showCopyToast('Pesan berhasil diperbarui!');
+            } else {
+                alert('Gagal mengedit pesan: ' + (res.message || 'Terjadi kesalahan.'));
+            }
+        })
+        .catch(err => {
+            if (btnSaveEditKrono) {
+                btnSaveEditKrono.disabled = false;
+                btnSaveEditKrono.innerHTML = '<i class="bi bi-check-lg me-1"></i> Simpan Perubahan';
+            }
+            alert('Gagal mengedit pesan: ' + err.message);
+        });
+    });
+
+    // Confirm Delete Message Button Click Handler
+    const btnConfirmDeleteKrono = document.getElementById('btnConfirmDeleteKrono');
+    btnConfirmDeleteKrono?.addEventListener('click', function() {
+        const id = document.getElementById('deleteKronoId')?.value;
+        if (!id) return;
+
+        btnConfirmDeleteKrono.disabled = true;
+        btnConfirmDeleteKrono.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Menghapus...';
+
+        fetch(`${destroyUrlBase}/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            btnConfirmDeleteKrono.disabled = false;
+            btnConfirmDeleteKrono.innerHTML = '<i class="bi bi-trash3 me-1"></i> Hapus';
+
+            if (res.success) {
+                const deleteModalEl = document.getElementById('deleteKronoMsgModal');
+                if (deleteModalEl) {
+                    const modalInstance = bootstrap.Modal.getInstance(deleteModalEl);
+                    modalInstance?.hide();
+                }
+
+                const rowEl = document.getElementById('krono-item-' + id);
+                if (rowEl) {
+                    rowEl.style.transition = 'all 0.3s ease';
+                    rowEl.style.opacity = '0';
+                    rowEl.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        rowEl.remove();
+                        const remaining = document.querySelectorAll('.wa-msg-row');
+                        if (remaining.length === 0) {
+                            renderTimelineFromData([]);
+                        }
+                    }, 300);
+                }
+                showCopyToast('Pesan berhasil dihapus.');
+            } else {
+                alert('Gagal menghapus pesan: ' + (res.message || 'Akses ditolak.'));
+            }
+        })
+        .catch(err => {
+            btnConfirmDeleteKrono.disabled = false;
+            btnConfirmDeleteKrono.innerHTML = '<i class="bi bi-trash3 me-1"></i> Hapus';
+            alert('Gagal menghapus pesan: ' + err.message);
+        });
+    });
+
     // ── 15. WHATSAPP DIRECT INLINE CHAT INPUT & ATTACHMENTS ──
     const waDirectChatForm = document.getElementById('waDirectChatForm');
     if (waDirectChatForm) {
@@ -4545,6 +5137,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const formData = new FormData(waDirectChatForm);
+            
+            // Pasang teks kutipan jika sedang membalas pesan (Reply)
+            if (activeReplyData) {
+                const snippet = (activeReplyData.text || '').substring(0, 80).replace(/\n/g, ' ');
+                const quotedText = `> [Membalas ${activeReplyData.sender}]: ${snippet}\n\n` + textVal;
+                formData.set('informasi', quotedText);
+                cancelReply();
+            }
+
             // Pasang file foto yang sudah terkompresi otomatis
             if (currentWaCompressedPhoto) {
                 formData.set('foto', currentWaCompressedPhoto, currentWaCompressedPhoto.name);

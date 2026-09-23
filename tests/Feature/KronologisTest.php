@@ -146,4 +146,54 @@ class KronologisTest extends TestCase
         $response = $this->actingAs($this->teknis)->delete("/tiket/{$this->tiket->id}/kronologis/{$krono->id}");
         $response->assertStatus(403);
     }
+
+    public function test_user_can_update_own_kronologis(): void
+    {
+        $krono = Kronologis::create([
+            'id_tiket'  => $this->tiket->id,
+            'timestamp' => Carbon::now(),
+            'user_id'   => $this->teknis->id,
+            'kategori'  => 'IZIN',
+            'informasi' => 'Catatan awal.',
+        ]);
+
+        $response = $this->actingAs($this->teknis)->putJson("/tiket/{$this->tiket->id}/kronologis/{$krono->id}", [
+            'informasi' => 'Catatan setelah diedit oleh pemilik.',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'success' => true,
+                'data' => [
+                    'id' => $krono->id,
+                    'informasi' => 'Catatan setelah diedit oleh pemilik.',
+                ]
+            ]);
+
+        $this->assertDatabaseHas('kronologis', [
+            'id' => $krono->id,
+            'informasi' => 'Catatan setelah diedit oleh pemilik.',
+        ]);
+    }
+
+    public function test_admin_can_update_any_kronologis(): void
+    {
+        $krono = Kronologis::create([
+            'id_tiket'  => $this->tiket->id,
+            'timestamp' => Carbon::now(),
+            'user_id'   => $this->teknis->id,
+            'kategori'  => 'IZIN',
+            'informasi' => 'Catatan teknis.',
+        ]);
+
+        $response = $this->actingAs($this->admin)->putJson("/tiket/{$this->tiket->id}/kronologis/{$krono->id}", [
+            'informasi' => 'Catatan diedit oleh admin.',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('kronologis', [
+            'id' => $krono->id,
+            'informasi' => 'Catatan diedit oleh admin.',
+        ]);
+    }
 }
