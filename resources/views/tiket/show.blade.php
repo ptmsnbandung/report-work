@@ -682,36 +682,61 @@
         line-height: 1;
     }
 
-    /* WhatsApp Direct Inline Input Bar */
+    /* ═══════════════════════════════════════════════════════════════════
+       WHATSAPP FLOATING INPUT BAR (NATIVE MOBILE & DESKTOP STYLE)
+       ═══════════════════════════════════════════════════════════════════ */
     .wa-chat-input-bar {
-        background: var(--neu-surface, #f0f2f5);
-        padding: 0.55rem 0.85rem;
-        border-top: 1px solid var(--neu-border-subtle, rgba(194,204,217,0.45));
+        background: transparent !important;
+        padding: 0.55rem 0.85rem calc(0.55rem + env(safe-area-inset-bottom, 0px)) 0.85rem !important;
+        border-top: none !important;
         display: flex;
         align-items: flex-end;
         gap: 0.55rem;
         position: relative;
+        z-index: 15;
+    }
+
+    /* Floating White Capsule Pill (Enclosing Paperclip + Textarea + Attachments) */
+    .wa-floating-input-pill {
+        flex: 1 1 auto;
+        min-width: 0;
+        background: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 1px 4px rgba(11, 20, 26, 0.12), 0 2px 8px rgba(11, 20, 26, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: flex-end;
+        padding: 3px 10px 3px 6px;
+        min-height: 44px;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .wa-floating-input-pill:focus-within {
+        box-shadow: 0 2px 8px rgba(11, 20, 26, 0.16), 0 0 0 2px rgba(44, 127, 255, 0.18);
+        border-color: rgba(44, 127, 255, 0.35);
     }
 
     .wa-attach-btn {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         background: transparent;
         border: none;
         color: #54656f;
-        font-size: 1.35rem;
+        font-size: 1.25rem;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
         flex-shrink: 0;
-        transition: all 0.2s ease;
+        margin-bottom: 2px;
+        transition: all 0.18s ease;
     }
 
     .wa-attach-btn:hover {
         background: rgba(0, 0, 0, 0.06);
-        color: #1b39da;
+        color: #2C7FFF;
+        transform: rotate(-12deg);
     }
 
     .wa-attach-menu {
@@ -736,21 +761,19 @@
     .wa-input-wrapper {
         flex-grow: 1;
         min-width: 0;
-        background: #ffffff;
-        border: 1px solid rgba(203, 213, 225, 0.8);
-        border-radius: 20px;
-        padding: 0.35rem 0.85rem;
-        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 2px 4px 2px 4px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        min-height: 40px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        min-height: 38px;
     }
 
     .wa-input-wrapper:focus-within {
-        border-color: #2C7FFF;
-        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05), 0 0 0 3px rgba(44, 127, 255, 0.15);
+        border: none !important;
+        box-shadow: none !important;
     }
 
     .wa-chat-textarea {
@@ -759,15 +782,16 @@
         background: transparent;
         width: 100%;
         resize: none;
-        font-size: 0.84rem;
+        font-size: 0.88rem;
         color: #0f172a;
-        max-height: 100px;
+        max-height: 110px;
         line-height: 1.35;
-        padding: 3px 0;
+        padding: 5px 2px 3px 2px;
     }
 
     .wa-chat-textarea::placeholder {
-        color: #94a3b8;
+        color: #8696a0;
+        font-size: 0.85rem;
     }
 
     .wa-attach-preview-bar {
@@ -779,9 +803,11 @@
         border-top: 1px dashed #e2e8f0;
     }
 
+    /* Standalone Circular Floating Send Button (FAB) */
     .wa-send-btn {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
         border-radius: 50%;
         background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%);
         color: #ffffff;
@@ -789,20 +815,39 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.95rem;
+        font-size: 1.05rem;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(44, 127, 255, 0.4);
+        box-shadow: 0 3px 10px rgba(44, 127, 255, 0.4), 0 1px 3px rgba(0, 0, 0, 0.12);
         cursor: pointer;
-        transition: transform 0.15s ease, background 0.15s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        margin-bottom: 0;
     }
 
     .wa-send-btn:hover {
         background: linear-gradient(135deg, #1b39da 0%, #122894 100%);
-        transform: scale(1.05);
+        transform: scale(1.06);
+        box-shadow: 0 4px 14px rgba(44, 127, 255, 0.5);
     }
 
     .wa-send-btn:active {
-        transform: scale(0.95);
+        transform: scale(0.94);
+    }
+
+    @media (max-width: 768px) {
+        .wa-chat-input-bar {
+            padding: 0.45rem 0.6rem calc(0.45rem + env(safe-area-inset-bottom, 0px)) 0.6rem !important;
+            gap: 0.45rem !important;
+        }
+        .wa-floating-input-pill {
+            padding: 2px 8px 2px 4px;
+            min-height: 42px;
+        }
+        .wa-send-btn {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            font-size: 1rem;
+        }
     }
 
     /* Floating Scroll to Bottom Button (WhatsApp Style) */
@@ -1852,100 +1897,103 @@
                             <input type="hidden" name="longitude" id="waChatLongitude" value="">
                             <input type="file" name="foto" id="waChatFotoInput" accept="image/*" class="d-none">
 
-                            <!-- Paperclip Attachment Dropdown Menu -->
-                            <div class="dropup position-relative">
-                                <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan foto / lokasi">
-                                    <i class="bi bi-paperclip"></i>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-start wa-attach-menu shadow-lg border-0" aria-labelledby="waAttachDropdownBtn">
-                                    <li>
-                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaUploadFoto">
-                                            <div class="wa-attach-icon bg-primary-subtle text-primary">
-                                                <i class="bi bi-image"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold small text-dark">Upload Foto</div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Pilih foto dari galeri HP / perangkat</div>
-                                            </div>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraWatermark">
-                                            <div class="wa-attach-icon bg-success-subtle text-success">
-                                                <i class="bi bi-camera-fill"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp & Alamat</div>
-                                            </div>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraPolos">
-                                            <div class="wa-attach-icon bg-info-subtle text-info">
-                                                <i class="bi bi-camera"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold small text-dark">Kamera Polos (Tanpa Watermark)</div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Potret langsung foto kamera original</div>
-                                            </div>
-                                        </button>
-                                    </li>
-                                    <li><hr class="dropdown-divider my-1"></li>
-                                    <li>
-                                        <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaShareLocation">
-                                            <div class="wa-attach-icon bg-danger-subtle text-danger">
-                                                <i class="bi bi-geo-alt-fill"></i>
-                                            </div>
-                                            <div>
-                                                <div class="fw-bold small text-dark">Share Lokasi Saya</div>
-                                                <div class="text-muted" style="font-size: 0.7rem;">Sematkan koordinat GPS lapangan</div>
-                                            </div>
-                                        </button>
-                                    </li>
-                                </ul>
+                            <!-- Floating White Capsule Pill (Enclosing Paperclip + Textarea + Attachments) -->
+                            <div class="wa-floating-input-pill">
+                                <!-- Paperclip Attachment Dropdown Menu -->
+                                <div class="dropup position-relative d-flex align-items-center">
+                                    <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan foto / lokasi">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-start wa-attach-menu shadow-lg border-0" aria-labelledby="waAttachDropdownBtn">
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaUploadFoto">
+                                                <div class="wa-attach-icon bg-primary-subtle text-primary">
+                                                    <i class="bi bi-image"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold small text-dark">Upload Foto</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Pilih foto dari galeri HP / perangkat</div>
+                                                </div>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraWatermark">
+                                                <div class="wa-attach-icon bg-success-subtle text-success">
+                                                    <i class="bi bi-camera-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp & Alamat</div>
+                                                </div>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraPolos">
+                                                <div class="wa-attach-icon bg-info-subtle text-info">
+                                                    <i class="bi bi-camera"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold small text-dark">Kamera Polos (Tanpa Watermark)</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Potret langsung foto kamera original</div>
+                                                </div>
+                                            </button>
+                                        </li>
+                                        <li><hr class="dropdown-divider my-1"></li>
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaShareLocation">
+                                                <div class="wa-attach-icon bg-danger-subtle text-danger">
+                                                    <i class="bi bi-geo-alt-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold small text-dark">Share Lokasi Saya</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Sematkan koordinat GPS lapangan</div>
+                                                </div>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Text Input Area & Attachment Chips -->
+                                <div class="wa-input-wrapper position-relative">
+                                    <!-- WhatsApp @Mention User Autocomplete Popup -->
+                                    <div id="waMentionDropdown" class="wa-mention-dropdown d-none">
+                                        <div class="wa-mention-header">
+                                            <i class="bi bi-at text-primary"></i> Tag Anggota Tim
+                                        </div>
+                                        <div class="wa-mention-list" id="waMentionList"></div>
+                                    </div>
+
+                                    <!-- WhatsApp Reply Bar Preview (shows when replying to a message) -->
+                                    <div id="waReplyPreviewBar" class="wa-reply-preview-bar d-none">
+                                        <div class="wa-reply-preview-content">
+                                            <div class="wa-reply-preview-sender" id="waReplySenderText">Membalas User</div>
+                                            <div class="wa-reply-preview-text" id="waReplySnippetText">Isi pesan yang dibalas...</div>
+                                        </div>
+                                        <button type="button" class="btn-close" style="font-size: 0.6rem;" id="btnCancelWaReply" title="Batalkan Balasan"></button>
+                                    </div>
+
+                                    <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
+                                    <!-- Attachment Previews Bar (shows when photo or location is attached) -->
+                                    <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
+                                        <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
+                                            <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
+                                            <i class="bi bi-image text-primary" id="waPhotoDefaultIcon"></i>
+                                            <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">foto.jpg</span>
+                                            <span id="waPhotoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
+                                                <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
+                                            </span>
+                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaPhoto" title="Hapus Foto"></button>
+                                        </div>
+                                        <div id="waLocationChip" class="d-none align-items-center gap-1.5 badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2 rounded-pill">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            <span id="waLocationCoordsText">GPS Attached</span>
+                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaLocation" title="Hapus Lokasi"></button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Text Input Area & Attachment Chips -->
-                            <div class="wa-input-wrapper position-relative">
-                                <!-- WhatsApp @Mention User Autocomplete Popup -->
-                                <div id="waMentionDropdown" class="wa-mention-dropdown d-none">
-                                    <div class="wa-mention-header">
-                                        <i class="bi bi-at text-primary"></i> Tag Anggota Tim
-                                    </div>
-                                    <div class="wa-mention-list" id="waMentionList"></div>
-                                </div>
-
-                                <!-- WhatsApp Reply Bar Preview (shows when replying to a message) -->
-                                <div id="waReplyPreviewBar" class="wa-reply-preview-bar d-none">
-                                    <div class="wa-reply-preview-content">
-                                        <div class="wa-reply-preview-sender" id="waReplySenderText">Membalas User</div>
-                                        <div class="wa-reply-preview-text" id="waReplySnippetText">Isi pesan yang dibalas...</div>
-                                    </div>
-                                    <button type="button" class="btn-close" style="font-size: 0.6rem;" id="btnCancelWaReply" title="Batalkan Balasan"></button>
-                                </div>
-
-                                <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
-                                <!-- Attachment Previews Bar (shows when photo or location is attached) -->
-                                <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
-                                    <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
-                                        <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
-                                        <i class="bi bi-image text-primary" id="waPhotoDefaultIcon"></i>
-                                        <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">foto.jpg</span>
-                                        <span id="waPhotoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
-                                            <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
-                                        </span>
-                                        <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaPhoto" title="Hapus Foto"></button>
-                                    </div>
-                                    <div id="waLocationChip" class="d-none align-items-center gap-1.5 badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2 rounded-pill">
-                                        <i class="bi bi-geo-alt-fill"></i>
-                                        <span id="waLocationCoordsText">GPS Attached</span>
-                                        <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaLocation" title="Hapus Lokasi"></button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
+                            <!-- Floating Submit Button -->
                             <button type="submit" class="wa-send-btn" id="btnWaSendMsg" title="Kirim Update Kronologis">
                                 <i class="bi bi-send-fill"></i>
                             </button>
