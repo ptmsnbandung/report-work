@@ -695,21 +695,21 @@
     /* Mobile Responsiveness */
     @media (max-width: 767.98px) {
         .card:has(#tiketTabContent) {
-            margin-bottom: 0.15rem !important;
+            margin-bottom: 0.5rem !important;
             padding-bottom: 0 !important;
         }
         .card:has(#tiketTabContent) .card-body {
-            padding-bottom: 0 !important;
+            padding-bottom: 0.25rem !important;
         }
         .wa-chat-container {
             border-radius: 14px;
             margin-bottom: 0 !important;
         }
         .app-content {
-            padding-bottom: 0.25rem !important;
+            padding-bottom: 0.5rem !important;
         }
         body {
-            padding-bottom: calc(var(--bottom-nav-height, 86px) - 20px) !important;
+            padding-bottom: calc(var(--bottom-nav-height, 86px) + 6px) !important;
         }
         .wa-chat-stream {
             min-height: clamp(420px, calc(100dvh - 210px), 750px);
