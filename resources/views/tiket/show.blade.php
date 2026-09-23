@@ -1086,12 +1086,7 @@
                                     </div>
                                 </div>
                             </div>
-                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                            <button class="btn btn-cjp-teal btn-sm d-flex align-items-center justify-content-center gap-1.5 rounded-pill px-3 shadow-xs wa-header-add-btn flex-shrink-0" data-bs-toggle="modal" data-bs-target="#addKronologisModal" title="Update Kronologis">
-                                <i class="bi bi-plus-lg"></i>
-                                <span class="d-none d-sm-inline">Update Kronologis</span>
-                            </button>
-                            @endif
+
                         </div>
 
                         <!-- Chat Messages Stream Area -->
@@ -1138,30 +1133,7 @@
                                                         <span class="wa-role-pill">{{ $krono->user?->role_short ?? '-' }}</span>
                                                     </div>
 
-                                                    <div class="wa-bubble-actions">
-                                                        <span class="wa-kategori-tag tag-{{ strtolower($krono->kategori) }}" title="{{ $krono->kategori_label }}">
-                                                            <i class="bi {{ $krono->kategori_icon }}"></i>
-                                                            <span>{{ $krono->kategori }}</span>
-                                                        </span>
-
-                                                        @if(auth()->user()->hasRole('admin'))
-                                                        <form action="{{ route('tiket.kronologis.destroy', [$tiket->id, $krono->id]) }}" method="POST" class="d-inline"
-                                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus catatan kronologis ini?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="wa-del-btn" title="Hapus pesan (Admin)">
-                                                                <i class="bi bi-trash3"></i>
-                                                            </button>
-                                                        </form>
-                                                        @endif
-                                                    </div>
                                                 </div>
-
-                                                @if($krono->kategori_label && $krono->kategori_label !== $krono->kategori)
-                                                <div class="wa-kategori-sublabel">
-                                                    <i class="bi bi-tag-fill me-1 opacity-75"></i>{{ $krono->kategori_label }}
-                                                </div>
-                                                @endif
 
                                                 <!-- Message Text Body -->
                                                 <div class="wa-msg-text">{{ $krono->informasi }}</div>
@@ -3073,28 +3045,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="wa-role-pill">${k.user_role || '-'}</span>
                             </div>
 
-                            <div class="wa-bubble-actions">
-                                <span class="wa-kategori-tag tag-${kategoriLower}">
-                                    <i class="bi ${k.kategori_icon || 'bi-chat-dots-fill'}"></i>
-                                    <span>${k.kategori}</span>
-                                </span>
-
-                                ${isAdmin ? `
-                                <form action="${destroyUrlBase}/${k.id}" method="POST" class="d-inline"
-                                      onsubmit="return confirm('Apakah Anda yakin ingin menghapus catatan kronologis ini?');">
-                                    <input type="hidden" name="_token" value="${csrfToken}">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="wa-del-btn" title="Hapus pesan (Admin)">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </form>` : ''}
-                            </div>
                         </div>
-
-                        ${k.kategori_label && k.kategori_label !== k.kategori ? `
-                        <div class="wa-kategori-sublabel">
-                            <i class="bi bi-tag-fill me-1 opacity-75"></i>${k.kategori_label}
-                        </div>` : ''}
 
                         <div class="wa-msg-text">${escapeHtml(k.informasi || '')}</div>
 
