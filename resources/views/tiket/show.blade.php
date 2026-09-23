@@ -3140,9 +3140,11 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => newEl.classList.remove('wa-bubble-new-highlight'), 4000);
         }
 
-        // Fokus ke textarea tanpa scroll window
+        // Fokus ke textarea tanpa scroll window (hanya di desktop, mobile biarkan keyboard tertutup)
         const waChatInput = document.getElementById('waChatTextInput');
-        if (waChatInput) waChatInput.focus({ preventScroll: true });
+        if (waChatInput && window.innerWidth >= 768) {
+            waChatInput.focus({ preventScroll: true });
+        }
     }
 
     function renderTimelineFromData(items) {
@@ -3770,6 +3772,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (waChatTextInput) {
                         waChatTextInput.value = '';
                         waChatTextInput.style.height = 'auto';
+                        // Tutup keyboard di mobile setelah kirim pesan
+                        if (window.innerWidth < 768) {
+                            waChatTextInput.blur();
+                        }
                     }
                     currentWaCompressedPhoto = null;
                     waCompressionPromise = null;
