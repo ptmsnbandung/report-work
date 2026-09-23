@@ -3191,14 +3191,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 stream.insertAdjacentHTML('beforeend', dividerHtml);
             }
 
+            // Kunci posisi window agar tidak melompat ke atas saat DOM berubah
+            const savedWindowY = window.scrollY || window.pageYOffset;
+
             const singleHtml = buildSingleKronoHtml(k);
             stream.insertAdjacentHTML('beforeend', singleHtml);
 
-            // Langsung scroll ke bawah container chat secara instan
+            // Restore posisi window langsung setelah DOM diubah
+            window.scrollTo(0, savedWindowY);
+
+            // Scroll container chat ke bawah secara instan
             stream.scrollTop = stream.scrollHeight;
-            setTimeout(() => {
+
+            // Pastikan scroll sudah di bawah setelah paint berikutnya
+            requestAnimationFrame(() => {
                 stream.scrollTop = stream.scrollHeight;
-            }, 50);
+                window.scrollTo(0, savedWindowY);
+            });
 
             // Highlight pesan baru
             const newEl = document.getElementById('krono-item-' + k.id);
