@@ -244,6 +244,15 @@
         margin-bottom: 2px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         letter-spacing: 0.5px;
+        overflow: hidden;
+    }
+
+    .wa-avatar-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        display: block;
     }
 
     .wa-avatar-me {
@@ -1195,6 +1204,7 @@
                                             $colorIndex = abs(crc32($krono->user?->name ?? 'User')) % count($nameColors);
                                             $senderColor = $nameColors[$colorIndex];
                                             $initials = strtoupper(substr($krono->user?->name ?? 'U', 0, 2));
+                                            $userAvatar = $krono->user?->avatar_url;
                                         @endphp
 
                                         @if($currentDate !== $lastDate)
@@ -1208,8 +1218,12 @@
 
                                         <div class="wa-msg-row {{ $isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming' }}" id="krono-item-{{ $krono->id }}">
                                             @if(!$isMe)
-                                            <div class="wa-avatar" style="background-color: {{ $senderColor }};" title="{{ $krono->user?->name }}">
-                                                {{ $initials }}
+                                            <div class="wa-avatar" style="background-color: {{ $userAvatar ? 'transparent' : $senderColor }};" title="{{ $krono->user?->name }}">
+                                                @if($userAvatar)
+                                                    <img src="{{ $userAvatar }}" alt="{{ $krono->user?->name }}" class="wa-avatar-img">
+                                                @else
+                                                    {{ $initials }}
+                                                @endif
                                             </div>
                                             @endif
 
@@ -3118,12 +3132,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const initials = (k.user_name || 'U').substring(0, 2).toUpperCase();
             const senderColor = getSenderColor(k.user_name);
             const kategoriLower = (k.kategori || 'lain').toLowerCase();
+            const userAvatar = k.user_avatar || null;
 
             return `
                 <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" id="krono-item-${k.id}">
                     ${!isMe ? `
-                    <div class="wa-avatar" style="background-color: ${senderColor};" title="${k.user_name}">
-                        ${initials}
+                    <div class="wa-avatar" style="background-color: ${userAvatar ? 'transparent' : senderColor};" title="${k.user_name}">
+                        ${userAvatar ? `<img src="${userAvatar}" alt="${k.user_name}" class="wa-avatar-img">` : initials}
                     </div>` : ''}
 
                     <div class="wa-bubble ${isMe ? 'wa-bubble-outgoing' : 'wa-bubble-incoming'}">
