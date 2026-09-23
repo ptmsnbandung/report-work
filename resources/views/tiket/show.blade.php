@@ -3029,51 +3029,29 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(err => console.debug('Timeline polling error:', err));
     }
 
-    function renderTimelineFromData(items) {
-        const wrapper = document.getElementById('timelineWrapper');
-        if (!wrapper || !items) return;
-
-        if (items.length === 0) {
-            wrapper.innerHTML = `
-                <div class="wa-empty-state py-5 text-center" id="emptyTimeline">
-                    <div class="wa-empty-icon mb-3">
-                        <i class="bi bi-chat-square-dots-fill text-muted opacity-50"></i>
-                    </div>
-                    <h6 class="fw-bold text-navy mb-1">Belum Ada Catatan Koordinasi</h6>
-                    <p class="text-muted small mb-3 px-3 mx-auto" style="max-width: 420px;">
-                        Mulai percakapan perkembangan update teknis di lapangan. Seluruh aktivitas perbaikan akan tercatat secara kronologis.
-                    </p>
-                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                    <button class="btn btn-cjp-teal btn-sm rounded-pill px-4 shadow-xs" data-bs-toggle="modal" data-bs-target="#addKronologisModal">
-                        <i class="bi bi-plus-circle me-1"></i> Mulai Catatan Kronologis
-                    </button>
-                    @endif
-                </div>`;
-            return;
+    // ── HELPER FUNCTIONS (scope luar agar bisa diakses form submit) ──
+    const nameColors = ['#075e54', '#128c7e', '#0284c7', '#7c3aed', '#d97706', '#059669', '#2563eb'];
+    function getSenderColor(name) {
+        let hash = 0;
+        for (let i = 0; i < (name || 'User').length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
         }
+        return nameColors[Math.abs(hash) % nameColors.length];
+    }
 
-        const nameColors = ['#075e54', '#128c7e', '#0284c7', '#7c3aed', '#d97706', '#059669', '#2563eb'];
-        function getSenderColor(name) {
-            let hash = 0;
-            for (let i = 0; i < (name || 'User').length; i++) {
-                hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            return nameColors[Math.abs(hash) % nameColors.length];
-        }
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML.replace(/\n/g, '<br>');
+    }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML.replace(/\n/g, '<br>');
-        }
+    const currentUserId = {{ auth()->id() ?? 0 }};
+    const isAdmin = {{ auth()->user()->hasRole('admin') ? 'true' : 'false' }};
+    const destroyUrlBase = "{{ url('/tiket/' . $tiket->id . '/kronologis') }}";
+    const csrfToken = "{{ csrf_token() }}";
 
-        const currentUserId = {{ auth()->id() ?? 0 }};
-        const isAdmin = {{ auth()->user()->hasRole('admin') ? 'true' : 'false' }};
-        const destroyUrlBase = "{{ url('/tiket/' . $tiket->id . '/kronologis') }}";
-        const csrfToken = "{{ csrf_token() }}";
-
-        function buildSingleKronoHtml(k) {
+    function buildSingleKronoHtml(k) {
             const isMe = (k.user_id === currentUserId);
             const initials = (k.user_name || 'U').substring(0, 2).toUpperCase();
             const senderColor = getSenderColor(k.user_name);
@@ -3150,77 +3128,91 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 </div>`;
+    }
+
+    function appendSingleKronoToTimeline(k) {
+        if (!k || !k.id) return;
+
+        knownCount = (knownCount || 0) + 1;
+        const badgeEl = document.getElementById('kronologisCountBadge');
+        if (badgeEl) badgeEl.textContent = knownCount;
+
+        const wrapper = document.getElementById('timelineWrapper');
+        let stream = document.getElementById('timelineList');
+
+        const emptyEl = document.getElementById('emptyTimeline');
+        if (emptyEl) emptyEl.remove();
+
+        if (!stream && wrapper) {
+            wrapper.innerHTML = '<div class="wa-chat-stream" id="timelineList"></div>';
+            stream = document.getElementById('timelineList');
+            attachStreamScrollListener(stream);
         }
 
-        function appendSingleKronoToTimeline(k) {
-            if (!k || !k.id) return;
+        if (!stream) return;
 
-            knownCount = (knownCount || 0) + 1;
-            const badgeEl = document.getElementById('kronologisCountBadge');
-            if (badgeEl) badgeEl.textContent = knownCount;
+        // Jangan append jika sudah ada di DOM
+        if (document.getElementById('krono-item-' + k.id)) return;
 
-            const wrapper = document.getElementById('timelineWrapper');
-            let stream = document.getElementById('timelineList');
+        // Cek apakah perlu menambahkan date divider baru
+        const lastDivider = stream.querySelector('.wa-date-divider:last-of-type .wa-date-chip');
+        const lastDateText = lastDivider ? lastDivider.textContent.trim() : '';
+        if (k.formatted_date && (!lastDateText || !lastDateText.includes(k.formatted_date))) {
+            stream.insertAdjacentHTML('beforeend', `
+                <div class="wa-date-divider">
+                    <span class="wa-date-chip">
+                        <i class="bi bi-calendar3 me-1"></i> ${k.formatted_date}
+                    </span>
+                </div>`);
+        }
 
-            const emptyEl = document.getElementById('emptyTimeline');
-            if (emptyEl) {
-                emptyEl.remove();
-            }
+        // Simpan posisi window agar tidak melompat saat DOM berubah
+        const savedWindowY = window.scrollY || window.pageYOffset;
 
-            if (!stream && wrapper) {
-                wrapper.innerHTML = '<div class="wa-chat-stream" id="timelineList"></div>';
-                stream = document.getElementById('timelineList');
-                attachStreamScrollListener(stream);
-            }
+        stream.insertAdjacentHTML('beforeend', buildSingleKronoHtml(k));
 
-            if (!stream) return;
+        // Restore window posisi, lalu scroll stream ke bawah
+        window.scrollTo(0, savedWindowY);
+        stream.scrollTop = stream.scrollHeight;
 
-            // Jangan append jika sudah ada di DOM
-            if (document.getElementById('krono-item-' + k.id)) return;
-
-            // Cek apakah perlu menambahkan date divider baru
-            const lastDivider = stream.querySelector('.wa-date-divider:last-of-type .wa-date-chip');
-            const lastDateText = lastDivider ? lastDivider.textContent.trim() : '';
-            if (k.formatted_date && (!lastDateText || !lastDateText.includes(k.formatted_date))) {
-                const dividerHtml = `
-                    <div class="wa-date-divider">
-                        <span class="wa-date-chip">
-                            <i class="bi bi-calendar3 me-1"></i> ${k.formatted_date}
-                        </span>
-                    </div>`;
-                stream.insertAdjacentHTML('beforeend', dividerHtml);
-            }
-
-            // Kunci posisi window agar tidak melompat ke atas saat DOM berubah
-            const savedWindowY = window.scrollY || window.pageYOffset;
-
-            const singleHtml = buildSingleKronoHtml(k);
-            stream.insertAdjacentHTML('beforeend', singleHtml);
-
-            // Restore posisi window langsung setelah DOM diubah
-            window.scrollTo(0, savedWindowY);
-
-            // Scroll container chat ke bawah secara instan
+        requestAnimationFrame(() => {
             stream.scrollTop = stream.scrollHeight;
+            window.scrollTo(0, savedWindowY);
+        });
 
-            // Pastikan scroll sudah di bawah setelah paint berikutnya
-            requestAnimationFrame(() => {
-                stream.scrollTop = stream.scrollHeight;
-                window.scrollTo(0, savedWindowY);
-            });
+        // Highlight pesan baru
+        const newEl = document.getElementById('krono-item-' + k.id);
+        if (newEl) {
+            newEl.classList.add('wa-bubble-new-highlight');
+            setTimeout(() => newEl.classList.remove('wa-bubble-new-highlight'), 4000);
+        }
 
-            // Highlight pesan baru
-            const newEl = document.getElementById('krono-item-' + k.id);
-            if (newEl) {
-                newEl.classList.add('wa-bubble-new-highlight');
-                setTimeout(() => newEl.classList.remove('wa-bubble-new-highlight'), 4000);
-            }
+        // Fokus ke textarea tanpa scroll window
+        const waChatInput = document.getElementById('waChatTextInput');
+        if (waChatInput) waChatInput.focus({ preventScroll: true });
+    }
 
-            // Kembalikan fokus ke textarea chat tanpa scroll window
-            const waChatTextInput = document.getElementById('waChatTextInput');
-            if (waChatTextInput) {
-                waChatTextInput.focus({ preventScroll: true });
-            }
+    function renderTimelineFromData(items) {
+        const wrapper = document.getElementById('timelineWrapper');
+        if (!wrapper || !items) return;
+
+        if (items.length === 0) {
+            wrapper.innerHTML = `
+                <div class="wa-empty-state py-5 text-center" id="emptyTimeline">
+                    <div class="wa-empty-icon mb-3">
+                        <i class="bi bi-chat-square-dots-fill text-muted opacity-50"></i>
+                    </div>
+                    <h6 class="fw-bold text-navy mb-1">Belum Ada Catatan Koordinasi</h6>
+                    <p class="text-muted small mb-3 px-3 mx-auto" style="max-width: 420px;">
+                        Mulai percakapan perkembangan update teknis di lapangan. Seluruh aktivitas perbaikan akan tercatat secara kronologis.
+                    </p>
+                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                    <button class="btn btn-cjp-teal btn-sm rounded-pill px-4 shadow-xs" data-bs-toggle="modal" data-bs-target="#addKronologisModal">
+                        <i class="bi bi-plus-circle me-1"></i> Mulai Catatan Kronologis
+                    </button>
+                    @endif
+                </div>`;
+            return;
         }
 
         let html = '<div class="wa-chat-stream" id="timelineList">';
@@ -3236,23 +3228,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>`;
                 lastDateKey = k.date_key;
             }
-
             html += buildSingleKronoHtml(k);
         });
 
         html += '</div>';
-        
-        // Prevent window scroll jumping by locking wrapper min-height during DOM update
+
+        // Kunci tinggi wrapper agar window tidak loncat saat DOM diganti
         const prevHeight = wrapper.offsetHeight;
-        if (prevHeight > 0) {
-            wrapper.style.minHeight = prevHeight + 'px';
-        }
+        if (prevHeight > 0) wrapper.style.minHeight = prevHeight + 'px';
 
         wrapper.innerHTML = html;
 
-        setTimeout(() => {
-            wrapper.style.minHeight = '';
-        }, 150);
+        setTimeout(() => { wrapper.style.minHeight = ''; }, 150);
 
         const stream = document.getElementById('timelineList');
         if (stream) {
