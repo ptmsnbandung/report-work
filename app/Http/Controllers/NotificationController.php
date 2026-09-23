@@ -17,6 +17,11 @@ class NotificationController extends Controller
         $user = $request->user();
         $filter = $request->input('filter', 'all');
 
+        // Otomatis tandai seluruh notifikasi yang belum dibaca sebagai sudah dibaca saat membuka halaman ini
+        if ($user->unreadNotifications()->exists()) {
+            $user->unreadNotifications()->update(['read_at' => now()]);
+        }
+
         $query = $user->notifications();
 
         if ($filter === 'unread') {
