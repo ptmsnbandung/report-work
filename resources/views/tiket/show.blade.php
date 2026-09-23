@@ -850,6 +850,78 @@
         }
     }
 
+    /* ═══════════════════════════════════════════════════════════════════
+       GOJEK-STYLE QUICK REPLY CHIPS (REKOMENDASI CHAT CEPAT)
+       ═══════════════════════════════════════════════════════════════════ */
+    .wa-quick-replies-wrapper {
+        padding: 0.35rem 0.85rem 0.2rem 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+        z-index: 12;
+    }
+    .wa-quick-replies-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+
+    .wa-quick-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.32rem 0.75rem;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(203, 213, 225, 0.85);
+        border-radius: 50rem;
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: #334155;
+        cursor: pointer;
+        flex-shrink: 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.16s ease;
+        user-select: none;
+        text-decoration: none;
+        line-height: 1.2;
+    }
+
+    .wa-quick-chip:hover {
+        background: #ffffff;
+        border-color: #2C7FFF;
+        color: #1b39da;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(44, 127, 255, 0.2);
+    }
+
+    .wa-quick-chip:active {
+        transform: scale(0.95);
+        background: #f1f5f9;
+    }
+
+    .wa-quick-chip-icon {
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+    }
+
+    @media (max-width: 768px) {
+        .wa-quick-replies-wrapper {
+            padding: 0.25rem 0.6rem 0.15rem 0.6rem;
+            gap: 0.35rem;
+        }
+        .wa-quick-chip {
+            padding: 0.28rem 0.65rem;
+            font-size: 0.72rem;
+        }
+    }
+
     /* Floating Scroll to Bottom Button (WhatsApp Style) */
     .wa-chat-container {
         position: relative;
@@ -1894,8 +1966,44 @@
                             <i class="bi bi-chevron-double-down"></i>
                         </button>
 
-                        <!-- WhatsApp Direct Inline Chat Input Bar (WhatsApp-Native Pro) -->
+                        <!-- Gojek-Style Quick Reply Chips (Rekomendasi Chat Cepat) -->
                         @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                        <div class="wa-quick-replies-wrapper" id="waQuickRepliesWrapper">
+                            <button type="button" class="wa-quick-chip" data-text="Sedang menuju ke lokasi titik gangguan">
+                                <span class="wa-quick-chip-icon">🚗</span>
+                                <span>Menuju lokasi</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Sedang investigasi di lapangan & pengukuran OTDR">
+                                <span class="wa-quick-chip-icon">🔍</span>
+                                <span>Investigasi & OTDR</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Ditemukan kabel fiber optik putus / bending">
+                                <span class="wa-quick-chip-icon">✂️</span>
+                                <span>Kabel putus / bending</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Sedang proses splicing / penyambungan core kabel">
+                                <span class="wa-quick-chip-icon">⚡</span>
+                                <span>Proses splicing core</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Sedang ukur nilai redaman / power level optik">
+                                <span class="wa-quick-chip-icon">📊</span>
+                                <span>Ukur redaman optik</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Redaman sudah normal & link sudah UP kembali">
+                                <span class="wa-quick-chip-icon">✅</span>
+                                <span>Redaman normal & Link UP</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Ada kendala di lapangan, mohon bantuan koordinasi / manuver core">
+                                <span class="wa-quick-chip-icon">⚠️</span>
+                                <span>Kendala / butuh manuver</span>
+                            </button>
+                            <button type="button" class="wa-quick-chip" data-text="Melampirkan foto dokumentasi hasil perbaikan di lapangan">
+                                <span class="wa-quick-chip-icon">📸</span>
+                                <span>Dokumentasi perbaikan</span>
+                            </button>
+                        </div>
+
+                        <!-- WhatsApp Direct Inline Chat Input Bar (WhatsApp-Native Pro) -->
                         <form action="{{ route('tiket.kronologis.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="waDirectChatForm" class="wa-chat-input-bar">
                             @csrf
                             <input type="hidden" name="kategori" value="LAIN">
@@ -5201,6 +5309,26 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         document.addEventListener('click', function(e) {
             if (waMentionDropdown && !waMentionDropdown.contains(e.target) && e.target !== waChatTextInput) {
                 hideMentionDropdown();
+            }
+
+            // Gojek-style quick reply chip click handler
+            const chip = e.target.closest('.wa-quick-chip');
+            if (chip && waChatTextInput) {
+                e.preventDefault();
+                const text = chip.getAttribute('data-text') || chip.textContent.trim();
+                waChatTextInput.value = text;
+                waChatTextInput.focus();
+                waChatTextInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+                const pill = waChatTextInput.closest('.wa-floating-input-pill');
+                if (pill) {
+                    pill.style.borderColor = '#2C7FFF';
+                    pill.style.boxShadow = '0 0 0 3px rgba(44, 127, 255, 0.25)';
+                    setTimeout(() => {
+                        pill.style.borderColor = '';
+                        pill.style.boxShadow = '';
+                    }, 400);
+                }
             }
         });
 
