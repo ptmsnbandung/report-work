@@ -24,8 +24,11 @@ class NotificationService
      */
     public function notifyTiketBaru(Tiket $tiket): void
     {
+        $creatorId = $tiket->created_by;
+
         $recipients = User::where('is_active', true)
             ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
+            ->when($creatorId, fn($q) => $q->where('id', '!=', $creatorId))
             ->get();
 
         if ($recipients->isNotEmpty()) {
@@ -52,11 +55,15 @@ class NotificationService
 
     /**
      * Kirim notifikasi saat kronologis baru ditambahkan (ke Admin, Helpdesk, Teknis, SA/CS)
+     * Hanya dikirim ke pengguna lain (pengirim pesan tidak akan menerima notifikasi)
      */
     public function notifyKronologisBaru(Tiket $tiket, Kronologis $kronologis): void
     {
+        $senderId = $kronologis->user_id;
+
         $recipients = User::where('is_active', true)
             ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
+            ->when($senderId, fn($q) => $q->where('id', '!=', $senderId))
             ->get();
 
         if ($recipients->isNotEmpty()) {
@@ -73,7 +80,7 @@ class NotificationService
             }
         }
 
-        // WhatsApp ke staf yang memiliki nomor HP
+        // WhatsApp ke staf yang memiliki nomor HP (selain pengirim)
         $waMessage = $this->waService->formatKronologisMessage($tiket, $kronologis);
         foreach ($recipients->whereNotNull('phone') as $u) {
             $this->waService->sendMessage($u->phone, $waMessage, $tiket->id);
@@ -82,11 +89,13 @@ class NotificationService
 
     /**
      * Kirim notifikasi saat data tiket diperbarui (ke Admin, Helpdesk, Teknis, SA/CS)
+     * Hanya dikirim ke pengguna lain (pengubah data tidak akan menerima notifikasi)
      */
     public function notifyTiketUpdated(Tiket $tiket, ?User $updater = null, string $keterangan = 'Perbaruan data tiket'): void
     {
         $recipients = User::where('is_active', true)
             ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
+            ->when($updater, fn($q) => $q->where('id', '!=', $updater->id))
             ->get();
 
         if ($recipients->isNotEmpty()) {
@@ -114,11 +123,15 @@ class NotificationService
 
     /**
      * Kirim notifikasi saat tiket selesai / closed (ke Seluruh Tim NOC & Client)
+     * Hanya dikirim ke pengguna lain selain yang menutup tiket
      */
     public function notifyTiketClosed(Tiket $tiket): void
     {
+        $closerId = $tiket->closed_by;
+
         $recipients = User::where('is_active', true)
             ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs', 'client'])
+            ->when($closerId, fn($q) => $q->where('id', '!=', $closerId))
             ->get();
 
         if ($recipients->isNotEmpty()) {
