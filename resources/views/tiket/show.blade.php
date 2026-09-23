@@ -27,7 +27,7 @@
     .wa-chat-container.wa-fullscreen {
         position: fixed;
         inset: 0;
-        z-index: 9999;
+        z-index: 99999;
         border-radius: 0 !important;
         border: none;
         box-shadow: none;
@@ -55,6 +55,14 @@
 
     .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
         flex-shrink: 0;
+    }
+
+    /* Sembunyikan bottom nav, sidebar, footer saat fullscreen */
+    body.wa-chat-fullscreen-active .mobile-bottom-nav,
+    body.wa-chat-fullscreen-active .app-sidebar,
+    body.wa-chat-fullscreen-active .app-footer,
+    body.wa-chat-fullscreen-active footer {
+        display: none !important;
     }
 
     /* Tombol fullscreen */
@@ -3940,6 +3948,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function enterWaFullscreen() {
         if (!waContainer) return;
         waContainer.classList.add('wa-fullscreen');
+        document.body.classList.add('wa-chat-fullscreen-active');
         if (icoWaFullscreen) {
             icoWaFullscreen.classList.remove('bi-arrows-fullscreen');
             icoWaFullscreen.classList.add('bi-fullscreen-exit');
@@ -3957,6 +3966,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function exitWaFullscreen() {
         if (!waContainer) return;
         waContainer.classList.remove('wa-fullscreen');
+        document.body.classList.remove('wa-chat-fullscreen-active');
         if (icoWaFullscreen) {
             icoWaFullscreen.classList.remove('bi-fullscreen-exit');
             icoWaFullscreen.classList.add('bi-arrows-fullscreen');
