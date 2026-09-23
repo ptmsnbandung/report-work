@@ -90,16 +90,32 @@ class TiketController extends Controller
      */
     public function show(Tiket $tiket): View
     {
+        $totalKronologis = $tiket->kronologis()->count();
+        $initialLimit = 40;
+
         $tiket->load([
             'creator',
             'closer',
-            'kronologis.user',
+            'kronologis' => function ($q) use ($initialLimit, $totalKronologis) {
+                if ($totalKronologis > $initialLimit) {
+                    $q->orderBy('timestamp', 'desc')
+                      ->orderBy('id', 'desc')
+                      ->take($initialLimit);
+                } else {
+                    $q->orderBy('timestamp', 'asc')->orderBy('id', 'asc');
+                }
+                $q->with('user');
+            },
             'resume',
             'materials',
             'titikPerbaikans',
             'manuverCores',
             'dokumentasis',
         ]);
+
+        if ($totalKronologis > $initialLimit) {
+            $tiket->setRelation('kronologis', $tiket->kronologis->sortBy('timestamp')->values());
+        }
 
         $mentionableUsers = User::where('is_active', true)
             ->orderBy('name')
@@ -114,7 +130,7 @@ class TiketController extends Controller
                 ];
             });
 
-        return view('tiket.show', compact('tiket', 'mentionableUsers'));
+        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis'));
     }
 
     /**

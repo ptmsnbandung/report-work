@@ -18,11 +18,16 @@ class KronologisController extends Controller
     ) {}
 
     /**
-     * Dapatkan daftar kronologis tiket (Mendukung AJAX Polling)
+     * Dapatkan daftar kronologis tiket (Mendukung AJAX Polling & Cursor Pagination)
      */
     public function index(Request $request, Tiket $tiket): JsonResponse|View
     {
-        $timeline = $this->kronologisService->getTimeline($tiket);
+        $beforeId = $request->input('before_id') ? (int) $request->input('before_id') : null;
+        $afterId = $request->input('after_id') ? (int) $request->input('after_id') : null;
+        $limit = $request->input('limit') ? min(100, max(5, (int) $request->input('limit'))) : 40;
+
+        $timeline = $this->kronologisService->getTimeline($tiket, $beforeId, $afterId, $limit);
+        $totalCount = $tiket->kronologis()->count();
 
         if ($request->wantsJson() || $request->ajax()) {
             $formatted = $timeline->map(function ($krono) {
@@ -50,10 +55,18 @@ class KronologisController extends Controller
                 ];
             });
 
+            $oldestInBatch = $timeline->first()?->id;
+            $hasMoreOlder = $beforeId 
+                ? $tiket->kronologis()->where('id', '<', $oldestInBatch ?? 0)->exists()
+                : ($totalCount > $timeline->count());
+
             return response()->json([
-                'success' => true,
-                'count'   => $timeline->count(),
-                'data'    => $formatted,
+                'success'      => true,
+                'total_count'  => $totalCount,
+                'count'        => $formatted->count(),
+                'has_more'     => $hasMoreOlder,
+                'oldest_id'    => $oldestInBatch,
+                'data'         => $formatted,
             ]);
         }
 

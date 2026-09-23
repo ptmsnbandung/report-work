@@ -1567,7 +1567,19 @@
                                         $lastDate = null; 
                                         $currentUserId = auth()->id();
                                         $nameColors = ['#075e54', '#128c7e', '#0284c7', '#7c3aed', '#d97706', '#059669', '#2563eb'];
+                                        $totalKronoCount = $totalKronologis ?? $tiket->kronologis()->count();
+                                        $renderedCount = $tiket->kronologis->count();
+                                        $hasOlderKrono = $totalKronoCount > $renderedCount;
+                                        $oldestRenderedId = $tiket->kronologis->first()?->id ?? 0;
                                     @endphp
+
+                                    @if($hasOlderKrono)
+                                        <div id="loadOlderKronoWrapper" class="text-center py-2.5 mb-2">
+                                            <button type="button" class="btn btn-sm btn-light border rounded-pill px-3.5 shadow-xs fw-semibold text-secondary" id="btnLoadOlderKrono" data-oldest-id="{{ $oldestRenderedId }}">
+                                                <i class="bi bi-clock-history me-1.5 text-primary"></i> Muat Pesan Sebelumnya (<span id="olderKronoCount">{{ $totalKronoCount - $renderedCount }}</span> lagi)
+                                            </button>
+                                        </div>
+                                    @endif
                                     @foreach($tiket->kronologis as $krono)
                                         @php 
                                             $currentDate = $krono->timestamp->format('Y-m-d'); 
@@ -3832,13 +3844,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ── 8. REALTIME AJAX POLLING FOR TIMELINE (EVERY 30 SECONDS) ──
+    // ── 8. REALTIME AJAX POLLING FOR TIMELINE (EVERY 5 SECONDS) ──
     const tiketId = {{ $tiket->id }};
     const timelineApiUrl = "{{ route('tiket.kronologis.index', $tiket->id) }}";
-    let knownCount = {{ $tiket->kronologis->count() }};
+    let knownCount = {{ $totalKronologis ?? $tiket->kronologis()->count() }};
+    let isLoadingOlder = false;
 
     function pollTimeline() {
-        fetch(timelineApiUrl, {
+        // Ambil ID pesan terakhir yang ada di DOM saat ini
+        const allMsgRows = document.querySelectorAll('.wa-msg-row');
+        let latestId = null;
+        if (allMsgRows.length > 0) {
+            const lastRow = allMsgRows[allMsgRows.length - 1];
+            const idMatch = lastRow.id ? lastRow.id.match(/\d+/) : null;
+            if (idMatch) latestId = parseInt(idMatch[0], 10);
+        }
+
+        const pollUrl = latestId ? `${timelineApiUrl}?after_id=${latestId}` : timelineApiUrl;
+
+        fetch(pollUrl, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
@@ -3846,14 +3870,99 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(res => res.json())
         .then(res => {
-            if (res.success && res.count !== knownCount) {
-                knownCount = res.count;
-                const badgeEl = document.getElementById('kronologisCountBadge');
-                if (badgeEl) badgeEl.textContent = knownCount;
-                updateTimelineFromData(res.data);
+            if (res.success) {
+                if (res.total_count !== undefined && res.total_count !== knownCount) {
+                    knownCount = res.total_count;
+                    const badgeEl = document.getElementById('kronologisCountBadge');
+                    if (badgeEl) badgeEl.textContent = knownCount;
+                }
+                if (res.data && res.data.length > 0) {
+                    updateTimelineFromData(res.data);
+                }
             }
         })
         .catch(err => console.debug('Timeline polling error:', err));
+    }
+
+    // Fungsi muat riwayat pesan terdahulu (Pagination ke atas)
+    async function loadOlderMessages() {
+        const btn = document.getElementById('btnLoadOlderKrono');
+        const loadWrapper = document.getElementById('loadOlderKronoWrapper');
+        if (!btn || isLoadingOlder) return;
+
+        const oldestId = btn.getAttribute('data-oldest-id');
+        if (!oldestId) return;
+
+        isLoadingOlder = true;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span> Memuat riwayat pesan...';
+
+        try {
+            const res = await fetch(`${timelineApiUrl}?before_id=${oldestId}&limit=40`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+            const data = await res.json();
+
+            if (data.success && data.data && data.data.length > 0) {
+                const stream = document.getElementById('timelineList');
+                if (stream) {
+                    // Simpan posisi scroll sebelum prepend
+                    const prevScrollHeight = stream.scrollHeight;
+                    const prevScrollTop = stream.scrollTop;
+
+                    let olderHtml = '';
+                    let lastDateKey = null;
+
+                    data.data.forEach(k => {
+                        if (k.date_key !== lastDateKey) {
+                            olderHtml += `
+                                <div class="wa-date-divider">
+                                    <span class="wa-date-chip">
+                                        <i class="bi bi-calendar3 me-1"></i> ${k.formatted_date}
+                                    </span>
+                                </div>`;
+                            lastDateKey = k.date_key;
+                        }
+                        olderHtml += buildSingleKronoHtml(k);
+                    });
+
+                    if (loadWrapper) {
+                        loadWrapper.insertAdjacentHTML('afterend', olderHtml);
+                    } else {
+                        stream.insertAdjacentHTML('afterbegin', olderHtml);
+                    }
+
+                    // Pertahankan posisi scroll agar tidak meloncat
+                    const newScrollHeight = stream.scrollHeight;
+                    stream.scrollTop = prevScrollTop + (newScrollHeight - prevScrollHeight);
+
+                    // Update oldest id
+                    const newOldestId = data.oldest_id || data.data[0].id;
+                    btn.setAttribute('data-oldest-id', newOldestId);
+
+                    const renderedCount = document.querySelectorAll('.wa-msg-row').length;
+                    const total = data.total_count || knownCount;
+                    if (!data.has_more || renderedCount >= total) {
+                        if (loadWrapper) loadWrapper.remove();
+                    } else {
+                        btn.disabled = false;
+                        const remaining = Math.max(0, total - renderedCount);
+                        btn.innerHTML = `<i class="bi bi-clock-history me-1.5 text-primary"></i> Muat Pesan Sebelumnya (<span id="olderKronoCount">${remaining}</span> lagi)`;
+                    }
+                }
+            } else {
+                if (loadWrapper) loadWrapper.remove();
+            }
+        } catch (err) {
+            console.error('Error loading older messages:', err);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise me-1 text-danger"></i> Gagal memuat. Klik untuk coba lagi.';
+        } finally {
+            isLoadingOlder = false;
+        }
     }
 
     // ── HELPER FUNCTIONS (scope luar agar bisa diakses form submit) ──
@@ -4081,10 +4190,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateTimelineFromData(items) {
-        if (!items || items.length === 0) {
-            renderTimelineFromData(items);
-            return;
-        }
+        if (!items || items.length === 0) return;
 
         const stream = document.getElementById('timelineList');
         if (!stream) {
@@ -4092,19 +4198,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        let newItemsCount = 0;
         items.forEach(k => {
             if (!document.getElementById('krono-item-' + k.id)) {
                 appendSingleKronoToTimeline(k, false);
-                newItemsCount++;
             }
         });
-
-        // Jika jumlah pesan di DOM berbeda (misal ada pesan yang dihapus oleh admin), re-render full
-        const domCount = document.querySelectorAll('.wa-msg-row').length;
-        if (newItemsCount === 0 && items.length !== domCount) {
-            renderTimelineFromData(items);
-        }
     }
 
     function renderTimelineFromData(items) {
@@ -4529,8 +4627,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.removeChild(textarea);
     }
 
-    // Delegated click handler for 3-dots dropdown options
+    // Delegated click handler for 3-dots dropdown options & load older messages
     document.addEventListener('click', function(e) {
+        // 0. LOAD OLDER MESSAGES
+        const loadOlderBtn = e.target.closest('#btnLoadOlderKrono');
+        if (loadOlderBtn) {
+            e.preventDefault();
+            loadOlderMessages();
+            return;
+        }
+
         // 1. SALIN
         const copyBtn = e.target.closest('.btn-action-copy');
         if (copyBtn) {
@@ -5226,15 +5332,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnWaScrollBottom = document.getElementById('btnWaScrollBottom');
 
     function checkStreamScroll(streamEl) {
-        if (!streamEl || !btnWaScrollBottom) return;
+        if (!streamEl) return;
         const distanceFromBottom = streamEl.scrollHeight - streamEl.scrollTop - streamEl.clientHeight;
 
-        if (distanceFromBottom > 80) {
-            btnWaScrollBottom.classList.remove('d-none');
-            btnWaScrollBottom.classList.add('d-flex');
-        } else {
-            btnWaScrollBottom.classList.add('d-none');
-            btnWaScrollBottom.classList.remove('d-flex');
+        if (btnWaScrollBottom) {
+            if (distanceFromBottom > 80) {
+                btnWaScrollBottom.classList.remove('d-none');
+                btnWaScrollBottom.classList.add('d-flex');
+            } else {
+                btnWaScrollBottom.classList.add('d-none');
+                btnWaScrollBottom.classList.remove('d-flex');
+            }
+        }
+
+        // Auto trigger muat riwayat lama saat user scroll ke bagian paling atas
+        if (streamEl.scrollTop <= 40 && !isLoadingOlder) {
+            const btn = document.getElementById('btnLoadOlderKrono');
+            if (btn && !btn.disabled) {
+                loadOlderMessages();
+            }
         }
     }
 

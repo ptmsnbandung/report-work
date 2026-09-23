@@ -190,10 +190,28 @@ class KronologisService
     }
 
     /**
-     * Dapatkan semua kronologis tiket berurutan
+     * Dapatkan kronologis tiket berurutan dengan opsi cursor pagination
      */
-    public function getTimeline(Tiket $tiket): Collection
+    public function getTimeline(Tiket $tiket, ?int $beforeId = null, ?int $afterId = null, int $limit = 40): Collection
     {
-        return $tiket->kronologis()->with('user')->orderBy('timestamp', 'asc')->get();
+        $query = $tiket->kronologis()->with('user');
+
+        if ($afterId) {
+            return $query->where('id', '>', $afterId)
+                ->orderBy('timestamp', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+        }
+
+        if ($beforeId) {
+            $items = $query->where('id', '<', $beforeId)
+                ->orderBy('timestamp', 'desc')
+                ->orderBy('id', 'desc')
+                ->take($limit)
+                ->get();
+            return $items->sortBy('timestamp')->values();
+        }
+
+        return $query->orderBy('timestamp', 'asc')->orderBy('id', 'asc')->get();
     }
 }
