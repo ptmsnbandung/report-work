@@ -1320,6 +1320,16 @@
                         <i class="bi bi-arrow-left me-1"></i> Kembali
                     </a>
 
+                    @if(auth()->user()->hasRole(['admin', 'helpdesk']))
+                    <button type="button" class="btn btn-sm rounded-pill px-3.5 shadow-xs fw-bold text-white d-inline-flex align-items-center gap-1.5"
+                            id="btnCopyWaBroadcast"
+                            title="Salin notifikasi tugas untuk ditempel ke Grup WhatsApp"
+                            style="background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); border: none;">
+                        <i class="bi bi-whatsapp"></i>
+                        <span>Salin Info WA</span>
+                    </button>
+                    @endif
+
                     @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'OPEN')
                     <a href="{{ route('tiket.edit', $tiket->id) }}" class="btn btn-warning btn-sm rounded-pill px-3.5 shadow-xs text-dark fw-bold">
                         <i class="bi bi-pencil-square me-1"></i> Edit
@@ -4625,6 +4635,49 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Gagal menyalin pesan.');
         }
         document.body.removeChild(textarea);
+    }
+
+    // ── COPY WA BROADCAST TICKET INFO ──
+    const btnCopyWaBroadcast = document.getElementById('btnCopyWaBroadcast');
+    if (btnCopyWaBroadcast) {
+        btnCopyWaBroadcast.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const noTiket = "{{ $tiket->no_tiket }}";
+            const statusLink = "{{ $tiket->status_link_impact }}";
+            const segment = "{{ $tiket->backbone_segment }}";
+            const statusTiket = "{{ $tiket->status }}";
+            const tglOpen = "{{ $tiket->tanggal_open ? $tiket->tanggal_open->translatedFormat('l, d F Y H:i') . ' WIB' : '-' }}";
+            const targetSla = "{{ $tiket->sla_target_minutes ? round($tiket->sla_target_minutes / 60, 1) . ' Jam (' . $tiket->sla_target_minutes . ' menit)' : '-' }}";
+            const deskripsi = {!! json_encode($tiket->deskripsi ?: '-') !!};
+            const tiketUrl = "{{ route('tiket.show', $tiket->id) }}";
+
+            const waText = 
+`🚨 *PEMBERITAHUAN TUGAS BARU - GANGGUAN BACKBONE* 🚨
+━━━━━━━━━━━━━━━━━━━━━
+🎫 *No. Tiket:* ${noTiket}
+💥 *Dampak:* ${statusLink}
+📍 *Segment:* ${segment}
+📊 *Status:* ${statusTiket}
+⏱️ *Waktu Open:* ${tglOpen}
+🎯 *Target SLA:* ${targetSla}
+📝 *Deskripsi / Info:* ${deskripsi}
+━━━━━━━━━━━━━━━━━━━━━
+🔗 *Link Update & Detail Tiket:*
+${tiketUrl}
+
+_Mohon tim teknis segera merapat dan update koordinasi langsung di link sistem tiket di atas. Terima kasih._`;
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(waText).then(() => {
+                    showCopyToast('Format notifikasi WhatsApp berhasil disalin!');
+                }).catch(() => {
+                    copyFallback(waText);
+                });
+            } else {
+                copyFallback(waText);
+            }
+        });
     }
 
     // Delegated click handler for 3-dots dropdown options & load older messages
