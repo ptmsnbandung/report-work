@@ -183,8 +183,12 @@ h6 { font-size: 0.95rem; }
     align-items: center;
     position: sticky;
     top: 0;
-    z-index: 1020;
+    z-index: 1030;
     box-shadow: 0 4px 16px rgba(194, 204, 217, 0.4);
+}
+
+.app-topbar .dropdown-menu {
+    z-index: 1045 !important;
 }
 
 .topbar-btn {

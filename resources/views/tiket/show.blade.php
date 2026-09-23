@@ -1279,7 +1279,7 @@
     </div>
 
     <!-- ── TOP HEADER HERO BANNER (BRAND BLUE FULL-WIDTH) ── -->
-    <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1050; overflow: visible !important;">
+    <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1; overflow: visible !important;">
         <div class="card-body p-3.5 p-md-4 overflow-visible" style="overflow: visible !important;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <div class="min-w-0 w-100 w-md-auto">
@@ -1334,11 +1334,11 @@
                     @endif
 
                     <!-- Export Buttons -->
-                    <div class="btn-group position-relative" style="z-index: 1050;">
+                    <div class="btn-group position-relative" style="z-index: 5;">
                         <button type="button" class="btn btn-hero-action btn-sm dropdown-toggle rounded-pill px-3.5" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-download me-1"></i> Export Laporan
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1" style="z-index: 1060; min-width: 220px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1" style="min-width: 220px;">
                             <li>
                                 <a class="dropdown-item py-2 small" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
                                     <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Export Berita Acara PDF
