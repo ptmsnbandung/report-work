@@ -489,6 +489,11 @@ h6 { font-size: 0.95rem; }
     overflow: hidden;
 }
 
+.card.overflow-visible,
+.overflow-visible {
+    overflow: visible !important;
+}
+
 .card-header {
     background: var(--neu-surface);
     border-bottom: 1px solid var(--neu-border-subtle);

@@ -1279,8 +1279,8 @@
     </div>
 
     <!-- ── TOP HEADER HERO BANNER (BRAND BLUE FULL-WIDTH) ── -->
-    <div class="card border-0 shadow-lg rounded-xl mb-3 text-white" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 20;">
-        <div class="card-body p-3.5 p-md-4">
+    <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1050; overflow: visible !important;">
+        <div class="card-body p-3.5 p-md-4 overflow-visible" style="overflow: visible !important;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <div class="min-w-0 w-100 w-md-auto">
                     <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
