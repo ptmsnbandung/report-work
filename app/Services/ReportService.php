@@ -116,7 +116,7 @@ class ReportService
             'titikPerbaikans',
             'jointClosures.cores',
             'jointClosures.creator',
-            'manuverCores.user',
+            'manuverCores',
             'dokumentasis'
         ]);
 
