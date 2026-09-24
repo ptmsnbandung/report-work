@@ -2885,6 +2885,83 @@ h6 { font-size: 0.95rem; }
     color: #1d4ed8 !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   REPORT SUITE HEADER TOOLBAR & MOBILE CARD STYLING
+   ═══════════════════════════════════════════════════════════════════ */
+.report-nav-pills {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f5f9;
+    border-radius: 9999px;
+    padding: 3px;
+    border: 1px solid #e2e8f0;
+    gap: 3px;
+}
+
+.report-nav-pills .nav-btn {
+    border: none;
+    background: transparent;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.report-nav-pills .nav-btn:hover {
+    color: #0f172a;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.report-nav-pills .nav-btn.active {
+    background: linear-gradient(135deg, #07152b 0%, #1e3a8a 100%);
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(7, 21, 43, 0.25);
+}
+
+.report-export-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.kpi-mobile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-mobile-card:hover {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-mobile-metric-tile {
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    padding: 0.55rem 0.65rem;
+}
+
+.shift-mobile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+
 
 
 

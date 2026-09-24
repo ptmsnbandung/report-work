@@ -103,20 +103,31 @@
         </div>
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
-            <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 shadow-xs">
-                <i class="bi bi-graph-up me-1"></i> Analisis MTTR/SLA
-            </a>
-            <a href="{{ route('reports.shifts') }}" class="btn btn-outline-purple btn-sm rounded-pill px-3 shadow-xs" style="border-color: #8b5cf6; color: #7c3aed;">
-                <i class="bi bi-arrow-left-right me-1"></i> Rekap Shift
-            </a>
-            <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1">
-                <i class="bi bi-file-earmark-pdf-fill"></i>
-                <span>Export PDF</span>
-            </a>
-            <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1">
-                <i class="bi bi-file-earmark-excel-fill"></i>
-                <span>Export Excel</span>
-            </a>
+            <div class="report-nav-pills shadow-xs">
+                <a href="{{ route('reports.index') }}" class="nav-btn {{ request()->routeIs('reports.index') ? 'active' : '' }}">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Analisis MTTR/SLA</span>
+                </a>
+                <a href="{{ route('reports.kpi') }}" class="nav-btn {{ request()->routeIs('reports.kpi') ? 'active' : '' }}">
+                    <i class="bi bi-trophy-fill text-warning"></i>
+                    <span>KPI Dashboard</span>
+                </a>
+                <a href="{{ route('reports.shifts') }}" class="nav-btn {{ request()->routeIs('reports.shifts') ? 'active' : '' }}">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Rekap Shift</span>
+                </a>
+            </div>
+
+            <div class="report-export-group">
+                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    <span>Export PDF</span>
+                </a>
+                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
+                    <i class="bi bi-file-earmark-excel-fill"></i>
+                    <span>Export Excel</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -260,7 +271,8 @@
 
                 <!-- ════ TAB 1: KPI TEKNISI LAPANGAN ════ -->
                 <div class="tab-pane fade show active" id="teknisi-kpi-pane" role="tabpanel">
-                    <div class="table-responsive">
+                    <!-- 1A. Desktop Table View (>= md) -->
+                    <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
                             <thead class="table-light">
                                 <tr>
@@ -326,11 +338,85 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- 1B. Mobile Card View (< md) -->
+                    <div class="d-md-none p-2.5">
+                        @forelse($teknisiKpi as $index => $tek)
+                        <div class="kpi-mobile-card">
+                            <div class="d-flex align-items-center justify-content-between mb-2.5 pb-2 border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="kpi-rank-circle {{ $index === 0 ? 'kpi-rank-1' : ($index === 1 ? 'kpi-rank-2' : ($index === 2 ? 'kpi-rank-3' : 'kpi-rank-other')) }}" style="width: 28px; height: 28px; font-size: 0.78rem;">
+                                        {{ $index + 1 }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-navy" style="font-size: 0.9rem;">{{ $tek['name'] }}</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">{{ $tek['email'] }}</div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="kpi-score-badge {{ $tek['kpi_score'] >= 85 ? 'bg-success text-white' : ($tek['kpi_score'] >= 70 ? 'bg-primary text-white' : 'bg-warning text-dark') }}" style="font-size: 0.92rem; padding: 0.2rem 0.55rem;">
+                                        {{ $tek['kpi_score'] }}
+                                    </span>
+                                    <div class="text-muted" style="font-size: 0.65rem; margin-top: 2px;">Score KPI</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Tiket Selesai</div>
+                                        <div class="fw-bold text-navy font-monospace" style="font-size: 0.85rem;">{{ $tek['total_resolved'] }} Tiket</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Avg Respon</div>
+                                        <div class="fw-bold text-navy font-monospace" style="font-size: 0.85rem;">{{ $tek['formatted_avg_response'] }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Kepatuhan 30 Mnt</div>
+                                        <div class="d-flex align-items-center gap-1 mt-0.5">
+                                            <span class="badge {{ $tek['interval_compliance_rate'] >= 85 ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }} border px-1.5 py-0.5" style="font-size: 0.72rem;">
+                                                {{ $tek['interval_compliance_rate'] }}%
+                                            </span>
+                                            <span class="text-muted" style="font-size: 0.65rem;">({{ $tek['overdue_updates'] }} telat)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Avg MTTR</div>
+                                        <div class="fw-bold text-navy font-monospace" style="font-size: 0.85rem;">{{ $tek['formatted_avg_mttr'] }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="text-muted" style="font-size: 0.68rem;">SLA Compliance</span>
+                                            <span class="fw-bold font-monospace" style="font-size: 0.75rem;">{{ $tek['sla_compliance_rate'] }}%</span>
+                                        </div>
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar {{ $tek['sla_compliance_rate'] >= 90 ? 'bg-success' : ($tek['sla_compliance_rate'] >= 75 ? 'bg-warning' : 'bg-danger') }}"
+                                                 style="width: {{ $tek['sla_compliance_rate'] }}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-4 text-muted small">
+                            Belum ada data tiket untuk evaluasi teknisi pada rentang waktu ini.
+                        </div>
+                        @endforelse
+                    </div>
                 </div>
 
                 <!-- ════ TAB 2: KPI HELPDESK NOC ════ -->
                 <div class="tab-pane fade" id="helpdesk-kpi-pane" role="tabpanel">
-                    <div class="table-responsive">
+                    <!-- 2A. Desktop Table View (>= md) -->
+                    <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
                             <thead class="table-light">
                                 <tr>
@@ -377,6 +463,58 @@
                                 @endforelse
                             </tbody>
                         </table>
+                    </div>
+
+                    <!-- 2B. Mobile Card View (< md) -->
+                    <div class="d-md-none p-2.5">
+                        @forelse($helpdeskKpi as $index => $hd)
+                        <div class="kpi-mobile-card">
+                            <div class="d-flex align-items-center justify-content-between mb-2.5 pb-2 border-bottom">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center font-monospace fw-bold text-muted" style="width: 28px; height: 28px; font-size: 0.78rem;">
+                                        {{ $index + 1 }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-navy" style="font-size: 0.9rem;">{{ $hd['name'] }}</div>
+                                        <span class="badge bg-light text-navy border font-monospace" style="font-size: 0.65rem;">{{ strtoupper($hd['role']) }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold font-monospace {{ $hd['sla_compliance_rate'] >= 90 ? 'text-success' : 'text-danger' }}" style="font-size: 1rem;">
+                                        {{ $hd['sla_compliance_rate'] }}%
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.65rem;">SLA Tiket</div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Tiket Open</div>
+                                        <div class="fw-bold text-navy font-monospace" style="font-size: 0.85rem;">{{ $hd['total_created'] }} Tiket</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="kpi-mobile-metric-tile">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Tiket Verified / Close</div>
+                                        <div class="fw-bold text-success font-monospace" style="font-size: 0.85rem;">{{ $hd['total_closed'] }} Tiket</div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="kpi-mobile-metric-tile d-flex justify-content-between align-items-center">
+                                        <div class="text-muted" style="font-size: 0.68rem;">Rata-Rata Waktu Verifikasi</div>
+                                        <span class="badge bg-purple-subtle text-purple border px-2 py-0.5 font-monospace" style="font-size: 0.75rem;">
+                                            {{ $hd['formatted_avg_verification'] }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-4 text-muted small">
+                            Belum ada data tiket untuk evaluasi HelpDesk pada rentang waktu ini.
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 

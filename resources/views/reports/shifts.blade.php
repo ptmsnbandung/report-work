@@ -78,22 +78,31 @@
 
             <!-- Action & Export Buttons -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ route('reports.kpi') }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5" style="min-height: 35px;">
-                    <i class="bi bi-trophy-fill text-warning"></i>
-                    <span>KPI Dashboard</span>
-                </a>
-                <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5" style="min-height: 35px;">
-                    <i class="bi bi-graph-up"></i>
-                    <span>Analisis MTTR/SLA</span>
-                </a>
-                <a href="{{ route('reports.export.shifts.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5" style="min-height: 35px;">
-                    <i class="bi bi-file-earmark-pdf-fill"></i>
-                    <span>Export PDF</span>
-                </a>
-                <a href="{{ route('reports.export.shifts.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5" style="min-height: 35px;">
-                    <i class="bi bi-file-earmark-excel-fill"></i>
-                    <span>Export Excel</span>
-                </a>
+                <div class="report-nav-pills shadow-xs">
+                    <a href="{{ route('reports.index') }}" class="nav-btn {{ request()->routeIs('reports.index') ? 'active' : '' }}">
+                        <i class="bi bi-graph-up"></i>
+                        <span>Analisis MTTR/SLA</span>
+                    </a>
+                    <a href="{{ route('reports.kpi') }}" class="nav-btn {{ request()->routeIs('reports.kpi') ? 'active' : '' }}">
+                        <i class="bi bi-trophy-fill text-warning"></i>
+                        <span>KPI Dashboard</span>
+                    </a>
+                    <a href="{{ route('reports.shifts') }}" class="nav-btn {{ request()->routeIs('reports.shifts') ? 'active' : '' }}">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span>Rekap Shift</span>
+                    </a>
+                </div>
+
+                <div class="report-export-group">
+                    <a href="{{ route('reports.export.shifts.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                        <span>Export PDF</span>
+                    </a>
+                    <a href="{{ route('reports.export.shifts.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
+                        <i class="bi bi-file-earmark-excel-fill"></i>
+                        <span>Export Excel</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -288,7 +297,8 @@
         </div>
 
         <div class="card-body p-0">
-            <div class="table-responsive">
+            <!-- ── DESKTOP TABLE VIEW (>= 768px) ── -->
+            <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover align-middle mb-0" style="font-size: 0.82rem;">
                     <thead class="bg-light text-navy fw-bold border-bottom">
                         <tr>
@@ -388,6 +398,90 @@
                         @endforelse
                     </tbody>
                 </table>
+            </div>
+
+            <!-- ── MOBILE CARD VIEW (< 768px) ── -->
+            <div class="d-md-none p-3">
+                @forelse($handovers as $h)
+                    @php
+                        $st = $h->tiket?->status;
+                        $badgeClass = match($st) {
+                            'OPEN' => 'bg-info bg-opacity-15 text-info border border-info border-opacity-25',
+                            'PROSES' => 'bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-50',
+                            'PENDING_VERIFIKASI' => 'bg-primary bg-opacity-15 text-primary border border-primary border-opacity-25',
+                            'CLOSE' => 'bg-success bg-opacity-15 text-success border border-success border-opacity-25',
+                            default => 'bg-secondary bg-opacity-15 text-secondary',
+                        };
+                    @endphp
+                    <div class="shift-mobile-card">
+                        <!-- Top Row: Ticket number, status, date -->
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <a href="{{ route('tiket.show', $h->id_tiket) }}" class="fw-bold text-primary font-monospace text-decoration-none" style="font-size: 0.95rem;">
+                                    {{ $h->tiket?->no_tiket ?? '-' }}
+                                </a>
+                                <div class="text-muted small" style="font-size: 0.75rem;">
+                                    <i class="bi bi-diagram-3 me-1"></i>{{ $h->tiket?->backbone_segment ?? '-' }}
+                                </div>
+                            </div>
+                            <span class="badge {{ $badgeClass }} rounded-pill px-2.5 py-1" style="font-size: 0.7rem;">
+                                {{ $st ?: '-' }}
+                            </span>
+                        </div>
+
+                        <!-- Shift Transition & Time -->
+                        <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded-3 mb-2.5">
+                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                <span class="badge shift-badge-{{ str_contains($h->shift_from, '1') ? 'pagi' : (str_contains($h->shift_from, '2') ? 'siang' : 'malam') }} rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">
+                                    {{ explode('(', $h->shift_from)[0] }}
+                                </span>
+                                <i class="bi bi-arrow-right text-muted small"></i>
+                                <span class="badge shift-badge-{{ str_contains($h->shift_to, '1') ? 'pagi' : (str_contains($h->shift_to, '2') ? 'siang' : 'malam') }} rounded-pill px-2 py-0.5" style="font-size: 0.7rem;">
+                                    {{ explode('(', $h->shift_to)[0] }}
+                                </span>
+                            </div>
+                            <div class="text-end font-monospace text-muted small" style="font-size: 0.72rem;">
+                                <i class="bi bi-clock me-1"></i>{{ $h->created_at->format('d/m/Y H:i') }} WIB
+                            </div>
+                        </div>
+
+                        <!-- Officers Serah & Terima -->
+                        <div class="row g-2 mb-2.5" style="font-size: 0.78rem;">
+                            <div class="col-6">
+                                <div class="p-2 rounded bg-light border border-light">
+                                    <div class="text-muted small" style="font-size: 0.68rem;">DARI PETUGAS:</div>
+                                    <div class="fw-semibold text-dark text-truncate">{{ $h->userFrom?->name ?? 'Sistem' }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-2 rounded bg-light border border-light">
+                                    <div class="text-muted small" style="font-size: 0.68rem;">DISERAHKAN KE:</div>
+                                    <div class="fw-semibold text-primary text-truncate">{{ $h->userTo?->name ?? 'PIC Shift Baru' }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Handover Notes -->
+                        <div class="mb-2.5">
+                            <div class="text-muted small fw-semibold mb-1" style="font-size: 0.72rem;">Catatan Handover / Kondisi:</div>
+                            <div class="p-2 rounded bg-light border text-dark small" style="white-space: pre-wrap; word-break: break-word; font-size: 0.78rem; line-height: 1.4;">
+                                {{ $h->catatan_handover }}
+                            </div>
+                        </div>
+
+                        <!-- Action Link -->
+                        <div class="text-end pt-1">
+                            <a href="{{ route('tiket.show', $h->id_tiket) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 py-1 w-100" style="font-size: 0.8rem;">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> Buka Detail Tiket
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-arrow-left-right text-secondary fs-1 d-block mb-2"></i>
+                        <span class="fw-semibold">Belum ada riwayat handover shift yang sesuai kriteria.</span>
+                    </div>
+                @endforelse
             </div>
 
             <!-- Pagination -->
