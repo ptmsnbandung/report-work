@@ -1917,24 +1917,28 @@
                     </button>
                     @endif
 
-                    <!-- Helpdesk Two-Step Verifikasi Button or Direct Close -->
+                    <!-- Helpdesk Two-Step Verifikasi Button -->
                     @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
                         @if($tiket->status === 'PENDING_VERIFIKASI')
                         <button type="button" class="btn-tiket-hero btn-tiket-hero-danger"
-                                data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
+                                data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal"
+                                title="Kembalikan tiket ke teknisi lapangan jika hasil belum sesuai">
                             <i class="bi bi-x-circle"></i>
                             <span>Reject Closing</span>
                         </button>
                         <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
-                                data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                                data-bs-toggle="modal" data-bs-target="#closeTiketModal"
+                                title="Verifikasi kestabilan link dan tutup tiket">
                             <i class="bi bi-shield-check"></i>
                             <span>Verifikasi & Close Tiket</span>
                         </button>
                         @else
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
-                                data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                            <i class="bi bi-check-circle-fill"></i>
-                            <span>Closing Tiket</span>
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-ghost text-white-50 opacity-75"
+                                style="cursor: not-allowed; border-color: rgba(255, 255, 255, 0.15);"
+                                title="NOC belum dapat menutup tiket ini karena teknisi belum melakukan Closing Awal di lapangan"
+                                disabled>
+                            <i class="bi bi-hourglass-split"></i>
+                            <span>Menunggu Closing Awal</span>
                         </button>
                         @endif
                     @endif
@@ -4658,7 +4662,7 @@
 @endif
 
 <!-- ── MODAL CLOSING TIKET / VERIFIKASI CLOSING AKHIR ── -->
-@if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+@if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'PENDING_VERIFIKASI')
 <div class="modal fade" id="closeTiketModal" tabindex="-1" aria-labelledby="closeTiketModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">

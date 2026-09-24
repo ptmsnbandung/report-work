@@ -197,6 +197,7 @@ class TiketWorkflowFase1Test extends TestCase
 
         // Now close ticket at 12:30 (Gross: 270 minutes from 08:00 to 12:30)
         // With 60 minutes stop clock deduction -> Net MTTR = 210 minutes (<= 240 SLA target => TEPAT)
+        $tiket->update(['status' => 'PENDING_VERIFIKASI']);
         $closeTime = Carbon::parse('2026-09-24 12:30:00');
         $this->actingAs($this->helpdesk)->post("/tiket/{$tiket->id}/close", [
             'tanggal_close' => $closeTime->format('Y-m-d H:i'),

@@ -242,6 +242,12 @@ class TiketController extends Controller
                 ->with('error', 'Tiket ini sudah ditutup sebelumnya.');
         }
 
+        if ($tiket->status !== 'PENDING_VERIFIKASI') {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', "Tiket [{$tiket->no_tiket}] belum dapat ditutup karena teknisi belum melakukan Closing Awal (Status tiket saat ini: {$tiket->status}).");
+        }
+
         try {
             $closedTiket = $this->tiketService->closeTiket($tiket, $request->user(), $request->validated());
 

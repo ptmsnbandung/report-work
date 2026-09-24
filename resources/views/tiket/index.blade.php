@@ -455,12 +455,12 @@
                         </div>
 
                         <div class="d-flex align-items-center gap-1">
-                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'PENDING_VERIFIKASI')
                             <button type="button" class="btn btn-outline-success btn-sm px-2 py-1"
-                                    title="Closing Tiket"
+                                    title="Verifikasi & Closing Tiket"
                                     data-bs-toggle="modal"
                                     data-bs-target="#closeTiketModal{{ $tiket->id }}">
-                                <i class="bi bi-check-circle-fill"></i>
+                                <i class="bi bi-shield-check"></i>
                             </button>
                             @endif
 
@@ -654,13 +654,13 @@
                                 </a>
                                 @endif
 
-                                <!-- Quick Close Modal Trigger (Open or Proses Tiket) -->
-                                @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+                                <!-- Quick Close Modal Trigger (Hanya jika status PENDING_VERIFIKASI / Selesai Closing Awal) -->
+                                @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'PENDING_VERIFIKASI')
                                 <button type="button" class="btn-action-pro btn-action-close"
-                                        title="Closing Tiket"
+                                        title="Verifikasi & Closing Tiket"
                                         data-bs-toggle="modal"
                                         data-bs-target="#closeTiketModal{{ $tiket->id }}">
-                                    <i class="bi bi-check2-circle"></i>
+                                    <i class="bi bi-shield-check"></i>
                                 </button>
                                 @endif
 
@@ -675,7 +675,7 @@
                             </div>
 
                             <!-- ── QUICK CLOSE MODAL FOR THIS TIKET ── -->
-                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'PENDING_VERIFIKASI')
                             <div class="modal fade" id="closeTiketModal{{ $tiket->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content border-0 shadow">

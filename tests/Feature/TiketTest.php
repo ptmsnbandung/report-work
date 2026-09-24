@@ -161,7 +161,7 @@ class TiketTest extends TestCase
             'status_link_impact' => 'SW BBLU - SW Reog Down',
             'backbone_segment' => 'SW BBLU - SW Reog',
             'tanggal_open' => $openDate,
-            'status' => 'OPEN',
+            'status' => 'PENDING_VERIFIKASI',
             'sla_target_minutes' => 360,
             'created_by' => $this->helpdesk->id,
         ]);
@@ -179,6 +179,28 @@ class TiketTest extends TestCase
             'sla_status' => 'TEPAT',
             'closed_by' => $this->helpdesk->id,
         ]);
+    }
+
+    public function test_helpdesk_cannot_close_tiket_if_not_pending_verifikasi(): void
+    {
+        $tiket = Tiket::create([
+            'no_tiket' => 'BDG-20260914-002',
+            'status_link_impact' => 'SW BBLU - SW Reog Down',
+            'backbone_segment' => 'SW BBLU - SW Reog',
+            'tanggal_open' => Carbon::now(),
+            'status' => 'PROSES',
+            'sla_target_minutes' => 360,
+            'created_by' => $this->helpdesk->id,
+        ]);
+
+        $response = $this->actingAs($this->helpdesk)->post("/tiket/{$tiket->id}/close", [
+            'tanggal_close' => Carbon::now()->toDateTimeString(),
+        ]);
+
+        $response->assertRedirect("/tiket/{$tiket->id}");
+        $response->assertSessionHas('error');
+        $tiket->refresh();
+        $this->assertEquals('PROSES', $tiket->status);
     }
 
     public function test_teknis_cannot_close_tiket(): void

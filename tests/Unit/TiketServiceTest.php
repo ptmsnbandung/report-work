@@ -130,6 +130,8 @@ class TiketServiceTest extends TestCase
             'tanggal_open' => '2026-09-14 14:30:00',
         ], $this->helpdesk);
 
+        $tiket->update(['status' => 'PENDING_VERIFIKASI']);
+
         $this->service->closeTiket($tiket, $this->helpdesk, [
             'tanggal_close' => '2026-09-14 19:00:00',
         ]);
@@ -152,6 +154,8 @@ class TiketServiceTest extends TestCase
             'sla_target_minutes' => 360,
         ], $this->helpdesk);
 
+        $tiket->update(['status' => 'PENDING_VERIFIKASI']);
+
         $closed = $this->service->closeTiket($tiket, $this->helpdesk, [
             'tanggal_close' => $closeDate->toDateTimeString(),
         ]);
@@ -160,5 +164,19 @@ class TiketServiceTest extends TestCase
         $this->assertEquals(345, $closed->mttr_minutes);
         $this->assertEquals('TEPAT', $closed->sla_status);
         $this->assertEquals($this->helpdesk->id, $closed->closed_by);
+    }
+
+    public function test_cannot_close_tiket_if_not_pending_verifikasi(): void
+    {
+        $tiket = $this->service->createTiket([
+            'status_link_impact' => 'SW BBLU - SW Reog Down',
+            'backbone_segment' => 'SW BBLU - SW Reog',
+            'tanggal_open' => '2026-09-14 14:30:00',
+        ], $this->helpdesk);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->service->closeTiket($tiket, $this->helpdesk, [
+            'tanggal_close' => '2026-09-14 19:00:00',
+        ]);
     }
 }

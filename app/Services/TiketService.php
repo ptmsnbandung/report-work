@@ -273,6 +273,10 @@ class TiketService
             throw new InvalidArgumentException('Tiket ' . $tiket->no_tiket . ' sudah dalam status CLOSE.');
         }
 
+        if ($tiket->status !== 'PENDING_VERIFIKASI') {
+            throw new InvalidArgumentException("Tiket {$tiket->no_tiket} tidak dapat ditutup karena teknisi belum melakukan Closing Awal (Status tiket saat ini: {$tiket->status}).");
+        }
+
         return DB::transaction(function () use ($tiket, $closer, $closeData) {
             $tanggalClose = !empty($closeData['tanggal_close'])
                 ? Carbon::parse($closeData['tanggal_close'])
