@@ -873,42 +873,42 @@
     .wa-quick-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.32rem 0.75rem;
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        border: 1px solid rgba(203, 213, 225, 0.85);
+        gap: 0.42rem;
+        padding: 0.35rem 0.82rem;
+        background: #ffffff;
+        border: 1px solid rgba(203, 213, 225, 0.9);
         border-radius: 50rem;
         font-size: 0.76rem;
-        font-weight: 500;
+        font-weight: 600;
         color: #334155;
         cursor: pointer;
         flex-shrink: 0;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        transition: all 0.16s ease;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
         user-select: none;
         text-decoration: none;
         line-height: 1.2;
     }
 
     .wa-quick-chip:hover {
-        background: #ffffff;
+        background: #f8fafc;
         border-color: #2C7FFF;
         color: #1b39da;
-        transform: translateY(-1px);
-        box-shadow: 0 3px 8px rgba(44, 127, 255, 0.2);
+        transform: translateY(-1.5px);
+        box-shadow: 0 4px 10px rgba(44, 127, 255, 0.16);
     }
 
     .wa-quick-chip:active {
-        transform: scale(0.95);
+        transform: scale(0.96);
         background: #f1f5f9;
     }
 
     .wa-quick-chip-icon {
-        font-size: 0.85rem;
-        display: flex;
+        font-size: 0.88rem;
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
+        line-height: 1;
     }
 
     @media (max-width: 768px) {
@@ -2825,35 +2825,35 @@
                         @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
                         <div class="wa-quick-replies-wrapper" id="waQuickRepliesWrapper">
                             <button type="button" class="wa-quick-chip" data-text="Sedang menuju ke lokasi titik gangguan">
-                                <span class="wa-quick-chip-icon">🚗</span>
+                                <span class="wa-quick-chip-icon text-primary"><i class="bi bi-geo-alt-fill"></i></span>
                                 <span>Menuju lokasi</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Sedang investigasi di lapangan & pengukuran OTDR">
-                                <span class="wa-quick-chip-icon">🔍</span>
+                                <span class="wa-quick-chip-icon text-info"><i class="bi bi-search"></i></span>
                                 <span>Investigasi & OTDR</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Ditemukan kabel fiber optik putus / bending">
-                                <span class="wa-quick-chip-icon">✂️</span>
+                                <span class="wa-quick-chip-icon text-danger"><i class="bi bi-scissors"></i></span>
                                 <span>Kabel putus / bending</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Sedang proses splicing / penyambungan core kabel">
-                                <span class="wa-quick-chip-icon">⚡</span>
+                                <span class="wa-quick-chip-icon text-warning"><i class="bi bi-lightning-charge-fill"></i></span>
                                 <span>Proses splicing core</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Sedang ukur nilai redaman / power level optik">
-                                <span class="wa-quick-chip-icon">📊</span>
+                                <span class="wa-quick-chip-icon" style="color: #6366f1;"><i class="bi bi-speedometer2"></i></span>
                                 <span>Ukur redaman optik</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Redaman sudah normal & link sudah UP kembali">
-                                <span class="wa-quick-chip-icon">✅</span>
+                                <span class="wa-quick-chip-icon text-success"><i class="bi bi-check-circle-fill"></i></span>
                                 <span>Redaman normal & Link UP</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Ada kendala di lapangan, mohon bantuan koordinasi / manuver core">
-                                <span class="wa-quick-chip-icon">⚠️</span>
+                                <span class="wa-quick-chip-icon text-warning"><i class="bi bi-shuffle"></i></span>
                                 <span>Kendala / butuh manuver</span>
                             </button>
                             <button type="button" class="wa-quick-chip" data-text="Melampirkan foto dokumentasi hasil perbaikan di lapangan">
-                                <span class="wa-quick-chip-icon">📸</span>
+                                <span class="wa-quick-chip-icon text-secondary"><i class="bi bi-camera-fill"></i></span>
                                 <span>Dokumentasi perbaikan</span>
                             </button>
                         </div>
