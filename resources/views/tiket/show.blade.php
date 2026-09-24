@@ -1981,104 +1981,114 @@
                         <span>Kembali</span>
                     </a>
 
-                    @if(auth()->user()->hasRole(['admin', 'helpdesk']))
-                    <button type="button" class="btn-tiket-hero btn-tiket-hero-wa"
-                            id="btnCopyWaBroadcast"
-                            title="Salin notifikasi tugas untuk ditempel ke Grup WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
-                        <span>Salin Info WA</span>
-                    </button>
-                    @endif
-
-                    @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'OPEN')
-                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="btn-tiket-hero btn-tiket-hero-warning">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>Edit</span>
-                    </a>
-                    @endif
-
-                    <!-- Stop / Resume Clock Button -->
-                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
-                        @if(!$tiket->is_stop_clock)
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-warning"
-                                data-bs-toggle="modal" data-bs-target="#startStopClockModal"
-                                title="Hentikan sementara penghitungan SLA (Stop Clock)">
-                            <i class="bi bi-pause-circle"></i>
-                            <span>Stop Clock</span>
+                    <!-- Single Unified Action Dropdown -->
+                    <div class="dropdown position-relative d-inline-block" style="z-index: 10;">
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-grid-fill"></i>
+                            <span>Menu Aksi</span>
                         </button>
-                        @else
-                        <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
-                            @csrf
-                            <button type="submit" class="btn-tiket-hero btn-tiket-hero-success"
-                                    title="Lanjutkan perhitungan durasi SLA (Resume Clock)">
-                                <i class="bi bi-play-circle-fill"></i>
-                                <span>Resume Clock</span>
-                            </button>
-                        </form>
-                        @endif
-                    @endif
-
-                    <!-- Oper Shift Button -->
-                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
-                    <button type="button" class="btn-tiket-hero btn-tiket-hero-purple"
-                            data-bs-toggle="modal" data-bs-target="#handoverShiftModal"
-                            title="Catat serah terima shift pekerjaan">
-                        <i class="bi bi-arrow-left-right"></i>
-                        <span>Oper Shift</span>
-                    </button>
-                    @endif
-
-                    <!-- Teknisi Closing Awal Button -->
-                    @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
-                    <button type="button" class="btn-tiket-hero btn-tiket-hero-primary"
-                            data-bs-toggle="modal" data-bs-target="#closingAwalModal"
-                            title="Selesaikan pekerjaan di lapangan dan ajukan verifikasi ke NOC">
-                        <i class="bi bi-check2-all"></i>
-                        <span>Closing Awal (Selesai Lapangan)</span>
-                    </button>
-                    @endif
-
-                    <!-- Helpdesk Two-Step Verifikasi Button -->
-                    @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
-                        @if($tiket->status === 'PENDING_VERIFIKASI')
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-danger"
-                                data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal"
-                                title="Kembalikan tiket ke teknisi lapangan jika hasil belum sesuai">
-                            <i class="bi bi-x-circle"></i>
-                            <span>Reject Closing</span>
-                        </button>
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
-                                data-bs-toggle="modal" data-bs-target="#closeTiketModal"
-                                title="Verifikasi kestabilan link dan tutup tiket">
-                            <i class="bi bi-shield-check"></i>
-                            <span>Verifikasi & Close Tiket</span>
-                        </button>
-                        @else
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-ghost text-white-50 opacity-75"
-                                style="cursor: not-allowed; border-color: rgba(255, 255, 255, 0.15);"
-                                title="NOC belum dapat menutup tiket ini karena teknisi belum melakukan Closing Awal di lapangan"
-                                disabled>
-                            <i class="bi bi-hourglass-split"></i>
-                            <span>Menunggu Closing Awal</span>
-                        </button>
-                        @endif
-                    @endif
-
-                    <!-- Export Buttons -->
-                    <div class="dropdown position-relative d-inline-block" style="z-index: 5;">
-                        <button type="button" class="btn-tiket-hero btn-tiket-hero-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-download"></i>
-                            <span>Export</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1" style="min-width: 220px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1 py-2" style="min-width: 255px;">
+                            
+                            <!-- 1. Workflow Actions (Closing / Verifikasi) -->
+                            @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
                             <li>
-                                <a class="dropdown-item py-2 small" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
-                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Export Berita Acara PDF
+                                <button type="button" class="dropdown-item py-2 fw-semibold text-primary d-flex align-items-center"
+                                        data-bs-toggle="modal" data-bs-target="#closingAwalModal">
+                                    <i class="bi bi-check2-all me-2.5 fs-6"></i>
+                                    <span>Closing Awal (Selesai)</span>
+                                </button>
+                            </li>
+                            @endif
+
+                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+                                @if($tiket->status === 'PENDING_VERIFIKASI')
+                                <li>
+                                    <button type="button" class="dropdown-item py-2 fw-semibold text-success d-flex align-items-center"
+                                            data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                                        <i class="bi bi-shield-check me-2.5 fs-6"></i>
+                                        <span>Verifikasi & Close Tiket</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item py-2 fw-semibold text-danger d-flex align-items-center"
+                                            data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
+                                        <i class="bi bi-x-circle me-2.5 fs-6"></i>
+                                        <span>Reject Closing Awal</span>
+                                    </button>
+                                </li>
+                                @else
+                                <li>
+                                    <span class="dropdown-item py-2 text-muted small d-flex align-items-center disabled" style="cursor: not-allowed;">
+                                        <i class="bi bi-hourglass-split me-2.5 fs-6 text-secondary"></i>
+                                        <span>Menunggu Closing Awal</span>
+                                    </span>
+                                </li>
+                                @endif
+                            @endif
+
+                            <!-- 2. SLA & Shift Actions -->
+                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis', 'teknisi']))
+                                @if(!$tiket->is_stop_clock)
+                                <li>
+                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center"
+                                            data-bs-toggle="modal" data-bs-target="#startStopClockModal">
+                                        <i class="bi bi-pause-circle-fill text-warning me-2.5 fs-6"></i>
+                                        <span>Stop Clock (Jeda SLA)</span>
+                                    </button>
+                                </li>
+                                @else
+                                <li>
+                                    <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item py-2 d-flex align-items-center text-success">
+                                            <i class="bi bi-play-circle-fill me-2.5 fs-6"></i>
+                                            <span>Resume Clock (Lanjut SLA)</span>
+                                        </button>
+                                    </form>
+                                </li>
+                                @endif
+
+                                <li>
+                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center"
+                                            data-bs-toggle="modal" data-bs-target="#handoverShiftModal">
+                                        <i class="bi bi-arrow-left-right me-2.5 fs-6" style="color: #8b5cf6;"></i>
+                                        <span>Oper Shift (Handover)</span>
+                                    </button>
+                                </li>
+                            @endif
+
+                            <!-- 3. Edit & Share Actions -->
+                            @if(auth()->user()->hasRole(['admin', 'helpdesk']))
+                                @if($tiket->status === 'OPEN')
+                                <li>
+                                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="dropdown-item py-2 d-flex align-items-center">
+                                        <i class="bi bi-pencil-square text-warning me-2.5 fs-6"></i>
+                                        <span>Edit Data Tiket</span>
+                                    </a>
+                                </li>
+                                @endif
+
+                                <li>
+                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center" id="btnCopyWaBroadcast">
+                                        <i class="bi bi-whatsapp text-success me-2.5 fs-6"></i>
+                                        <span>Salin Info WhatsApp</span>
+                                    </button>
+                                </li>
+                            @endif
+
+                            <!-- 4. Export Section -->
+                            <li><hr class="dropdown-divider my-1"></li>
+                            <li class="dropdown-header small text-muted text-uppercase fw-bold px-3 py-1" style="font-size: 0.68rem; letter-spacing: 0.5px;">Export Dokumen</li>
+                            <li>
+                                <a class="dropdown-item py-2 small d-flex align-items-center" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
+                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2.5 fs-6"></i>
+                                    <span>Export Berita Acara PDF</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item py-2 small" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
-                                    <i class="bi bi-file-earmark-excel-fill text-success me-2"></i> Export Data Excel
+                                <a class="dropdown-item py-2 small d-flex align-items-center" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
+                                    <i class="bi bi-file-earmark-excel-fill text-success me-2.5 fs-6"></i>
+                                    <span>Export Data Excel</span>
                                 </a>
                             </li>
                         </ul>
