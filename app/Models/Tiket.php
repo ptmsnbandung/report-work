@@ -93,6 +93,11 @@ class Tiket extends Model
         return $this->hasMany(ManuverCore::class, 'id_tiket');
     }
 
+    public function jointClosures(): HasMany
+    {
+        return $this->hasMany(TiketJointClosure::class, 'id_tiket');
+    }
+
     public function dokumentasis(): HasMany
     {
         return $this->hasMany(Dokumentasi::class, 'id_tiket');
