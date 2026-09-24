@@ -1876,7 +1876,7 @@
                     </a>
                     @endif
 
-                    <!-- Stop Clock Button -->
+                    <!-- Stop / Resume Clock Button -->
                     @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
                         @if(!$tiket->is_stop_clock)
                         <button type="button" class="btn-tiket-hero btn-tiket-hero-warning"
@@ -1885,6 +1885,15 @@
                             <i class="bi bi-pause-circle"></i>
                             <span>Stop Clock</span>
                         </button>
+                        @else
+                        <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
+                            @csrf
+                            <button type="submit" class="btn-tiket-hero btn-tiket-hero-success"
+                                    title="Lanjutkan perhitungan durasi SLA (Resume Clock)">
+                                <i class="bi bi-play-circle-fill"></i>
+                                <span>Resume Clock</span>
+                            </button>
+                        </form>
                         @endif
                     @endif
 
@@ -3482,6 +3491,14 @@
                                 <i class="bi bi-pause-circle"></i>
                                 <span>Stop Clock</span>
                             </button>
+                            @else
+                            <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
+                                @csrf
+                                <button type="submit" class="btn-tab-action-pro btn-success-pro" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); color: #ffffff; border: none;">
+                                    <i class="bi bi-play-circle-fill"></i>
+                                    <span>Resume Clock</span>
+                                </button>
+                            </form>
                             @endif
                             <button class="btn-tab-action-pro btn-violet-pro" data-bs-toggle="modal" data-bs-target="#handoverShiftModal">
                                 <i class="bi bi-arrow-left-right"></i>
