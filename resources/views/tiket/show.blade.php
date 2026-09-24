@@ -8,16 +8,15 @@
        WHATSAPP CHAT-STYLE TIMELINE KRONOLOGIS
        ═══════════════════════════════════════════════════════════════════ */
     .wa-chat-container {
-        background-color: #efeae2;
+        background-color: #f8fafc;
         background-image: 
-            radial-gradient(rgba(17, 27, 33, 0.07) 1px, transparent 1px),
-            radial-gradient(rgba(17, 27, 33, 0.04) 1px, transparent 1px);
-        background-size: 20px 20px;
-        background-position: 0 0, 10px 10px;
+            radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.04) 0%, transparent 75%),
+            radial-gradient(rgba(148, 163, 184, 0.28) 0.8px, transparent 0.8px);
+        background-size: 100% 100%, 22px 22px;
         border-radius: var(--neu-radius, 18px);
-        border: 1px solid var(--neu-border, rgba(255,255,255,0.8));
+        border: 1px solid #e2e8f0;
         overflow: hidden;
-        box-shadow: var(--neu-flat, 7px 7px 16px #c2ccd9, -7px -7px 16px #ffffff);
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
         display: flex;
         flex-direction: column;
         transition: border-radius 0.25s ease;
@@ -108,9 +107,9 @@
 
 
     .wa-chat-header {
-        background: var(--neu-surface, #e6ecf4);
+        background: #ffffff;
         padding: 0.85rem 1.15rem;
-        border-bottom: 1px solid var(--neu-border-subtle, rgba(194,204,217,0.45));
+        border-bottom: 1px solid #e2e8f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -121,13 +120,13 @@
         width: 36px;
         height: 36px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #00a884, #075e54);
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1.1rem;
         flex-shrink: 0;
-        box-shadow: 0 2px 6px rgba(0, 168, 132, 0.25);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
     }
 
     .wa-header-title {
@@ -198,15 +197,15 @@
     }
 
     .wa-date-chip {
-        background: rgba(255, 255, 255, 0.94);
+        background: #ffffff;
         backdrop-filter: blur(8px);
-        color: #54656f;
+        color: #475569;
         font-size: 0.71rem;
         font-weight: 600;
         padding: 0.28rem 0.85rem;
         border-radius: 999px;
-        box-shadow: 0 1px 3px rgba(11, 20, 26, 0.1);
-        border: 1px solid rgba(203, 213, 225, 0.7);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e2e8f0;
         display: inline-flex;
         align-items: center;
         letter-spacing: 0.15px;
@@ -269,17 +268,17 @@
     }
 
     .wa-bubble-incoming {
-        background: var(--neu-surface, #e6ecf4);
-        border: 1px solid var(--neu-border, rgba(255, 255, 255, 0.8));
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 16px 16px 16px 4px;
-        box-shadow: 3px 3px 7px var(--neu-shadow-dark, #c2ccd9), -3px -3px 7px var(--neu-shadow-light, #ffffff);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
     }
 
     .wa-bubble-outgoing {
-        background: #dbe6fe;
-        border: 1px solid rgba(255, 255, 255, 0.9);
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
         border-radius: 16px 16px 4px 16px;
-        box-shadow: 3px 3px 7px #c4d3eb, -3px -3px 7px #ffffff;
+        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08), 0 1px 2px rgba(37, 99, 235, 0.04);
     }
 
     .wa-bubble-header {
