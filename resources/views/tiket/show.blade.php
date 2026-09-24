@@ -3618,7 +3618,7 @@
             <form action="{{ route('tiket.resume.store', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold">
+                    <h6 class="modal-title fw-bold text-white">
                         <i class="bi bi-file-earmark-text-fill text-teal me-2"></i>{{ $tiket->resume ? 'Edit' : 'Input' }} Resume Pekerjaan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -3762,7 +3762,7 @@
             <form action="{{ route('tiket.material.store', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold">
+                    <h6 class="modal-title fw-bold text-white">
                         <i class="bi bi-box-seam-fill text-warning me-2"></i>Tambah Material Digunakan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -3828,7 +3828,7 @@
             <form action="{{ route('tiket.titik-perbaikan.store', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold">
+                    <h6 class="modal-title fw-bold text-white">
                         <i class="bi bi-geo-alt-fill text-danger me-2"></i>Tambah Titik Tagging Perbaikan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -3878,7 +3878,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-navy text-white py-2">
-                <h6 class="modal-title fw-bold"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Titik Perbaikan di Peta</h6>
+                <h6 class="modal-title fw-bold text-white"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Titik Perbaikan di Peta</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-3">
@@ -3901,7 +3901,7 @@
             <form action="{{ route('tiket.dokumentasi.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="formUploadDokumentasi">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold">
+                    <h6 class="modal-title fw-bold text-white">
                         <i class="bi bi-camera-fill text-info me-2"></i>Upload Foto Dokumentasi Lapangan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -3985,9 +3985,9 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-info btn-sm text-white px-4">
-                        <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload Foto
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold shadow-xs" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; color: #ffffff !important;">
+                        <i class="bi bi-cloud-arrow-up-fill me-1 text-white"></i> Upload Foto
                     </button>
                 </div>
             </form>
@@ -4000,7 +4000,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-navy text-white py-2">
-                <h6 class="modal-title fw-bold"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Lokasi Dokumentasi di Peta</h6>
+                <h6 class="modal-title fw-bold text-white"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Lokasi Dokumentasi di Peta</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-3">
@@ -4023,7 +4023,7 @@
             <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold">
+                    <h6 class="modal-title fw-bold text-white">
                         <i class="bi bi-shuffle text-teal me-2"></i>Tambah Record Manuver Core
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -4131,7 +4131,7 @@
             <form action="{{ route('tiket.kronologis.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="formAddKronologis">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold" id="addKronologisModalLabel">
+                    <h6 class="modal-title fw-bold text-white" id="addKronologisModalLabel">
                         <i class="bi bi-plus-circle-fill text-teal me-2"></i>Tambah Update Kronologis Lapangan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -4233,7 +4233,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-navy text-white py-2">
-                <h6 class="modal-title fw-bold"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Titik Koordinat di Peta</h6>
+                <h6 class="modal-title fw-bold text-white"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Titik Koordinat di Peta</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-3">
@@ -4336,7 +4336,7 @@
             <form action="{{ route('tiket.closing-awal', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold" id="closingAwalModalLabel">
+                    <h6 class="modal-title fw-bold text-white" id="closingAwalModalLabel">
                         <i class="bi bi-check2-all text-info me-2"></i>Penyelesaian Pekerjaan Lapangan (Closing Awal)
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -4431,7 +4431,7 @@
             <form action="{{ route('tiket.reject-closing-awal', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-danger text-white">
-                    <h6 class="modal-title fw-bold" id="rejectClosingAwalModalLabel">
+                    <h6 class="modal-title fw-bold text-white" id="rejectClosingAwalModalLabel">
                         <i class="bi bi-arrow-return-left me-2"></i>Kembalikan ke Lapangan (Reject Closing)
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -4533,7 +4533,7 @@
                             <i class="bi bi-arrow-left-right"></i>
                         </div>
                         <div>
-                            <h6 class="modal-title fw-bold mb-0" id="handoverShiftModalLabel">Serah Terima Pekerjaan (Oper Shift)</h6>
+                            <h6 class="modal-title fw-bold text-white mb-0" id="handoverShiftModalLabel">Serah Terima Pekerjaan (Oper Shift)</h6>
                             <span class="small text-white-50" style="font-size: 0.72rem;">Tiket: {{ $tiket->no_tiket }} ({{ $tiket->backbone_segment }})</span>
                         </div>
                     </div>
@@ -4648,7 +4648,7 @@
             <form action="{{ route('tiket.close', $tiket->id) }}" method="POST" id="formCloseTiket">
                 @csrf
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold" id="closeTiketModalLabel">
+                    <h6 class="modal-title fw-bold text-white" id="closeTiketModalLabel">
                         <i class="bi bi-check-circle-fill text-success me-2"></i>
                         {{ $tiket->status === 'PENDING_VERIFIKASI' ? 'Verifikasi & Closing Akhir' : 'Penutupan Tiket' }} [{{ $tiket->no_tiket }}]
                     </h6>

@@ -682,7 +682,7 @@
                                         <form action="{{ route('tiket.close', $tiket->id) }}" method="POST">
                                             @csrf
                                             <div class="modal-header bg-navy text-white">
-                                                <h6 class="modal-title fw-bold">
+                                                <h6 class="modal-title fw-bold text-white">
                                                     <i class="bi bi-check-circle-fill text-success me-2"></i>Closing Tiket [{{ $tiket->no_tiket }}]
                                                 </h6>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>

@@ -2580,6 +2580,84 @@ h6 { font-size: 0.95rem; }
     border-color: #bbf7d0;
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   GLOBAL MODAL HEADERS & HIGH CONTRAST ACCESSIBILITY
+   ═══════════════════════════════════════════════════════════════════ */
+.bg-navy {
+    background: linear-gradient(135deg, #07152b 0%, #0f2752 100%) !important;
+    color: #ffffff !important;
+}
+
+.modal-header.bg-navy {
+    background: linear-gradient(135deg, #07152b 0%, #0f2752 100%) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+    --bs-heading-color: #ffffff !important;
+}
+
+.modal-header.bg-navy .modal-title,
+.modal-header.bg-navy h1,
+.modal-header.bg-navy h2,
+.modal-header.bg-navy h3,
+.modal-header.bg-navy h4,
+.modal-header.bg-navy h5,
+.modal-header.bg-navy h6,
+.modal-header.bg-navy span,
+.modal-header.bg-navy strong,
+.modal-header.bg-navy div {
+    color: #ffffff !important;
+    --bs-heading-color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.modal-header.bg-navy i {
+    color: #60a5fa !important;
+}
+.modal-header.bg-navy i.text-teal {
+    color: #2dd4bf !important;
+}
+.modal-header.bg-navy i.text-info {
+    color: #38bdf8 !important;
+}
+.modal-header.bg-navy i.text-danger {
+    color: #f87171 !important;
+}
+.modal-header.bg-navy i.text-warning {
+    color: #fbbf24 !important;
+}
+
+.modal-header .btn-close,
+.modal-header .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%) !important;
+    opacity: 0.85;
+}
+.modal-header .btn-close:hover,
+.modal-header .btn-close-white:hover {
+    opacity: 1;
+}
+
+.btn-cjp-teal {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
+}
+.btn-cjp-teal:hover {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%) !important;
+    color: #ffffff !important;
+}
+
+.btn-cjp-blue {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+}
+.btn-cjp-blue:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+    color: #ffffff !important;
+}
+
 
 
 
