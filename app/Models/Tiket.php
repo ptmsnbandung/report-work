@@ -273,7 +273,7 @@ class Tiket extends Model
      */
     public function getLastKronologisAttribute()
     {
-        return $this->kronologis()->latest('timestamp')->first();
+        return $this->hasMany(Kronologis::class, 'id_tiket')->reorder()->orderByDesc('timestamp')->orderByDesc('id')->first();
     }
 
     /**
@@ -282,7 +282,7 @@ class Tiket extends Model
     public function getMinutesSinceLastUpdateAttribute(): int
     {
         $last = $this->last_kronologis;
-        $referenceTime = $last ? $last->timestamp : $this->tanggal_open;
+        $referenceTime = $last ? ($last->timestamp ?? $last->created_at) : $this->tanggal_open;
 
         if (!$referenceTime) {
             return 0;

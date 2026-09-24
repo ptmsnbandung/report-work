@@ -2036,11 +2036,15 @@
             $minsSinceLast = $tiket->minutes_since_last_update;
             $avgInterval = $tiket->average_report_interval_minutes;
             $lastKronologis = $tiket->last_kronologis;
+            $showIntervalAlert = in_array($fieldStatus, ['OVERDUE', 'WARNING']);
+            $showStopClockAlert = $tiket->is_stop_clock && $tiket->activeStopClock;
         @endphp
 
-        <div class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden {{ $fieldStatus === 'OVERDUE' ? 'border-2 border-danger' : ($fieldStatus === 'WARNING' ? 'border-2 border-warning' : 'bg-white') }}">
+        @if($showIntervalAlert || $showStopClockAlert)
+        <div id="fieldReportIntervalBanner" class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden {{ $fieldStatus === 'OVERDUE' ? 'border-2 border-danger' : ($fieldStatus === 'WARNING' ? 'border-2 border-warning' : 'border-2 border-warning') }}">
             <div class="card-body p-3 p-md-3.5">
-                <div class="row align-items-center g-3">
+                @if($showIntervalAlert)
+                <div class="row align-items-center g-3" id="fieldIntervalStatusRow">
                     <!-- Left: Interval Monitor Status -->
                     <div class="col-12 col-md-7">
                         <div class="d-flex align-items-start gap-3">
@@ -2071,20 +2075,6 @@
                                         Laporan terakhir <strong>{{ $minsSinceLast }} menit yang lalu</strong>. Segera input update progress sebelum batas 30 menit terlewati.
                                     </div>
                                 </div>
-                            @else
-                                <div class="rounded-circle bg-success bg-opacity-15 p-2.5 text-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                                    <i class="bi bi-shield-check fs-4"></i>
-                                </div>
-                                <div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-success bg-opacity-15 text-success fw-bold border border-success border-opacity-25">INTERVAL UPDATE NORMAL</span>
-                                        <span class="fw-bold text-navy">Kepatuhan Update Lapangan Terjaga</span>
-                                    </div>
-                                    <div class="small text-muted mt-1">
-                                        Laporan terakhir <strong>{{ $minsSinceLast !== null ? $minsSinceLast . ' menit lalu' : 'baru dimulai' }}</strong>. 
-                                        Rata-rata frekuensi report: <strong>{{ $avgInterval ? $avgInterval . ' menit/update' : '-' }}</strong>.
-                                    </div>
-                                </div>
                             @endif
                         </div>
                     </div>
@@ -2095,7 +2085,7 @@
                             <div class="p-2 rounded bg-light border text-center flex-fill">
                                 <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Update Terakhir</div>
                                 <div class="fw-bold text-navy" style="font-size: 0.85rem;">
-                                    {{ $lastKronologis ? $lastKronologis->created_at->format('H:i') . ' WIB' : '-' }}
+                                    {{ $lastKronologis ? ($lastKronologis->timestamp ? $lastKronologis->timestamp->format('H:i') : $lastKronologis->created_at->format('H:i')) . ' WIB' : '-' }}
                                 </div>
                             </div>
                             <div class="p-2 rounded bg-light border text-center flex-fill">
@@ -2105,7 +2095,7 @@
                                 </div>
                             </div>
                             @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                <button type="button" class="btn {{ $fieldStatus === 'OVERDUE' ? 'btn-danger' : 'btn-primary' }} btn-sm px-3 py-2 fw-semibold rounded-pill shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill" onclick="document.getElementById('kronologis-tab')?.click(); document.getElementById('waMessageInput')?.focus();">
+                                <button type="button" class="btn {{ $fieldStatus === 'OVERDUE' ? 'btn-danger' : 'btn-primary' }} btn-sm px-3 py-2 fw-semibold rounded-pill shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill" onclick="const kTab = document.getElementById('kronologis-tab'); if(kTab) kTab.click(); const waInp = document.getElementById('waChatTextInput') || document.getElementById('informasi'); if(waInp) { waInp.focus(); waInp.scrollIntoView({behavior: 'smooth', block: 'center'}); }">
                                     <i class="bi bi-chat-left-dots-fill"></i>
                                     <span>Kirim Update</span>
                                 </button>
@@ -2113,6 +2103,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
                 <!-- Point 9: Helpdesk Stop Clock Reminder & Checklist -->
                 @if($tiket->is_stop_clock && $tiket->activeStopClock)
@@ -2134,6 +2125,7 @@
                 @endif
             </div>
         </div>
+        @endif
     @endif
 
     <!-- ── MANDATORY CLOSING CHECKLIST CARD (ANTI CLOSING SEMBARANGAN) ── -->
@@ -6732,6 +6724,26 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                         appendSingleKronoToTimeline(res.data);
                     } else {
                         pollTimeline();
+                    }
+
+                    // Hilangkan banner peringatan 30 menit secara real-time karena update sudah dikirim
+                    const intervalRow = document.getElementById('fieldIntervalStatusRow');
+                    const intervalBanner = document.getElementById('fieldReportIntervalBanner');
+                    if (intervalRow) {
+                        intervalRow.style.transition = 'all 0.4s ease';
+                        intervalRow.style.opacity = '0';
+                        intervalRow.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            intervalRow.remove();
+                            if (intervalBanner && !intervalBanner.querySelector('.border-top')) {
+                                intervalBanner.remove();
+                            }
+                        }, 400);
+                    } else if (intervalBanner) {
+                        intervalBanner.style.transition = 'all 0.4s ease';
+                        intervalBanner.style.opacity = '0';
+                        intervalBanner.style.transform = 'translateY(-10px)';
+                        setTimeout(() => intervalBanner.remove(), 400);
                     }
                 } else {
                     alert('Gagal mengirim pesan: ' + (res.message || 'Terjadi kesalahan.'));
