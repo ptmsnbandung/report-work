@@ -7,11 +7,11 @@
     .kpi-stat-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 1.25rem;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         height: 100%;
         display: flex;
@@ -20,7 +20,7 @@
     }
     .kpi-stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
     }
     .kpi-stat-card::before {
         content: '';
@@ -28,13 +28,51 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 3.5px;
+        height: 3px;
     }
     .kpi-stat-card.border-c-sla::before { background: linear-gradient(90deg, #10b981, #059669); }
     .kpi-stat-card.border-c-resp::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
     .kpi-stat-card.border-c-mttr::before { background: linear-gradient(90deg, #0d9488, #0f766e); }
     .kpi-stat-card.border-c-stop::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
     .kpi-stat-card.border-c-verif::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+
+    .kpi-stat-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .kpi-stat-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .kpi-stat-val {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.3px;
+        line-height: 1.25;
+        white-space: nowrap;
+    }
+    .kpi-stat-desc {
+        font-size: 0.72rem;
+        color: #64748b;
+        margin-top: 0.2rem;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     .kpi-score-badge {
         font-size: 1.15rem;
@@ -160,19 +198,19 @@
     </div>
 
     <!-- ── 5 EXECUTIVE KPI METRIC CARDS ── -->
-    <div class="row g-2 g-md-3 mb-4">
+    <div class="row g-2 g-md-2.5 mb-3.5">
         <!-- 1. Kepatuhan SLA -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="kpi-stat-card border-c-sla">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">KEPATUHAN SLA</span>
-                    <div class="stat-icon-pill bg-success-subtle text-success">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="kpi-stat-label">KEPATUHAN SLA</span>
+                    <div class="kpi-stat-icon bg-success-subtle text-success">
                         <i class="bi bi-shield-check"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $executiveKpi['sla_compliance_rate'] }}%</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="kpi-stat-val">{{ $executiveKpi['sla_compliance_rate'] }}%</div>
+                    <div class="kpi-stat-desc">
                         <span class="text-success fw-bold">{{ $executiveKpi['total_tepat_sla'] }}</span> tepat &bull;
                         <span class="text-danger fw-bold">{{ $executiveKpi['total_lebih_sla'] }}</span> lewat SLA
                     </div>
@@ -183,16 +221,16 @@
         <!-- 2. Rata-Rata Response Time -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="kpi-stat-card border-c-resp">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">AVG RESPONSE TIME</span>
-                    <div class="stat-icon-pill bg-primary-subtle text-primary">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="kpi-stat-label">AVG RESPONSE TIME</span>
+                    <div class="kpi-stat-icon bg-primary-subtle text-primary">
                         <i class="bi bi-lightning-charge-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $executiveKpi['formatted_avg_response'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
-                        Waktu ke respon teknisi pertama
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_response'] }}</div>
+                    <div class="kpi-stat-desc">
+                        Waktu respon teknisi pertama
                     </div>
                 </div>
             </div>
@@ -201,15 +239,15 @@
         <!-- 3. Rata-Rata MTTR -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="kpi-stat-card border-c-mttr">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">AVG MTTR (BERSIH)</span>
-                    <div class="stat-icon-pill bg-teal-subtle text-teal">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="kpi-stat-label">AVG MTTR (BERSIH)</span>
+                    <div class="kpi-stat-icon bg-teal-subtle text-teal">
                         <i class="bi bi-stopwatch-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $executiveKpi['formatted_avg_mttr'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_mttr'] }}</div>
+                    <div class="kpi-stat-desc">
                         Dari {{ $executiveKpi['total_closed'] }} tiket diselesaikan
                     </div>
                 </div>
@@ -219,15 +257,15 @@
         <!-- 4. Total Stop Clock -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="kpi-stat-card border-c-stop">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">TOTAL STOP CLOCK</span>
-                    <div class="stat-icon-pill bg-warning-subtle text-warning">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="kpi-stat-label">TOTAL STOP CLOCK</span>
+                    <div class="kpi-stat-icon bg-warning-subtle text-warning">
                         <i class="bi bi-pause-circle-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $executiveKpi['formatted_total_stop_clock'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_total_stop_clock'] }}</div>
+                    <div class="kpi-stat-desc">
                         Jeda waktu SLA yang disahkan
                     </div>
                 </div>
@@ -237,15 +275,15 @@
         <!-- 5. Durasi Verifikasi NOC -->
         <div class="col-12 col-sm-6 col-xl">
             <div class="kpi-stat-card border-c-verif">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">AVG VERIFIKASI NOC</span>
-                    <div class="stat-icon-pill bg-purple-subtle text-purple">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="kpi-stat-label">AVG VERIFIKASI NOC</span>
+                    <div class="kpi-stat-icon bg-purple-subtle text-purple">
                         <i class="bi bi-check2-all"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $executiveKpi['formatted_avg_verification'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_verification'] }}</div>
+                    <div class="kpi-stat-desc">
                         Closing Awal &rarr; Closing Akhir
                     </div>
                 </div>

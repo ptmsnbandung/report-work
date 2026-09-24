@@ -7,11 +7,11 @@
     .shift-stat-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 16px;
-        padding: 1.15rem;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
         height: 100%;
         display: flex;
@@ -20,7 +20,7 @@
     }
     .shift-stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
     }
     .shift-stat-card::before {
         content: '';
@@ -28,12 +28,50 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 3.5px;
+        height: 3px;
     }
     .shift-stat-card.border-c-total::before { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
     .shift-stat-card.border-c-pagi::before { background: linear-gradient(90deg, #f59e0b, #d97706); }
     .shift-stat-card.border-c-siang::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
     .shift-stat-card.border-c-malam::before { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+
+    .shift-stat-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .shift-stat-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .shift-stat-val {
+        font-size: 1.12rem;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.3px;
+        line-height: 1.25;
+        white-space: nowrap;
+    }
+    .shift-stat-desc {
+        font-size: 0.72rem;
+        color: #64748b;
+        margin-top: 0.2rem;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     .shift-badge-pagi { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
     .shift-badge-siang { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
@@ -109,19 +147,19 @@
     </div>
 
     <!-- ── 4 STAT METRIC CARDS ── -->
-    <div class="row g-2 g-md-3 mb-3 mb-md-4">
+    <div class="row g-2 g-md-2.5 mb-3 mb-md-3.5">
         <!-- 1. Total Handover -->
         <div class="col-6 col-md-3">
             <div class="shift-stat-card border-c-total">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">TOTAL HANDOVER</span>
-                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="shift-stat-label">TOTAL HANDOVER</span>
+                    <div class="shift-stat-icon bg-primary bg-opacity-10 text-primary">
                         <i class="bi bi-arrow-repeat"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $metrics['total_handover'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="shift-stat-val">{{ $metrics['total_handover'] }}</div>
+                    <div class="shift-stat-desc">
                         Pada {{ $metrics['unique_tikets_count'] }} tiket gangguan
                     </div>
                 </div>
@@ -131,15 +169,15 @@
         <!-- 2. Shift Pagi -->
         <div class="col-6 col-md-3">
             <div class="shift-stat-card border-c-pagi">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">KE SHIFT 1 (PAGI)</span>
-                    <div class="rounded-circle bg-warning bg-opacity-15 text-warning p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="shift-stat-label">KE SHIFT 1 (PAGI)</span>
+                    <div class="shift-stat-icon bg-warning bg-opacity-15 text-warning">
                         <i class="bi bi-brightness-high-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $metrics['shift_pagi'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="shift-stat-val">{{ $metrics['shift_pagi'] }}</div>
+                    <div class="shift-stat-desc">
                         Pukul 07:00 - 15:00 WIB
                     </div>
                 </div>
@@ -149,15 +187,15 @@
         <!-- 3. Shift Siang -->
         <div class="col-6 col-md-3">
             <div class="shift-stat-card border-c-siang">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">KE SHIFT 2 (SIANG)</span>
-                    <div class="rounded-circle bg-info bg-opacity-15 text-info p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="shift-stat-label">KE SHIFT 2 (SIANG)</span>
+                    <div class="shift-stat-icon bg-info bg-opacity-15 text-info">
                         <i class="bi bi-sun-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $metrics['shift_siang'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="shift-stat-val">{{ $metrics['shift_siang'] }}</div>
+                    <div class="shift-stat-desc">
                         Pukul 15:00 - 23:00 WIB
                     </div>
                 </div>
@@ -167,15 +205,15 @@
         <!-- 4. Shift Malam -->
         <div class="col-6 col-md-3">
             <div class="shift-stat-card border-c-malam">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">KE SHIFT 3 (MALAM)</span>
-                    <div class="rounded-circle bg-purple bg-opacity-15 text-purple p-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; color: #8b5cf6;">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <span class="shift-stat-label">KE SHIFT 3 (MALAM)</span>
+                    <div class="shift-stat-icon bg-purple bg-opacity-15 text-purple" style="color: #8b5cf6;">
                         <i class="bi bi-moon-stars-fill"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="h3 fw-bold text-navy mb-0">{{ $metrics['shift_malam'] }}</div>
-                    <div class="small text-muted mt-1" style="font-size:0.75rem;">
+                    <div class="shift-stat-val">{{ $metrics['shift_malam'] }}</div>
+                    <div class="shift-stat-desc">
                         Pukul 23:00 - 07:00 WIB
                     </div>
                 </div>
