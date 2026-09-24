@@ -471,6 +471,10 @@ class TiketService
                 'timestamp' => Carbon::now(),
             ]);
 
+            if ($this->notificationService) {
+                $this->notificationService->notifyHandoverShift($handover);
+            }
+
             return $handover;
         });
     }

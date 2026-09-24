@@ -152,4 +152,98 @@ class ReportService
         $filename = 'Laporan_Tiket_Gangguan_' . date('Ymd_His') . '.xlsx';
         return Excel::download(new TiketExport($filters), $filename);
     }
+
+    /**
+     * Query builder data serah terima / handover shift
+     */
+    public function getFilteredHandoverShiftsQuery(array $filters = []): Builder
+    {
+        $query = \App\Models\TiketHandoverShift::with(['tiket', 'userFrom', 'userTo'])
+            ->orderBy('created_at', 'desc');
+
+        if (!empty($filters['shift_from'])) {
+            $query->where('shift_from', $filters['shift_from']);
+        }
+
+        if (!empty($filters['shift_to'])) {
+            $query->where('shift_to', $filters['shift_to']);
+        }
+
+        if (!empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (!empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        if (!empty($filters['user_id'])) {
+            $userId = $filters['user_id'];
+            $query->where(function ($q) use ($userId) {
+                $q->where('user_from_id', $userId)
+                  ->orWhere('user_to_id', $userId);
+            });
+        }
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->whereHas('tiket', function ($q) use ($search) {
+                $q->where('no_tiket', 'like', "%{$search}%")
+                  ->orWhere('backbone_segment', 'like', "%{$search}%");
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Ringkasan metrik statistik handover shift
+     */
+    public function getHandoverShiftsMetrics(array $filters = []): array
+    {
+        $all = $this->getFilteredHandoverShiftsQuery($filters)->get();
+        $totalHandover = $all->count();
+
+        $shiftPagi = $all->where('shift_to', 'Shift 1 (Pagi 07:00-15:00)')->count();
+        $shiftSiang = $all->where('shift_to', 'Shift 2 (Siang 15:00-23:00)')->count();
+        $shiftMalam = $all->where('shift_to', 'Shift 3 (Malam 23:00-07:00)')->count();
+
+        // Unique tikets involved
+        $uniqueTiketsCount = $all->pluck('id_tiket')->unique()->count();
+
+        return [
+            'total_handover' => $totalHandover,
+            'shift_pagi' => $shiftPagi,
+            'shift_siang' => $shiftSiang,
+            'shift_malam' => $shiftMalam,
+            'unique_tikets_count' => $uniqueTiketsCount,
+        ];
+    }
+
+    /**
+     * Generate file PDF Rekapitulasi Handover Shift
+     */
+    public function generateHandoverShiftsPdf(array $filters = [])
+    {
+        $handovers = $this->getFilteredHandoverShiftsQuery($filters)->get();
+        $metrics = $this->getHandoverShiftsMetrics($filters);
+
+        $pdf = Pdf::loadView('reports.pdf_shifts_summary', [
+            'handovers' => $handovers,
+            'metrics' => $metrics,
+            'filters' => $filters,
+            'printDate' => now()->translatedFormat('l, d F Y H:i') . ' WIB',
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf;
+    }
+
+    /**
+     * Download Excel rekap data handover shift
+     */
+    public function downloadHandoverShiftsExcel(array $filters = []): BinaryFileResponse
+    {
+        $filename = 'Rekap_Handover_Shift_' . date('Ymd_His') . '.xlsx';
+        return Excel::download(new \App\Exports\HandoverShiftExport($filters), $filename);
+    }
 }

@@ -4324,69 +4324,120 @@
 @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
 <div class="modal fade" id="handoverShiftModal" tabindex="-1" aria-labelledby="handoverShiftModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow-lg rounded-xl overflow-hidden">
             <form action="{{ route('tiket.handover-shift', $tiket->id) }}" method="POST">
                 @csrf
-                <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold" id="handoverShiftModalLabel">
-                        <i class="bi bi-arrow-left-right text-purple me-2"></i>Serah Terima Pekerjaan (Oper Shift)
-                    </h6>
+                <div class="modal-header bg-navy text-white p-3.5" style="background: linear-gradient(135deg, #07152b 0%, #102d66 100%);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(139, 92, 246, 0.25); color: #c4b5fd;">
+                            <i class="bi bi-arrow-left-right"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title fw-bold mb-0" id="handoverShiftModalLabel">Serah Terima Pekerjaan (Oper Shift)</h6>
+                            <span class="small text-white-50" style="font-size: 0.72rem;">Tiket: {{ $tiket->no_tiket }} ({{ $tiket->backbone_segment }})</span>
+                        </div>
+                    </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body p-3 p-md-4">
+                    <!-- Status Ringkasan Lapangan Saat Ini -->
+                    <div class="p-2.5 rounded-3 mb-3 bg-light border border-light-subtle d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <div class="small">
+                            <span class="text-muted">Status:</span> <strong class="text-navy">{{ $tiket->status }}</strong> &bull;
+                            <span class="text-muted">Update:</span> <strong>{{ $tiket->minutes_since_last_update !== null ? $tiket->minutes_since_last_update . 'm lalu' : 'Baru' }}</strong>
+                        </div>
+                        @if($tiket->is_stop_clock)
+                            <span class="badge bg-warning text-dark font-monospace" style="font-size: 0.68rem;">
+                                <i class="bi bi-pause-circle-fill me-1"></i>SLA Paused
+                            </span>
+                        @endif
+                    </div>
+
                     <div class="row g-2 mb-3">
                         <div class="col-6">
-                            <label for="shift_sebelum" class="form-label small fw-semibold text-navy">Shift Sekarang</label>
-                            <input type="text" class="form-control form-control-sm bg-light" id="shift_sebelum" name="shift_sebelum" value="Shift Sebelumnya" placeholder="Contoh: Shift Pagi">
+                            <label for="shift_sebelum" class="form-label small fw-semibold text-navy mb-1">Shift Asal (From)</label>
+                            <select class="form-select form-select-sm" id="shift_sebelum" name="shift_sebelum" required>
+                                <option value="Shift 1 (Pagi 07:00-15:00)" selected>Shift 1 (Pagi 07:00-15:00)</option>
+                                <option value="Shift 2 (Siang 15:00-23:00)">Shift 2 (Siang 15:00-23:00)</option>
+                                <option value="Shift 3 (Malam 23:00-07:00)">Shift 3 (Malam 23:00-07:00)</option>
+                            </select>
                         </div>
                         <div class="col-6">
-                            <label for="shift_tujuan" class="form-label small fw-bold text-navy">
-                                Menuju Shift <span class="text-danger">*</span>
+                            <label for="shift_tujuan" class="form-label small fw-bold text-navy mb-1">
+                                Shift Tujuan (To) <span class="text-danger">*</span>
                             </label>
                             <select class="form-select form-select-sm" id="shift_tujuan" name="shift_tujuan" required>
-                                <option value="PAGI">Shift Pagi</option>
-                                <option value="SIANG" selected>Shift Siang</option>
-                                <option value="MALAM">Shift Malam</option>
+                                <option value="Shift 1 (Pagi 07:00-15:00)">Shift 1 (Pagi 07:00-15:00)</option>
+                                <option value="Shift 2 (Siang 15:00-23:00)" selected>Shift 2 (Siang 15:00-23:00)</option>
+                                <option value="Shift 3 (Malam 23:00-07:00)">Shift 3 (Malam 23:00-07:00)</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="status_lapangan" class="form-label small fw-bold text-navy">
-                            Kondisi / Status Terakhir di Lapangan <span class="text-danger">*</span>
+                        <label for="user_to_id" class="form-label small fw-bold text-navy mb-1">
+                            Petugas Penerima Handover (PIC Lanjutan)
+                        </label>
+                        <select class="form-select form-select-sm" id="user_to_id" name="user_to_id">
+                            <option value="">-- Pilih Petugas Penerima Shift --</option>
+                            @foreach($mentionableUsers as $mu)
+                                <option value="{{ $mu['id'] }}">
+                                    {{ $mu['name'] }} ({{ $mu['role'] }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-text" style="font-size: 0.7rem;">Petugas terpilih akan menerima notifikasi serah terima tiket ini secara instan di HP &amp; browser.</div>
+                    </div>
+
+                    <!-- Quick Template Chips -->
+                    <div class="mb-2">
+                        <label class="form-label small fw-semibold text-navy mb-1">Template Cepat Catatan:</label>
+                        <div class="d-flex flex-wrap gap-1">
+                            <button type="button" class="btn btn-light btn-xs border rounded-pill py-0.5 px-2 text-muted" style="font-size: 0.7rem;" onclick="appendHandoverNote('[Jointing Core Berlangsung] ')">+ Jointing Core</button>
+                            <button type="button" class="btn btn-light btn-xs border rounded-pill py-0.5 px-2 text-muted" style="font-size: 0.7rem;" onclick="appendHandoverNote('[Menunggu OTDR Ulang] ')">+ Butuh OTDR</button>
+                            <button type="button" class="btn btn-light btn-xs border rounded-pill py-0.5 px-2 text-muted" style="font-size: 0.7rem;" onclick="appendHandoverNote('[Material & Splicer Lengkap] ')">+ Material OK</button>
+                            <button type="button" class="btn btn-light btn-xs border rounded-pill py-0.5 px-2 text-muted" style="font-size: 0.7rem;" onclick="appendHandoverNote('[Kunci Shelter Diserahterimakan] ')">+ Kunci Shelter</button>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status_lapangan" class="form-label small fw-bold text-navy mb-1">
+                            Catatan Serah Terima / Kondisi Lapangan <span class="text-danger">*</span>
                         </label>
                         <textarea class="form-control form-control-sm"
                                   id="status_lapangan"
                                   name="status_lapangan"
-                                  rows="2"
-                                  placeholder="Contoh: Penarikan kabel 100m selesai, persiapan jointing di JC2..."
+                                  rows="3"
+                                  placeholder="Tuliskan perkembangan pekerjaan terakhir, sisa core/kabel yang perlu disambung, dan hal penting bagi petugas shift berikutnya..."
                                   required></textarea>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="kendala_pending" class="form-label small fw-semibold text-navy">Kendala / Hal yang Belum Selesai</label>
-                        <textarea class="form-control form-control-sm"
-                                  id="kendala_pending"
-                                  name="kendala_pending"
-                                  rows="2"
-                                  placeholder="Contoh: Splicer baterai low, tim lanjutan mohon bawa inverter cadangan..."></textarea>
-                    </div>
-
                     <div class="mb-0">
-                        <label for="alokasi_team" class="form-label small fw-semibold text-navy">Personil Tim Shift Lanjutan (Opsional)</label>
-                        <input type="text" class="form-control form-control-sm" id="alokasi_team" name="alokasi_team" placeholder="Contoh: Budi, Hendra (Team Shift Malam)">
+                        <label for="kendala_pending" class="form-label small fw-semibold text-navy mb-1">Hambatan / Catatan Tambahan (Opsional)</label>
+                        <input type="text" class="form-control form-control-sm" id="kendala_pending" name="kendala_pending" placeholder="Contoh: Genset/baterai splicer menipis, butuh recharge">
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary btn-sm px-4">
-                        <i class="bi bi-save me-1"></i> Simpan Handover
+                <div class="modal-footer bg-light py-2.5 px-3.5 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 rounded-pill" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); border: none;">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span>Kirim &amp; Simpan Handover</span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function appendHandoverNote(text) {
+        const textarea = document.getElementById('status_lapangan');
+        if (textarea) {
+            textarea.value = (textarea.value ? textarea.value + ' ' : '') + text;
+            textarea.focus();
+        }
+    }
+</script>
 @endif
 
 <!-- ── MODAL CLOSING TIKET / VERIFIKASI CLOSING AKHIR ── -->

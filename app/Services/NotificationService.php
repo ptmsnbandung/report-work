@@ -193,4 +193,42 @@ class NotificationService
             $this->waService->sendMessage($u->phone, $waMessage, $tiket->id);
         }
     }
+
+    /**
+     * Kirim notifikasi serah terima / handover shift ke petugas penerima
+     */
+    public function notifyHandoverShift(\App\Models\TiketHandoverShift $handover): void
+    {
+        $targetUser = $handover->userTo;
+        $tiket = $handover->tiket;
+        $sender = $handover->userFrom;
+
+        if (!$targetUser || !$tiket) {
+            return;
+        }
+
+        // 1. Database & Mail Notification
+        $targetUser->notify(new \App\Notifications\HandoverShiftNotification($handover));
+
+        // 2. In-App Notification Log
+        NotifikasiLog::create([
+            'id_tiket' => $tiket->id,
+            'tipe' => 'INAPP',
+            'penerima' => "{$targetUser->name} ({$targetUser->role})",
+            'pesan' => "Handover Shift {$handover->shift_from} ke {$handover->shift_to} dari {$sender?->name}",
+            'status' => 'SENT',
+        ]);
+
+        // 3. Web Push Notification ke HP & Browser petugas penerima
+        try {
+            $this->webPushService->sendToUser(
+                $targetUser,
+                "🔄 Handover Tiket: {$tiket->no_tiket}",
+                "Serah terima ({$handover->shift_from} ➔ {$handover->shift_to}) dari {$sender?->name}. Catatan: {$handover->catatan_handover}",
+                route('tiket.show', $tiket->id)
+            );
+        } catch (\Throwable $e) {
+            Log::warning('WebPush failed for handover shift: ' . $e->getMessage());
+        }
+    }
 }

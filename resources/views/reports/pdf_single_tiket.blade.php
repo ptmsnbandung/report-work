@@ -352,7 +352,38 @@
         </tbody>
     </table>
 
-    <!-- ── 6. TANDA TANGAN PENGESAHAN ── -->
+    <!-- ── 6. RIWAYAT SERAH TERIMA / HANDOVER SHIFT (JIKA ADA) ── -->
+    @if($tiket->handoverShifts->count() > 0)
+    <div class="section-title">6. Riwayat Serah Terima / Oper Shift</div>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th style="width: 18%;">Waktu Handover</th>
+                <th style="width: 28%;">Perpindahan Shift</th>
+                <th style="width: 24%;">Petugas (From ➔ To)</th>
+                <th style="width: 30%;">Catatan Serah Terima</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($tiket->handoverShifts as $h)
+            <tr>
+                <td style="font-family: monospace; font-size: 7.5pt;">
+                    {{ $h->created_at->format('d/m/Y H:i') }} WIB
+                </td>
+                <td>
+                    <strong>{{ explode('(', $h->shift_from)[0] }}</strong> ➔ <strong>{{ explode('(', $h->shift_to)[0] }}</strong>
+                </td>
+                <td>
+                    {{ $h->userFrom?->name ?? 'Sistem' }} ➔ {{ $h->userTo?->name ?? 'PIC Shift Baru' }}
+                </td>
+                <td>{{ $h->catatan_handover }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+
+    <!-- ── TANDA TANGAN PENGESAHAN ── -->
     <table class="signature-table">
         <tr>
             <td class="signature-box">

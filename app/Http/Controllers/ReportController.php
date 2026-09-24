@@ -122,7 +122,8 @@ class ReportController extends Controller
      */
     public function exportTiketPdf(Tiket $tiket)
     {
-        $filename = 'Berita_Acara_Gangguan_' . $tiket->no_tiket . '.pdf';
+        $safeNoTiket = str_replace(['/', '\\'], '_', $tiket->no_tiket);
+        $filename = 'Berita_Acara_Gangguan_' . $safeNoTiket . '.pdf';
         return $this->reportService->generateSingleTiketPdf($tiket)->download($filename);
     }
 
@@ -141,5 +142,66 @@ class ReportController extends Controller
         ]);
 
         return $this->reportService->downloadExcel($filters);
+    }
+
+    /**
+     * Halaman Audit & Rekapitulasi Handover / Oper Shift Tiket
+     */
+    public function shifts(Request $request): View
+    {
+        $filters = $request->only([
+            'start_date',
+            'end_date',
+            'shift_from',
+            'shift_to',
+            'user_id',
+            'search',
+        ]);
+
+        $metrics = $this->reportService->getHandoverShiftsMetrics($filters);
+        $handovers = $this->reportService->getFilteredHandoverShiftsQuery($filters)->paginate(15)->withQueryString();
+        $users = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+
+        return view('reports.shifts', compact(
+            'handovers',
+            'metrics',
+            'filters',
+            'users'
+        ));
+    }
+
+    /**
+     * Export Rekapitulasi Handover Shift ke PDF
+     */
+    public function exportShiftsPdf(Request $request)
+    {
+        $filters = $request->only([
+            'start_date',
+            'end_date',
+            'shift_from',
+            'shift_to',
+            'user_id',
+            'search',
+        ]);
+
+        $filename = 'Rekap_Handover_Shift_' . date('Ymd_His') . '.pdf';
+        return $this->reportService->generateHandoverShiftsPdf($filters)->download($filename);
+    }
+
+    /**
+     * Export Rekapitulasi Handover Shift ke Excel
+     */
+    public function exportShiftsExcel(Request $request): BinaryFileResponse
+    {
+        $filters = $request->only([
+            'start_date',
+            'end_date',
+            'shift_from',
+            'shift_to',
+            'user_id',
+            'search',
+        ]);
+
+        return $this->reportService->downloadHandoverShiftsExcel($filters);
     }
 }

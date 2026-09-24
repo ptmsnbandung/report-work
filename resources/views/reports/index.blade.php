@@ -128,11 +128,15 @@
                 </div>
             </div>
 
-            <!-- Export & KPI Buttons -->
+            <!-- Export, KPI & Shift Buttons -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
                 <a href="{{ route('reports.kpi') }}" class="btn btn-primary btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill flex-sm-grow-0" style="min-height: 35px; background: linear-gradient(135deg, #1e40af, #3b82f6); border: none;">
                     <i class="bi bi-trophy-fill text-warning"></i>
                     <span>KPI Leaderboard</span>
+                </a>
+                <a href="{{ route('reports.shifts') }}" class="btn btn-outline-purple btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill flex-sm-grow-0" style="min-height: 35px; border-color: #8b5cf6; color: #7c3aed;">
+                    <i class="bi bi-arrow-left-right text-purple"></i>
+                    <span>Rekap Oper Shift</span>
                 </a>
                 <a href="{{ route('reports.export.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill flex-sm-grow-0" style="min-height: 35px;">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
