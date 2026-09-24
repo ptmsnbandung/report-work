@@ -87,6 +87,47 @@ INSERT INTO `titik_perbaikan` (`id_tiket`, `nama_titik`, `latitude`, `longitude`
 (1, 'JC1 (Joint Closure Span Barat)', -6.37919900, 106.84655200, 'Tiang No 18 depan ruko - Posisi Closure Baru Arah BBLU', NOW(), NOW()),
 (1, 'JC2 (Joint Closure Span Timur)', -6.37957800, 106.84647500, 'Tiang No 22 seberang SPBU - Posisi Closure Baru Arah Reog', NOW(), NOW());
 
+-- =========================================================================================
+-- STRUKTUR TABEL JOINT CLOSURE & DETAIL CORE (SAFETY DDL)
+-- =========================================================================================
+CREATE TABLE IF NOT EXISTS `tiket_joint_closures` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_tiket` bigint(20) unsigned NOT NULL,
+  `nama_closure` varchar(100) NOT NULL,
+  `tipe_closure` enum('DOME','INLINE') NOT NULL DEFAULT 'DOME',
+  `status_aset` enum('EKSISTING','ASET_BARU') NOT NULL DEFAULT 'ASET_BARU',
+  `kapasitas_kabel_asal` int(11) NOT NULL DEFAULT 48,
+  `jumlah_tube_asal` int(11) NOT NULL DEFAULT 4,
+  `kapasitas_kabel_jumper` int(11) NOT NULL DEFAULT 48,
+  `jumlah_tube_jumper` int(11) NOT NULL DEFAULT 4,
+  `jenis_sambungan` enum('LURUS_STRAIGHT','MANUVER_BRANCH') NOT NULL DEFAULT 'LURUS_STRAIGHT',
+  `lokasi_penempatan` varchar(255) DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `catatan` text DEFAULT NULL,
+  `created_by` bigint(20) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tiket_joint_closures_id_tiket_status_aset_index` (`id_tiket`,`status_aset`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `tiket_joint_closure_cores` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_joint_closure` bigint(20) unsigned NOT NULL,
+  `tube_asal` varchar(30) NOT NULL,
+  `core_asal` varchar(30) NOT NULL,
+  `tube_tujuan` varchar(30) DEFAULT NULL,
+  `core_tujuan` varchar(30) DEFAULT NULL,
+  `status_core` enum('TERHUBUNG','SPARE','LOSS_PUTUS','MANUVER') NOT NULL DEFAULT 'TERHUBUNG',
+  `loss_db` decimal(5,2) DEFAULT NULL,
+  `keterangan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `tiket_joint_closure_cores_id_joint_closure_status_core_index` (`id_joint_closure`,`status_core`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Data Joint Closure #1 (JC-BBLU-01) - ASET BARU (Kapasitas Eksisting 96 Core disambung Jumper 48 Core)
 INSERT INTO `tiket_joint_closures` (
     `id`, `id_tiket`, `nama_closure`, `tipe_closure`, `status_aset`, 
