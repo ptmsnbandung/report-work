@@ -1588,6 +1588,145 @@
         border-color: #d97706;
         box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       MANDATORY CLOSING CHECKLIST & READINESS CARDS
+       ═══════════════════════════════════════════════════════════════════ */
+    .closing-readiness-card {
+        background: #ffffff;
+        border-radius: var(--neu-radius, 16px);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+    .closing-readiness-header {
+        padding: 0.85rem 1.15rem;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .closing-progress-bar-track {
+        width: 100%;
+        height: 4px;
+        background: #f1f5f9;
+        overflow: hidden;
+    }
+    .closing-progress-bar-fill {
+        height: 100%;
+        transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .closing-item-tile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+        padding: 0.75rem 0.85rem;
+        border-radius: 12px;
+        border: 1.5px solid #e2e8f0;
+        background: #f8fafc;
+        text-decoration: none !important;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        height: 100%;
+    }
+    .closing-item-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+    .closing-item-tile.is-complete {
+        background: linear-gradient(145deg, #f0fdf4 0%, #ecfdf5 100%);
+        border-color: #a7f3d0;
+    }
+    .closing-item-tile.is-complete:hover {
+        border-color: #34d399;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
+    }
+    .closing-item-tile.is-pending {
+        background: #ffffff;
+        border-color: #f1f5f9;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+    .closing-item-tile.is-pending:hover {
+        background: #f8fafc;
+        border-color: #93c5fd;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+    }
+    .closing-tile-icon-box {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.95rem;
+        transition: transform 0.2s ease;
+    }
+    .closing-item-tile:hover .closing-tile-icon-box {
+        transform: scale(1.08);
+    }
+    .closing-item-tile.is-complete .closing-tile-icon-box {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+    .closing-item-tile.is-pending .closing-tile-icon-box {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 1px dashed #cbd5e1;
+    }
+    .closing-tile-arrow {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        background: rgba(241, 245, 249, 0.6);
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+    }
+    .closing-item-tile:hover .closing-tile-arrow {
+        color: #2563eb;
+        background: #eff6ff;
+        transform: translateX(2px);
+    }
+    .closing-item-tile.is-complete .closing-tile-arrow {
+        color: #059669;
+        background: #d1fae5;
+    }
+
+    @media (max-width: 575.98px) {
+        .closing-readiness-header {
+            padding: 0.65rem 0.85rem;
+        }
+        .closing-item-tile {
+            padding: 0.55rem 0.65rem;
+            border-radius: 10px;
+        }
+        .closing-tile-icon-box {
+            width: 28px;
+            height: 28px;
+            font-size: 0.82rem;
+            border-radius: 8px;
+        }
+        .closing-tile-title {
+            font-size: 0.76rem !important;
+        }
+        .closing-tile-desc {
+            font-size: 0.66rem !important;
+        }
+        .closing-tile-arrow {
+            display: none !important;
+        }
+    }
 </style>
 @endpush
 
@@ -2131,72 +2270,141 @@
     <!-- ── MANDATORY CLOSING CHECKLIST CARD (ANTI CLOSING SEMBARANGAN) ── -->
     @php
         $prereqs = $tiket->checkClosingPrerequisites();
+        $completedCount = 0;
+        if ($prereqs['items']['resume_filled']) $completedCount++;
+        if ($prereqs['items']['photo_uploaded']) $completedCount++;
+        if ($prereqs['items']['titik_perbaikan']) $completedCount++;
+        if ($prereqs['items']['tipe_penanganan']) $completedCount++;
+        $progressPercent = $completedCount * 25;
     @endphp
     @if($tiket->status !== 'CLOSE')
-    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">
-        <div class="card-body p-3 p-md-3.5">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2.5 pb-2 border-bottom">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-circle bg-primary bg-opacity-10 p-1.5 text-primary d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
-                        <i class="bi bi-shield-lock-fill"></i>
+    <div class="closing-readiness-card">
+        <!-- Header with Progress -->
+        <div class="closing-readiness-header">
+            <div class="d-flex align-items-center gap-2.5">
+                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: #ffffff; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);">
+                    <i class="bi bi-shield-lock-fill" style="font-size: 0.95rem;"></i>
+                </div>
+                <div>
+                    <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                        <span class="fw-bold text-navy" style="font-size: 0.92rem; letter-spacing: -0.2px;">Kesiapan Closing Tiket</span>
+                        <span class="badge rounded-pill fw-bold" style="background: {{ $progressPercent === 100 ? '#ecfdf5' : '#eff6ff' }}; color: {{ $progressPercent === 100 ? '#059669' : '#1d4ed8' }}; border: 1px solid {{ $progressPercent === 100 ? '#a7f3d0' : '#bfdbfe' }}; font-size: 0.68rem;">
+                            {{ $completedCount }}/4 Terpenuhi ({{ $progressPercent }}%)
+                        </span>
                     </div>
-                    <div>
-                        <span class="fw-bold text-navy small">Kesiapan Closing Tiket</span>
-                        <span class="text-muted small ms-1 d-none d-sm-inline">(Mandatori Teknisi & Lapangan)</span>
+                    <div class="text-muted small d-none d-sm-block" style="font-size: 0.72rem; margin-top: 1px;">
+                        4 syarat mandatori yang wajib dilengkapi teknisi sebelum closing awal dapat diajukan
                     </div>
                 </div>
+            </div>
+
+            <div>
                 @if($prereqs['ready'])
-                    <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-bold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Siap Closing (4/4 Terpenuhi)
+                    <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-1.5 rounded-pill small fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Siap Closing Awal</span>
                     </span>
                 @else
-                    <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-50 px-2.5 py-1 rounded-pill small fw-bold">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i> Belum Lengkap ({{ count($prereqs['missing_items']) }} item tersisa)
+                    <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-40 px-3 py-1.5 rounded-pill small fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs">
+                        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                        <span>Belum Lengkap ({{ count($prereqs['missing_items']) }} item lagi)</span>
                     </span>
                 @endif
             </div>
+        </div>
 
-            <div class="row g-2">
+        <!-- Slim Visual Progress Bar -->
+        <div class="closing-progress-bar-track">
+            <div class="closing-progress-bar-fill" style="width: {{ $progressPercent }}%; background: {{ $progressPercent === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : ($progressPercent >= 50 ? 'linear-gradient(90deg, #3b82f6, #10b981)' : 'linear-gradient(90deg, #f59e0b, #3b82f6)') }};"></div>
+        </div>
+
+        <!-- 4 Grid Tiles -->
+        <div class="p-3 bg-light bg-opacity-40">
+            <div class="row g-2.5">
                 <!-- 1. Resume -->
-                <div class="col-6 col-md-3">
-                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['resume_filled'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
-                        <i class="bi {{ $prereqs['items']['resume_filled'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
-                        <div class="min-w-0">
-                            <div class="fw-bold small text-navy text-truncate">1. Resume Pekerjaan</div>
-                            <div class="small text-muted" style="font-size:0.7rem;">{{ $prereqs['items']['resume_filled'] ? 'Problem & Action diisi' : 'Belum diisi lengkap' }}</div>
+                <div class="col-6 col-xl-3">
+                    <div class="closing-item-tile {{ $prereqs['items']['resume_filled'] ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('resume-tab'); if(tab) { tab.click(); document.getElementById('resume-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk mengisi / melihat Resume Pekerjaan">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ $prereqs['items']['resume_filled'] ? 'bi-check-lg' : 'bi-file-earmark-text' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">1. Resume Kerja</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['resume_filled'] ? '#059669' : '#64748b' }};">
+                                    {{ $prereqs['items']['resume_filled'] ? 'Problem & Action diisi' : 'Belum diisi lengkap' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- 2. Dokumentasi -->
-                <div class="col-6 col-md-3">
-                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['photo_uploaded'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
-                        <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
-                        <div class="min-w-0">
-                            <div class="fw-bold small text-navy text-truncate">2. Foto Lapangan / OTDR</div>
-                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->dokumentasis->count() }} foto terupload</div>
+                <div class="col-6 col-xl-3">
+                    <div class="closing-item-tile {{ $prereqs['items']['photo_uploaded'] ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('dokumentasi-tab'); if(tab) { tab.click(); document.getElementById('dokumentasi-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk mengupload Foto Dokumentasi / OTDR">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-lg' : 'bi-camera' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">2. Foto / OTDR</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['photo_uploaded'] ? '#059669' : '#64748b' }};">
+                                    {{ $tiket->dokumentasis->count() > 0 ? $tiket->dokumentasis->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- 3. Titik Perbaikan -->
-                <div class="col-6 col-md-3">
-                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['titik_perbaikan'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
-                        <i class="bi {{ $prereqs['items']['titik_perbaikan'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
-                        <div class="min-w-0">
-                            <div class="fw-bold small text-navy text-truncate">3. Titik Koordinat / JC</div>
-                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->titikPerbaikans->count() }} titik perbaikan</div>
+                <div class="col-6 col-xl-3">
+                    <div class="closing-item-tile {{ $prereqs['items']['titik_perbaikan'] ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('material-tab'); if(tab) { tab.click(); document.getElementById('material-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk menambahkan Titik Koordinat / Joint Closure">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ $prereqs['items']['titik_perbaikan'] ? 'bi-check-lg' : 'bi-geo-alt' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">3. Koordinat / JC</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['titik_perbaikan'] ? '#059669' : '#64748b' }};">
+                                    {{ $tiket->titikPerbaikans->count() > 0 ? $tiket->titikPerbaikans->count() . ' titik tercatat' : 'Wajib minimal 1 titik' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
                         </div>
                     </div>
                 </div>
 
                 <!-- 4. Tipe Penanganan -->
-                <div class="col-6 col-md-3">
-                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['tipe_penanganan'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
-                        <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
-                        <div class="min-w-0">
-                            <div class="fw-bold small text-navy text-truncate">4. Tipe Penanganan</div>
-                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->tipe_penanganan ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Belum dipilih' }}</div>
+                <div class="col-6 col-xl-3">
+                    <div class="closing-item-tile {{ $prereqs['items']['tipe_penanganan'] ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('resume-tab'); if(tab) { tab.click(); document.getElementById('resume-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk memilih Tipe Penanganan (Jointing Lurus / Manuver Core)">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-lg' : 'bi-tools' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">4. Penanganan</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['tipe_penanganan'] ? '#059669' : '#64748b' }};">
+                                    {{ $tiket->tipe_penanganan ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
                         </div>
                     </div>
                 </div>
