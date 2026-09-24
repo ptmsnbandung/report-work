@@ -21,6 +21,13 @@ class ManuverCoreService
                 'core_asal' => trim($data['core_asal']),
                 'core_tujuan' => trim($data['core_tujuan']),
                 'tipe' => strtoupper(trim($data['tipe'])),
+                'lokasi_tipe' => $data['lokasi_tipe'] ?? 'CLOSURE_LAPANGAN',
+                'core_dialihkan' => $data['core_dialihkan'] ?? null,
+                'titik_kembali' => $data['titik_kembali'] ?? null,
+                'status_manuver' => $data['status_manuver'] ?? 'TEMPORARY',
+                'status_core_aset' => $data['status_core_aset'] ?? 'OCCUPIED_MANUVER',
+                'keterangan' => $data['keterangan'] ?? null,
+                'user_id' => auth()->id(),
             ]);
 
             // Auto-update status tiket jadi PROSES jika masih OPEN

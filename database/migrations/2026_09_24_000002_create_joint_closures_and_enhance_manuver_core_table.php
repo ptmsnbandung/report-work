@@ -45,6 +45,7 @@ return new class extends Migration
             $table->string('tube_tujuan', 30)->nullable()->comment('Nama/No Tube Jumper');
             $table->string('core_tujuan', 30)->nullable()->comment('Nama/No Core Jumper');
             $table->enum('status_core', ['TERHUBUNG', 'SPARE', 'LOSS_PUTUS', 'MANUVER'])->default('TERHUBUNG');
+            $table->decimal('loss_db', 5, 2)->nullable()->comment('Redaman sambungan dB');
             $table->string('keterangan', 255)->nullable()->comment('Alokasi link/keterangan port');
             $table->timestamps();
 

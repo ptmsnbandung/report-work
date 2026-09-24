@@ -18,6 +18,12 @@ class StoreManuverCoreRequest extends FormRequest
             'core_asal' => ['required', 'string', 'max:50'],
             'core_tujuan' => ['required', 'string', 'max:50'],
             'tipe' => ['required', 'string', 'in:SEBELUM,SESUDAH'],
+            'lokasi_tipe' => ['nullable', 'string', 'in:POP,OTB,CLOSURE_LAPANGAN,FAT_FDT,ODC'],
+            'core_dialihkan' => ['nullable', 'string', 'max:100'],
+            'titik_kembali' => ['nullable', 'string', 'max:100'],
+            'status_manuver' => ['nullable', 'string', 'in:TEMPORARY,PERMANENT'],
+            'status_core_aset' => ['nullable', 'string', 'in:OCCUPIED_MANUVER,BROKEN_LOSS,SPARE_AVAILABLE'],
+            'keterangan' => ['nullable', 'string', 'max:255'],
         ];
     }
 

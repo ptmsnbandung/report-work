@@ -1723,9 +1723,90 @@
         .closing-tile-desc {
             font-size: 0.66rem !important;
         }
-        .closing-tile-arrow {
-            display: none !important;
-        }
+    /* ═══════════════════════════════════════════════════════════════════
+       FIBER OPTIC JOINT CLOSURE & CABLE SPLICING (PRO STYLES)
+       ═══════════════════════════════════════════════════════════════════ */
+    .icon-box-indigo {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3) !important;
+    }
+    .btn-indigo-pro {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35) !important;
+    }
+    .btn-indigo-pro:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.45) !important;
+    }
+    .jc-card-pro {
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        overflow: hidden;
+        transition: all 0.2s ease;
+    }
+    .jc-card-pro:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    }
+    .jc-header-pro {
+        padding: 0.95rem 1.25rem;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+    .jc-spec-banner {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.85rem 1rem;
+    }
+    .jc-spec-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        height: 100%;
+    }
+    .jc-core-row {
+        padding: 0.65rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        background: #ffffff;
+        transition: all 0.15s ease;
+    }
+    .jc-core-row:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+    .gps-lock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: 50rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+    }
+    .gps-pulse-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #10b981;
+        animation: waPulse 1.8s infinite;
     }
 </style>
 @endpush
@@ -2454,6 +2535,14 @@
                         <i class="bi bi-box-seam text-warning"></i>
                         <span>Material & Titik</span>
                         <span class="badge bg-light text-navy border">{{ $tiket->materials->count() + $tiket->titikPerbaikans->count() }}</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link d-flex align-items-center gap-1.5"
+                            id="jointclosure-tab" data-bs-toggle="tab" data-bs-target="#jointclosure-pane" type="button" role="tab">
+                        <i class="bi bi-diagram-3-fill" style="color: #6366f1 !important;"></i>
+                        <span>Kabel & JC</span>
+                        <span class="badge bg-light text-navy border" id="jointClosureCountBadge">{{ $tiket->jointClosures->count() }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -3217,6 +3306,275 @@
                     </div>
                 </div>
 
+                <!-- ════ TAB: KABEL & JOINT CLOSURE (JC) ════ -->
+                <div class="tab-pane fade" id="jointclosure-pane" role="tabpanel">
+                    <div class="tab-header-banner">
+                        <div class="tab-header-left">
+                            <div class="tab-header-icon-box icon-box-indigo">
+                                <i class="bi bi-diagram-3-fill"></i>
+                            </div>
+                            <div>
+                                <div class="tab-header-title">Pencatatan Kabel &amp; Sambungan Joint Closure (JC)</div>
+                                <div class="tab-header-subtitle">Kapasitas kabel eksisting &amp; jumper, mapping tube-core, status core sisa, dan aset baru closure</div>
+                            </div>
+                        </div>
+                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                        <button class="btn-tab-action-pro btn-indigo-pro btn-mobile-block" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            <span>Tambah Joint Closure</span>
+                        </button>
+                        @endif
+                    </div>
+
+                    @if($tiket->jointClosures->count() > 0)
+                        <div class="d-flex flex-column gap-4">
+                            @foreach($tiket->jointClosures as $jc)
+                            <div class="jc-card-pro">
+                                <!-- JC Card Header -->
+                                <div class="jc-header-pro">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-navy text-white font-monospace fs-6 px-2.5 py-1.5 shadow-xs">
+                                                <i class="bi bi-box-seam me-1 text-teal"></i>{{ $jc->nama_closure }}
+                                            </span>
+                                            @if($jc->is_aset_baru)
+                                                <span class="badge bg-success text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                                    <i class="bi bi-stars me-1"></i>ASET BARU
+                                                </span>
+                                            @else
+                                                <span class="badge bg-secondary text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                                    EKSISTING
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                            <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
+                                                <i class="bi bi-tag-fill text-indigo me-1"></i>{{ $jc->jenis_closure }}
+                                            </span>
+                                            <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
+                                                <i class="bi bi-geo-fill text-danger me-1"></i>{{ str_replace('_', ' ', $jc->lokasi_fisik) }}
+                                            </span>
+                                            @if($jc->latitude && $jc->longitude)
+                                            <a href="{{ $jc->google_maps_url }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 text-decoration-none" style="font-size: 0.72rem;" title="Buka di Google Maps">
+                                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
+                                                <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.65rem;"></i>
+                                            </a>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="text-muted small" style="font-size: 0.75rem;">
+                                            <i class="bi bi-person-fill text-secondary me-1"></i>{{ $jc->creator?->name ?? 'Sistem' }} &bull; {{ $jc->created_at->format('d/m H:i') }}
+                                        </span>
+                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                        <form action="{{ route('tiket.joint-closure.destroy', $jc->id) }}" method="POST"
+                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus data Joint Closure {{ $jc->nama_closure }} beserta semua sambungan core di dalamnya?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger py-0.5 px-2 rounded-pill" title="Hapus Joint Closure">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- JC Card Body -->
+                                <div class="card-body p-3 p-md-4">
+                                    <!-- Cable Capacity Specs Row -->
+                                    <div class="jc-spec-banner mb-3">
+                                        <div class="row g-2 align-items-center">
+                                            <div class="col-12 col-md-5">
+                                                <div class="jc-spec-box">
+                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                            <i class="bi bi-arrow-down-right-circle text-primary me-1"></i>Kabel Eksisting / Asal
+                                                        </span>
+                                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                            {{ $jc->jumlah_tube_asal }} Tube
+                                                        </span>
+                                                    </div>
+                                                    <div class="d-flex align-items-baseline gap-2">
+                                                        <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_asal }}</span>
+                                                        <span class="text-muted small">Core</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-2 text-center py-1">
+                                                <div class="d-inline-flex align-items-center justify-content-center bg-white border rounded-circle shadow-xs" style="width: 38px; height: 38px;">
+                                                    <i class="bi bi-arrow-left-right text-indigo fs-5"></i>
+                                                </div>
+                                                <div class="text-muted" style="font-size: 0.68rem; font-weight: 600;">DISAMBUNG</div>
+                                            </div>
+
+                                            <div class="col-12 col-md-5">
+                                                <div class="jc-spec-box">
+                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                            <i class="bi bi-arrow-up-left-circle text-teal me-1"></i>Kabel Jumper / Distribusi
+                                                        </span>
+                                                        <span class="badge bg-teal bg-opacity-10 text-teal border border-teal border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                            {{ $jc->jumlah_tube_jumper }} Tube
+                                                        </span>
+                                                    </div>
+                                                    <div class="d-flex align-items-baseline gap-2">
+                                                        <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_jumper }}</span>
+                                                        <span class="text-muted small">Core</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if($jc->keterangan)
+                                        <div class="mt-2 pt-2 border-top text-muted small" style="font-size: 0.78rem;">
+                                            <i class="bi bi-info-circle text-primary me-1"></i><strong>Catatan:</strong> {{ $jc->keterangan }}
+                                        </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Summary Core Status & Action Bar -->
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                            @php
+                                                $cSummary = $jc->core_summary;
+                                            @endphp
+                                            <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <i class="bi bi-check2-circle me-1"></i>{{ $cSummary['terhubung'] }} Terhubung
+                                            </span>
+                                            <span class="badge bg-secondary bg-opacity-15 text-secondary border border-secondary border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <i class="bi bi-dash-circle me-1"></i>{{ $cSummary['spare'] }} Core Sisa / Spare
+                                            </span>
+                                            @if($cSummary['loss'] > 0)
+                                            <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <i class="bi bi-x-circle me-1"></i>{{ $cSummary['loss'] }} Loss / Putus
+                                            </span>
+                                            @endif
+                                            @if($cSummary['manuver'] > 0)
+                                            <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <i class="bi bi-shuffle me-1"></i>{{ $cSummary['manuver'] }} Manuver
+                                            </span>
+                                            @endif
+                                            <span class="badge bg-light text-navy border px-2.5 py-1 rounded-pill small">
+                                                Total: {{ $cSummary['total'] }} Splice
+                                            </span>
+                                        </div>
+
+                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold open-add-core-btn"
+                                                data-jc-id="{{ $jc->id }}"
+                                                data-jc-name="{{ $jc->nama_closure }}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addJointClosureCoreModal">
+                                            <i class="bi bi-plus-lg me-1"></i> Tambah Sambungan Core
+                                        </button>
+                                        @endif
+                                    </div>
+
+                                    <!-- Core Splicing Matrix Records -->
+                                    @if($jc->cores->count() > 0)
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover align-middle border mb-0 rounded-3 overflow-hidden">
+                                                <thead class="table-light">
+                                                    <tr style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px;">
+                                                        <th class="ps-3">Kabel Asal (Tube - Core)</th>
+                                                        <th></th>
+                                                        <th>Kabel Jumper (Tube - Core)</th>
+                                                        <th>Status</th>
+                                                        <th>Loss (dB)</th>
+                                                        <th>Keterangan</th>
+                                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                        <th class="text-end pe-3">Aksi</th>
+                                                        @endif
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="font-size: 0.82rem;">
+                                                    @foreach($jc->cores as $c)
+                                                    <tr>
+                                                        <td class="ps-3 font-monospace fw-semibold text-navy">
+                                                            <i class="bi bi-diagram-2 text-primary me-1"></i>{{ $c->tube_asal }} &bull; {{ $c->core_asal }}
+                                                        </td>
+                                                        <td class="text-center text-muted px-1" style="width: 30px;">
+                                                            <i class="bi bi-arrow-right text-indigo"></i>
+                                                        </td>
+                                                        <td class="font-monospace fw-semibold text-navy">
+                                                            @if($c->tube_jumper || $c->core_jumper)
+                                                                <i class="bi bi-diagram-2 text-teal me-1"></i>{{ $c->tube_jumper ?: '-' }} &bull; {{ $c->core_jumper ?: '-' }}
+                                                            @else
+                                                                <span class="text-muted fst-italic">Tanpa Sambungan (Dikosongkan)</span>
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge {{ $c->status_badge_class }} px-2 py-0.5 rounded-pill" style="font-size: 0.72rem;">
+                                                                {{ str_replace('_', ' ', $c->status) }}
+                                                            </span>
+                                                        </td>
+                                                        <td class="font-monospace">
+                                                            @if($c->loss_db !== null)
+                                                                {{ number_format($c->loss_db, 2) }} dB
+                                                            @else
+                                                                <span class="text-muted">-</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="text-muted small">
+                                                            {{ $c->keterangan ?: '-' }}
+                                                        </td>
+                                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                        <td class="text-end pe-3">
+                                                            <form action="{{ route('tiket.joint-closure.delete-core', $c->id) }}" method="POST"
+                                                                  onsubmit="return confirm('Hapus baris sambungan ini?');" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus baris core">
+                                                                    <i class="bi bi-trash3"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="text-center py-3 bg-light rounded-3 border border-dashed">
+                                            <p class="text-muted small mb-2">Belum ada baris sambungan core yang dicatat untuk closure ini.</p>
+                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                            <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 open-add-core-btn"
+                                                    data-jc-id="{{ $jc->id }}"
+                                                    data-jc-name="{{ $jc->nama_closure }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#addJointClosureCoreModal">
+                                                <i class="bi bi-plus-circle me-1"></i> Tambah Baris Core Pertama
+                                            </button>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="tab-empty-card">
+                            <div class="tab-empty-icon-circle icon-box-indigo">
+                                <i class="bi bi-diagram-3"></i>
+                            </div>
+                            <div class="tab-empty-title">Belum Ada Data Kabel &amp; Joint Closure</div>
+                            <div class="tab-empty-desc">
+                                Catat spesifikasi kabel eksisting, kabel jumper, sambungan tube-core, core spare/sisa, dan tandai penambahan aset baru Joint Closure (JC).
+                            </div>
+                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                            <button class="btn-tab-action-pro btn-indigo-pro" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                <span>Tambah Joint Closure Sekarang</span>
+                            </button>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
                 <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
                 <div class="tab-pane fade" id="dokumentasi-pane" role="tabpanel">
                     <div class="tab-header-banner">
@@ -3842,6 +4200,311 @@
     </div>
 </div>
 
+<!-- ── MODAL TAMBAH JOINT CLOSURE (JC) ── -->
+<div class="modal fade" id="tambahJointClosureModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="{{ route('tiket.joint-closure.store', $tiket->id) }}" method="POST" id="formTambahJointClosure">
+                @csrf
+                <div class="modal-header bg-navy text-white">
+                    <h6 class="modal-title fw-bold text-white">
+                        <i class="bi bi-diagram-3-fill text-teal me-2"></i>Tambah Data Joint Closure (JC) &amp; Sambungan Kabel
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Section 1: Identitas & Lokasi Closure -->
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <h6 class="fw-bold text-navy mb-3 small text-uppercase letter-spacing-1">
+                            <i class="bi bi-geo-alt-fill text-danger me-1"></i> 1. Identitas &amp; Lokasi Fisik Closure
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-5">
+                                <label for="jc_nama" class="form-label small fw-bold text-navy">
+                                    Nama / Kode Closure <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control form-control-sm" id="jc_nama" name="nama_closure" placeholder="Contoh: JC-01, JC Tiang Span 14" required>
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <label for="jc_jenis" class="form-label small fw-bold text-navy">
+                                    Jenis Closure <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select form-select-sm" id="jc_jenis" name="jenis_closure" required>
+                                    <option value="DOME" selected>DOME (Closure Kubah)</option>
+                                    <option value="INLINE">INLINE (Closure Lurus)</option>
+                                    <option value="BOX_FAT">BOX FAT / FDT</option>
+                                    <option value="OTB">OTB (Optical Termination Box)</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <label for="jc_lokasi" class="form-label small fw-bold text-navy">
+                                    Penempatan Fisik <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select form-select-sm" id="jc_lokasi" name="lokasi_fisik" required>
+                                    <option value="POLE" selected>POLE / Tiang Udara</option>
+                                    <option value="MANHOLE">MANHOLE (Bawah Tanah)</option>
+                                    <option value="HANDHOLE">HANDHOLE</option>
+                                    <option value="PEDESTAL">PEDESTAL</option>
+                                    <option value="INDOOR_RACK">INDOOR / Rak OTB</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-7">
+                                <label class="form-label small fw-semibold text-navy d-flex justify-content-between mb-1">
+                                    <span><i class="bi bi-crosshair text-danger me-1"></i> Koordinat GPS Lokasi Closure</span>
+                                    <button type="button" class="btn btn-link p-0 text-teal small text-decoration-none" id="btnGetLocationJc">
+                                        <i class="bi bi-crosshair"></i> Ambil GPS Saya
+                                    </button>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number" step="any" class="form-control" id="latitude_jc" name="latitude" placeholder="Latitude (-6.xxx)">
+                                    <input type="number" step="any" class="form-control" id="longitude_jc" name="longitude" placeholder="Longitude (107.xxx)">
+                                    <button type="button" class="btn btn-outline-secondary" id="btnOpenMapPickerJc" title="Pilih di Peta">
+                                        <i class="bi bi-map"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-5 d-flex align-items-center">
+                                <div class="form-check form-switch p-3 bg-white rounded-3 border w-100">
+                                    <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="jc_is_aset_baru" name="is_aset_baru" value="1">
+                                    <label class="form-check-label small fw-bold text-navy cursor-pointer" for="jc_is_aset_baru">
+                                        <i class="bi bi-stars text-warning me-1"></i> Tandai Penambahan Aset Baru (New Cut)
+                                    </label>
+                                    <div class="text-muted" style="font-size: 0.7rem;">Centang jika ada pemasangan closure fisik baru yang sebelumnya tidak ada.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Spesifikasi Kabel & Kapasitas Tube -->
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <h6 class="fw-bold text-navy mb-3 small text-uppercase letter-spacing-1">
+                            <i class="bi bi-bezier2 text-primary me-1"></i> 2. Spesifikasi Kabel &amp; Kapasitas (Kabel Eksisting vs Jumper)
+                        </h6>
+                        <div class="row g-3">
+                            <!-- Kabel Asal -->
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 bg-white rounded-3 border h-100">
+                                    <div class="d-flex align-items-center gap-1.5 mb-2">
+                                        <span class="badge bg-primary text-white rounded-pill px-2">KABEL ASAL / EKSISTING</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-7">
+                                            <label for="jc_kapasitas_asal" class="form-label small fw-bold text-navy">
+                                                Kapasitas Kabel <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select form-select-sm" id="jc_kapasitas_asal" name="kapasitas_kabel_asal" required>
+                                                <option value="2">2 Core</option>
+                                                <option value="12">12 Core</option>
+                                                <option value="24" selected>24 Core</option>
+                                                <option value="48">48 Core</option>
+                                                <option value="96">96 Core</option>
+                                                <option value="144">144 Core</option>
+                                                <option value="288">288 Core</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="jc_tube_asal" class="form-label small fw-bold text-navy">
+                                                Jumlah Tube <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" class="form-control form-control-sm" id="jc_tube_asal" name="jumlah_tube_asal" value="2" min="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kabel Jumper -->
+                            <div class="col-12 col-md-6">
+                                <div class="p-3 bg-white rounded-3 border h-100">
+                                    <div class="d-flex align-items-center gap-1.5 mb-2">
+                                        <span class="badge bg-teal text-white rounded-pill px-2">KABEL JUMPER / DISTRIBUSI</span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-7">
+                                            <label for="jc_kapasitas_jumper" class="form-label small fw-bold text-navy">
+                                                Kapasitas Kabel <span class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select form-select-sm" id="jc_kapasitas_jumper" name="kapasitas_kabel_jumper" required>
+                                                <option value="2">2 Core</option>
+                                                <option value="12">12 Core</option>
+                                                <option value="24" selected>24 Core</option>
+                                                <option value="48">48 Core</option>
+                                                <option value="96">96 Core</option>
+                                                <option value="144">144 Core</option>
+                                                <option value="288">288 Core</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-5">
+                                            <label for="jc_tube_jumper" class="form-label small fw-bold text-navy">
+                                                Jumlah Tube <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="number" class="form-control form-control-sm" id="jc_tube_jumper" name="jumlah_tube_jumper" value="2" min="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Dynamic Core Splicing Matrix Input -->
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <h6 class="fw-bold text-navy mb-0 small text-uppercase letter-spacing-1">
+                                <i class="bi bi-table text-success me-1"></i> 3. Input Sambungan Tube / Core (Opsional &amp; Fleksibel)
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" id="btnAddCoreRow">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Baris Core
+                            </button>
+                        </div>
+                        <p class="text-muted small mb-3" style="font-size: 0.75rem;">
+                            Hubungan sambungan cukup input teks sederhana (misal Tube 1 Core 1 &rarr; Tube 1 Core 1). Core sisa/spare tetap bisa dicatat statusnya.
+                        </p>
+
+                        <div id="jcCoreRowsContainer" class="d-flex flex-column gap-2">
+                            <!-- Template Row 1 (Default) -->
+                            <div class="jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs">
+                                <div class="row g-2 align-items-center">
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core 1" value="Core 1">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core 1" value="Core 1">
+                                    </div>
+                                    <div class="col-6 col-md-2">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                                        <select class="form-select form-select-sm" name="core_status[]">
+                                            <option value="TERHUBUNG" selected>TERHUBUNG</option>
+                                            <option value="SPARE">SPARE (Sisa)</option>
+                                            <option value="LOSS_PUTUS">LOSS / PUTUS</option>
+                                            <option value="MANUVER">MANUVER</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-5 col-md-1">
+                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02">
+                                    </div>
+                                    <div class="col-1 text-end pt-3">
+                                        <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
+                                            <i class="bi bi-x-circle fs-5"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2.5">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-indigo-pro btn-sm px-4 fw-semibold shadow-xs">
+                        <i class="bi bi-check2-circle me-1"></i> Simpan Data Joint Closure
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL TAMBAH SINGLE CORE JOINT CLOSURE ── -->
+<div class="modal fade" id="addJointClosureCoreModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="" method="POST" id="formAddSingleCore">
+                @csrf
+                <div class="modal-header bg-navy text-white">
+                    <h6 class="modal-title fw-bold text-white">
+                        <i class="bi bi-diagram-2-fill text-teal me-2"></i>Tambah Sambungan Core - <span id="modalCoreJcTitle">JC</span>
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-navy">Tube Asal <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal" placeholder="Contoh: Tube 1" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-navy">Core Asal <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="core_asal" placeholder="Contoh: Core 1" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-navy">Tube Jumper</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper" placeholder="Contoh: Tube 1 (opsional jika spare)">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-navy">Core Jumper</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper" placeholder="Contoh: Core 1 (opsional jika spare)">
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-7">
+                            <label class="form-label small fw-bold text-navy">Status Sambungan <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-sm" name="status" required>
+                                <option value="TERHUBUNG" selected>TERHUBUNG (Spliced)</option>
+                                <option value="SPARE">SPARE (Core Sisa / Tidak disambung)</option>
+                                <option value="LOSS_PUTUS">LOSS / PUTUS</option>
+                                <option value="MANUVER">MANUVER</option>
+                            </select>
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label small fw-semibold text-navy">Loss Sambungan (dB)</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db" placeholder="0.02">
+                        </div>
+                    </div>
+
+                    <div class="mb-0">
+                        <label class="form-label small fw-semibold text-navy">Keterangan Tambahan (Opsional)</label>
+                        <input type="text" class="form-control form-control-sm" name="keterangan" placeholder="Contoh: Sambung ke arah Node C">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="bi bi-plus-circle me-1"></i> Simpan Sambungan Core
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- ── MODAL MAP PICKER FOR JOINT CLOSURE ── -->
+<div class="modal fade" id="mapPickerJcModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-navy text-white py-2">
+                <h6 class="modal-title fw-bold text-white"><i class="bi bi-pin-map-fill text-danger me-2"></i>Pilih Titik Lokasi Joint Closure di Peta</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div id="mapPickerJc" style="height: 350px; width: 100%; border-radius: 8px;"></div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <span class="small font-monospace" id="pickedCoordsJcText">Koordinat: -6.917464, 107.619123</span>
+                    <button type="button" class="btn btn-primary btn-sm px-3" id="btnApplyPickedCoordsJc">
+                        <i class="bi bi-check2 me-1"></i> Terapkan Koordinat Ini
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ── MODAL TAMBAH TITIK PERBAIKAN (FASE 4) ── -->
 <div class="modal fade" id="addTitikModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -3988,11 +4651,16 @@
 
                         <!-- Koordinat GPS Opsional -->
                         <div class="col-12">
-                            <label class="form-label small fw-semibold text-navy d-flex justify-content-between">
-                                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> Koordinat GPS Lokasi (Opsional)</span>
-                                <button type="button" class="btn btn-link p-0 text-teal small text-decoration-none" id="btnGetLocationDoc">
-                                    <i class="bi bi-crosshair"></i> GPS Saya
-                                </button>
+                            <label class="form-label small fw-semibold text-navy d-flex justify-content-between align-items-center mb-1">
+                                <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> Koordinat GPS Lokasi (Otomatis / EXIF)</span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="gps-lock-badge d-none" id="docGpsStatusBadge">
+                                        <span class="gps-pulse-dot"></span> <span id="docGpsStatusText">GPS Terkunci</span>
+                                    </span>
+                                    <button type="button" class="btn btn-link p-0 text-teal small text-decoration-none" id="btnGetLocationDoc">
+                                        <i class="bi bi-crosshair"></i> Ambil GPS
+                                    </button>
+                                </div>
                             </label>
                             <div class="input-group input-group-sm">
                                 <input type="number" step="any" class="form-control" id="latitude_doc" name="latitude" placeholder="Latitude (-6.xxx)">
@@ -4001,7 +4669,7 @@
                                     <i class="bi bi-map"></i>
                                 </button>
                             </div>
-                            <div class="form-text small">Titik koordinat akan disematkan ke informasi foto dokumentasi.</div>
+                            <div class="form-text small">Koordinat otomatis diambil dari GPS perangkat / metadata EXIF foto saat diupload.</div>
                         </div>
                     </div>
                 </div>
@@ -4039,103 +4707,167 @@
 
 <!-- ── MODAL TAMBAH MANUVER CORE (FASE 5) ── -->
 <div class="modal fade" id="addManuverModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg">
             <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-navy text-white">
                     <h6 class="modal-title fw-bold text-white">
-                        <i class="bi bi-shuffle text-teal me-2"></i>Tambah Record Manuver Core
+                        <i class="bi bi-shuffle text-teal me-2"></i>Tambah Record Manuver Core Fiber Optik
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- Titik JC -->
-                    <div class="mb-3">
-                        <label for="titik_manuver" class="form-label small fw-bold text-navy">
-                            Titik Jointing / Closure <span class="text-danger">*</span>
-                        </label>
-                        <input type="text"
-                               class="form-control form-control-sm text-uppercase font-monospace"
-                               id="titik_manuver"
-                               name="titik"
-                               placeholder="Contoh: JC1, JC2, dsb"
-                               required>
-                        <!-- Quick suggestions from existing Titik Perbaikan -->
-                        @if($tiket->titikPerbaikans->count() > 0)
-                        <div class="d-flex flex-wrap gap-1 mt-2 align-items-center">
-                            <span class="small text-muted me-1">Pilih titik:</span>
-                            @foreach($tiket->titikPerbaikans as $tp)
-                            <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-2" data-titik="{{ $tp->nama_titik }}">
-                                {{ $tp->nama_titik }}
-                            </button>
-                            @endforeach
-                        </div>
-                        @endif
-                    </div>
-
-                    <!-- Tipe Manuver -->
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold text-navy d-block">
-                            Tipe Manuver <span class="text-danger">*</span>
-                        </label>
-                        <div class="btn-group w-100" role="group">
-                            <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
-                            <label class="btn btn-outline-secondary btn-sm" for="tipeSebelum">
-                                <i class="bi bi-clock-history me-1"></i> SEBELUM (Kondisi Awal)
+                    <div class="row g-3">
+                        <!-- Titik Lokasi & Jenis Lokasi -->
+                        <div class="col-12 col-md-7">
+                            <label for="titik_manuver" class="form-label small fw-bold text-navy">
+                                Titik / Nama Lokasi Manuver <span class="text-danger">*</span>
                             </label>
+                            <input type="text"
+                                   class="form-control form-control-sm text-uppercase font-monospace"
+                                   id="titik_manuver"
+                                   name="titik"
+                                   placeholder="Contoh: JC-01, OTB-POP-BDG, FAT-04"
+                                   required>
+                            <!-- Quick suggestions from existing Titik Perbaikan & Joint Closures -->
+                            @if($tiket->titikPerbaikans->count() > 0 || $tiket->jointClosures->count() > 0)
+                            <div class="d-flex flex-wrap gap-1 mt-2 align-items-center">
+                                <span class="small text-muted me-1">Pilih titik:</span>
+                                @foreach($tiket->titikPerbaikans as $tp)
+                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-2" data-titik="{{ $tp->nama_titik }}">
+                                    {{ $tp->nama_titik }}
+                                </button>
+                                @endforeach
+                                @foreach($tiket->jointClosures as $jc)
+                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-2" data-titik="{{ $jc->nama_closure }}">
+                                    {{ $jc->nama_closure }}
+                                </button>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
 
-                            <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
-                            <label class="btn btn-outline-success btn-sm" for="tipeSesudah">
-                                <i class="bi bi-check2-circle me-1"></i> SESUDAH (Setelah Perbaikan)
+                        <div class="col-12 col-md-5">
+                            <label for="lokasi_tipe_manuver" class="form-label small fw-bold text-navy">
+                                Tipe Lokasi Aset <span class="text-danger">*</span>
                             </label>
+                            <select class="form-select form-select-sm" id="lokasi_tipe_manuver" name="lokasi_tipe" required>
+                                <option value="CLOSURE_LAPANGAN" selected>CLOSURE LAPANGAN (JC)</option>
+                                <option value="POP">POP (Point of Presence)</option>
+                                <option value="OTB">OTB (Optical Termination Box)</option>
+                                <option value="FAT_FDT">FAT / FDT / ODC</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <!-- Core Asal -->
-                    <div class="mb-3">
-                        <label for="core_asal" class="form-label small fw-bold text-navy">
-                            Core Asal / Input <span class="text-danger">*</span>
-                        </label>
-                        <input type="text"
-                               class="form-control form-control-sm font-monospace"
-                               id="core_asal"
-                               name="core_asal"
-                               placeholder="Contoh: Tube 2 Core 1"
-                               required>
-                        <!-- Preset Helper Chips -->
-                        <div class="d-flex flex-wrap gap-1 mt-1">
-                            <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 1">T1 C1</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 2">T1 C2</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 1">T2 C1</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 2">T2 C2</span>
+                        <!-- Tipe Manuver (Sebelum / Sesudah) -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-bold text-navy d-block">
+                                Status Alokasi <span class="text-danger">*</span>
+                            </label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
+                                <label class="btn btn-outline-secondary btn-sm" for="tipeSebelum">
+                                    <i class="bi bi-clock-history me-1"></i> SEBELUM (Awal)
+                                </label>
+
+                                <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
+                                <label class="btn btn-outline-success btn-sm" for="tipeSesudah">
+                                    <i class="bi bi-check2-circle me-1"></i> SESUDAH (Hasil)
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Core Tujuan -->
-                    <div class="mb-0">
-                        <label for="core_tujuan" class="form-label small fw-bold text-navy">
-                            Core Tujuan / Output Sambungan <span class="text-danger">*</span>
-                        </label>
-                        <input type="text"
-                               class="form-control form-control-sm font-monospace"
-                               id="core_tujuan"
-                               name="core_tujuan"
-                               placeholder="Contoh: Tube 2 Core 1"
-                               required>
-                        <!-- Preset Helper Chips -->
-                        <div class="d-flex flex-wrap gap-1 mt-1">
-                            <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 1">T1 C1</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 2">T1 C2</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 1">T2 C1</span>
-                            <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 2">T2 C2</span>
+                        <!-- Durasi Status Manuver -->
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small fw-bold text-navy d-block">
+                                Sifat Manuver <span class="text-danger">*</span>
+                            </label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="status_manuver" id="manuverTemp" value="TEMPORARY" autocomplete="off" checked>
+                                <label class="btn btn-outline-warning btn-sm" for="manuverTemp">
+                                    <i class="bi bi-hourglass-split me-1"></i> SEMENTARA (Darurat)
+                                </label>
+
+                                <input type="radio" class="btn-check" name="status_manuver" id="manuverPerm" value="PERMANENT" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="manuverPerm">
+                                    <i class="bi bi-pin-angle-fill me-1"></i> PERMANEN
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Core Asal -->
+                        <div class="col-12 col-md-6">
+                            <label for="core_asal" class="form-label small fw-bold text-navy">
+                                Core Asal / Input <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-sm font-monospace"
+                                   id="core_asal"
+                                   name="core_asal"
+                                   placeholder="Contoh: Tube 1 Core 1"
+                                   required>
+                            <!-- Preset Helper Chips -->
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 1">T1 C1</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 2">T1 C2</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 1">T2 C1</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 2">T2 C2</span>
+                            </div>
+                        </div>
+
+                        <!-- Core Tujuan -->
+                        <div class="col-12 col-md-6">
+                            <label for="core_tujuan" class="form-label small fw-bold text-navy">
+                                Core Tujuan / Output Sambungan <span class="text-danger">*</span>
+                            </label>
+                            <input type="text"
+                                   class="form-control form-control-sm font-monospace"
+                                   id="core_tujuan"
+                                   name="core_tujuan"
+                                   placeholder="Contoh: Tube 2 Core 1"
+                                   required>
+                            <!-- Preset Helper Chips -->
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 1">T1 C1</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 2">T1 C2</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 1">T2 C1</span>
+                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 2">T2 C2</span>
+                            </div>
+                        </div>
+
+                        <!-- Core Dialihkan & Titik Kembali -->
+                        <div class="col-12 col-md-6">
+                            <label for="core_dialihkan" class="form-label small fw-semibold text-navy">Core Yang Dialihkan (Opsional)</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" id="core_dialihkan" name="core_dialihkan" placeholder="Contoh: Core 4 dialihkan ke Core 12">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="titik_kembali" class="form-label small fw-semibold text-navy">Titik Normalisasi / Kembali (Opsional)</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" id="titik_kembali" name="titik_kembali" placeholder="Contoh: OTB POP Bandung Rack 2">
+                        </div>
+
+                        <!-- Status Core Aset -->
+                        <div class="col-12 col-md-6">
+                            <label for="status_core_aset" class="form-label small fw-bold text-navy">Status Core Aset</label>
+                            <select class="form-select form-select-sm" id="status_core_aset" name="status_core_aset">
+                                <option value="OCCUPIED_MANUVER" selected>OCCUPIED MANUVER (Terpakai Jalur Baru)</option>
+                                <option value="BROKEN_LOSS">BROKEN / LOSS (Core Rusak)</option>
+                                <option value="SPARE_AVAILABLE">SPARE AVAILABLE (Tersedia)</option>
+                            </select>
+                        </div>
+
+                        <!-- Keterangan -->
+                        <div class="col-12 col-md-6">
+                            <label for="keterangan_manuver" class="form-label small fw-semibold text-navy">Keterangan / Alasan Manuver</label>
+                            <input type="text" class="form-control form-control-sm" id="keterangan_manuver" name="keterangan" placeholder="Contoh: Bypassing kabel putus span 14">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
                     <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-cjp-teal btn-sm px-4">
-                        <i class="bi bi-save me-1"></i> Simpan Manuver
+                        <i class="bi bi-save me-1"></i> Simpan Manuver Core
                     </button>
                 </div>
             </form>
@@ -6022,6 +6754,236 @@ document.addEventListener('DOMContentLoaded', function() {
             latDocInput.value = currentLatDoc.toFixed(6);
             lngDocInput.value = currentLngDoc.toFixed(6);
             bsMapDocModal.hide();
+        });
+    }
+
+    // ── 12B. AUTO-GPS GEOLOCATION FOR DOKUMENTASI MODAL ──
+    const docModalEl = document.getElementById('uploadDokumentasiModal');
+    const docGpsBadge = document.getElementById('docGpsStatusBadge');
+    const docGpsText = document.getElementById('docGpsStatusText');
+
+    function lockDocGps(lat, lng, accuracy = null) {
+        if (latDocInput && lngDocInput) {
+            latDocInput.value = parseFloat(lat).toFixed(6);
+            lngDocInput.value = parseFloat(lng).toFixed(6);
+        }
+        if (docGpsBadge && docGpsText) {
+            docGpsBadge.classList.remove('d-none');
+            docGpsText.textContent = accuracy ? `GPS Terkunci (±${Math.round(accuracy)}m)` : 'GPS Terkunci';
+        }
+    }
+
+    if (docModalEl) {
+        docModalEl.addEventListener('shown.bs.modal', function() {
+            if (latDocInput && !latDocInput.value) {
+                if (_lastDetectedGps && (Date.now() - _lastDetectedGps.timestamp < 120000)) {
+                    lockDocGps(_lastDetectedGps.latitude, _lastDetectedGps.longitude, _lastDetectedGps.accuracy);
+                } else if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                            _lastDetectedGps = {
+                                latitude: pos.coords.latitude,
+                                longitude: pos.coords.longitude,
+                                accuracy: pos.coords.accuracy,
+                                timestamp: Date.now()
+                            };
+                            lockDocGps(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
+                        },
+                        () => {},
+                        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+                    );
+                }
+            }
+        });
+    }
+
+    // ── 12C. JOINT CLOSURE DYNAMIC LOGIC & MAP PICKER ──
+    const capAsalSelect = document.getElementById('jc_kapasitas_asal');
+    const tubeAsalInput = document.getElementById('jc_tube_asal');
+    const capJumperSelect = document.getElementById('jc_kapasitas_jumper');
+    const tubeJumperInput = document.getElementById('jc_tube_jumper');
+
+    const defaultTubeMap = {
+        '2': 1,
+        '12': 1,
+        '24': 2,
+        '48': 4,
+        '96': 8,
+        '144': 12,
+        '288': 24
+    };
+
+    capAsalSelect?.addEventListener('change', function() {
+        if (tubeAsalInput && defaultTubeMap[this.value]) {
+            tubeAsalInput.value = defaultTubeMap[this.value];
+        }
+    });
+
+    capJumperSelect?.addEventListener('change', function() {
+        if (tubeJumperInput && defaultTubeMap[this.value]) {
+            tubeJumperInput.value = defaultTubeMap[this.value];
+        }
+    });
+
+    // Dynamic Splicing Row Builder in tambahJointClosureModal
+    const btnAddCoreRow = document.getElementById('btnAddCoreRow');
+    const jcCoreRowsContainer = document.getElementById('jcCoreRowsContainer');
+
+    if (btnAddCoreRow && jcCoreRowsContainer) {
+        btnAddCoreRow.addEventListener('click', function() {
+            const rowCount = jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length + 1;
+            const newRow = document.createElement('div');
+            newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+            newRow.innerHTML = `
+                <div class="row g-2 align-items-center">
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core ${rowCount}" value="Core ${rowCount}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core ${rowCount}" value="Core ${rowCount}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                        <select class="form-select form-select-sm" name="core_status[]">
+                            <option value="TERHUBUNG" selected>TERHUBUNG</option>
+                            <option value="SPARE">SPARE (Sisa)</option>
+                            <option value="LOSS_PUTUS">LOSS / PUTUS</option>
+                            <option value="MANUVER">MANUVER</option>
+                        </select>
+                    </div>
+                    <div class="col-5 col-md-1">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02">
+                    </div>
+                    <div class="col-1 text-end pt-3">
+                        <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
+                            <i class="bi bi-x-circle fs-5"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            jcCoreRowsContainer.appendChild(newRow);
+        });
+
+        jcCoreRowsContainer.addEventListener('click', function(e) {
+            const removeBtn = e.target.closest('.btn-remove-core-row');
+            if (removeBtn) {
+                const row = removeBtn.closest('.jc-core-input-row');
+                if (row) {
+                    if (jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length > 1) {
+                        row.remove();
+                    } else {
+                        row.querySelectorAll('input').forEach(i => i.value = '');
+                    }
+                }
+            }
+        });
+    }
+
+    // Modal Add Single Core Trigger
+    const formAddSingleCore = document.getElementById('formAddSingleCore');
+    const modalCoreJcTitle = document.getElementById('modalCoreJcTitle');
+    document.querySelectorAll('.open-add-core-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const jcId = this.getAttribute('data-jc-id');
+            const jcName = this.getAttribute('data-jc-name');
+            if (formAddSingleCore) {
+                formAddSingleCore.action = `/tiket/joint-closure/${jcId}/add-core`;
+            }
+            if (modalCoreJcTitle) {
+                modalCoreJcTitle.textContent = jcName || 'JC';
+            }
+        });
+    });
+
+    // Map Picker & GPS for Joint Closure Modal
+    const btnGetLocationJc = document.getElementById('btnGetLocationJc');
+    const latJcInput = document.getElementById('latitude_jc');
+    const lngJcInput = document.getElementById('longitude_jc');
+    const btnOpenMapPickerJc = document.getElementById('btnOpenMapPickerJc');
+    const mapPickerJcModal = document.getElementById('mapPickerJcModal');
+    const pickedCoordsJcText = document.getElementById('pickedCoordsJcText');
+    const btnApplyPickedCoordsJc = document.getElementById('btnApplyPickedCoordsJc');
+
+    let mapPickerJcInstance = null;
+    let mapMarkerJc = null;
+    let currentLatJc = -6.917464;
+    let currentLngJc = 107.619123;
+
+    if (btnGetLocationJc && latJcInput && lngJcInput) {
+        btnGetLocationJc.addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                alert('Browser Anda tidak mendukung deteksi lokasi.');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    latJcInput.value = pos.coords.latitude.toFixed(6);
+                    lngJcInput.value = pos.coords.longitude.toFixed(6);
+                },
+                function(err) {
+                    alert('Gagal mendeteksi lokasi GPS: ' + err.message);
+                },
+                { enableHighAccuracy: true }
+            );
+        });
+    }
+
+    if (btnOpenMapPickerJc && mapPickerJcModal) {
+        const bsMapJcModal = new bootstrap.Modal(mapPickerJcModal);
+
+        btnOpenMapPickerJc.addEventListener('click', function() {
+            if (latJcInput.value && lngJcInput.value) {
+                currentLatJc = parseFloat(latJcInput.value);
+                currentLngJc = parseFloat(lngJcInput.value);
+            }
+            bsMapJcModal.show();
+        });
+
+        mapPickerJcModal.addEventListener('shown.bs.modal', function () {
+            if (!mapPickerJcInstance) {
+                mapPickerJcInstance = L.map('mapPickerJc').setView([currentLatJc, currentLngJc], 14);
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(mapPickerJcInstance);
+
+                mapMarkerJc = L.marker([currentLatJc, currentLngJc], { draggable: true }).addTo(mapPickerJcInstance);
+
+                mapMarkerJc.on('dragend', function () {
+                    const pos = mapMarkerJc.getLatLng();
+                    currentLatJc = pos.lat;
+                    currentLngJc = pos.lng;
+                    pickedCoordsJcText.textContent = `Koordinat: ${pos.lat.toFixed(6)}, ${pos.lng.toFixed(6)}`;
+                });
+
+                mapPickerJcInstance.on('click', function (e) {
+                    mapMarkerJc.setLatLng(e.latlng);
+                    currentLatJc = e.latlng.lat;
+                    currentLngJc = e.latlng.lng;
+                    pickedCoordsJcText.textContent = `Koordinat: ${e.latlng.lat.toFixed(6)}, ${e.latlng.lng.toFixed(6)}`;
+                });
+            } else {
+                mapPickerJcInstance.invalidateSize();
+                mapPickerJcInstance.setView([currentLatJc, currentLngJc], 14);
+                mapMarkerJc.setLatLng([currentLatJc, currentLngJc]);
+            }
+        });
+
+        btnApplyPickedCoordsJc?.addEventListener('click', function() {
+            latJcInput.value = currentLatJc.toFixed(6);
+            lngJcInput.value = currentLngJc.toFixed(6);
+            bsMapJcModal.hide();
         });
     }
 

@@ -115,7 +115,9 @@ class TiketController extends Controller
             'resume',
             'materials',
             'titikPerbaikans',
-            'manuverCores',
+            'manuverCores.user',
+            'jointClosures.cores',
+            'jointClosures.creator',
             'dokumentasis',
         ]);
 

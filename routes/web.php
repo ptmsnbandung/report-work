@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumentasiController;
 use App\Http\Controllers\GeocodeController;
+use App\Http\Controllers\JointClosureController;
 use App\Http\Controllers\KronologisController;
 use App\Http\Controllers\ManuverCoreController;
 use App\Http\Controllers\MaterialController;
@@ -123,6 +124,20 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::delete('/manuver-core/{manuverCore}', [ManuverCoreController::class, 'destroy'])
         ->middleware('role:admin,helpdesk,teknis')
         ->name('tiket.manuver-core.destroy');
+
+    // Modul Kabel & Joint Closure (JC) / Sambungan Aset Fisik
+    Route::post('/tiket/{tiket}/joint-closure', [JointClosureController::class, 'store'])
+        ->middleware('role:admin,helpdesk,teknis')
+        ->name('tiket.joint-closure.store');
+    Route::delete('/joint-closure/{jointClosure}', [JointClosureController::class, 'destroy'])
+        ->middleware('role:admin,helpdesk,teknis')
+        ->name('tiket.joint-closure.destroy');
+    Route::post('/joint-closure/{jointClosure}/core', [JointClosureController::class, 'addCore'])
+        ->middleware('role:admin,helpdesk,teknis')
+        ->name('tiket.joint-closure.add-core');
+    Route::delete('/joint-closure-core/{core}', [JointClosureController::class, 'deleteCore'])
+        ->middleware('role:admin,helpdesk,teknis')
+        ->name('tiket.joint-closure.delete-core');
 
     // API Helper (Geocoding & Reverse Geocode)
     Route::get('/api/reverse-geocode', [GeocodeController::class, 'reverse'])->name('api.reverse-geocode');

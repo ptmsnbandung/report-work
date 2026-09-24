@@ -43,6 +43,17 @@ class DokumentasiService
 
             foreach ($fileList as $file) {
                 if ($file instanceof UploadedFile && $file->isValid()) {
+                    // Extract GPS from EXIF if not provided
+                    $fileLat = $latitude;
+                    $fileLon = $longitude;
+                    if ($fileLat === null || $fileLon === null) {
+                        $exifGps = $this->getGpsCoordinatesFromExif($file->getRealPath());
+                        if ($exifGps) {
+                            $fileLat = $fileLat ?? $exifGps['latitude'];
+                            $fileLon = $fileLon ?? $exifGps['longitude'];
+                        }
+                    }
+
                     $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
                     $filename = 'doc_' . $tiket->id . '_' . now()->format('Ymd_His') . '_' . Str::random(6) . '.' . $extension;
                     $path = $file->storeAs('dokumentasi/' . $tiket->id, $filename, 'public');
@@ -55,8 +66,8 @@ class DokumentasiService
                         'kategori' => $kategori,
                         'file_path' => $path,
                         'timestamp' => $timestamp,
-                        'latitude' => $latitude,
-                        'longitude' => $longitude,
+                        'latitude' => $fileLat,
+                        'longitude' => $fileLon,
                     ]);
 
                     $createdDocs->push($doc);
@@ -165,4 +176,62 @@ class DokumentasiService
             return (bool) $dokumentasi->delete();
         });
     }
+
+    /**
+     * Ekstraksi metadata koordinat GPS dari EXIF data foto jika tersedia
+     */
+    protected function getGpsCoordinatesFromExif(string $filepath): ?array
+    {
+        if (!function_exists('exif_read_data') || !file_exists($filepath)) {
+            return null;
+        }
+
+        try {
+            $exif = @exif_read_data($filepath);
+            if (!$exif || !isset($exif['GPSLatitude'], $exif['GPSLatitudeRef'], $exif['GPSLongitude'], $exif['GPSLongitudeRef'])) {
+                return null;
+            }
+
+            $lat = $this->getGpsRational($exif['GPSLatitude'], $exif['GPSLatitudeRef']);
+            $lon = $this->getGpsRational($exif['GPSLongitude'], $exif['GPSLongitudeRef']);
+
+            if ($lat !== null && $lon !== null) {
+                return [
+                    'latitude' => $lat,
+                    'longitude' => $lon,
+                ];
+            }
+        } catch (\Throwable $e) {
+            // Fail silently
+        }
+
+        return null;
+    }
+
+    protected function getGpsRational($coordinate, $ref): ?float
+    {
+        if (!is_array($coordinate) || count($coordinate) < 3) {
+            return null;
+        }
+
+        $degrees = $this->extractRational($coordinate[0]);
+        $minutes = $this->extractRational($coordinate[1]);
+        $seconds = $this->extractRational($coordinate[2]);
+
+        $flip = ($ref === 'S' || $ref === 'W') ? -1 : 1;
+        return round($flip * ($degrees + ($minutes / 60) + ($seconds / 3600)), 8);
+    }
+
+    protected function extractRational($part): float
+    {
+        if (is_numeric($part)) {
+            return (float) $part;
+        }
+        $parts = explode('/', (string) $part);
+        if (count($parts) === 2 && (float) $parts[1] != 0) {
+            return (float) $parts[0] / (float) $parts[1];
+        }
+        return (float) $part;
+    }
 }
+
