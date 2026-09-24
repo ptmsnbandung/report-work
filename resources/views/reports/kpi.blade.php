@@ -88,30 +88,30 @@
 
     <!-- ── PAGE HEADER & EXPORT ACTIONS ── -->
     <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white p-3 p-md-3.5">
-        <div class="d-flex flex-row justify-content-between align-items-center gap-2">
-            <div class="d-flex align-items-center gap-2.5 min-w-0">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2.5">
+            <div class="d-flex align-items-center gap-2.5">
                 <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;">
                     <i class="bi bi-award-fill"></i>
                 </div>
-                <div class="min-w-0">
-                    <h1 class="page-title-text mb-0 fw-bold text-navy text-truncate" style="font-size: 1.1rem; line-height: 1.25;">
+                <div>
+                    <h1 class="page-title-text mb-0 fw-bold text-navy" style="font-size: 1.05rem; line-height: 1.3;">
                         Key Performance Indicators (KPI) &amp; Evaluasi Kinerja
                     </h1>
-                    <p class="text-muted small mb-0 d-none d-md-block text-truncate" style="font-size: 0.75rem; margin-top: 2px;">
+                    <p class="text-muted small mb-0 d-none d-md-block" style="font-size: 0.75rem; margin-top: 2px;">
                         Monitoring kepatuhan SLA, kecepatan respon, interval 30 menit, dan durasi verifikasi
                     </p>
                 </div>
             </div>
 
-            <!-- Compact Export Buttons -->
-            <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-2.5 px-sm-3 py-1 shadow-xs d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
+            <!-- Export Buttons -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
-                    <span class="d-none d-sm-inline">Export</span> PDF
+                    <span>Export PDF</span>
                 </a>
-                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-2.5 px-sm-3 py-1 shadow-xs d-inline-flex align-items-center gap-1" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
+                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
                     <i class="bi bi-file-earmark-excel-fill"></i>
-                    <span class="d-none d-sm-inline">Export</span> Excel
+                    <span>Export Excel</span>
                 </a>
             </div>
         </div>
