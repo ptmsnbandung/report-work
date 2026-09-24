@@ -152,6 +152,8 @@ h6 { font-size: 0.95rem; }
     min-width: 0;
     transition: margin-left var(--transition-normal);
     background: var(--cjp-bg-page);
+}
+
 @keyframes pageFadeIn {
     from {
         opacity: 0.88;
