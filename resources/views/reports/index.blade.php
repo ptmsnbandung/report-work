@@ -191,7 +191,7 @@
             </div>
         </div>
 
-        <div class="collapse {{ $hasActiveFilter ? 'show' : '' }} d-md-block" id="reportFilterCollapse">
+        <div class="collapse {{ $hasActiveFilter ? 'show' : '' }}" id="reportFilterCollapse">
             <div class="card-body p-3.5 p-md-4 bg-light bg-opacity-50">
                 <form action="{{ route('reports.index') }}" method="GET" class="row g-3 g-md-3.5 align-items-end">
                     <!-- Dari Tanggal (col-6 on mobile, col-md-4 on tablet, col-xl-2 on desktop) -->

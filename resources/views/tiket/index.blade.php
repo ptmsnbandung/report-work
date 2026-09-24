@@ -285,7 +285,7 @@
             </div>
         </div>
 
-        <div class="collapse {{ $hasActiveFilter ? 'show' : '' }} d-md-block" id="tiketFilterCollapse">
+        <div class="collapse {{ $hasActiveFilter ? 'show' : '' }}" id="tiketFilterCollapse">
             <div class="card-body p-3.5 p-md-4 bg-light bg-opacity-50">
                 <form action="{{ route('tiket.index') }}" method="GET" class="row g-3 g-md-3.5 align-items-end">
                     @if(request('view') === 'tugas_saya')
