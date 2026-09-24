@@ -407,13 +407,19 @@
                                 <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
                             </span>
                         </a>
-                        <div class="d-flex align-items-center gap-1">
+                        <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
                             @if($tiket->status === 'OPEN')
                                 <span class="badge-status badge-open" style="font-size:0.68rem;"><i class="bi bi-exclamation-circle"></i> OPEN</span>
                             @elseif($tiket->status === 'PROSES')
                                 <span class="badge-status badge-proses" style="font-size:0.68rem;"><i class="bi bi-arrow-repeat"></i> PROSES</span>
+                            @elseif($tiket->status === 'PENDING_VERIFIKASI')
+                                <span class="badge-status" style="font-size:0.68rem; background-color:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;"><i class="bi bi-hourglass-split"></i> VERIFIKASI</span>
                             @else
                                 <span class="badge-status badge-close" style="font-size:0.68rem;"><i class="bi bi-check-circle"></i> CLOSE</span>
+                            @endif
+
+                            @if($tiket->is_stop_clock)
+                                <span class="badge-status" style="font-size:0.68rem; background-color:#fef2f2; color:#b91c1c; border:1px solid #fecaca;"><i class="bi bi-pause-fill"></i> STOP CLOCK</span>
                             @endif
 
                             @if($tiket->sla_status === 'TEPAT')
@@ -559,10 +565,22 @@
                                 <span class="badge-status-pro status-proses">
                                     <span class="status-pulse-dot" style="background-color: #d97706;"></span> PROSES
                                 </span>
+                            @elseif($tiket->status === 'PENDING_VERIFIKASI')
+                                <span class="badge-status-pro" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                    <span class="status-pulse-dot" style="background-color: #2563eb;"></span> VERIFIKASI
+                                </span>
                             @else
                                 <span class="badge-status-pro status-close">
                                     <i class="bi bi-check-lg"></i> CLOSE
                                 </span>
+                            @endif
+
+                            @if($tiket->is_stop_clock)
+                                <div class="mt-1">
+                                    <span class="badge bg-danger text-white rounded-pill px-1.5 py-0.5" style="font-size:0.6rem;">
+                                        <i class="bi bi-pause-fill"></i> STOP CLOCK
+                                    </span>
+                                </div>
                             @endif
                         </td>
 

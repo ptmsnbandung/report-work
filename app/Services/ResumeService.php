@@ -27,17 +27,26 @@ class ResumeService
             $resume = ResumePekerjaan::updateOrCreate(
                 ['id_tiket' => $tiket->id],
                 [
-                    'team_om'          => $teamOm,
-                    'problem_temuan'   => $data['problem_temuan'],
-                    'action'           => $data['action'],
-                    'catatan_tambahan' => $data['catatan_tambahan'] ?? null,
+                    'team_om'            => $teamOm,
+                    'problem_temuan'     => $data['problem_temuan'],
+                    'action'             => $data['action'],
+                    'tipe_penanganan'    => $data['tipe_penanganan'] ?? null,
+                    'joint_closure_type' => $data['joint_closure_type'] ?? null,
+                    'core_count_jointed' => isset($data['core_count_jointed']) ? (int) $data['core_count_jointed'] : null,
+                    'catatan_tambahan'   => $data['catatan_tambahan'] ?? null,
                 ]
             );
 
+            // Update tiket tipe_penanganan if provided in resume
+            if (!empty($data['tipe_penanganan'])) {
+                $tiket->tipe_penanganan = $data['tipe_penanganan'];
+            }
+
             // Jika status masih OPEN, ubah ke PROSES
             if ($tiket->status === 'OPEN') {
-                $tiket->update(['status' => 'PROSES']);
+                $tiket->status = 'PROSES';
             }
+            $tiket->save();
 
             return $resume;
         });

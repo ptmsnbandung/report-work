@@ -51,6 +51,20 @@ Route::middleware(['auth', 'role'])->group(function () {
         Route::get('/tiket/{tiket}/edit', [TiketController::class, 'edit'])->name('tiket.edit');
         Route::put('/tiket/{tiket}', [TiketController::class, 'update'])->name('tiket.update');
         Route::post('/tiket/{tiket}/close', [TiketController::class, 'close'])->name('tiket.close');
+        Route::post('/tiket/{tiket}/reject-closing-awal', [TiketController::class, 'rejectClosingAwal'])->name('tiket.reject-closing-awal');
+    });
+
+    // Teknisi & Admin: Closing Awal Tiket
+    Route::post('/tiket/{tiket}/closing-awal', [TiketController::class, 'closingAwal'])
+        ->middleware('role:admin,teknis')
+        ->name('tiket.closing-awal');
+
+    // Stop Clock & Handover Shift Operations
+    Route::middleware('role:admin,helpdesk,teknis')->group(function () {
+        Route::post('/tiket/{tiket}/stop-clock/start', [TiketController::class, 'startStopClock'])->name('tiket.stop-clock.start');
+        Route::post('/tiket/{tiket}/stop-clock/stop', [TiketController::class, 'stopStopClock'])->name('tiket.stop-clock.stop');
+        Route::post('/tiket/{tiket}/handover-shift', [TiketController::class, 'handoverShift'])->name('tiket.handover-shift');
+        Route::get('/tiket/{tiket}/prerequisites', [TiketController::class, 'checkPrerequisites'])->name('tiket.prerequisites');
     });
 
     // Detail Tiket (Bisa diakses semua role yang login)

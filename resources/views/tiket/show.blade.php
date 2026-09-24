@@ -1472,6 +1472,42 @@
         box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4) !important;
     }
 
+    .btn-tiket-hero-primary {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .btn-tiket-hero-primary:hover {
+        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4) !important;
+    }
+
+    .btn-tiket-hero-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .btn-tiket-hero-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4) !important;
+    }
+
+    .btn-tiket-hero-purple {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+        color: #ffffff !important;
+        border-color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .btn-tiket-hero-purple:hover {
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4) !important;
+    }
+
     .btn-tiket-hero:active {
         transform: translateY(1px) !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
@@ -1490,6 +1526,72 @@
         ]" />
     </div>
 
+    <!-- ── ACTIVE STOP CLOCK ALERT BANNER ── -->
+    @if($tiket->is_stop_clock && $tiket->activeStopClock)
+    <div class="alert alert-warning border-2 border-warning shadow-sm rounded-xl p-3 p-md-3.5 mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-warning bg-opacity-25 p-3 text-warning-emphasis d-flex align-items-center justify-content-center flex-shrink-0" style="width: 46px; height: 46px;">
+                <i class="bi bi-pause-circle-fill fs-3 text-warning"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1 text-dark d-flex align-items-center gap-2">
+                    <span class="badge bg-warning text-dark font-monospace">SLA PAUSED</span>
+                    <span>Tiket Sedang Dalam Status Stop Clock</span>
+                </h6>
+                <div class="small text-muted">
+                    <strong>Alasan:</strong> <span class="badge bg-secondary bg-opacity-25 text-dark">{{ $tiket->activeStopClock->reason_label }}</span> &bull;
+                    <strong>Keterangan:</strong> {{ $tiket->activeStopClock->notes ?: '-' }} &bull;
+                    <strong>Sejak:</strong> {{ $tiket->activeStopClock->stopped_at->format('d/m/Y H:i') }} ({{ $tiket->activeStopClock->stopped_at->diffForHumans() }})
+                </div>
+            </div>
+        </div>
+        @if(auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
+        <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="flex-shrink-0 m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
+            @csrf
+            <button type="submit" class="btn btn-success btn-sm px-3 py-2 fw-semibold shadow-xs d-inline-flex align-items-center gap-1.5">
+                <i class="bi bi-play-circle-fill"></i>
+                <span>Resume Clock (Lanjutkan SLA)</span>
+            </button>
+        </form>
+        @endif
+    </div>
+    @endif
+
+    <!-- ── PENDING VERIFIKASI CALLOUT BANNER ── -->
+    @if($tiket->status === 'PENDING_VERIFIKASI')
+    <div class="alert alert-primary border border-primary border-opacity-50 shadow-sm rounded-xl p-3 p-md-3.5 mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3" style="background-color: #f0f7ff;">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 46px; height: 46px;">
+                <i class="bi bi-hourglass-split fs-3 text-primary"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-1 text-navy d-flex align-items-center gap-2">
+                    <span class="badge bg-primary text-white">MENUNGGU VERIFIKASI NOC</span>
+                    <span>Pekerjaan Selesai oleh Teknisi</span>
+                </h6>
+                <div class="small text-muted">
+                    Teknisi <strong>{{ $tiket->resolver?->name ?? 'Teknisi' }}</strong> telah menyelesaikan pekerjaan lapangan pada {{ $tiket->resolved_at ? $tiket->resolved_at->format('d/m/Y H:i') : '-' }}.
+                    @if($tiket->closing_notes_teknisi)
+                    <div class="mt-1 p-2 bg-white rounded border border-primary-subtle text-dark">
+                        <strong>Catatan Teknisi:</strong> <em>{{ $tiket->closing_notes_teknisi }}</em>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @if(auth()->user()->hasRole(['admin', 'helpdesk']))
+        <div class="d-flex align-items-center gap-2 flex-shrink-0">
+            <button type="button" class="btn btn-danger btn-sm px-3 py-2 fw-semibold shadow-xs" data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
+                <i class="bi bi-x-circle me-1"></i> Reject (Kembalikan)
+            </button>
+            <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-semibold shadow-xs" data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                <i class="bi bi-check2-circle me-1"></i> Verifikasi & Close Tiket
+            </button>
+        </div>
+        @endif
+    </div>
+    @endif
+
     <!-- ── TOP HEADER HERO BANNER (BRAND BLUE FULL-WIDTH) ── -->
     <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1; overflow: visible !important;">
         <div class="card-body p-3.5 p-md-4 overflow-visible" style="overflow: visible !important;">
@@ -1507,9 +1609,19 @@
                             <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
                                 <i class="bi bi-arrow-repeat me-1"></i> PROSES
                             </span>
+                        @elseif($tiket->status === 'PENDING_VERIFIKASI')
+                            <span class="badge rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge" style="background-color: rgba(59, 130, 246, 0.3) !important; color: #93c5fd !important; border: 1px solid rgba(59, 130, 246, 0.6) !important;">
+                                <i class="bi bi-hourglass-split me-1"></i> MENUNGGU VERIFIKASI NOC
+                            </span>
                         @else
                             <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
                                 <i class="bi bi-check-circle-fill me-1"></i> CLOSE
+                            </span>
+                        @endif
+
+                        @if($tiket->is_stop_clock)
+                            <span class="badge bg-danger text-white border border-white border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
+                                <i class="bi bi-pause-fill me-1"></i> STOP CLOCK
                             </span>
                         @endif
 
@@ -1527,7 +1639,7 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="tiket-hero-actions w-100 w-md-auto justify-content-start justify-content-md-end">
+                <div class="tiket-hero-actions w-100 w-md-auto justify-content-start justify-content-md-end flex-wrap">
                     <a href="{{ route('tiket.index') }}" class="btn-tiket-hero btn-tiket-hero-ghost">
                         <i class="bi bi-arrow-left"></i>
                         <span>Kembali</span>
@@ -1549,19 +1661,65 @@
                     </a>
                     @endif
 
-                    @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
-                    <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
-                            data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                        <i class="bi bi-check-circle-fill"></i>
-                        <span>Closing Tiket</span>
+                    <!-- Stop Clock Button -->
+                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
+                        @if(!$tiket->is_stop_clock)
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-warning"
+                                data-bs-toggle="modal" data-bs-target="#startStopClockModal"
+                                title="Hentikan sementara penghitungan SLA (Stop Clock)">
+                            <i class="bi bi-pause-circle"></i>
+                            <span>Stop Clock</span>
+                        </button>
+                        @endif
+                    @endif
+
+                    <!-- Oper Shift Button -->
+                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
+                    <button type="button" class="btn-tiket-hero btn-tiket-hero-purple"
+                            data-bs-toggle="modal" data-bs-target="#handoverShiftModal"
+                            title="Catat serah terima shift pekerjaan">
+                        <i class="bi bi-arrow-left-right"></i>
+                        <span>Oper Shift</span>
                     </button>
+                    @endif
+
+                    <!-- Teknisi Closing Awal Button -->
+                    @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
+                    <button type="button" class="btn-tiket-hero btn-tiket-hero-primary"
+                            data-bs-toggle="modal" data-bs-target="#closingAwalModal"
+                            title="Selesaikan pekerjaan di lapangan dan ajukan verifikasi ke NOC">
+                        <i class="bi bi-check2-all"></i>
+                        <span>Closing Awal (Selesai Lapangan)</span>
+                    </button>
+                    @endif
+
+                    <!-- Helpdesk Two-Step Verifikasi Button or Direct Close -->
+                    @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
+                        @if($tiket->status === 'PENDING_VERIFIKASI')
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-danger"
+                                data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
+                            <i class="bi bi-x-circle"></i>
+                            <span>Reject Closing</span>
+                        </button>
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
+                                data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                            <i class="bi bi-shield-check"></i>
+                            <span>Verifikasi & Close Tiket</span>
+                        </button>
+                        @else
+                        <button type="button" class="btn-tiket-hero btn-tiket-hero-success"
+                                data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <span>Closing Tiket</span>
+                        </button>
+                        @endif
                     @endif
 
                     <!-- Export Buttons -->
                     <div class="dropdown position-relative d-inline-block" style="z-index: 5;">
                         <button type="button" class="btn-tiket-hero btn-tiket-hero-ghost dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-download"></i>
-                            <span>Export Laporan</span>
+                            <span>Export</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1" style="min-width: 220px;">
                             <li>
@@ -1702,6 +1860,83 @@
         </div>
     </div>
 
+    <!-- ── MANDATORY CLOSING CHECKLIST CARD (ANTI CLOSING SEMBARANGAN) ── -->
+    @php
+        $prereqs = $tiket->checkClosingPrerequisites();
+    @endphp
+    @if($tiket->status !== 'CLOSE')
+    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">
+        <div class="card-body p-3 p-md-3.5">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2.5 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-1.5 text-primary d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div>
+                        <span class="fw-bold text-navy small">Kesiapan Closing Tiket</span>
+                        <span class="text-muted small ms-1 d-none d-sm-inline">(Mandatori Teknisi & Lapangan)</span>
+                    </div>
+                </div>
+                @if($prereqs['ready'])
+                    <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-bold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Siap Closing (4/4 Terpenuhi)
+                    </span>
+                @else
+                    <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-50 px-2.5 py-1 rounded-pill small fw-bold">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i> Belum Lengkap ({{ count($prereqs['missing_items']) }} item tersisa)
+                    </span>
+                @endif
+            </div>
+
+            <div class="row g-2">
+                <!-- 1. Resume -->
+                <div class="col-6 col-md-3">
+                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['resume_filled'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
+                        <i class="bi {{ $prereqs['items']['resume_filled'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="fw-bold small text-navy text-truncate">1. Resume Pekerjaan</div>
+                            <div class="small text-muted" style="font-size:0.7rem;">{{ $prereqs['items']['resume_filled'] ? 'Problem & Action diisi' : 'Belum diisi lengkap' }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Dokumentasi -->
+                <div class="col-6 col-md-3">
+                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['photo_uploaded'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
+                        <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="fw-bold small text-navy text-truncate">2. Foto Lapangan / OTDR</div>
+                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->dokumentasis->count() }} foto terupload</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Titik Perbaikan -->
+                <div class="col-6 col-md-3">
+                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['titik_perbaikan'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
+                        <i class="bi {{ $prereqs['items']['titik_perbaikan'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="fw-bold small text-navy text-truncate">3. Titik Koordinat / JC</div>
+                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->titikPerbaikans->count() }} titik perbaikan</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Tipe Penanganan -->
+                <div class="col-6 col-md-3">
+                    <div class="p-2.5 rounded-3 border d-flex align-items-center gap-2 h-100 {{ $prereqs['items']['tipe_penanganan'] ? 'bg-success-subtle border-success-subtle' : 'bg-light' }}">
+                        <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-dash-circle text-muted' }} fs-5 flex-shrink-0"></i>
+                        <div class="min-w-0">
+                            <div class="fw-bold small text-navy text-truncate">4. Tipe Penanganan</div>
+                            <div class="small text-muted" style="font-size:0.7rem;">{{ $tiket->tipe_penanganan ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Belum dipilih' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- ── TABBED NAVIGATION (MOBILE SCROLLABLE) ── -->
     <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-1 pb-0 mb-md-4 pb-md-0">
         <div class="card-header bg-white p-2 border-bottom">
@@ -1746,6 +1981,16 @@
                         <i class="bi bi-shuffle text-teal"></i>
                         <span>Manuver Core</span>
                         <span class="badge bg-light text-navy border" id="manuverCountBadge">{{ $tiket->manuverCores->count() }}</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link d-flex align-items-center gap-1.5"
+                            id="stopclock-tab" data-bs-toggle="tab" data-bs-target="#stopclock-pane" type="button" role="tab">
+                        <i class="bi bi-pause-circle text-warning"></i>
+                        <span>Stop Clock & Shift</span>
+                        @if($tiket->stopClocks->count() > 0 || $tiket->handoverShifts->count() > 0)
+                            <span class="badge bg-light text-navy border">{{ $tiket->stopClocks->count() + $tiket->handoverShifts->count() }}</span>
+                        @endif
                     </button>
                 </li>
             </ul>
@@ -2188,6 +2433,46 @@
                                         <i class="bi bi-wrench-adjustable-circle-fill"></i> Action / Tindakan Perbaikan
                                     </div>
                                     <div class="resume-card-text" style="white-space: pre-line; line-height: 1.65;">{{ $tiket->resume->action ?: '-' }}</div>
+                                </div>
+                            </div>
+
+                            <!-- Tipe Penanganan & Jointing Details (Point 4) -->
+                            <div class="col-12 col-md-6">
+                                <div class="resume-card-pro" style="border-left: 4px solid #0d9488; background: #f0fdfa;">
+                                    <div class="resume-card-label text-teal">
+                                        <i class="bi bi-diagram-2-fill"></i> Tipe Penanganan Lapangan
+                                    </div>
+                                    <div class="resume-card-text">
+                                        @if($tiket->resume->tipe_penanganan === 'JOINTING_LURUS')
+                                            <span class="badge bg-success text-white px-2.5 py-1 rounded-pill">
+                                                <i class="bi bi-arrow-right me-1"></i> Jointing Lurus (Straight Splicing)
+                                            </span>
+                                        @elseif($tiket->resume->tipe_penanganan === 'MANUVER_CORE')
+                                            <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill">
+                                                <i class="bi bi-shuffle me-1"></i> Manuver Core / Tube
+                                            </span>
+                                        @elseif($tiket->resume->tipe_penanganan === 'LAINNYA')
+                                            <span class="badge bg-secondary text-white px-2.5 py-1 rounded-pill">
+                                                Penanganan Lainnya
+                                            </span>
+                                        @else
+                                            <span class="text-muted small">Belum ditentukan</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="resume-card-pro" style="border-left: 4px solid #6366f1; background: #eef2ff;">
+                                    <div class="resume-card-label" style="color: #4f46e5;">
+                                        <i class="bi bi-box-seam-fill"></i> Info Joint Closure & Core
+                                    </div>
+                                    <div class="resume-card-text">
+                                        <div class="small text-navy">
+                                            <strong>Closure:</strong> {{ $tiket->resume->joint_closure_type ?: '-' }} &bull;
+                                            <strong>Core Jointed:</strong> {{ $tiket->resume->core_count_jointed ? $tiket->resume->core_count_jointed . ' Core' : '-' }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -2702,6 +2987,147 @@
                     @endif
                 </div>
 
+                <!-- ════ TAB 6: STOP CLOCK & SHIFT HANDOVER ════ -->
+                <div class="tab-pane fade" id="stopclock-pane" role="tabpanel">
+                    <div class="tab-header-banner">
+                        <div class="tab-header-left">
+                            <div class="tab-header-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                                <i class="bi bi-stopwatch"></i>
+                            </div>
+                            <div>
+                                <div class="tab-header-title">Stop Clock SLA & Serah Terima Shift</div>
+                                <div class="tab-header-subtitle">Log riwayat jeda penghitungan SLA dan handover antar shift</div>
+                            </div>
+                        </div>
+                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            @if(!$tiket->is_stop_clock)
+                            <button class="btn-tab-action-pro btn-warning-pro" data-bs-toggle="modal" data-bs-target="#startStopClockModal">
+                                <i class="bi bi-pause-circle"></i>
+                                <span>Stop Clock</span>
+                            </button>
+                            @endif
+                            <button class="btn-tab-action-pro btn-violet-pro" data-bs-toggle="modal" data-bs-target="#handoverShiftModal">
+                                <i class="bi bi-arrow-left-right"></i>
+                                <span>Oper Shift</span>
+                            </button>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- 1. RIWAYAT STOP CLOCK -->
+                    <div class="card border-0 shadow-sm rounded-xl mb-4 bg-white">
+                        <div class="card-header bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-pause-circle-fill text-warning"></i>
+                                <span class="fw-bold text-navy small">Log Stop Clock (Pengurangan Durasi SLA)</span>
+                            </div>
+                            <span class="badge bg-light text-navy border font-monospace">{{ $tiket->total_stop_clock_minutes }} Menit Total Jeda</span>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($tiket->stopClocks->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size:0.83rem;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="ps-3 py-2.5">Alasan Stop Clock</th>
+                                            <th class="py-2.5">Mulai Stop</th>
+                                            <th class="py-2.5">Resume / Selesai</th>
+                                            <th class="py-2.5">Durasi Jeda</th>
+                                            <th class="py-2.5">Petugas</th>
+                                            <th class="pe-3 py-2.5">Keterangan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($tiket->stopClocks as $sc)
+                                        <tr>
+                                            <td class="ps-3 fw-bold text-navy">
+                                                <span class="badge bg-secondary bg-opacity-15 text-dark">{{ $sc->reason_label }}</span>
+                                            </td>
+                                            <td class="font-monospace text-muted">{{ $sc->stopped_at->format('d/m/Y H:i') }}</td>
+                                            <td class="font-monospace">
+                                                @if($sc->resumed_at)
+                                                    <span class="text-success">{{ $sc->resumed_at->format('d/m/Y H:i') }}</span>
+                                                @else
+                                                    <span class="badge bg-warning text-dark animate-pulse">Sedang Berlangsung</span>
+                                                @endif
+                                            </td>
+                                            <td class="fw-bold font-monospace text-navy">
+                                                {{ $sc->duration_minutes ? $sc->duration_minutes . ' Menit' : ($sc->is_active ? round(now()->diffInMinutes($sc->stopped_at)) . ' Mnt (Aktif)' : '-') }}
+                                            </td>
+                                            <td>
+                                                <div class="small fw-semibold text-navy">{{ $sc->user?->name ?? 'Sistem' }}</div>
+                                                <div class="text-muted" style="font-size:0.7rem;">{{ $sc->user?->role_short ?? '-' }}</div>
+                                            </td>
+                                            <td class="pe-3 text-muted small">{{ $sc->notes ?: '-' }}</td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @else
+                            <div class="p-4 text-center text-muted small">
+                                <i class="bi bi-stopwatch text-muted d-block fs-3 mb-1"></i>
+                                Belum ada riwayat Stop Clock pada tiket ini.
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- 2. RIWAYAT OPER SHIFT (HANDOVER) -->
+                    <div class="card border-0 shadow-sm rounded-xl bg-white">
+                        <div class="card-header bg-white p-3 border-bottom d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-arrow-left-right text-purple"></i>
+                                <span class="fw-bold text-navy small">Log Serah Terima Pekerjaan (Oper Shift)</span>
+                            </div>
+                            <span class="badge bg-light text-navy border font-monospace">{{ $tiket->handoverShifts->count() }} Handover</span>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($tiket->handoverShifts->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size:0.83rem;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="ps-3 py-2.5">Waktu Handover</th>
+                                            <th class="py-2.5">Dari Shift &rarr; Menuju</th>
+                                            <th class="py-2.5">Status Lapangan</th>
+                                            <th class="py-2.5">Kendala Pending</th>
+                                            <th class="py-2.5">Alokasi Tim Lanjutan</th>
+                                            <th class="pe-3 py-2.5">Petugas Handover</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($tiket->handoverShifts as $ho)
+                                        <tr>
+                                            <td class="ps-3 font-monospace text-muted">{{ $ho->created_at->format('d/m/Y H:i') }}</td>
+                                            <td>
+                                                <span class="badge bg-secondary bg-opacity-25 text-dark">{{ $ho->shift_sebelum ?: 'Shift Sebelumnya' }}</span>
+                                                <i class="bi bi-arrow-right mx-1 text-muted"></i>
+                                                <span class="badge bg-primary bg-opacity-25 text-primary fw-bold">{{ $ho->shift_tujuan }}</span>
+                                            </td>
+                                            <td class="small text-navy">{{ $ho->status_lapangan }}</td>
+                                            <td class="small text-danger">{{ $ho->kendala_pending ?: '-' }}</td>
+                                            <td class="small text-muted">{{ $ho->alokasi_team ?: '-' }}</td>
+                                            <td class="pe-3">
+                                                <div class="small fw-semibold text-navy">{{ $ho->user?->name ?? 'Sistem' }}</div>
+                                                <div class="text-muted" style="font-size:0.7rem;">{{ $ho->user?->role_short ?? '-' }}</div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            @else
+                            <div class="p-4 text-center text-muted small">
+                                <i class="bi bi-arrow-left-right text-muted d-block fs-3 mb-1"></i>
+                                Belum ada riwayat handover shift pada tiket ini.
+                            </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -2770,6 +3196,66 @@
                                   rows="3"
                                   placeholder="Contoh: Jumper Kabel 150 meter, Pemasangan New JC 2 Titik (JC1 dan JC2)..."
                                   required>{{ old('action', $tiket->resume?->action) }}</textarea>
+                    </div>
+
+                    <!-- Tipe Penanganan (Point 4) -->
+                    <div class="mb-3 p-3 bg-light rounded-3 border">
+                        <label class="form-label small fw-bold text-navy mb-2">
+                            <i class="bi bi-diagram-2-fill text-teal me-1"></i> Tipe Penanganan Lapangan <span class="text-danger">*</span>
+                        </label>
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-sm-4">
+                                <div class="form-check p-2 bg-white rounded border">
+                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_jointing_lurus" value="JOINTING_LURUS" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'JOINTING_LURUS' ? 'checked' : '' }} required>
+                                    <label class="form-check-label small fw-bold text-navy" for="tipe_jointing_lurus">
+                                        Jointing Lurus
+                                    </label>
+                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Splicing lurus kabel/core</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <div class="form-check p-2 bg-white rounded border">
+                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_manuver_core" value="MANUVER_CORE" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'MANUVER_CORE' ? 'checked' : '' }}>
+                                    <label class="form-check-label small fw-bold text-navy" for="tipe_manuver_core">
+                                        Manuver Core
+                                    </label>
+                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Pindah alokasi core/tube</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-4">
+                                <div class="form-check p-2 bg-white rounded border">
+                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_lainnya" value="LAINNYA" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'LAINNYA' ? 'checked' : '' }}>
+                                    <label class="form-check-label small fw-bold text-navy" for="tipe_lainnya">
+                                        Lainnya
+                                    </label>
+                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Perapian/penggantian modul</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-6">
+                                <label for="joint_closure_type" class="form-label small fw-semibold text-navy">Tipe Joint Closure / Perangkat</label>
+                                <input type="text" class="form-control form-control-sm" id="joint_closure_type" name="joint_closure_type"
+                                       value="{{ old('joint_closure_type', $tiket->resume?->joint_closure_type) }}"
+                                       placeholder="Contoh: Closure Dome 24C / Inline 48C" list="closurePresets">
+                                <datalist id="closurePresets">
+                                    <option value="Closure Dome 24C">
+                                    <option value="Closure Dome 48C">
+                                    <option value="Closure Dome 96C">
+                                    <option value="Closure Inline 24C">
+                                    <option value="Closure Inline 48C">
+                                    <option value="ODC / FDT Cabinet">
+                                    <option value="OTB / ODF Rack">
+                                </datalist>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label for="core_count_jointed" class="form-label small fw-semibold text-navy">Jumlah Core Di-Jointing / Dimanuver</label>
+                                <input type="number" min="0" class="form-control form-control-sm" id="core_count_jointed" name="core_count_jointed"
+                                       value="{{ old('core_count_jointed', $tiket->resume?->core_count_jointed) }}"
+                                       placeholder="Contoh: 12">
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Catatan Tambahan -->
@@ -3366,7 +3852,268 @@
     </div>
 </div>
 
-<!-- ── MODAL CLOSING TIKET ── -->
+<!-- ── MODAL CLOSING AWAL TEKNISI (POINT 1 & 2) ── -->
+@if(auth()->user()->hasRole(['admin', 'teknis', 'teknisi']) && $tiket->status === 'PROSES')
+<div class="modal fade" id="closingAwalModal" tabindex="-1" aria-labelledby="closingAwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="{{ route('tiket.closing-awal', $tiket->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-navy text-white">
+                    <h6 class="modal-title fw-bold" id="closingAwalModalLabel">
+                        <i class="bi bi-check2-all text-info me-2"></i>Penyelesaian Pekerjaan Lapangan (Closing Awal)
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-primary py-2.5 px-3 small mb-3">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Setelah disubmit, status tiket akan berubah menjadi <strong>MENUNGGU VERIFIKASI (PENDING_VERIFIKASI)</strong>. HelpDesk / NOC akan melakukan pengecekan stabilitas link sebelum closing akhir.
+                    </div>
+
+                    <!-- Checklist Prasyarat Mandatori (Point 1) -->
+                    <div class="card border rounded-3 p-3 mb-3 bg-light">
+                        <h6 class="fw-bold text-navy small mb-2 d-flex align-items-center gap-1.5">
+                            <i class="bi bi-shield-check text-primary"></i> Checklist Mandatori Penyelesaian Tiket
+                        </h6>
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
+                                    <i class="bi {{ $prereqs['items']['resume_filled'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
+                                    <div class="small">
+                                        <div class="fw-bold text-navy">1. Resume Pekerjaan</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['resume_filled'] ? 'Problem & Action terisi' : 'Belum diisi di tab Resume' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
+                                    <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
+                                    <div class="small">
+                                        <div class="fw-bold text-navy">2. Dokumentasi Foto Lapangan / OTDR</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['photo_uploaded'] ? $tiket->dokumentasis->count() . ' foto terupload' : 'Minimal 1 foto dokumentasi wajib diunggah' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
+                                    <i class="bi {{ $prereqs['items']['titik_perbaikan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
+                                    <div class="small">
+                                        <div class="fw-bold text-navy">3. Titik Koordinat Perbaikan / JC</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['titik_perbaikan'] ? $tiket->titikPerbaikans->count() . ' titik tercatat' : 'Minimal 1 titik perbaikan wajib diinput' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
+                                    <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
+                                    <div class="small">
+                                        <div class="fw-bold text-navy">4. Tipe Penanganan</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['tipe_penanganan'] ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih di Resume (Jointing Lurus/Manuver)' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if(!$prereqs['ready'])
+                        <div class="alert alert-danger py-2 px-3 small mt-2 mb-0">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            <strong>Perhatian:</strong> Anda belum dapat mengajukan closing karena masih ada <strong>{{ count($prereqs['missing_items']) }} item prasyarat mandatori</strong> yang belum dilengkapi.
+                        </div>
+                        @endif
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="catatan_closing_teknisi" class="form-label small fw-bold text-navy">
+                            Catatan Ringkas Hasil Lapangan untuk Helpdesk / NOC <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control form-control-sm"
+                                  id="catatan_closing_teknisi"
+                                  name="catatan_closing_teknisi"
+                                  rows="3"
+                                  placeholder="Contoh: Splicing core 1-12 di closure KM 14 selesai, redaman terukur -18.2 dBm, link siap diverifikasi NOC..."
+                                  required>{{ old('catatan_closing_teknisi') }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4" {{ $prereqs['ready'] ? '' : 'disabled' }}>
+                        <i class="bi bi-send-check me-1"></i> Selesaikan & Kirim ke NOC
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ── MODAL REJECT CLOSING AWAL OLEH HELPDESK (POINT 2) ── -->
+@if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'PENDING_VERIFIKASI')
+<div class="modal fade" id="rejectClosingAwalModal" tabindex="-1" aria-labelledby="rejectClosingAwalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="{{ route('tiket.reject-closing-awal', $tiket->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-danger text-white">
+                    <h6 class="modal-title fw-bold" id="rejectClosingAwalModalLabel">
+                        <i class="bi bi-arrow-return-left me-2"></i>Kembalikan ke Lapangan (Reject Closing)
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-warning py-2 px-3 small mb-3">
+                        <i class="bi bi-exclamation-triangle me-1"></i> Status tiket akan dikembalikan ke <strong>PROSES</strong>. Teknisi akan diminta melakukan investigasi atau perbaikan lanjutan.
+                    </div>
+
+                    <div class="mb-0">
+                        <label for="alasan_reject" class="form-label small fw-bold text-navy">
+                            Alasan Penolakan / Catatan untuk Teknisi <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control form-control-sm"
+                                  id="alasan_reject"
+                                  name="alasan_reject"
+                                  rows="3"
+                                  placeholder="Contoh: Redaman di OLT masih tinggi (-28 dBm) atau link masih flapping, mohon periksa kembali core nomor 4..."
+                                  required>{{ old('alasan_reject') }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger btn-sm px-4">
+                        <i class="bi bi-x-circle me-1"></i> Konfirmasi Kembalikan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ── MODAL STOP CLOCK (POINT 3) ── -->
+@if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
+<div class="modal fade" id="startStopClockModal" tabindex="-1" aria-labelledby="startStopClockModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="{{ route('tiket.stop-clock.start', $tiket->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-warning text-dark">
+                    <h6 class="modal-title fw-bold" id="startStopClockModalLabel">
+                        <i class="bi bi-pause-circle-fill me-2"></i>Stop Clock SLA (Jeda Perhitungan)
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info py-2 px-3 small mb-3">
+                        <i class="bi bi-info-circle me-1"></i> Selama stop clock aktif, durasi jeda waktu tidak akan dihitung ke dalam SLA / MTTR gangguan link.
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="stop_clock_reason" class="form-label small fw-bold text-navy">
+                            Alasan Stop Clock <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select form-select-sm" id="stop_clock_reason" name="reason" required>
+                            <option value="">-- Pilih Alasan Stop Clock --</option>
+                            <option value="MENUNGGU_AKSES_PELANGGAN">Menunggu Izin / Akses Lokasi Pelanggan</option>
+                            <option value="CUACA_BURUK">Cuaca Buruk / Hujan Deras / Banjir</option>
+                            <option value="MENUNGGU_MATERIAL">Menunggu Pengiriman Material / Sparing Khusus</option>
+                            <option value="KENDALA_PIHAK_KETIGA">Kendala Perizinan Pihak Ketiga (PLN/Bina Marga/dll)</option>
+                            <option value="PERMINTAAN_PELANGGAN">Penundaan atas Permintaan Pelanggan</option>
+                            <option value="FORCE_MAJEURE">Force Majeure / Bencana Alam</option>
+                            <option value="LAINNYA">Alasan Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0">
+                        <label for="stop_clock_notes" class="form-label small fw-semibold text-navy">Keterangan Tambahan / Detail Kendala</label>
+                        <textarea class="form-control form-control-sm"
+                                  id="stop_clock_notes"
+                                  name="notes"
+                                  rows="2"
+                                  placeholder="Contoh: Petugas keamanan gedung belum memberikan izin masuk sebelum jam 13:00..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning btn-sm px-4 fw-bold">
+                        <i class="bi bi-pause-fill me-1"></i> Mulai Stop Clock
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ── MODAL OPER SHIFT / HANDOVER (POINT 8) ── -->
+@if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis']))
+<div class="modal fade" id="handoverShiftModal" tabindex="-1" aria-labelledby="handoverShiftModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <form action="{{ route('tiket.handover-shift', $tiket->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-navy text-white">
+                    <h6 class="modal-title fw-bold" id="handoverShiftModalLabel">
+                        <i class="bi bi-arrow-left-right text-purple me-2"></i>Serah Terima Pekerjaan (Oper Shift)
+                    </h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label for="shift_sebelum" class="form-label small fw-semibold text-navy">Shift Sekarang</label>
+                            <input type="text" class="form-control form-control-sm bg-light" id="shift_sebelum" name="shift_sebelum" value="Shift Sebelumnya" placeholder="Contoh: Shift Pagi">
+                        </div>
+                        <div class="col-6">
+                            <label for="shift_tujuan" class="form-label small fw-bold text-navy">
+                                Menuju Shift <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select form-select-sm" id="shift_tujuan" name="shift_tujuan" required>
+                                <option value="PAGI">Shift Pagi</option>
+                                <option value="SIANG" selected>Shift Siang</option>
+                                <option value="MALAM">Shift Malam</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status_lapangan" class="form-label small fw-bold text-navy">
+                            Kondisi / Status Terakhir di Lapangan <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control form-control-sm"
+                                  id="status_lapangan"
+                                  name="status_lapangan"
+                                  rows="2"
+                                  placeholder="Contoh: Penarikan kabel 100m selesai, persiapan jointing di JC2..."
+                                  required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="kendala_pending" class="form-label small fw-semibold text-navy">Kendala / Hal yang Belum Selesai</label>
+                        <textarea class="form-control form-control-sm"
+                                  id="kendala_pending"
+                                  name="kendala_pending"
+                                  rows="2"
+                                  placeholder="Contoh: Splicer baterai low, tim lanjutan mohon bawa inverter cadangan..."></textarea>
+                    </div>
+
+                    <div class="mb-0">
+                        <label for="alokasi_team" class="form-label small fw-semibold text-navy">Personil Tim Shift Lanjutan (Opsional)</label>
+                        <input type="text" class="form-control form-control-sm" id="alokasi_team" name="alokasi_team" placeholder="Contoh: Budi, Hendra (Team Shift Malam)">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="bi bi-save me-1"></i> Simpan Handover
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ── MODAL CLOSING TIKET / VERIFIKASI CLOSING AKHIR ── -->
 @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
 <div class="modal fade" id="closeTiketModal" tabindex="-1" aria-labelledby="closeTiketModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -3375,14 +4122,27 @@
                 @csrf
                 <div class="modal-header bg-navy text-white">
                     <h6 class="modal-title fw-bold" id="closeTiketModalLabel">
-                        <i class="bi bi-check-circle-fill text-success me-2"></i>Penutupan Tiket [{{ $tiket->no_tiket }}]
+                        <i class="bi bi-check-circle-fill text-success me-2"></i>
+                        {{ $tiket->status === 'PENDING_VERIFIKASI' ? 'Verifikasi & Closing Akhir' : 'Penutupan Tiket' }} [{{ $tiket->no_tiket }}]
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
+                    @if($tiket->status === 'PENDING_VERIFIKASI')
+                    <div class="alert alert-success py-2.5 px-3 small mb-3">
+                        <div class="fw-bold"><i class="bi bi-check2-all me-1"></i> Closing Awal dari Teknisi:</div>
+                        <div class="text-muted mt-1">
+                            Diselesaikan oleh <strong>{{ $tiket->resolver?->name ?? 'Teknisi' }}</strong> pada {{ $tiket->resolved_at ? $tiket->resolved_at->format('d/m/Y H:i') : '-' }}.
+                            @if($tiket->closing_notes_teknisi)
+                            <div class="mt-1 fst-italic">"{{ $tiket->closing_notes_teknisi }}"</div>
+                            @endif
+                        </div>
+                    </div>
+                    @else
                     <div class="alert alert-info py-2 px-3 small mb-3">
                         <i class="bi bi-info-circle me-1"></i> Saat tiket di-close, sistem akan mengunci data dan secara otomatis menghitung durasi total gangguan (MTTR) serta memeriksa kepatuhan SLA.
                     </div>
+                    @endif
 
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-muted">Status Link Impact</label>
@@ -3416,7 +4176,11 @@
                     <!-- Live MTTR and SLA Calculator Preview in Modal -->
                     <div class="p-3 bg-light rounded-3 border mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="small text-muted">Estimasi MTTR:</span>
+                            <span class="small text-muted">Total Jeda Stop Clock:</span>
+                            <span class="fw-bold font-monospace text-warning">{{ $tiket->total_stop_clock_minutes }} Menit</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="small text-muted">Estimasi MTTR (Bersih):</span>
                             <span class="fw-bold font-monospace text-navy" id="modalMttrPreview">-</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
@@ -3437,7 +4201,7 @@
                 <div class="modal-footer bg-light py-2">
                     <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-success btn-sm px-4">
-                        <i class="bi bi-check2-circle me-1"></i> Konfirmasi Closing Tiket
+                        <i class="bi bi-check2-circle me-1"></i> {{ $tiket->status === 'PENDING_VERIFIKASI' ? 'Konfirmasi Verifikasi & Close' : 'Konfirmasi Closing Tiket' }}
                     </button>
                 </div>
             </form>

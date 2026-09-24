@@ -63,8 +63,16 @@ class KronologisService
                 'longitude' => !empty($data['longitude']) ? (float) $data['longitude'] : null,
             ]);
 
-            // Jika status tiket masih OPEN dan teknis mulai bekerja, ubah otomatis ke PROSES
-            if ($tiket->status === 'OPEN') {
+            // Catat first response teknisi & ubah status ke PROSES jika masih OPEN
+            if ($tiket->first_response_at === null && $user->hasRole('teknis')) {
+                $firstResponseAt = Carbon::now();
+                $responseTime = max(0, (int) $tiket->tanggal_open->diffInMinutes($firstResponseAt));
+                $tiket->update([
+                    'first_response_at' => $firstResponseAt,
+                    'response_time_minutes' => $responseTime,
+                    'status' => $tiket->status === 'OPEN' ? 'PROSES' : $tiket->status,
+                ]);
+            } elseif ($tiket->status === 'OPEN') {
                 $tiket->update(['status' => 'PROSES']);
             }
 

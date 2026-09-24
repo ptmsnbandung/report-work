@@ -20,10 +20,13 @@ class StoreResumeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_om'          => ['required'],
-            'problem_temuan'   => ['required', 'string', 'max:5000'],
-            'action'           => ['required', 'string', 'max:5000'],
-            'catatan_tambahan' => ['nullable', 'string', 'max:5000'],
+            'team_om'            => ['required'],
+            'problem_temuan'     => ['required', 'string', 'max:5000'],
+            'action'             => ['required', 'string', 'max:5000'],
+            'tipe_penanganan'    => ['nullable', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,LAINNYA'],
+            'joint_closure_type' => ['nullable', 'string', 'max:255'],
+            'core_count_jointed' => ['nullable', 'integer', 'min:0'],
+            'catatan_tambahan'   => ['nullable', 'string', 'max:5000'],
         ];
     }
 

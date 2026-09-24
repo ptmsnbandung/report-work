@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Kronologis;
 use App\Models\MasterSla;
 use App\Models\Tiket;
+use App\Models\TiketHandoverShift;
+use App\Models\TiketStopClock;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -21,6 +24,7 @@ class TiketService
         $this->notificationService = $notificationService 
             ?? (function_exists('app') && app()->bound(NotificationService::class) ? app(NotificationService::class) : null);
     }
+
     /**
      * Generate Nomor Tiket otomatis dengan format: BDG-YYYYMMDD-XXX
      */
@@ -44,14 +48,17 @@ class TiketService
     }
 
     /**
-     * Hitung durasi gangguan (MTTR) dalam menit.
+     * Hitung durasi gangguan (MTTR) dalam menit dengan kompensasi Stop Clock.
      */
-    public function hitungMttr(Carbon|string $tanggalOpen, Carbon|string|null $tanggalClose = null): int
+    public function hitungMttr(Carbon|string $tanggalOpen, Carbon|string|null $tanggalClose = null, int $totalStopClockMinutes = 0): int
     {
         $open = $tanggalOpen instanceof Carbon ? $tanggalOpen : Carbon::parse($tanggalOpen);
         $close = $tanggalClose instanceof Carbon ? $tanggalClose : ($tanggalClose ? Carbon::parse($tanggalClose) : Carbon::now());
 
-        return max(0, (int) $open->diffInMinutes($close));
+        $grossMinutes = max(0, (int) $open->diffInMinutes($close));
+        $adjustedMinutes = max(0, $grossMinutes - $totalStopClockMinutes);
+
+        return $adjustedMinutes;
     }
 
     /**
@@ -76,7 +83,6 @@ class TiketService
             return $masterSla->sla_target_minutes;
         }
 
-        // Default 6 jam (360 menit) jika tidak ditemukan
         return 360;
     }
 
@@ -103,10 +109,13 @@ class TiketService
                 'status_link_impact' => $data['status_link_impact'],
                 'backbone_segment' => $data['backbone_segment'],
                 'deskripsi' => $data['deskripsi'] ?? null,
+                'tipe_penanganan' => $data['tipe_penanganan'] ?? 'JOINTING_LURUS',
                 'tanggal_open' => $tanggalOpen,
                 'tanggal_close' => null,
                 'status' => 'OPEN',
                 'mttr_minutes' => null,
+                'total_stop_clock_minutes' => 0,
+                'is_stop_clock' => false,
                 'sla_target_minutes' => $slaTarget,
                 'sla_status' => 'NA',
                 'created_by' => $creator->id,
@@ -117,7 +126,7 @@ class TiketService
                 try {
                     $this->notificationService->notifyTiketBaru($tiket);
                 } catch (\Throwable $e) {
-                    // Fail silently to not abort main transaction
+                    // Fail silently
                 }
             }
 
@@ -138,6 +147,7 @@ class TiketService
             'status_link_impact' => $data['status_link_impact'] ?? $tiket->status_link_impact,
             'backbone_segment' => $data['backbone_segment'] ?? $tiket->backbone_segment,
             'deskripsi' => array_key_exists('deskripsi', $data) ? $data['deskripsi'] : $tiket->deskripsi,
+            'tipe_penanganan' => $data['tipe_penanganan'] ?? $tiket->tipe_penanganan,
         ];
 
         if (!empty($data['tanggal_open'])) {
@@ -156,7 +166,7 @@ class TiketService
             try {
                 $this->notificationService->notifyTiketUpdated($fresh, $updater);
             } catch (\Throwable $e) {
-                // Fail silently to not abort main transaction
+                // Fail silently
             }
         }
 
@@ -164,7 +174,98 @@ class TiketService
     }
 
     /**
-     * Close Tiket (Penutupan Tiket)
+     * Catat waktu respon pertama teknisi
+     */
+    public function recordFirstResponse(Tiket $tiket, User $user): void
+    {
+        if ($tiket->first_response_at === null && $user->hasRole('teknis')) {
+            $firstResponseAt = Carbon::now();
+            $responseTime = max(0, (int) $tiket->tanggal_open->diffInMinutes($firstResponseAt));
+
+            $tiket->update([
+                'first_response_at' => $firstResponseAt,
+                'response_time_minutes' => $responseTime,
+                'status' => $tiket->status === 'OPEN' ? 'PROSES' : $tiket->status,
+            ]);
+        }
+    }
+
+    /**
+     * Tahap 1: Closing Awal oleh Teknisi Lapangan
+     */
+    public function closingAwal(Tiket $tiket, User $teknisi, array $data): Tiket
+    {
+        if ($tiket->status === 'CLOSE') {
+            throw new InvalidArgumentException('Tiket sudah berstatus CLOSE.');
+        }
+
+        // Cek prasyarat mandatori
+        $prerequisites = $tiket->checkClosingPrerequisites();
+        if (!$prerequisites['is_eligible']) {
+            throw new InvalidArgumentException(
+                'Prasyarat Closing Awal belum lengkap: ' . implode(' ', $prerequisites['missing'])
+            );
+        }
+
+        return DB::transaction(function () use ($tiket, $teknisi, $data) {
+            $resolvedAt = !empty($data['resolved_at'])
+                ? Carbon::parse($data['resolved_at'])
+                : Carbon::now();
+
+            $tipePenanganan = $data['tipe_penanganan'] ?? ($tiket->tipe_penanganan ?: 'JOINTING_LURUS');
+            $catatan = $data['closing_notes_teknisi'] ?? ($data['catatan'] ?? null);
+
+            // Jika sedang stop clock, otomatis stop
+            if ($tiket->is_stop_clock) {
+                $this->stopStopClock($tiket, $teknisi);
+            }
+
+            $tiket->update([
+                'status' => 'PENDING_VERIFIKASI',
+                'resolved_by' => $teknisi->id,
+                'resolved_at' => $resolvedAt,
+                'closing_notes_teknisi' => $catatan,
+                'tipe_penanganan' => $tipePenanganan,
+            ]);
+
+            // Sinkronkan tipe penanganan ke Resume Pekerjaan jika ada
+            if ($tiket->resume) {
+                $tiket->resume->update([
+                    'tipe_penanganan' => $tipePenanganan,
+                    'joint_closure_type' => $data['joint_closure_type'] ?? $tiket->resume->joint_closure_type,
+                    'core_count_jointed' => $data['core_count_jointed'] ?? $tiket->resume->core_count_jointed,
+                ]);
+            }
+
+            // Catat ke kronologis otomatis
+            $tipeLabel = match ($tipePenanganan) {
+                'MANUVER_CORE' => 'Manuver Core (Swapping Core)',
+                'JOINTING_LURUS' => 'Jointing Lurus (Straight Splice)',
+                default => 'Lainnya / Normalisasi',
+            };
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $teknisi->id,
+                'informasi' => "🛠️ [CLOSING AWAL - LAPANGAN SELESAI]\nTeknisi {$teknisi->name} telah menyelesaikan perbaikan fisik di lapangan.\n\n• Tipe Penanganan: {$tipeLabel}\n• Catatan: " . ($catatan ?: 'Pekerjaan perbaikan fisik telah selesai.') . "\n\nMenunggu verifikasi akhir & Closing Tiket oleh HelpDesk NOC.",
+                'kategori' => 'SELESAI',
+                'timestamp' => $resolvedAt,
+            ]);
+
+            $fresh = $tiket->fresh(['resolver', 'resume']);
+
+            if ($this->notificationService) {
+                try {
+                    $this->notificationService->notifyTiketUpdated($fresh, $teknisi);
+                } catch (\Throwable $e) {}
+            }
+
+            return $fresh;
+        });
+    }
+
+    /**
+     * Tahap 2: Closing Akhir / Verifikasi oleh HelpDesk / Admin
      */
     public function closeTiket(Tiket $tiket, User $closer, ?array $closeData = []): Tiket
     {
@@ -177,28 +278,200 @@ class TiketService
                 ? Carbon::parse($closeData['tanggal_close'])
                 : Carbon::now();
 
-            $mttrMinutes = $this->hitungMttr($tiket->tanggal_open, $tanggalClose);
+            // Jika sedang stop clock, otomatis stop
+            if ($tiket->is_stop_clock) {
+                $this->stopStopClock($tiket, $closer);
+            }
+
+            // Hitung MTTR yang disesuaikan dengan total stop clock
+            $totalStopClock = (int) ($tiket->stopClocks()->sum('duration_minutes') ?: $tiket->total_stop_clock_minutes);
+            $mttrMinutes = $this->hitungMttr($tiket->tanggal_open, $tanggalClose, $totalStopClock);
             $slaStatus = $this->cekSla($mttrMinutes, $tiket->sla_target_minutes);
 
             $tiket->update([
                 'tanggal_close' => $tanggalClose,
                 'status' => 'CLOSE',
                 'mttr_minutes' => $mttrMinutes,
+                'total_stop_clock_minutes' => $totalStopClock,
                 'sla_status' => $slaStatus,
                 'closed_by' => $closer->id,
             ]);
 
-            $freshTiket = $tiket->fresh(['closer']);
+            // Catat log kronologis
+            $slaLabel = $slaStatus === 'TEPAT' ? 'TEPAT SLA' : 'MELEBIHI SLA';
+            $jam = floor($mttrMinutes / 60);
+            $menit = $mttrMinutes % 60;
+            $mttrStr = $jam > 0 ? "{$jam} jam {$menit} menit" : "{$menit} menit";
+
+            $stopClockInfo = $totalStopClock > 0 ? " (Total Stop Clock: {$totalStopClock} menit)" : "";
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $closer->id,
+                'informasi' => "✅ [CLOSING AKHIR - VERIFIKASI HD SELESAI]\nHelpDesk NOC ({$closer->name}) telah memverifikasi link normal dan menutup tiket ini.\n\n• MTTR Bersih: {$mttrStr}{$stopClockInfo}\n• Status SLA: {$slaLabel}\n• Catatan HD: " . ($closeData['catatan_hd'] ?? 'Link telah terpantau UP dan stabil.'),
+                'kategori' => 'LINK_UP',
+                'timestamp' => $tanggalClose,
+            ]);
+
+            $freshTiket = $tiket->fresh(['closer', 'resolver']);
 
             if ($this->notificationService) {
                 try {
                     $this->notificationService->notifyTiketClosed($freshTiket);
-                } catch (\Throwable $e) {
-                    // Fail silently
-                }
+                } catch (\Throwable $e) {}
             }
 
             return $freshTiket;
+        });
+    }
+
+    /**
+     * Kembalikan tiket dari Closing Awal ke PROSES (Reject / Re-open oleh HelpDesk)
+     */
+    public function rejectClosingAwal(Tiket $tiket, User $hd, string $alasan): Tiket
+    {
+        if ($tiket->status !== 'PENDING_VERIFIKASI') {
+            throw new InvalidArgumentException('Hanya tiket yang berstatus PENDING VERIFIKASI yang dapat dikembalikan.');
+        }
+
+        return DB::transaction(function () use ($tiket, $hd, $alasan) {
+            $tiket->update([
+                'status' => 'PROSES',
+            ]);
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $hd->id,
+                'informasi' => "⚠️ [VERIFIKASI DITOLAK - KEMBALI PROSES]\nHelpDesk NOC ({$hd->name}) mengembalikan status tiket ke PROSES.\n\n• Alasan: {$alasan}\n\nMohon tim teknis memeriksa kembali kondisi lapangan.",
+                'kategori' => 'LAIN',
+                'timestamp' => Carbon::now(),
+            ]);
+
+            $fresh = $tiket->fresh();
+
+            if ($this->notificationService) {
+                try {
+                    $this->notificationService->notifyTiketUpdated($fresh, $hd);
+                } catch (\Throwable $e) {}
+            }
+
+            return $fresh;
+        });
+    }
+
+    /**
+     * Mulai Jeda SLA (Start Stop Clock)
+     */
+    public function startStopClock(Tiket $tiket, User $user, array $data): TiketStopClock
+    {
+        if ($tiket->status === 'CLOSE') {
+            throw new InvalidArgumentException('Tiket sudah CLOSE, tidak dapat memulai Stop Clock.');
+        }
+
+        if ($tiket->is_stop_clock) {
+            throw new InvalidArgumentException('Tiket saat ini sudah dalam kondisi Stop Clock.');
+        }
+
+        return DB::transaction(function () use ($tiket, $user, $data) {
+            $startTime = !empty($data['start_time']) ? Carbon::parse($data['start_time']) : Carbon::now();
+
+            $stopClock = TiketStopClock::create([
+                'id_tiket' => $tiket->id,
+                'start_time' => $startTime,
+                'end_time' => null,
+                'duration_minutes' => 0,
+                'alasan_kategori' => $data['alasan_kategori'] ?? 'IZIN_AKSES',
+                'alasan_detail' => $data['alasan_detail'] ?? null,
+                'requested_by' => $user->id,
+                'stopped_by' => null,
+                'is_active' => true,
+            ]);
+
+            $tiket->update([
+                'is_stop_clock' => true,
+            ]);
+
+            $alasanLabel = $stopClock->alasan_kategori_label;
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $user->id,
+                'informasi' => "⏸️ [STOP CLOCK AKTIF - SLA DIJEDA]\nUser ({$user->name}) mengaktifkan Stop Clock.\n\n• Kategori: {$alasanLabel}\n• Keterangan: " . ($data['alasan_detail'] ?: '-'),
+                'kategori' => 'LAIN',
+                'timestamp' => $startTime,
+            ]);
+
+            return $stopClock;
+        });
+    }
+
+    /**
+     * Hentikan Jeda SLA (Stop / Resume Stop Clock)
+     */
+    public function stopStopClock(Tiket $tiket, User $user): ?TiketStopClock
+    {
+        $activeStop = $tiket->activeStopClock;
+        if (!$activeStop) {
+            $tiket->update(['is_stop_clock' => false]);
+            return null;
+        }
+
+        return DB::transaction(function () use ($tiket, $user, $activeStop) {
+            $endTime = Carbon::now();
+            $durationMinutes = max(1, (int) $activeStop->start_time->diffInMinutes($endTime));
+
+            $activeStop->update([
+                'end_time' => $endTime,
+                'duration_minutes' => $durationMinutes,
+                'stopped_by' => $user->id,
+                'is_active' => false,
+            ]);
+
+            $totalStopClock = (int) $tiket->stopClocks()->sum('duration_minutes');
+
+            $tiket->update([
+                'is_stop_clock' => false,
+                'total_stop_clock_minutes' => $totalStopClock,
+            ]);
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $user->id,
+                'informasi' => "▶️ [RESUME CLOCK - SLA DILANJUTKAN]\nUser ({$user->name}) mengakhiri Stop Clock.\n\n• Durasi Jeda: {$durationMinutes} menit\n• Total Jeda SLA Tiket: {$totalStopClock} menit",
+                'kategori' => 'LAIN',
+                'timestamp' => $endTime,
+            ]);
+
+            return $activeStop->fresh();
+        });
+    }
+
+    /**
+     * Handover / Oper Shift Tiket
+     */
+    public function handoverShift(Tiket $tiket, User $user, array $data): TiketHandoverShift
+    {
+        return DB::transaction(function () use ($tiket, $user, $data) {
+            $handover = TiketHandoverShift::create([
+                'id_tiket' => $tiket->id,
+                'shift_from' => $data['shift_from'],
+                'shift_to' => $data['shift_to'],
+                'user_from_id' => $user->id,
+                'user_to_id' => $data['user_to_id'] ?? null,
+                'catatan_handover' => $data['catatan_handover'],
+            ]);
+
+            $targetUserName = $handover->userTo?->name ?? 'PIC Shift Baru';
+
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
+                'user_id' => $user->id,
+                'informasi' => "🔄 [OPER SHIFT / HANDOVER]\nSerah terima penanganan tiket dari {$data['shift_from']} ke {$data['shift_to']}.\n\n• Dari: {$user->name}\n• Kepada: {$targetUserName}\n• Catatan: {$data['catatan_handover']}",
+                'kategori' => 'LAIN',
+                'timestamp' => Carbon::now(),
+            ]);
+
+            return $handover;
         });
     }
 
@@ -219,7 +492,7 @@ class TiketService
      */
     public function getFilteredTiket(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        $query = Tiket::with(['creator', 'closer'])
+        $query = Tiket::with(['creator', 'resolver', 'closer', 'activeStopClock'])
             ->latest('tanggal_open');
 
         // Filter search keyword (no_tiket, status_link_impact)
@@ -235,8 +508,8 @@ class TiketService
         // Filter status
         if (!empty($filters['status'])) {
             if ($filters['status'] === 'AKTIF') {
-                $query->whereIn('status', ['OPEN', 'PROSES']);
-            } elseif (in_array($filters['status'], ['OPEN', 'PROSES', 'CLOSE'], true)) {
+                $query->whereIn('status', ['OPEN', 'PROSES', 'PENDING_VERIFIKASI']);
+            } elseif (in_array($filters['status'], ['OPEN', 'PROSES', 'PENDING_VERIFIKASI', 'CLOSE'], true)) {
                 $query->where('status', $filters['status']);
             }
         }
@@ -275,17 +548,21 @@ class TiketService
         $total = Tiket::count();
         $open = Tiket::where('status', 'OPEN')->count();
         $proses = Tiket::where('status', 'PROSES')->count();
+        $pendingVerifikasi = Tiket::where('status', 'PENDING_VERIFIKASI')->count();
         $close = Tiket::where('status', 'CLOSE')->count();
         $lebihSla = Tiket::where('sla_status', 'LEBIH')->count();
         $tepatSla = Tiket::where('sla_status', 'TEPAT')->count();
+        $stopClockCount = Tiket::where('is_stop_clock', true)->count();
 
         return [
             'total' => $total,
             'open' => $open,
             'proses' => $proses,
+            'pending_verifikasi' => $pendingVerifikasi,
             'close' => $close,
             'lebih_sla' => $lebihSla,
             'tepat_sla' => $tepatSla,
+            'stop_clock_count' => $stopClockCount,
         ];
     }
 }

@@ -14,6 +14,9 @@ class ResumePekerjaan extends Model
 
     protected $fillable = [
         'id_tiket',
+        'tipe_penanganan',
+        'joint_closure_type',
+        'core_count_jointed',
         'team_om',
         'problem_temuan',
         'action',

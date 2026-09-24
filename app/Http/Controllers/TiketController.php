@@ -95,7 +95,13 @@ class TiketController extends Controller
 
         $tiket->load([
             'creator',
+            'resolver',
             'closer',
+            'activeStopClock.requester',
+            'stopClocks.requester',
+            'stopClocks.stopper',
+            'handoverShifts.userFrom',
+            'handoverShifts.userTo',
             'kronologis' => function ($q) use ($initialLimit, $totalKronologis) {
                 if ($totalKronologis > $initialLimit) {
                     $q->orderBy('timestamp', 'desc')
@@ -130,7 +136,9 @@ class TiketController extends Controller
                 ];
             });
 
-        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis'));
+        $prerequisites = $tiket->checkClosingPrerequisites();
+
+        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites'));
     }
 
     /**
@@ -172,7 +180,59 @@ class TiketController extends Controller
     }
 
     /**
-     * Closing tiket gangguan (HelpDesk & Admin)
+     * Tahap 1: Closing Awal oleh Teknisi
+     */
+    public function closingAwal(Request $request, Tiket $tiket): RedirectResponse|JsonResponse
+    {
+        $request->validate([
+            'tipe_penanganan' => 'nullable|string|in:JOINTING_LURUS,MANUVER_CORE,LAINNYA',
+            'catatan' => 'nullable|string|max:1000',
+            'resolved_at' => 'nullable|date',
+            'joint_closure_type' => 'nullable|string|max:100',
+            'core_count_jointed' => 'nullable|integer|min:1',
+        ]);
+
+        try {
+            $resolvedTiket = $this->tiketService->closingAwal($tiket, $request->user(), $request->all());
+
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Closing Awal berhasil disubmit. Menunggu verifikasi HelpDesk NOC.",
+                    'data' => $resolvedTiket,
+                ]);
+            }
+
+            return redirect()
+                ->route('tiket.show', $resolvedTiket->id)
+                ->with('success', "Closing Awal berhasil! Pekerjaan fisik selesai. Menunggu verifikasi akhir oleh HelpDesk NOC.");
+        } catch (InvalidArgumentException $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 422);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', $e->getMessage());
+        } catch (\Throwable $e) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal closing awal: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Gagal closing awal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Tahap 2: Closing Akhir / Verifikasi oleh HelpDesk & Admin
      */
     public function close(CloseTiketRequest $request, Tiket $tiket): RedirectResponse
     {
@@ -197,6 +257,134 @@ class TiketController extends Controller
                 ->route('tiket.show', $tiket->id)
                 ->with('error', 'Gagal menutup tiket: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Reject Closing Awal (Kembalikan ke PROSES oleh HelpDesk)
+     */
+    public function rejectClosingAwal(Request $request, Tiket $tiket): RedirectResponse
+    {
+        $alasan = $request->input('alasan') ?? $request->input('alasan_reject');
+
+        if (empty($alasan)) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Alasan penolakan / reject wajib diisi.');
+        }
+
+        try {
+            $this->tiketService->rejectClosingAwal($tiket, $request->user(), $alasan);
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('info', "Verifikasi Closing ditolak. Tiket dikembalikan ke status PROSES.");
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Gagal mengembalikan tiket: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Start Stop Clock
+     */
+    public function startStopClock(Request $request, Tiket $tiket): RedirectResponse
+    {
+        $alasanKategori = $request->input('alasan_kategori') ?? $request->input('reason');
+        $alasanDetail = $request->input('alasan_detail') ?? $request->input('notes');
+
+        if (empty($alasanKategori)) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Alasan kategori Stop Clock wajib dipilih.');
+        }
+
+        $payload = [
+            'alasan_kategori' => $alasanKategori,
+            'alasan_detail' => $alasanDetail,
+            'start_time' => $request->input('start_time'),
+        ];
+
+        try {
+            $this->tiketService->startStopClock($tiket, $request->user(), $payload);
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('success', 'Stop Clock aktif! Perhitungan waktu SLA dijeda.');
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Gagal mengaktifkan Stop Clock: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Stop / Resume Stop Clock
+     */
+    public function stopStopClock(Request $request, Tiket $tiket): RedirectResponse
+    {
+        try {
+            $this->tiketService->stopStopClock($tiket, $request->user());
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('success', 'Stop Clock dihentikan! Perhitungan waktu SLA dilanjutkan.');
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Gagal menghentikan Stop Clock: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Handover / Oper Shift
+     */
+    public function handoverShift(Request $request, Tiket $tiket): RedirectResponse
+    {
+        $shiftFrom = $request->input('shift_from') ?? $request->input('shift_sebelum') ?? 'Shift Sebelumnya';
+        $shiftTo = $request->input('shift_to') ?? $request->input('shift_tujuan');
+        $catatanHandover = $request->input('catatan_handover') ?? $request->input('status_lapangan');
+        if ($request->filled('kendala_pending')) {
+            $catatanHandover .= "\nKendala Pending: " . $request->input('kendala_pending');
+        }
+        if ($request->filled('alokasi_team')) {
+            $catatanHandover .= "\nAlokasi Tim: " . $request->input('alokasi_team');
+        }
+
+        if (empty($shiftTo) || empty($catatanHandover)) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Shift tujuan dan catatan kondisi lapangan wajib diisi.');
+        }
+
+        $payload = [
+            'shift_from' => $shiftFrom,
+            'shift_to' => $shiftTo,
+            'user_to_id' => $request->input('user_to_id'),
+            'catatan_handover' => $catatanHandover,
+        ];
+
+        try {
+            $this->tiketService->handoverShift($tiket, $request->user(), $payload);
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('success', 'Serah terima / Oper shift tiket berhasil dicatat.');
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('error', 'Gagal mencatat oper shift: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Real-time AJAX Check Prerequisites for Closing Awal
+     */
+    public function checkPrerequisites(Tiket $tiket): JsonResponse
+    {
+        $prereq = $tiket->checkClosingPrerequisites();
+
+        return response()->json($prereq);
     }
 
     /**
