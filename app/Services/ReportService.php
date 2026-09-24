@@ -246,4 +246,35 @@ class ReportService
         $filename = 'Rekap_Handover_Shift_' . date('Ymd_His') . '.xlsx';
         return Excel::download(new \App\Exports\HandoverShiftExport($filters), $filename);
     }
+
+    /**
+     * Generate file PDF Laporan KPI Eksekutif
+     */
+    public function generateKpiPdf(?string $startDate = null, ?string $endDate = null)
+    {
+        $kpiService = new \App\Services\KpiService();
+        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate);
+        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate);
+        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate);
+
+        $pdf = Pdf::loadView('reports.pdf_kpi_summary', [
+            'executiveKpi' => $executiveKpi,
+            'teknisiKpi' => $teknisiKpi,
+            'helpdeskKpi' => $helpdeskKpi,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'printDate' => now()->translatedFormat('l, d F Y H:i') . ' WIB',
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf;
+    }
+
+    /**
+     * Download Excel Laporan KPI Eksekutif
+     */
+    public function downloadKpiExcel(?string $startDate = null, ?string $endDate = null): BinaryFileResponse
+    {
+        $filename = 'Laporan_KPI_Kinerja_' . date('Ymd_His') . '.xlsx';
+        return Excel::download(new \App\Exports\KpiExport($startDate, $endDate), $filename);
+    }
 }

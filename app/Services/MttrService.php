@@ -168,4 +168,130 @@ class MttrService
         ->get()
         ->toArray();
     }
+
+    /**
+     * Breakdown Tipe Penanganan Gangguan (Jointing Lurus vs Manuver Core dll.)
+     */
+    public function getCategoryBreakdown(?string $startDate = null, ?string $endDate = null): array
+    {
+        $query = Tiket::query();
+
+        if ($startDate) {
+            $query->whereDate('tanggal_open', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->whereDate('tanggal_open', '<=', $endDate);
+        }
+
+        $results = (clone $query)->select(
+            'tipe_penanganan',
+            DB::raw('COUNT(id) as total'),
+            DB::raw('ROUND(AVG(CASE WHEN mttr_minutes IS NOT NULL THEN mttr_minutes ELSE 0 END)) as avg_mttr')
+        )
+        ->groupBy('tipe_penanganan')
+        ->get();
+
+        $labels = [];
+        $counts = [];
+        $avgMttrs = [];
+
+        foreach ($results as $row) {
+            $name = $row->tipe_penanganan ? str_replace('_', ' ', $row->tipe_penanganan) : 'BELUM DIKLASIFIKASI';
+            $labels[] = $name;
+            $counts[] = (int) $row->total;
+            $avgMttrs[] = (int) $row->avg_mttr;
+        }
+
+        return [
+            'labels' => $labels,
+            'counts' => $counts,
+            'avg_mttr' => $avgMttrs,
+            'total_all' => array_sum($counts),
+        ];
+    }
+
+    /**
+     * Analisis Dampak Jeda Waktu Stop Clock terhadap SLA
+     */
+    public function getStopClockImpactAnalytics(?string $startDate = null, ?string $endDate = null): array
+    {
+        $query = \App\Models\TiketStopClock::with('tiket');
+
+        if ($startDate) {
+            $query->whereDate('start_time', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->whereDate('start_time', '<=', $endDate);
+        }
+
+        $results = (clone $query)->select(
+            'alasan_kategori',
+            DB::raw('COUNT(id) as total_kejadian'),
+            DB::raw('SUM(duration_minutes) as total_menit')
+        )
+        ->groupBy('alasan_kategori')
+        ->orderByDesc('total_menit')
+        ->get();
+
+        $byReason = [];
+        foreach ($results as $r) {
+            $byReason[] = [
+                'reason' => $r->alasan_kategori,
+                'label' => str_replace('_', ' ', $r->alasan_kategori),
+                'total_events' => (int) $r->total_kejadian,
+                'total_minutes' => (int) $r->total_menit,
+            ];
+        }
+
+        $totalPausedMinutes = (int) $results->sum('total_menit');
+
+        return [
+            'total_paused_minutes' => $totalPausedMinutes,
+            'total_events' => (int) $results->sum('total_kejadian'),
+            'by_reason' => $byReason,
+        ];
+    }
+
+    /**
+     * Distribusi Jam Kejadian Gangguan (00:00 - 23:00)
+     */
+    public function getHourlyDistribution(?string $startDate = null, ?string $endDate = null): array
+    {
+        $query = Tiket::query();
+
+        if ($startDate) {
+            $query->whereDate('tanggal_open', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->whereDate('tanggal_open', '<=', $endDate);
+        }
+
+        $driver = DB::connection()->getDriverName();
+        $hourExpr = $driver === 'sqlite' ? "cast(strftime('%H', tanggal_open) as integer)" : 'HOUR(tanggal_open)';
+
+        $results = (clone $query)->select(
+            DB::raw("{$hourExpr} as jam"),
+            DB::raw('COUNT(id) as total')
+        )
+        ->groupBy(DB::raw($hourExpr))
+        ->get();
+
+        $hourData = array_fill(0, 24, 0);
+        foreach ($results as $r) {
+            $h = (int) $r->jam;
+            if ($h >= 0 && $h < 24) {
+                $hourData[$h] = (int) $r->total;
+            }
+        }
+
+        $labels = [];
+        for ($i = 0; $i < 24; $i++) {
+            $labels[] = sprintf('%02d:00', $i);
+        }
+
+        return [
+            'labels' => $labels,
+            'counts' => $hourData,
+        ];
+    }
 }

@@ -190,9 +190,11 @@ class KpiService
             return [
                 'user_id' => $user->id,
                 'name' => $user->name,
+                'email' => $user->email,
                 'role' => $user->role,
                 'total_created' => $totalCreated,
                 'total_closed' => $totalClosed,
+                'total_verified' => $totalClosed,
                 'sla_compliance_rate' => $slaRate,
                 'avg_verification_minutes' => $avgVerification,
                 'formatted_avg_verification' => $this->formatMinutes($avgVerification),

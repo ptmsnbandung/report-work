@@ -32,12 +32,18 @@ class ReportController extends Controller
             'search'
         ]);
 
+        $startDate = $filters['start_date'] ?? null;
+        $endDate = $filters['end_date'] ?? null;
+
         $metrics = $this->reportService->getSummaryMetrics($filters);
         $tikets = $this->reportService->getFilteredQuery($filters)->paginate(15)->withQueryString();
 
         $segments = MasterSla::select('backbone_segment')->distinct()->orderBy('backbone_segment')->get();
         $monthlyTrend = $this->mttrService->getMonthlyMttrTrend();
         $topSegments = $this->mttrService->getTopSegmentsByIncident(5);
+        $categoryBreakdown = $this->mttrService->getCategoryBreakdown($startDate, $endDate);
+        $stopClockImpact = $this->mttrService->getStopClockImpactAnalytics($startDate, $endDate);
+        $hourlyDistribution = $this->mttrService->getHourlyDistribution($startDate, $endDate);
 
         return view('reports.index', compact(
             'tikets',
@@ -45,7 +51,10 @@ class ReportController extends Controller
             'filters',
             'segments',
             'monthlyTrend',
-            'topSegments'
+            'topSegments',
+            'categoryBreakdown',
+            'stopClockImpact',
+            'hourlyDistribution'
         ));
     }
 
@@ -203,5 +212,28 @@ class ReportController extends Controller
         ]);
 
         return $this->reportService->downloadHandoverShiftsExcel($filters);
+    }
+
+    /**
+     * Export Laporan KPI Eksekutif ke PDF
+     */
+    public function exportKpiPdf(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $filename = 'Laporan_Eksekutif_KPI_' . date('Ymd_His') . '.pdf';
+        return $this->reportService->generateKpiPdf($startDate, $endDate)->download($filename);
+    }
+
+    /**
+     * Export Laporan KPI Eksekutif ke Excel
+     */
+    public function exportKpiExcel(Request $request): BinaryFileResponse
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        return $this->reportService->downloadKpiExcel($startDate, $endDate);
     }
 }

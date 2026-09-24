@@ -135,6 +135,8 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/reports/sla-data', [\App\Http\Controllers\ReportController::class, 'sla'])->name('reports.sla');
     Route::get('/reports/export/pdf', [\App\Http\Controllers\ReportController::class, 'exportPdf'])->name('reports.export.pdf');
     Route::get('/reports/export/excel', [\App\Http\Controllers\ReportController::class, 'exportExcel'])->name('reports.export.excel');
+    Route::get('/reports/export-kpi/pdf', [\App\Http\Controllers\ReportController::class, 'exportKpiPdf'])->name('reports.export.kpi.pdf');
+    Route::get('/reports/export-kpi/excel', [\App\Http\Controllers\ReportController::class, 'exportKpiExcel'])->name('reports.export.kpi.excel');
     Route::get('/reports/export-shifts/pdf', [\App\Http\Controllers\ReportController::class, 'exportShiftsPdf'])->name('reports.export.shifts.pdf');
     Route::get('/reports/export-shifts/excel', [\App\Http\Controllers\ReportController::class, 'exportShiftsExcel'])->name('reports.export.shifts.excel');
     Route::get('/tiket/{tiket}/export/pdf', [\App\Http\Controllers\ReportController::class, 'exportTiketPdf'])->name('reports.export.tiket.pdf');

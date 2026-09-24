@@ -106,6 +106,17 @@
             <a href="{{ route('reports.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 shadow-xs">
                 <i class="bi bi-graph-up me-1"></i> Analisis MTTR/SLA
             </a>
+            <a href="{{ route('reports.shifts') }}" class="btn btn-outline-purple btn-sm rounded-pill px-3 shadow-xs" style="border-color: #8b5cf6; color: #7c3aed;">
+                <i class="bi bi-arrow-left-right me-1"></i> Rekap Shift
+            </a>
+            <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1">
+                <i class="bi bi-file-earmark-pdf-fill"></i>
+                <span>Export PDF</span>
+            </a>
+            <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1">
+                <i class="bi bi-file-earmark-excel-fill"></i>
+                <span>Export Excel</span>
+            </a>
         </div>
     </div>
 

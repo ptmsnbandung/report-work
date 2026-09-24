@@ -420,6 +420,100 @@
         </div>
     </div>
 
+    <!-- ── ADVANCED ANALYTICS (HOURLY HEATMAP, CATEGORY BREAKDOWN & STOP CLOCK) ── -->
+    <div class="row g-3 g-md-4 mb-3 mb-md-4">
+        <!-- 1. Hourly Incident Distribution Bar Chart -->
+        <div class="col-12 col-lg-7">
+            <div class="card border-0 shadow-sm rounded-xl p-3 p-md-4 h-100 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-navy d-flex align-items-center gap-1.5" style="font-size: 0.95rem;">
+                            <i class="bi bi-clock-history text-indigo"></i> Distribusi Jam Kejadian Gangguan (24 Jam)
+                        </h6>
+                        <small class="text-muted" style="font-size: 0.72rem;">Frekuensi tiket open berdasarkan waktu kejadian 00:00 - 23:00</small>
+                    </div>
+                    <span class="badge bg-light text-navy border px-2 py-1 font-monospace" style="font-size: 0.7rem;">
+                        {{ array_sum($hourlyDistribution['counts']) }} Total Kejadian
+                    </span>
+                </div>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="hourlyDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Category Breakdown & Stop Clock Impact Cards -->
+        <div class="col-12 col-lg-5">
+            <div class="row g-3 h-100">
+                <!-- Tipe Penanganan (Jointing vs Manuver Core) -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-xl p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold mb-0 text-navy d-flex align-items-center gap-1.5" style="font-size: 0.88rem;">
+                                <i class="bi bi-tools text-warning"></i> Tipe Penanganan Lapangan
+                            </h6>
+                            <span class="badge bg-light text-muted border" style="font-size: 0.68rem;">{{ $categoryBreakdown['total_all'] }} Tiket</span>
+                        </div>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-5" style="height: 110px; position: relative;">
+                                <canvas id="categoryBreakdownChart"></canvas>
+                            </div>
+                            <div class="col-7">
+                                <div class="d-flex flex-column gap-1.5 small" style="font-size: 0.75rem;">
+                                    @forelse($categoryBreakdown['labels'] as $idx => $catLabel)
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-truncate" style="max-width: 120px;" title="{{ $catLabel }}">
+                                            <span class="badge rounded-circle p-1 me-1" style="background: {{ $idx === 0 ? '#3b82f6' : ($idx === 1 ? '#8b5cf6' : '#10b981') }};"> </span>
+                                            <span class="text-navy fw-semibold">{{ $catLabel }}</span>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-light text-dark border">{{ $categoryBreakdown['counts'][$idx] }}</span>
+                                            <span class="text-muted font-monospace" style="font-size: 0.68rem;">{{ $categoryBreakdown['avg_mttr'][$idx] }}m</span>
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <div class="text-muted text-center py-2">Belum ada data penanganan.</div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stop Clock SLA Impact -->
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-xl p-3 bg-white">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="fw-bold mb-0 text-navy d-flex align-items-center gap-1.5" style="font-size: 0.88rem;">
+                                <i class="bi bi-pause-circle-fill text-danger"></i> Dampak Efisiensi Stop Clock
+                            </h6>
+                            <span class="badge rounded-pill fw-bold" style="background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; font-size: 0.68rem;">
+                                {{ $stopClockImpact['total_events'] }} Kali Jeda
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between bg-light rounded-lg p-2 mb-2">
+                            <div class="small text-muted" style="font-size: 0.72rem;">Total Waktu Terjeda (Dikecualikan dari SLA)</div>
+                            <div class="fw-bold text-danger font-monospace" style="font-size: 0.88rem;">
+                                {{ floor($stopClockImpact['total_paused_minutes'] / 60) }}j {{ $stopClockImpact['total_paused_minutes'] % 60 }}m
+                                <span class="text-muted fw-normal" style="font-size: 0.68rem;">({{ $stopClockImpact['total_paused_minutes'] }} mnt)</span>
+                            </div>
+                        </div>
+                        @if(count($stopClockImpact['by_reason']) > 0)
+                        <div class="d-flex flex-wrap gap-1.5">
+                            @foreach(array_slice($stopClockImpact['by_reason'], 0, 3) as $scReason)
+                            <div class="badge bg-white border text-navy fw-normal p-1.5 d-flex align-items-center gap-1" style="font-size: 0.68rem;">
+                                <span class="fw-bold text-dark">{{ $scReason['label'] }}:</span>
+                                <span class="text-danger font-monospace">{{ $scReason['total_minutes'] }}m ({{ $scReason['total_events'] }}x)</span>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ── TOP INCIDENT SEGMENTS & DATA TABLE ── -->
     <div class="row g-3 g-md-4 mb-4">
         <!-- Top Segment Gangguan -->
@@ -719,6 +813,76 @@ document.addEventListener('DOMContentLoaded', function() {
                 responsive: true,
                 maintainAspectRatio: false,
                 cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // ── 3. HOURLY DISTRIBUTION BAR CHART (24 HOURS) ──
+    const ctxHourly = document.getElementById('hourlyDistributionChart');
+    if (ctxHourly) {
+        new Chart(ctxHourly, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($hourlyDistribution['labels']) !!},
+                datasets: [{
+                    label: 'Jumlah Insiden',
+                    data: {!! json_encode($hourlyDistribution['counts']) !!},
+                    backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                    borderColor: '#6366f1',
+                    borderWidth: 1.5,
+                    borderRadius: 4,
+                    hoverBackgroundColor: '#4f46e5',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Insiden: ${context.parsed.y} tiket`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1, precision: 0 },
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxRotation: 45, minRotation: 0, font: { size: 9 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // ── 4. CATEGORY BREAKDOWN DOUGHNUT CHART ──
+    const ctxCat = document.getElementById('categoryBreakdownChart');
+    if (ctxCat) {
+        new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($categoryBreakdown['labels']) !!},
+                datasets: [{
+                    data: {!! json_encode($categoryBreakdown['counts']) !!},
+                    backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
                 plugins: {
                     legend: { display: false }
                 }
