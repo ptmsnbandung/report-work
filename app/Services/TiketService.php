@@ -247,7 +247,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $teknisi->id,
-                'informasi' => "🛠️ [CLOSING AWAL - LAPANGAN SELESAI]\nTeknisi {$teknisi->name} telah menyelesaikan perbaikan fisik di lapangan.\n\n• Tipe Penanganan: {$tipeLabel}\n• Catatan: " . ($catatan ?: 'Pekerjaan perbaikan fisik telah selesai.') . "\n\nMenunggu verifikasi akhir & Closing Tiket oleh HelpDesk NOC.",
+                'informasi' => "🛠️ [CLOSING AWAL - LAPANGAN SELESAI]\nTeknisi {$teknisi->name} telah menyelesaikan perbaikan fisik di lapangan.\n• Tipe Penanganan: {$tipeLabel}\n• Catatan: " . ($catatan ?: 'Pekerjaan perbaikan fisik telah selesai.') . "\nMenunggu verifikasi akhir & Closing Tiket oleh HelpDesk NOC.",
                 'kategori' => 'SELESAI',
                 'timestamp' => $resolvedAt,
             ]);
@@ -312,7 +312,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $closer->id,
-                'informasi' => "✅ [CLOSING AKHIR - VERIFIKASI HD SELESAI]\nHelpDesk NOC ({$closer->name}) telah memverifikasi link normal dan menutup tiket ini.\n\n• MTTR Bersih: {$mttrStr}{$stopClockInfo}\n• Status SLA: {$slaLabel}\n• Catatan HD: " . ($closeData['catatan_hd'] ?? 'Link telah terpantau UP dan stabil.'),
+                'informasi' => "✅ [CLOSING AKHIR - VERIFIKASI HD SELESAI]\nHelpDesk NOC ({$closer->name}) telah memverifikasi link normal dan menutup tiket ini.\n• MTTR Bersih: {$mttrStr}{$stopClockInfo}\n• Status SLA: {$slaLabel}\n• Catatan HD: " . ($closeData['catatan_hd'] ?? 'Link telah terpantau UP dan stabil.'),
                 'kategori' => 'LINK_UP',
                 'timestamp' => $tanggalClose,
             ]);
@@ -346,7 +346,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $hd->id,
-                'informasi' => "⚠️ [VERIFIKASI DITOLAK - KEMBALI PROSES]\nHelpDesk NOC ({$hd->name}) mengembalikan status tiket ke PROSES.\n\n• Alasan: {$alasan}\n\nMohon tim teknis memeriksa kembali kondisi lapangan.",
+                'informasi' => "⚠️ [VERIFIKASI DITOLAK - KEMBALI PROSES]\nHelpDesk NOC ({$hd->name}) mengembalikan status tiket ke PROSES.\n• Alasan: {$alasan}\nMohon tim teknis memeriksa kembali kondisi lapangan.",
                 'kategori' => 'LAIN',
                 'timestamp' => Carbon::now(),
             ]);
@@ -400,7 +400,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $user->id,
-                'informasi' => "⏸️ [STOP CLOCK AKTIF - SLA DIJEDA]\nUser ({$user->name}) mengaktifkan Stop Clock.\n\n• Kategori: {$alasanLabel}\n• Keterangan: " . ($data['alasan_detail'] ?: '-'),
+                'informasi' => "⏸️ [STOP CLOCK AKTIF - SLA DIJEDA]\nUser ({$user->name}) mengaktifkan Stop Clock.\n• Kategori: {$alasanLabel}\n• Keterangan: " . ($data['alasan_detail'] ?: '-'),
                 'kategori' => 'LAIN',
                 'timestamp' => $startTime,
             ]);
@@ -441,7 +441,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $user->id,
-                'informasi' => "▶️ [RESUME CLOCK - SLA DILANJUTKAN]\nUser ({$user->name}) mengakhiri Stop Clock.\n\n• Durasi Jeda: {$durationMinutes} menit\n• Total Jeda SLA Tiket: {$totalStopClock} menit",
+                'informasi' => "▶️ [RESUME CLOCK - SLA DILANJUTKAN]\nUser ({$user->name}) mengakhiri Stop Clock.\n• Durasi Jeda: {$durationMinutes} menit\n• Total Jeda SLA Tiket: {$totalStopClock} menit",
                 'kategori' => 'LAIN',
                 'timestamp' => $endTime,
             ]);
@@ -470,7 +470,7 @@ class TiketService
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $user->id,
-                'informasi' => "🔄 [OPER SHIFT / HANDOVER]\nSerah terima penanganan tiket dari {$data['shift_from']} ke {$data['shift_to']}.\n\n• Dari: {$user->name}\n• Kepada: {$targetUserName}\n• Catatan: {$data['catatan_handover']}",
+                'informasi' => "🔄 [OPER SHIFT / HANDOVER]\nSerah terima penanganan tiket dari {$data['shift_from']} ke {$data['shift_to']}.\n• Dari: {$user->name}\n• Kepada: {$targetUserName}\n• Catatan: {$data['catatan_handover']}",
                 'kategori' => 'LAIN',
                 'timestamp' => Carbon::now(),
             ]);

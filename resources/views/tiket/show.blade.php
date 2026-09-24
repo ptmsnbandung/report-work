@@ -549,10 +549,9 @@
 
     /* Message Body Text */
     .wa-msg-text {
-        font-size: 0.84rem;
+        font-size: 0.835rem;
         color: #111b21;
-        line-height: 1.45;
-        white-space: pre-wrap;
+        line-height: 1.35;
         word-break: break-word;
     }
 
@@ -2761,6 +2760,7 @@
                                                         $quoteText = $quoteMatches[2];
                                                         $rawInfo = substr($rawInfo, strlen($quoteMatches[0]));
                                                     }
+                                                    $cleanedInfo = preg_replace('/(\r?\n\s*){2,}/', "\n", trim($rawInfo));
                                                 @endphp
                                                 @if($quoteSender)
                                                 <div class="wa-quote-box">
@@ -2768,7 +2768,7 @@
                                                     <div class="wa-quote-text">{{ $quoteText }}</div>
                                                 </div>
                                                 @endif
-                                                <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($rawInfo))) !!}</div>
+                                                <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($cleanedInfo))) !!}</div>
 
                                                 <!-- Attached Photo (WhatsApp Media Card) -->
                                                 @if($krono->foto_url)
@@ -6398,6 +6398,8 @@ document.addEventListener('DOMContentLoaded', function() {
             quoteHtml = `<div class="wa-quote-box"><div class="wa-quote-sender"><i class="bi bi-reply-fill me-1"></i>${sender}</div><div class="wa-quote-text">${quoteContent}</div></div>`;
             str = str.substring(quoteMatch[0].length);
         }
+
+        str = str.trim().replace(/(\r?\n\s*){2,}/g, '\n');
 
         let safe = rawEscape(str).replace(/\n/g, '<br>');
         let formatted = safe.replace(/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/g, function(match) {
