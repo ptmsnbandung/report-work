@@ -41,7 +41,7 @@ class ManuverCoreController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'manuver'])
+            ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'penanganan'])
             ->with('success', 'Manuver core berhasil ditambahkan.');
     }
 
@@ -61,7 +61,7 @@ class ManuverCoreController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'manuver'])
+            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'penanganan'])
             ->with('success', 'Manuver core berhasil dihapus.');
     }
 }

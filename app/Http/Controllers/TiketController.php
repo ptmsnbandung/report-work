@@ -433,4 +433,32 @@ class TiketController extends Controller
             'no_tiket' => $preview,
         ]);
     }
+
+    /**
+     * Update tipe penanganan fisik / core tiket (Jointing Lurus / Manuver Core)
+     */
+    public function updateTipePenanganan(Request $request, Tiket $tiket): RedirectResponse|JsonResponse
+    {
+        $validated = $request->validate([
+            'tipe_penanganan' => ['required', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,LAINNYA'],
+        ]);
+
+        $tiket->update(['tipe_penanganan' => $validated['tipe_penanganan']]);
+        if ($tiket->resume) {
+            $tiket->resume->update(['tipe_penanganan' => $validated['tipe_penanganan']]);
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Tipe penanganan berhasil diperbarui.',
+                'tipe_penanganan' => $tiket->tipe_penanganan,
+                'label' => $tiket->tipe_penanganan_label,
+            ]);
+        }
+
+        return redirect()
+            ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'penanganan'])
+            ->with('success', 'Tipe penanganan berhasil diperbarui.');
+    }
 }

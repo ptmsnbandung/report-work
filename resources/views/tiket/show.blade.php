@@ -974,6 +974,46 @@
         gap: 0.4rem;
     }
 
+    /* ── Penanganan Core & JC Mode Selector ── */
+    .penanganan-mode-card {
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 14px;
+        cursor: pointer;
+    }
+    .penanganan-mode-card .penanganan-mode-inner {
+        background: #f8fafc;
+        border: 2px solid #e2e8f0 !important;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 14px;
+    }
+    .penanganan-mode-card:hover .penanganan-mode-inner {
+        border-color: #cbd5e1 !important;
+        background: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
+    .penanganan-mode-card.is-selected .penanganan-mode-inner {
+        background: #ffffff;
+        border-color: #6366f1 !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.16);
+    }
+    .penanganan-mode-card#cardModeManuver.is-selected .penanganan-mode-inner {
+        border-color: #a855f7 !important;
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.16);
+    }
+    .bg-indigo-subtle {
+        background-color: rgba(99, 102, 241, 0.12) !important;
+    }
+    .text-indigo {
+        color: #4f46e5 !important;
+    }
+    .bg-purple-subtle {
+        background-color: rgba(168, 85, 247, 0.12) !important;
+    }
+    .text-purple {
+        color: #9333ea !important;
+    }
+
     /* Empty state */
     .wa-empty-icon i {
         font-size: 2.8rem;
@@ -2484,7 +2524,7 @@
                 <!-- 4. Tipe Penanganan -->
                 <div class="col-6 col-xl-3">
                     <div class="closing-item-tile {{ $prereqs['items']['tipe_penanganan'] ? 'is-complete' : 'is-pending' }}" 
-                         onclick="const tab = document.getElementById('resume-tab'); if(tab) { tab.click(); document.getElementById('resume-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         onclick="const tab = document.getElementById('penanganan-tab'); if(tab) { tab.click(); document.getElementById('penanganan-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
                          title="Klik untuk memilih Tipe Penanganan (Jointing Lurus / Manuver Core)">
                         <div class="d-flex align-items-center gap-2 min-w-0">
                             <div class="closing-tile-icon-box">
@@ -2531,18 +2571,18 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link d-flex align-items-center gap-1.5"
-                            id="material-tab" data-bs-toggle="tab" data-bs-target="#material-pane" type="button" role="tab">
-                        <i class="bi bi-box-seam text-warning"></i>
-                        <span>Material & Titik</span>
-                        <span class="badge bg-light text-navy border">{{ $tiket->materials->count() + $tiket->titikPerbaikans->count() }}</span>
+                            id="penanganan-tab" data-bs-toggle="tab" data-bs-target="#penanganan-pane" type="button" role="tab">
+                        <i class="bi bi-bezier2" style="color: #6366f1 !important;"></i>
+                        <span>Penanganan Core &amp; JC</span>
+                        <span class="badge bg-light text-navy border" id="penangananCountBadge">{{ $tiket->jointClosures->count() + $tiket->manuverCores->count() }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link d-flex align-items-center gap-1.5"
-                            id="jointclosure-tab" data-bs-toggle="tab" data-bs-target="#jointclosure-pane" type="button" role="tab">
-                        <i class="bi bi-diagram-3-fill" style="color: #6366f1 !important;"></i>
-                        <span>Kabel & JC</span>
-                        <span class="badge bg-light text-navy border" id="jointClosureCountBadge">{{ $tiket->jointClosures->count() }}</span>
+                            id="material-tab" data-bs-toggle="tab" data-bs-target="#material-pane" type="button" role="tab">
+                        <i class="bi bi-box-seam text-warning"></i>
+                        <span>Material &amp; Titik</span>
+                        <span class="badge bg-light text-navy border">{{ $tiket->materials->count() + $tiket->titikPerbaikans->count() }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -2555,17 +2595,9 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link d-flex align-items-center gap-1.5"
-                            id="manuver-tab" data-bs-toggle="tab" data-bs-target="#manuver-pane" type="button" role="tab">
-                        <i class="bi bi-shuffle text-teal"></i>
-                        <span>Manuver Core</span>
-                        <span class="badge bg-light text-navy border" id="manuverCountBadge">{{ $tiket->manuverCores->count() }}</span>
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link d-flex align-items-center gap-1.5"
                             id="stopclock-tab" data-bs-toggle="tab" data-bs-target="#stopclock-pane" type="button" role="tab">
                         <i class="bi bi-pause-circle text-warning"></i>
-                        <span>Stop Clock & Shift</span>
+                        <span>Stop Clock &amp; Shift</span>
                         @if($tiket->stopClocks->count() > 0 || $tiket->handoverShifts->count() > 0)
                             <span class="badge bg-light text-navy border">{{ $tiket->stopClocks->count() + $tiket->handoverShifts->count() }}</span>
                         @endif
@@ -3015,26 +3047,28 @@
                             </div>
 
                             <!-- Tipe Penanganan & Jointing Details (Point 4) -->
+                            <!-- Tipe Penanganan & Jointing Summary -->
                             <div class="col-12 col-md-6">
                                 <div class="resume-card-pro" style="border-left: 4px solid #0d9488; background: #f0fdfa;">
-                                    <div class="resume-card-label text-teal">
-                                        <i class="bi bi-diagram-2-fill"></i> Tipe Penanganan Lapangan
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <div class="resume-card-label text-teal mb-0">
+                                            <i class="bi bi-bezier2"></i> Tipe Penanganan Fisik / Core
+                                        </div>
+                                        <button type="button" class="btn btn-link btn-sm text-teal p-0 text-decoration-none fw-bold" style="font-size: 0.72rem;" onclick="document.getElementById('penanganan-tab')?.click(); document.getElementById('penanganan-pane')?.scrollIntoView({behavior:'smooth'});">
+                                            Buka Menu &rarr;
+                                        </button>
                                     </div>
                                     <div class="resume-card-text">
-                                        @if($tiket->resume->tipe_penanganan === 'JOINTING_LURUS')
+                                        @if(($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan) === 'JOINTING_LURUS')
                                             <span class="badge bg-success text-white px-2.5 py-1 rounded-pill">
-                                                <i class="bi bi-arrow-right me-1"></i> Jointing Lurus (Straight Splicing)
+                                                <i class="bi bi-diagram-3-fill me-1"></i> Jointing Lurus (Kabel &amp; JC)
                                             </span>
-                                        @elseif($tiket->resume->tipe_penanganan === 'MANUVER_CORE')
+                                        @elseif(($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan) === 'MANUVER_CORE')
                                             <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill">
-                                                <i class="bi bi-shuffle me-1"></i> Manuver Core / Tube
-                                            </span>
-                                        @elseif($tiket->resume->tipe_penanganan === 'LAINNYA')
-                                            <span class="badge bg-secondary text-white px-2.5 py-1 rounded-pill">
-                                                Penanganan Lainnya
+                                                <i class="bi bi-shuffle me-1"></i> Manuver Core (Swapping Core)
                                             </span>
                                         @else
-                                            <span class="text-muted small">Belum ditentukan</span>
+                                            <span class="text-muted small">Belum ditentukan (Pilih di tab Penanganan Core &amp; JC)</span>
                                         @endif
                                     </div>
                                 </div>
@@ -3043,12 +3077,12 @@
                             <div class="col-12 col-md-6">
                                 <div class="resume-card-pro" style="border-left: 4px solid #6366f1; background: #eef2ff;">
                                     <div class="resume-card-label" style="color: #4f46e5;">
-                                        <i class="bi bi-box-seam-fill"></i> Info Joint Closure & Core
+                                        <i class="bi bi-box-seam-fill"></i> Data Terinput di Menu Penanganan
                                     </div>
                                     <div class="resume-card-text">
                                         <div class="small text-navy">
-                                            <strong>Closure:</strong> {{ $tiket->resume->joint_closure_type ?: '-' }} &bull;
-                                            <strong>Core Jointed:</strong> {{ $tiket->resume->core_count_jointed ? $tiket->resume->core_count_jointed . ' Core' : '-' }}
+                                            <strong>Joint Closure:</strong> {{ $tiket->jointClosures->count() }} Titik &bull;
+                                            <strong>Manuver:</strong> {{ $tiket->manuverCores->count() }} Mapping Core
                                         </div>
                                     </div>
                                 </div>
@@ -3084,6 +3118,495 @@
                             @endif
                         </div>
                     @endif
+                </div>
+
+                <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
+                <div class="tab-pane fade" id="penanganan-pane" role="tabpanel">
+                    @php
+                        $activePenanganan = ($tiket->tipe_penanganan === 'MANUVER_CORE') ? 'MANUVER_CORE' : (($tiket->tipe_penanganan === 'JOINTING_LURUS' || $tiket->jointClosures->count() > 0) ? 'JOINTING_LURUS' : ($tiket->manuverCores->count() > 0 ? 'MANUVER_CORE' : 'JOINTING_LURUS'));
+                    @endphp
+
+                    <!-- Tipe Penanganan Switcher Banner -->
+                    <div class="card border-0 shadow-sm rounded-xl mb-4 bg-white overflow-hidden">
+                        <div class="card-body p-3 p-md-4">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                                <div>
+                                    <div class="fw-bold text-navy fs-6 d-flex align-items-center gap-2">
+                                        <i class="bi bi-bezier2" style="color: #6366f1;"></i>
+                                        <span>Pilih Metode Penanganan Fisik / Core</span>
+                                    </div>
+                                    <div class="text-muted small" style="font-size: 0.8rem;">
+                                        Tentukan metode perbaikan kabel yang dilakukan untuk tiket ini. Klik salah satu opsi di bawah untuk beralih dan menyimpan pilihan otomatis.
+                                    </div>
+                                </div>
+                                <div id="penangananStatusIndicator" class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-light text-navy border px-2.5 py-1.5 rounded-pill small">
+                                        Pilihan Aktif: <strong id="penangananActiveLabel" class="text-primary">{{ $activePenanganan === 'MANUVER_CORE' ? 'Manuver Core (Swapping Core)' : 'Jointing Lurus (Kabel & JC)' }}</strong>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3" id="penangananModeSelector">
+                                <!-- Option 1: Jointing Lurus -->
+                                <div class="col-12 col-md-6">
+                                    <div class="penanganan-mode-card {{ $activePenanganan === 'JOINTING_LURUS' ? 'active is-selected' : '' }}"
+                                         id="cardModeJointing"
+                                         onclick="switchPenangananMode('JOINTING_LURUS', true)">
+                                        <div class="d-flex align-items-start gap-3 p-3 rounded-3 h-100 position-relative border penanganan-mode-inner">
+                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                                <i class="bi bi-diagram-3-fill"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <div class="fw-bold text-navy" style="font-size: 0.95rem;">1. Jointing Lurus</div>
+                                                    <span class="badge bg-indigo-subtle text-indigo font-monospace" style="font-size: 0.72rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
+                                                </div>
+                                                <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
+                                                    Penyambungan kabel lurus eksisting &amp; jumper, mapping tube-core per tray, serta penambahan closure baru.
+                                                </div>
+                                            </div>
+                                            <div class="penanganan-radio-check position-absolute top-0 end-0 m-2">
+                                                <i class="bi {{ $activePenanganan === 'JOINTING_LURUS' ? 'bi-check-circle-fill text-indigo fs-5' : 'bi-circle text-muted fs-5' }}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Option 2: Manuver Core -->
+                                <div class="col-12 col-md-6">
+                                    <div class="penanganan-mode-card {{ $activePenanganan === 'MANUVER_CORE' ? 'active is-selected' : '' }}"
+                                         id="cardModeManuver"
+                                         onclick="switchPenangananMode('MANUVER_CORE', true)">
+                                        <div class="d-flex align-items-start gap-3 p-3 rounded-3 h-100 position-relative border penanganan-mode-inner">
+                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                                <i class="bi bi-shuffle"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                                    <div class="fw-bold text-navy" style="font-size: 0.95rem;">2. Manuver Core</div>
+                                                    <span class="badge bg-purple-subtle text-purple font-monospace" style="font-size: 0.72rem;">{{ $tiket->manuverCores->count() }} Record</span>
+                                                </div>
+                                                <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
+                                                    Pengalihan alokasi core serat optik (swapping core / bypass jalur putus) sebelum dan sesudah perbaikan.
+                                                </div>
+                                            </div>
+                                            <div class="penanganan-radio-check position-absolute top-0 end-0 m-2">
+                                                <i class="bi {{ $activePenanganan === 'MANUVER_CORE' ? 'bi-check-circle-fill text-purple fs-5' : 'bi-circle text-muted fs-5' }}"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── SUB-VIEW: JOINTING LURUS (KABEL & JC) ── -->
+                    <div id="penangananSubViewJointing" class="{{ $activePenanganan === 'JOINTING_LURUS' ? '' : 'd-none' }}">
+                        <div class="tab-header-banner">
+                            <div class="tab-header-left">
+                                <div class="tab-header-icon-box icon-box-indigo">
+                                    <i class="bi bi-diagram-3-fill"></i>
+                                </div>
+                                <div>
+                                    <div class="tab-header-title">Pencatatan Kabel &amp; Sambungan Joint Closure (JC)</div>
+                                    <div class="tab-header-subtitle">Kapasitas kabel eksisting &amp; jumper, mapping tube-core, status core sisa, dan aset baru closure</div>
+                                </div>
+                            </div>
+                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                            <button class="btn-tab-action-pro btn-indigo-pro btn-mobile-block" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                <span>Tambah Joint Closure</span>
+                            </button>
+                            @endif
+                        </div>
+
+                        @if($tiket->jointClosures->count() > 0)
+                            <div class="d-flex flex-column gap-4">
+                                @foreach($tiket->jointClosures as $jc)
+                                <div class="jc-card-pro">
+                                    <!-- JC Card Header -->
+                                    <div class="jc-header-pro">
+                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-navy text-white font-monospace fs-6 px-2.5 py-1.5 shadow-xs">
+                                                    <i class="bi bi-box-seam me-1 text-teal"></i>{{ $jc->nama_closure }}
+                                                </span>
+                                                @if($jc->is_aset_baru)
+                                                    <span class="badge bg-success text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                                        <i class="bi bi-stars me-1"></i>ASET BARU
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                                        EKSISTING
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
+                                                    <i class="bi bi-tag-fill text-indigo me-1"></i>{{ $jc->jenis_closure }}
+                                                </span>
+                                                <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
+                                                    <i class="bi bi-geo-fill text-danger me-1"></i>{{ str_replace('_', ' ', $jc->lokasi_fisik) }}
+                                                </span>
+                                                @if($jc->latitude && $jc->longitude)
+                                                <a href="{{ $jc->google_maps_url }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 text-decoration-none" style="font-size: 0.72rem;" title="Buka di Google Maps">
+                                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
+                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.65rem;"></i>
+                                                </a>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="text-muted small" style="font-size: 0.75rem;">
+                                                <i class="bi bi-person-fill text-secondary me-1"></i>{{ $jc->creator?->name ?? 'Sistem' }} &bull; {{ $jc->created_at->format('d/m H:i') }}
+                                            </span>
+                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                            <form action="{{ route('tiket.joint-closure.destroy', $jc->id) }}" method="POST"
+                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus data Joint Closure {{ $jc->nama_closure }} beserta semua sambungan core di dalamnya?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger py-0.5 px-2 rounded-pill" title="Hapus Joint Closure">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <!-- JC Card Body -->
+                                    <div class="card-body p-3 p-md-4">
+                                        <!-- Cable Capacity Specs Row -->
+                                        <div class="jc-spec-banner mb-3">
+                                            <div class="row g-2 align-items-center">
+                                                <div class="col-12 col-md-5">
+                                                    <div class="jc-spec-box">
+                                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                                <i class="bi bi-arrow-down-right-circle text-primary me-1"></i>Kabel Eksisting / Asal
+                                                            </span>
+                                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                                {{ $jc->jumlah_tube_asal }} Tube
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex align-items-baseline gap-2">
+                                                            <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_asal }}</span>
+                                                            <span class="text-muted small">Core</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 col-md-2 text-center py-1">
+                                                    <div class="d-inline-flex align-items-center justify-content-center bg-white border rounded-circle shadow-xs" style="width: 38px; height: 38px;">
+                                                        <i class="bi bi-arrow-left-right text-indigo fs-5"></i>
+                                                    </div>
+                                                    <div class="text-muted" style="font-size: 0.68rem; font-weight: 600;">DISAMBUNG</div>
+                                                </div>
+
+                                                <div class="col-12 col-md-5">
+                                                    <div class="jc-spec-box">
+                                                        <div class="d-flex align-items-center justify-content-between mb-1">
+                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
+                                                                <i class="bi bi-arrow-up-left-circle text-teal me-1"></i>Kabel Jumper / Distribusi
+                                                            </span>
+                                                            <span class="badge bg-teal bg-opacity-10 text-teal border border-teal border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                                {{ $jc->jumlah_tube_jumper }} Tube
+                                                            </span>
+                                                        </div>
+                                                        <div class="d-flex align-items-baseline gap-2">
+                                                            <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_jumper }}</span>
+                                                            <span class="text-muted small">Core</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            @if($jc->keterangan)
+                                            <div class="mt-2 pt-2 border-top text-muted small" style="font-size: 0.78rem;">
+                                                <i class="bi bi-info-circle text-primary me-1"></i><strong>Catatan:</strong> {{ $jc->keterangan }}
+                                            </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Summary Core Status & Action Bar -->
+                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                                @php
+                                                    $cSummary = $jc->core_summary;
+                                                @endphp
+                                                <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                    <i class="bi bi-check2-circle me-1"></i>{{ $cSummary['terhubung'] }} Terhubung
+                                                </span>
+                                                <span class="badge bg-secondary bg-opacity-15 text-secondary border border-secondary border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                    <i class="bi bi-dash-circle me-1"></i>{{ $cSummary['spare'] }} Core Sisa / Spare
+                                                </span>
+                                                @if($cSummary['loss'] > 0)
+                                                <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                    <i class="bi bi-x-circle me-1"></i>{{ $cSummary['loss'] }} Loss / Putus
+                                                </span>
+                                                @endif
+                                                @if($cSummary['manuver'] > 0)
+                                                <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                    <i class="bi bi-shuffle me-1"></i>{{ $cSummary['manuver'] }} Manuver
+                                                </span>
+                                                @endif
+                                                <span class="badge bg-light text-navy border px-2.5 py-1 rounded-pill small">
+                                                    Total: {{ $cSummary['total'] }} Splice
+                                                </span>
+                                            </div>
+
+                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold open-add-core-btn"
+                                                    data-jc-id="{{ $jc->id }}"
+                                                    data-jc-name="{{ $jc->nama_closure }}"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#addJointClosureCoreModal">
+                                                <i class="bi bi-plus-lg me-1"></i> Tambah Sambungan Core
+                                            </button>
+                                            @endif
+                                        </div>
+
+                                        <!-- Core Splicing Matrix Records -->
+                                        @if($jc->cores->count() > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle border mb-0 rounded-3 overflow-hidden">
+                                                    <thead class="table-light">
+                                                        <tr style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px;">
+                                                            <th class="ps-3">Kabel Asal (Tube - Core)</th>
+                                                            <th></th>
+                                                            <th>Kabel Jumper (Tube - Core)</th>
+                                                            <th>Status</th>
+                                                            <th>Loss (dB)</th>
+                                                            <th>Keterangan</th>
+                                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                            <th class="text-end pe-3">Aksi</th>
+                                                            @endif
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody style="font-size: 0.82rem;">
+                                                        @foreach($jc->cores as $c)
+                                                        <tr>
+                                                            <td class="ps-3 font-monospace fw-semibold text-navy">
+                                                                <i class="bi bi-diagram-2 text-primary me-1"></i>{{ $c->tube_asal }} &bull; {{ $c->core_asal }}
+                                                            </td>
+                                                            <td class="text-center text-muted px-1" style="width: 30px;">
+                                                                <i class="bi bi-arrow-right text-indigo"></i>
+                                                            </td>
+                                                            <td class="font-monospace fw-semibold text-navy">
+                                                                @if($c->tube_jumper || $c->core_jumper)
+                                                                    <i class="bi bi-diagram-2 text-teal me-1"></i>{{ $c->tube_jumper ?: '-' }} &bull; {{ $c->core_jumper ?: '-' }}
+                                                                @else
+                                                                    <span class="text-muted fst-italic">Tanpa Sambungan (Dikosongkan)</span>
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                <span class="badge {{ $c->status_badge_class }} px-2 py-0.5 rounded-pill" style="font-size: 0.72rem;">
+                                                                    {{ str_replace('_', ' ', $c->status) }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="font-monospace">
+                                                                @if($c->loss_db !== null)
+                                                                    {{ number_format($c->loss_db, 2) }} dB
+                                                                @else
+                                                                    <span class="text-muted">-</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-muted small">
+                                                                {{ $c->keterangan ?: '-' }}
+                                                            </td>
+                                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                            <td class="text-end pe-3">
+                                                                <form action="{{ route('tiket.joint-closure.delete-core', $c->id) }}" method="POST"
+                                                                      onsubmit="return confirm('Hapus baris sambungan ini?');" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus baris core">
+                                                                        <i class="bi bi-trash3"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                            @endif
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <div class="text-center py-3 bg-light rounded-3 border border-dashed">
+                                                <p class="text-muted small mb-2">Belum ada baris sambungan core yang dicatat untuk closure ini.</p>
+                                                @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 open-add-core-btn"
+                                                        data-jc-id="{{ $jc->id }}"
+                                                        data-jc-name="{{ $jc->nama_closure }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#addJointClosureCoreModal">
+                                                    <i class="bi bi-plus-circle me-1"></i> Tambah Baris Core Pertama
+                                                </button>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="tab-empty-card">
+                                <div class="tab-empty-icon-circle icon-box-indigo">
+                                    <i class="bi bi-diagram-3"></i>
+                                </div>
+                                <div class="tab-empty-title">Belum Ada Data Kabel &amp; Joint Closure</div>
+                                <div class="tab-empty-desc">
+                                    Catat spesifikasi kabel eksisting, kabel jumper, sambungan tube-core, core spare/sisa, dan tandai penambahan aset baru Joint Closure (JC).
+                                </div>
+                                @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                <button class="btn-tab-action-pro btn-indigo-pro" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
+                                    <i class="bi bi-plus-circle-fill"></i>
+                                    <span>Tambah Joint Closure Sekarang</span>
+                                </button>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- ── SUB-VIEW: MANUVER CORE ── -->
+                    <div id="penangananSubViewManuver" class="{{ $activePenanganan === 'MANUVER_CORE' ? '' : 'd-none' }}">
+                        <div class="tab-header-banner">
+                            <div class="tab-header-left">
+                                <div class="tab-header-icon-box icon-box-violet">
+                                    <i class="bi bi-shuffle"></i>
+                                </div>
+                                <div>
+                                    <div class="tab-header-title">Catatan Manuver Core Fiber Optik</div>
+                                    <div class="tab-header-subtitle">Mapping alokasi core sebelum dan sesudah perbaikan</div>
+                                </div>
+                            </div>
+                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                            <button class="btn-tab-action-pro btn-violet-pro btn-mobile-block" data-bs-toggle="modal" data-bs-target="#addManuverModal">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Tambah Manuver Core</span>
+                            </button>
+                            @endif
+                        </div>
+
+                        @if($tiket->manuverCores->count() > 0)
+                            @php
+                                $groupedManuver = $tiket->manuverCores->groupBy('titik');
+                            @endphp
+
+                            <div class="row g-4">
+                                @foreach($groupedManuver as $titikName => $cores)
+                                    @php
+                                        $sebelumList = $cores->where('tipe', 'SEBELUM');
+                                        $sesudahList = $cores->where('tipe', 'SESUDAH');
+                                    @endphp
+                                    <div class="col-12 col-xl-6">
+                                        <div class="manuver-closure-card-pro h-100">
+                                            <div class="manuver-closure-header-pro">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge bg-teal text-navy font-monospace fw-bold px-2 py-1">{{ $titikName }}</span>
+                                                    <span class="small fw-semibold">Titik Joint Closure / Patching</span>
+                                                </div>
+                                                <span class="badge bg-white text-navy font-monospace">{{ $cores->count() }} Mapping Core</span>
+                                            </div>
+
+                                            <div class="card-body p-3">
+                                                <div class="row g-3">
+                                                    <!-- Kolom SEBELUM -->
+                                                    <div class="col-12 col-md-6 border-end-md">
+                                                        <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                                                            <span class="badge bg-secondary text-white"><i class="bi bi-clock-history me-1"></i> SEBELUM (Eksisting)</span>
+                                                            <span class="text-muted small">{{ $sebelumList->count() }} item</span>
+                                                        </div>
+
+                                                        @if($sebelumList->count() > 0)
+                                                            <div class="d-flex flex-column gap-2">
+                                                                @foreach($sebelumList as $mPrev)
+                                                                <div class="fiber-route-card-pro">
+                                                                    <div class="d-flex align-items-center gap-1.5 flex-grow-1">
+                                                                        <span class="text-muted">{{ $mPrev->core_asal }}</span>
+                                                                        <i class="bi bi-arrow-right text-secondary mx-1"></i>
+                                                                        <span class="fw-bold text-navy">{{ $mPrev->core_tujuan }}</span>
+                                                                    </div>
+                                                                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                                    <form action="{{ route('tiket.manuver-core.destroy', $mPrev->id) }}" method="POST"
+                                                                          onsubmit="return confirm('Hapus record manuver ini?');" class="d-inline">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus">
+                                                                            <i class="bi bi-trash3"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                    @endif
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @else
+                                                            <div class="p-3 bg-light rounded text-center text-muted small">
+                                                                Belum ada data alokasi sebelum perbaikan.
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    <!-- Kolom SESUDAH -->
+                                                    <div class="col-12 col-md-6">
+                                                        <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                                                            <span class="badge bg-success text-white"><i class="bi bi-check2-circle me-1"></i> SESUDAH (Hasil Perbaikan)</span>
+                                                            <span class="text-muted small">{{ $sesudahList->count() }} item</span>
+                                                        </div>
+
+                                                        @if($sesudahList->count() > 0)
+                                                            <div class="d-flex flex-column gap-2">
+                                                                @foreach($sesudahList as $mNext)
+                                                                <div class="fiber-route-card-pro fiber-route-card-success">
+                                                                    <div class="d-flex align-items-center gap-1.5 flex-grow-1">
+                                                                        <span class="text-muted">{{ $mNext->core_asal }}</span>
+                                                                        <i class="bi bi-arrow-right text-success mx-1"></i>
+                                                                        <span class="fw-bold text-success">{{ $mNext->core_tujuan }}</span>
+                                                                    </div>
+                                                                    @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                                    <form action="{{ route('tiket.manuver-core.destroy', $mNext->id) }}" method="POST"
+                                                                          onsubmit="return confirm('Hapus record manuver ini?');" class="d-inline">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus">
+                                                                            <i class="bi bi-trash3"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                    @endif
+                                                                </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @else
+                                                            <div class="p-3 bg-light rounded text-center text-muted small">
+                                                                Belum ada data alokasi sesudah perbaikan.
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="tab-empty-card">
+                                <div class="tab-empty-icon-circle icon-box-violet">
+                                    <i class="bi bi-shuffle"></i>
+                                </div>
+                                <div class="tab-empty-title">Belum Ada Data Manuver Core</div>
+                                <div class="tab-empty-desc">
+                                    Catat alokasi perpindahan core kabel optik (contoh: <code>Tube 2 Core 1 &rarr; Tube 2 Core 1</code>) pada titik perbaikan.
+                                </div>
+                                @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                <button class="btn-tab-action-pro btn-violet-pro" data-bs-toggle="modal" data-bs-target="#addManuverModal">
+                                    <i class="bi bi-plus-circle"></i>
+                                    <span>Tambah Manuver Sekarang</span>
+                                </button>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
                 <!-- ════ TAB 3: MATERIAL & TITIK PERBAIKAN (FASE 4) ════ -->
@@ -3306,275 +3829,6 @@
                     </div>
                 </div>
 
-                <!-- ════ TAB: KABEL & JOINT CLOSURE (JC) ════ -->
-                <div class="tab-pane fade" id="jointclosure-pane" role="tabpanel">
-                    <div class="tab-header-banner">
-                        <div class="tab-header-left">
-                            <div class="tab-header-icon-box icon-box-indigo">
-                                <i class="bi bi-diagram-3-fill"></i>
-                            </div>
-                            <div>
-                                <div class="tab-header-title">Pencatatan Kabel &amp; Sambungan Joint Closure (JC)</div>
-                                <div class="tab-header-subtitle">Kapasitas kabel eksisting &amp; jumper, mapping tube-core, status core sisa, dan aset baru closure</div>
-                            </div>
-                        </div>
-                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                        <button class="btn-tab-action-pro btn-indigo-pro btn-mobile-block" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
-                            <i class="bi bi-plus-circle-fill"></i>
-                            <span>Tambah Joint Closure</span>
-                        </button>
-                        @endif
-                    </div>
-
-                    @if($tiket->jointClosures->count() > 0)
-                        <div class="d-flex flex-column gap-4">
-                            @foreach($tiket->jointClosures as $jc)
-                            <div class="jc-card-pro">
-                                <!-- JC Card Header -->
-                                <div class="jc-header-pro">
-                                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-navy text-white font-monospace fs-6 px-2.5 py-1.5 shadow-xs">
-                                                <i class="bi bi-box-seam me-1 text-teal"></i>{{ $jc->nama_closure }}
-                                            </span>
-                                            @if($jc->is_aset_baru)
-                                                <span class="badge bg-success text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
-                                                    <i class="bi bi-stars me-1"></i>ASET BARU
-                                                </span>
-                                            @else
-                                                <span class="badge bg-secondary text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
-                                                    EKSISTING
-                                                </span>
-                                            @endif
-                                        </div>
-
-                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                            <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
-                                                <i class="bi bi-tag-fill text-indigo me-1"></i>{{ $jc->jenis_closure }}
-                                            </span>
-                                            <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
-                                                <i class="bi bi-geo-fill text-danger me-1"></i>{{ str_replace('_', ' ', $jc->lokasi_fisik) }}
-                                            </span>
-                                            @if($jc->latitude && $jc->longitude)
-                                            <a href="{{ $jc->google_maps_url }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 text-decoration-none" style="font-size: 0.72rem;" title="Buka di Google Maps">
-                                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
-                                                <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.65rem;"></i>
-                                            </a>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="text-muted small" style="font-size: 0.75rem;">
-                                            <i class="bi bi-person-fill text-secondary me-1"></i>{{ $jc->creator?->name ?? 'Sistem' }} &bull; {{ $jc->created_at->format('d/m H:i') }}
-                                        </span>
-                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                        <form action="{{ route('tiket.joint-closure.destroy', $jc->id) }}" method="POST"
-                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus data Joint Closure {{ $jc->nama_closure }} beserta semua sambungan core di dalamnya?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger py-0.5 px-2 rounded-pill" title="Hapus Joint Closure">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-                                        </form>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- JC Card Body -->
-                                <div class="card-body p-3 p-md-4">
-                                    <!-- Cable Capacity Specs Row -->
-                                    <div class="jc-spec-banner mb-3">
-                                        <div class="row g-2 align-items-center">
-                                            <div class="col-12 col-md-5">
-                                                <div class="jc-spec-box">
-                                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
-                                                            <i class="bi bi-arrow-down-right-circle text-primary me-1"></i>Kabel Eksisting / Asal
-                                                        </span>
-                                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
-                                                            {{ $jc->jumlah_tube_asal }} Tube
-                                                        </span>
-                                                    </div>
-                                                    <div class="d-flex align-items-baseline gap-2">
-                                                        <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_asal }}</span>
-                                                        <span class="text-muted small">Core</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-12 col-md-2 text-center py-1">
-                                                <div class="d-inline-flex align-items-center justify-content-center bg-white border rounded-circle shadow-xs" style="width: 38px; height: 38px;">
-                                                    <i class="bi bi-arrow-left-right text-indigo fs-5"></i>
-                                                </div>
-                                                <div class="text-muted" style="font-size: 0.68rem; font-weight: 600;">DISAMBUNG</div>
-                                            </div>
-
-                                            <div class="col-12 col-md-5">
-                                                <div class="jc-spec-box">
-                                                    <div class="d-flex align-items-center justify-content-between mb-1">
-                                                        <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
-                                                            <i class="bi bi-arrow-up-left-circle text-teal me-1"></i>Kabel Jumper / Distribusi
-                                                        </span>
-                                                        <span class="badge bg-teal bg-opacity-10 text-teal border border-teal border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
-                                                            {{ $jc->jumlah_tube_jumper }} Tube
-                                                        </span>
-                                                    </div>
-                                                    <div class="d-flex align-items-baseline gap-2">
-                                                        <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_jumper }}</span>
-                                                        <span class="text-muted small">Core</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        @if($jc->keterangan)
-                                        <div class="mt-2 pt-2 border-top text-muted small" style="font-size: 0.78rem;">
-                                            <i class="bi bi-info-circle text-primary me-1"></i><strong>Catatan:</strong> {{ $jc->keterangan }}
-                                        </div>
-                                        @endif
-                                    </div>
-
-                                    <!-- Summary Core Status & Action Bar -->
-                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
-                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                            @php
-                                                $cSummary = $jc->core_summary;
-                                            @endphp
-                                            <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
-                                                <i class="bi bi-check2-circle me-1"></i>{{ $cSummary['terhubung'] }} Terhubung
-                                            </span>
-                                            <span class="badge bg-secondary bg-opacity-15 text-secondary border border-secondary border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
-                                                <i class="bi bi-dash-circle me-1"></i>{{ $cSummary['spare'] }} Core Sisa / Spare
-                                            </span>
-                                            @if($cSummary['loss'] > 0)
-                                            <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
-                                                <i class="bi bi-x-circle me-1"></i>{{ $cSummary['loss'] }} Loss / Putus
-                                            </span>
-                                            @endif
-                                            @if($cSummary['manuver'] > 0)
-                                            <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
-                                                <i class="bi bi-shuffle me-1"></i>{{ $cSummary['manuver'] }} Manuver
-                                            </span>
-                                            @endif
-                                            <span class="badge bg-light text-navy border px-2.5 py-1 rounded-pill small">
-                                                Total: {{ $cSummary['total'] }} Splice
-                                            </span>
-                                        </div>
-
-                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold open-add-core-btn"
-                                                data-jc-id="{{ $jc->id }}"
-                                                data-jc-name="{{ $jc->nama_closure }}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#addJointClosureCoreModal">
-                                            <i class="bi bi-plus-lg me-1"></i> Tambah Sambungan Core
-                                        </button>
-                                        @endif
-                                    </div>
-
-                                    <!-- Core Splicing Matrix Records -->
-                                    @if($jc->cores->count() > 0)
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-hover align-middle border mb-0 rounded-3 overflow-hidden">
-                                                <thead class="table-light">
-                                                    <tr style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px;">
-                                                        <th class="ps-3">Kabel Asal (Tube - Core)</th>
-                                                        <th></th>
-                                                        <th>Kabel Jumper (Tube - Core)</th>
-                                                        <th>Status</th>
-                                                        <th>Loss (dB)</th>
-                                                        <th>Keterangan</th>
-                                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                                        <th class="text-end pe-3">Aksi</th>
-                                                        @endif
-                                                    </tr>
-                                                </thead>
-                                                <tbody style="font-size: 0.82rem;">
-                                                    @foreach($jc->cores as $c)
-                                                    <tr>
-                                                        <td class="ps-3 font-monospace fw-semibold text-navy">
-                                                            <i class="bi bi-diagram-2 text-primary me-1"></i>{{ $c->tube_asal }} &bull; {{ $c->core_asal }}
-                                                        </td>
-                                                        <td class="text-center text-muted px-1" style="width: 30px;">
-                                                            <i class="bi bi-arrow-right text-indigo"></i>
-                                                        </td>
-                                                        <td class="font-monospace fw-semibold text-navy">
-                                                            @if($c->tube_jumper || $c->core_jumper)
-                                                                <i class="bi bi-diagram-2 text-teal me-1"></i>{{ $c->tube_jumper ?: '-' }} &bull; {{ $c->core_jumper ?: '-' }}
-                                                            @else
-                                                                <span class="text-muted fst-italic">Tanpa Sambungan (Dikosongkan)</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            <span class="badge {{ $c->status_badge_class }} px-2 py-0.5 rounded-pill" style="font-size: 0.72rem;">
-                                                                {{ str_replace('_', ' ', $c->status) }}
-                                                            </span>
-                                                        </td>
-                                                        <td class="font-monospace">
-                                                            @if($c->loss_db !== null)
-                                                                {{ number_format($c->loss_db, 2) }} dB
-                                                            @else
-                                                                <span class="text-muted">-</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-muted small">
-                                                            {{ $c->keterangan ?: '-' }}
-                                                        </td>
-                                                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                                        <td class="text-end pe-3">
-                                                            <form action="{{ route('tiket.joint-closure.delete-core', $c->id) }}" method="POST"
-                                                                  onsubmit="return confirm('Hapus baris sambungan ini?');" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus baris core">
-                                                                    <i class="bi bi-trash3"></i>
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                        @endif
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    @else
-                                        <div class="text-center py-3 bg-light rounded-3 border border-dashed">
-                                            <p class="text-muted small mb-2">Belum ada baris sambungan core yang dicatat untuk closure ini.</p>
-                                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                            <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 open-add-core-btn"
-                                                    data-jc-id="{{ $jc->id }}"
-                                                    data-jc-name="{{ $jc->nama_closure }}"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#addJointClosureCoreModal">
-                                                <i class="bi bi-plus-circle me-1"></i> Tambah Baris Core Pertama
-                                            </button>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="tab-empty-card">
-                            <div class="tab-empty-icon-circle icon-box-indigo">
-                                <i class="bi bi-diagram-3"></i>
-                            </div>
-                            <div class="tab-empty-title">Belum Ada Data Kabel &amp; Joint Closure</div>
-                            <div class="tab-empty-desc">
-                                Catat spesifikasi kabel eksisting, kabel jumper, sambungan tube-core, core spare/sisa, dan tandai penambahan aset baru Joint Closure (JC).
-                            </div>
-                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                            <button class="btn-tab-action-pro btn-indigo-pro" data-bs-toggle="modal" data-bs-target="#tambahJointClosureModal">
-                                <i class="bi bi-plus-circle-fill"></i>
-                                <span>Tambah Joint Closure Sekarang</span>
-                            </button>
-                            @endif
-                        </div>
-                    @endif
-                </div>
-
                 <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
                 <div class="tab-pane fade" id="dokumentasi-pane" role="tabpanel">
                     <div class="tab-header-banner">
@@ -3689,145 +3943,6 @@
                             <button class="btn-tab-action-pro btn-cyan-pro" data-bs-toggle="modal" data-bs-target="#uploadDokumentasiModal">
                                 <i class="bi bi-cloud-arrow-up-fill"></i>
                                 <span>Upload Foto Sekarang</span>
-                            </button>
-                            @endif
-                        </div>
-                    @endif
-                </div>
-
-                <!-- ════ TAB 5: MANUVER CORE (FASE 5) ════ -->
-                <div class="tab-pane fade" id="manuver-pane" role="tabpanel">
-                    <div class="tab-header-banner">
-                        <div class="tab-header-left">
-                            <div class="tab-header-icon-box icon-box-violet">
-                                <i class="bi bi-shuffle"></i>
-                            </div>
-                            <div>
-                                <div class="tab-header-title">Catatan Manuver Core Fiber Optik</div>
-                                <div class="tab-header-subtitle">Mapping alokasi core sebelum dan sesudah perbaikan</div>
-                            </div>
-                        </div>
-                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                        <button class="btn-tab-action-pro btn-violet-pro btn-mobile-block" data-bs-toggle="modal" data-bs-target="#addManuverModal">
-                            <i class="bi bi-plus-circle"></i>
-                            <span>Tambah Manuver Core</span>
-                        </button>
-                        @endif
-                    </div>
-
-                    @if($tiket->manuverCores->count() > 0)
-                        @php
-                            $groupedManuver = $tiket->manuverCores->groupBy('titik');
-                        @endphp
-
-                        <div class="row g-4">
-                            @foreach($groupedManuver as $titikName => $cores)
-                                @php
-                                    $sebelumList = $cores->where('tipe', 'SEBELUM');
-                                    $sesudahList = $cores->where('tipe', 'SESUDAH');
-                                @endphp
-                                <div class="col-12 col-xl-6">
-                                    <div class="manuver-closure-card-pro h-100">
-                                        <div class="manuver-closure-header-pro">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="badge bg-teal text-navy font-monospace fw-bold px-2 py-1">{{ $titikName }}</span>
-                                                <span class="small fw-semibold">Titik Joint Closure / Patching</span>
-                                            </div>
-                                            <span class="badge bg-white text-navy font-monospace">{{ $cores->count() }} Mapping Core</span>
-                                        </div>
-
-                                        <div class="card-body p-3">
-                                            <div class="row g-3">
-                                                <!-- Kolom SEBELUM -->
-                                                <div class="col-12 col-md-6 border-end-md">
-                                                    <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
-                                                        <span class="badge bg-secondary text-white"><i class="bi bi-clock-history me-1"></i> SEBELUM (Eksisting)</span>
-                                                        <span class="text-muted small">{{ $sebelumList->count() }} item</span>
-                                                    </div>
-
-                                                    @if($sebelumList->count() > 0)
-                                                        <div class="d-flex flex-column gap-2">
-                                                            @foreach($sebelumList as $mPrev)
-                                                            <div class="fiber-route-card-pro">
-                                                                <div class="d-flex align-items-center gap-1.5 flex-grow-1">
-                                                                    <span class="text-muted">{{ $mPrev->core_asal }}</span>
-                                                                    <i class="bi bi-arrow-right text-secondary mx-1"></i>
-                                                                    <span class="fw-bold text-navy">{{ $mPrev->core_tujuan }}</span>
-                                                                </div>
-                                                                @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                                                <form action="{{ route('tiket.manuver-core.destroy', $mPrev->id) }}" method="POST"
-                                                                      onsubmit="return confirm('Hapus record manuver ini?');" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus">
-                                                                        <i class="bi bi-trash3"></i>
-                                                                    </button>
-                                                                </form>
-                                                                @endif
-                                                            </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <div class="p-3 bg-light rounded text-center text-muted small">
-                                                            Belum ada data alokasi sebelum perbaikan.
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                                <!-- Kolom SESUDAH -->
-                                                <div class="col-12 col-md-6">
-                                                    <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
-                                                        <span class="badge bg-success text-white"><i class="bi bi-check2-circle me-1"></i> SESUDAH (Hasil Perbaikan)</span>
-                                                        <span class="text-muted small">{{ $sesudahList->count() }} item</span>
-                                                    </div>
-
-                                                    @if($sesudahList->count() > 0)
-                                                        <div class="d-flex flex-column gap-2">
-                                                            @foreach($sesudahList as $mNext)
-                                                            <div class="fiber-route-card-pro fiber-route-card-success">
-                                                                <div class="d-flex align-items-center gap-1.5 flex-grow-1">
-                                                                    <span class="text-muted">{{ $mNext->core_asal }}</span>
-                                                                    <i class="bi bi-arrow-right text-success mx-1"></i>
-                                                                    <span class="fw-bold text-success">{{ $mNext->core_tujuan }}</span>
-                                                                </div>
-                                                                @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                                                <form action="{{ route('tiket.manuver-core.destroy', $mNext->id) }}" method="POST"
-                                                                      onsubmit="return confirm('Hapus record manuver ini?');" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus">
-                                                                        <i class="bi bi-trash3"></i>
-                                                                    </button>
-                                                                </form>
-                                                                @endif
-                                                            </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @else
-                                                        <div class="p-3 bg-light rounded text-center text-muted small">
-                                                            Belum ada data alokasi sesudah perbaikan.
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="tab-empty-card">
-                            <div class="tab-empty-icon-circle icon-box-violet">
-                                <i class="bi bi-shuffle"></i>
-                            </div>
-                            <div class="tab-empty-title">Belum Ada Data Manuver Core</div>
-                            <div class="tab-empty-desc">
-                                Catat alokasi perpindahan core kabel optik (contoh: <code>Tube 2 Core 1 &rarr; Tube 2 Core 1</code>) pada titik perbaikan.
-                            </div>
-                            @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                            <button class="btn-tab-action-pro btn-violet-pro" data-bs-toggle="modal" data-bs-target="#addManuverModal">
-                                <i class="bi bi-plus-circle"></i>
-                                <span>Tambah Manuver Sekarang</span>
                             </button>
                             @endif
                         </div>
@@ -4053,63 +4168,20 @@
                                   required>{{ old('action', $tiket->resume?->action) }}</textarea>
                     </div>
 
-                    <!-- Tipe Penanganan (Point 4) -->
+                    <!-- Info Tipe Penanganan (Dikelola di tab Penanganan Core & JC) -->
                     <div class="mb-3 p-3 bg-light rounded-3 border">
-                        <label class="form-label small fw-bold text-navy mb-2">
-                            <i class="bi bi-diagram-2-fill text-teal me-1"></i> Tipe Penanganan Lapangan <span class="text-danger">*</span>
-                        </label>
-                        <div class="row g-2 mb-2">
-                            <div class="col-12 col-sm-4">
-                                <div class="form-check p-2 bg-white rounded border">
-                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_jointing_lurus" value="JOINTING_LURUS" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'JOINTING_LURUS' ? 'checked' : '' }} required>
-                                    <label class="form-check-label small fw-bold text-navy" for="tipe_jointing_lurus">
-                                        Jointing Lurus
-                                    </label>
-                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Splicing lurus kabel/core</div>
-                                </div>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <label class="form-label small fw-bold text-navy mb-0">
+                                    <i class="bi bi-bezier2 text-primary me-1"></i> Tipe Penanganan Fisik / Core:
+                                </label>
+                                <span class="badge {{ ($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan) === 'MANUVER_CORE' ? 'bg-primary text-white' : 'bg-success text-white' }} ms-1 px-2.5 py-1 rounded-pill">
+                                    {{ $tiket->tipe_penanganan_label }}
+                                </span>
                             </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-check p-2 bg-white rounded border">
-                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_manuver_core" value="MANUVER_CORE" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'MANUVER_CORE' ? 'checked' : '' }}>
-                                    <label class="form-check-label small fw-bold text-navy" for="tipe_manuver_core">
-                                        Manuver Core
-                                    </label>
-                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Pindah alokasi core/tube</div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-4">
-                                <div class="form-check p-2 bg-white rounded border">
-                                    <input class="form-check-input ms-0 me-2" type="radio" name="tipe_penanganan" id="tipe_lainnya" value="LAINNYA" {{ old('tipe_penanganan', $tiket->resume?->tipe_penanganan ?? $tiket->tipe_penanganan) === 'LAINNYA' ? 'checked' : '' }}>
-                                    <label class="form-check-label small fw-bold text-navy" for="tipe_lainnya">
-                                        Lainnya
-                                    </label>
-                                    <div class="text-muted" style="font-size:0.68rem; margin-left: 1.5rem;">Perapian/penggantian modul</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row g-2">
-                            <div class="col-12 col-sm-6">
-                                <label for="joint_closure_type" class="form-label small fw-semibold text-navy">Tipe Joint Closure / Perangkat</label>
-                                <input type="text" class="form-control form-control-sm" id="joint_closure_type" name="joint_closure_type"
-                                       value="{{ old('joint_closure_type', $tiket->resume?->joint_closure_type) }}"
-                                       placeholder="Contoh: Closure Dome 24C / Inline 48C" list="closurePresets">
-                                <datalist id="closurePresets">
-                                    <option value="Closure Dome 24C">
-                                    <option value="Closure Dome 48C">
-                                    <option value="Closure Dome 96C">
-                                    <option value="Closure Inline 24C">
-                                    <option value="Closure Inline 48C">
-                                    <option value="ODC / FDT Cabinet">
-                                    <option value="OTB / ODF Rack">
-                                </datalist>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <label for="core_count_jointed" class="form-label small fw-semibold text-navy">Jumlah Core Di-Jointing / Dimanuver</label>
-                                <input type="number" min="0" class="form-control form-control-sm" id="core_count_jointed" name="core_count_jointed"
-                                       value="{{ old('core_count_jointed', $tiket->resume?->core_count_jointed) }}"
-                                       placeholder="Contoh: 12">
-                            </div>
+                            <small class="text-muted" style="font-size:0.72rem;">
+                                Dikelola di menu <strong>Penanganan Core &amp; JC</strong>
+                            </small>
                         </div>
                     </div>
 
@@ -5138,7 +5210,7 @@
                                     <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
                                     <div class="small">
                                         <div class="fw-bold text-navy">4. Tipe Penanganan</div>
-                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['tipe_penanganan'] ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih di Resume (Jointing Lurus/Manuver)' }}</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['tipe_penanganan'] ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih di Penanganan Core & JC (Jointing / Manuver)' }}</div>
                                     </div>
                                 </div>
                             </div>
@@ -6988,23 +7060,107 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ── 12.5. SWITCH METODE PENANGANAN (JOINTING LURUS / MANUVER CORE) ──
+    window.switchPenangananMode = function(mode, saveToServer = true) {
+        const cardJointing = document.getElementById('cardModeJointing');
+        const cardManuver = document.getElementById('cardModeManuver');
+        const subJointing = document.getElementById('penangananSubViewJointing');
+        const subManuver = document.getElementById('penangananSubViewManuver');
+        const activeLabel = document.getElementById('penangananActiveLabel');
+
+        if (!cardJointing || !cardManuver || !subJointing || !subManuver) return;
+
+        if (mode === 'JOINTING_LURUS') {
+            cardJointing.classList.add('is-selected', 'active');
+            cardManuver.classList.remove('is-selected', 'active');
+            
+            const jointingCheck = cardJointing.querySelector('.penanganan-radio-check i');
+            const manuverCheck = cardManuver.querySelector('.penanganan-radio-check i');
+            if (jointingCheck) jointingCheck.className = 'bi bi-check-circle-fill text-indigo fs-5';
+            if (manuverCheck) manuverCheck.className = 'bi bi-circle text-muted fs-5';
+
+            subJointing.classList.remove('d-none');
+            subManuver.classList.add('d-none');
+
+            if (activeLabel) activeLabel.textContent = 'Jointing Lurus (Kabel & JC)';
+        } else if (mode === 'MANUVER_CORE') {
+            cardManuver.classList.add('is-selected', 'active');
+            cardJointing.classList.remove('is-selected', 'active');
+
+            const jointingCheck = cardJointing.querySelector('.penanganan-radio-check i');
+            const manuverCheck = cardManuver.querySelector('.penanganan-radio-check i');
+            if (jointingCheck) jointingCheck.className = 'bi bi-circle text-muted fs-5';
+            if (manuverCheck) manuverCheck.className = 'bi bi-check-circle-fill text-purple fs-5';
+
+            subManuver.classList.remove('d-none');
+            subJointing.classList.add('d-none');
+
+            if (activeLabel) activeLabel.textContent = 'Manuver Core (Swapping Core)';
+        }
+
+        if (saveToServer) {
+            const updateUrl = @json(route('tiket.tipe-penanganan.update', $tiket->id));
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+
+            fetch(updateUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ tipe_penanganan: mode })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && typeof showToast === 'function') {
+                    showToast('Sukses', 'Metode penanganan berhasil disimpan: ' + (data.label || mode), 'success');
+                }
+            })
+            .catch(err => {
+                console.error('Gagal update tipe penanganan:', err);
+            });
+        }
+    };
+
     // ── 13. URL PARAMETER & HASH ACTIVE TAB SWITCHER ──
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     const hashParam = window.location.hash;
 
     if (tabParam) {
-        const targetTabBtn = document.getElementById(tabParam + '-tab');
-        if (targetTabBtn) {
-            const bsTab = new bootstrap.Tab(targetTabBtn);
-            bsTab.show();
+        if (tabParam === 'jointclosure') {
+            const targetTabBtn = document.getElementById('penanganan-tab');
+            if (targetTabBtn) new bootstrap.Tab(targetTabBtn).show();
+            window.switchPenangananMode('JOINTING_LURUS', false);
+        } else if (tabParam === 'manuver') {
+            const targetTabBtn = document.getElementById('penanganan-tab');
+            if (targetTabBtn) new bootstrap.Tab(targetTabBtn).show();
+            window.switchPenangananMode('MANUVER_CORE', false);
+        } else {
+            const targetTabBtn = document.getElementById(tabParam + '-tab');
+            if (targetTabBtn) {
+                const bsTab = new bootstrap.Tab(targetTabBtn);
+                bsTab.show();
+            }
         }
     } else if (hashParam) {
         const cleanHash = hashParam.replace('#tab-', '').replace('#', '');
-        const targetTabBtn = document.getElementById(cleanHash + '-tab');
-        if (targetTabBtn) {
-            const bsTab = new bootstrap.Tab(targetTabBtn);
-            bsTab.show();
+        if (cleanHash === 'jointclosure') {
+            const targetTabBtn = document.getElementById('penanganan-tab');
+            if (targetTabBtn) new bootstrap.Tab(targetTabBtn).show();
+            window.switchPenangananMode('JOINTING_LURUS', false);
+        } else if (cleanHash === 'manuver') {
+            const targetTabBtn = document.getElementById('penanganan-tab');
+            if (targetTabBtn) new bootstrap.Tab(targetTabBtn).show();
+            window.switchPenangananMode('MANUVER_CORE', false);
+        } else {
+            const targetTabBtn = document.getElementById(cleanHash + '-tab');
+            if (targetTabBtn) {
+                const bsTab = new bootstrap.Tab(targetTabBtn);
+                bsTab.show();
+            }
         }
     }
 

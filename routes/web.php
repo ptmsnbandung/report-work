@@ -65,6 +65,7 @@ Route::middleware(['auth', 'role'])->group(function () {
         Route::post('/tiket/{tiket}/stop-clock/start', [TiketController::class, 'startStopClock'])->name('tiket.stop-clock.start');
         Route::post('/tiket/{tiket}/stop-clock/stop', [TiketController::class, 'stopStopClock'])->name('tiket.stop-clock.stop');
         Route::post('/tiket/{tiket}/handover-shift', [TiketController::class, 'handoverShift'])->name('tiket.handover-shift');
+        Route::post('/tiket/{tiket}/tipe-penanganan', [TiketController::class, 'updateTipePenanganan'])->name('tiket.tipe-penanganan.update');
         Route::get('/tiket/{tiket}/prerequisites', [TiketController::class, 'checkPrerequisites'])->name('tiket.prerequisites');
     });
 

@@ -44,7 +44,7 @@ class JointClosureController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'jointclosure'])
+            ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'penanganan'])
             ->with('success', "Data Joint Closure [{$jc->nama_closure}] & Sambungan Kabel berhasil disimpan.");
     }
 
@@ -64,7 +64,7 @@ class JointClosureController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $jointClosure->id_tiket, 'tab' => 'jointclosure'])
+            ->route('tiket.show', ['tiket' => $jointClosure->id_tiket, 'tab' => 'penanganan'])
             ->with('success', 'Baris sambungan core berhasil ditambahkan.');
     }
 
@@ -84,7 +84,7 @@ class JointClosureController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'jointclosure'])
+            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'penanganan'])
             ->with('success', 'Baris sambungan core berhasil dihapus.');
     }
 
@@ -105,7 +105,7 @@ class JointClosureController extends Controller
         }
 
         return redirect()
-            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'jointclosure'])
+            ->route('tiket.show', ['tiket' => $tiketId, 'tab' => 'penanganan'])
             ->with('success', "Joint Closure [{$nama}] berhasil dihapus.");
     }
 }
