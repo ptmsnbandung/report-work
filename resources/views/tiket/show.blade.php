@@ -1986,7 +1986,7 @@
                             <i class="bi bi-grid-fill"></i>
                             <span>Menu Aksi</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-3 mt-1 py-2" style="min-width: 255px;">
+                        <ul class="dropdown-menu dropdown-menu-end mt-1 py-2" style="min-width: 255px;">
                             
                             <!-- 1. Workflow Actions (Closing / Verifikasi) -->
                             @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
