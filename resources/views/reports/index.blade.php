@@ -112,9 +112,9 @@
     </div>
 
     <!-- ── PAGE HEADER BAR ── -->
-    <div class="card border-0 shadow-sm rounded-xl mb-3 mb-md-4 bg-white p-3 p-md-3.5">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
-            <div class="d-flex align-items-center gap-3">
+    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white p-3 p-md-3.5">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            <div class="d-flex align-items-center gap-2.5">
                 <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2C7FFF, #1b39da); box-shadow: 0 4px 12px rgba(44, 127, 255, 0.35);">
                     <i class="bi bi-graph-up-arrow text-white"></i>
                 </div>
@@ -128,33 +128,34 @@
                 </div>
             </div>
 
-            <!-- Export, KPI & Shift Buttons -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="report-nav-pills shadow-xs">
-                    <a href="{{ route('reports.index') }}" class="nav-btn {{ request()->routeIs('reports.index') ? 'active' : '' }}">
-                        <i class="bi bi-graph-up"></i>
-                        <span>Analisis MTTR/SLA</span>
-                    </a>
-                    <a href="{{ route('reports.kpi') }}" class="nav-btn {{ request()->routeIs('reports.kpi') ? 'active' : '' }}">
-                        <i class="bi bi-trophy-fill text-warning"></i>
-                        <span>KPI Dashboard</span>
-                    </a>
-                    <a href="{{ route('reports.shifts') }}" class="nav-btn {{ request()->routeIs('reports.shifts') ? 'active' : '' }}">
-                        <i class="bi bi-arrow-left-right"></i>
-                        <span>Rekap Shift</span>
-                    </a>
-                </div>
+            <!-- Export Buttons -->
+            <div class="d-flex align-items-center gap-2 flex-wrap flex-sm-nowrap w-100 w-md-auto justify-content-start justify-content-md-end">
+                <a href="{{ route('reports.export.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill flex-sm-grow-0" style="min-height: 35px;">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    <span>Export PDF</span>
+                </a>
+                <a href="{{ route('reports.export.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill flex-sm-grow-0" style="min-height: 35px;">
+                    <i class="bi bi-file-earmark-excel-fill"></i>
+                    <span>Export Excel</span>
+                </a>
+            </div>
+        </div>
 
-                <div class="report-export-group">
-                    <a href="{{ route('reports.export.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
-                        <i class="bi bi-file-earmark-pdf-fill"></i>
-                        <span>Export PDF</span>
-                    </a>
-                    <a href="{{ route('reports.export.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="min-height: 34px;">
-                        <i class="bi bi-file-earmark-excel-fill"></i>
-                        <span>Export Excel</span>
-                    </a>
-                </div>
+        <!-- ── SUB-NAVIGATION TABS BAR ── -->
+        <div class="pt-2.5 mt-2.5 border-top d-flex align-items-center overflow-x-auto pb-0.5" style="scrollbar-width: none;">
+            <div class="report-tabs-bar">
+                <a href="{{ route('reports.index') }}" class="report-tab-item {{ request()->routeIs('reports.index') ? 'active' : '' }}">
+                    <i class="bi bi-graph-up"></i>
+                    <span>Analisis MTTR/SLA</span>
+                </a>
+                <a href="{{ route('reports.kpi') }}" class="report-tab-item {{ request()->routeIs('reports.kpi') ? 'active' : '' }}">
+                    <i class="bi bi-trophy-fill text-warning"></i>
+                    <span>KPI Dashboard</span>
+                </a>
+                <a href="{{ route('reports.shifts') }}" class="report-tab-item {{ request()->routeIs('reports.shifts') ? 'active' : '' }}">
+                    <i class="bi bi-arrow-left-right"></i>
+                    <span>Rekap Shift</span>
+                </a>
             </div>
         </div>
     </div>
