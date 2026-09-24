@@ -164,6 +164,32 @@ class Tiket extends Model
     }
 
     /**
+     * Format durasi dalam jam dan menit (human readable, misal: "3 jam 25 menit", "25 menit", "3 jam")
+     */
+    public static function formatDuration(?int $minutes): string
+    {
+        if ($minutes === null) {
+            return '-';
+        }
+
+        $minutes = (int) $minutes;
+        if ($minutes <= 0) {
+            return '0 menit';
+        }
+
+        $jam = intdiv($minutes, 60);
+        $sisaMenit = $minutes % 60;
+
+        if ($jam > 0 && $sisaMenit > 0) {
+            return "{$jam} jam {$sisaMenit} menit";
+        } elseif ($jam > 0) {
+            return "{$jam} jam";
+        }
+
+        return "{$sisaMenit} menit";
+    }
+
+    /**
      * Format durasi MTTR dalam jam dan menit (human readable)
      */
     public function getFormattedMttrAttribute(): string
@@ -172,18 +198,11 @@ class Tiket extends Model
             return '-';
         }
 
-        $jam = floor($this->mttr_minutes / 60);
-        $menit = $this->mttr_minutes % 60;
-
-        if ($jam > 0) {
-            return "{$jam} jam {$menit} mnt";
-        }
-
-        return "{$menit} mnt";
+        return self::formatDuration($this->mttr_minutes);
     }
 
     /**
-     * Format target SLA dalam jam
+     * Format target SLA dalam jam dan menit
      */
     public function getFormattedSlaTargetAttribute(): string
     {
@@ -191,8 +210,7 @@ class Tiket extends Model
             return '-';
         }
 
-        $jam = round($this->sla_target_minutes / 60, 1);
-        return "{$jam} Jam ({$this->sla_target_minutes} mnt)";
+        return self::formatDuration($this->sla_target_minutes);
     }
 
     /**
@@ -383,24 +401,24 @@ class Tiket extends Model
                 'key' => 'FIRST_RESPONSE',
                 'title' => 'Respon Pertama',
                 'description' => $this->first_response_at
-                    ? 'Respon dalam ' . ($this->response_time_minutes ?? $this->tanggal_open->diffInMinutes($this->first_response_at)) . ' mnt'
+                    ? 'Respon dalam ' . self::formatDuration($this->response_time_minutes ?? $this->tanggal_open->diffInMinutes($this->first_response_at))
                     : ($this->status === 'OPEN' ? 'Menunggu respon teknisi' : 'Ditangani'),
                 'timestamp' => $this->first_response_at ? Carbon::parse($this->first_response_at)->format('d/m/Y H:i') : null,
                 'is_completed' => $isResponseDone,
                 'is_current' => $this->status === 'PROSES' && !$this->resolved_at,
-                'badge' => $this->response_time_minutes ? $this->response_time_minutes . ' mnt' : null,
+                'badge' => $this->response_time_minutes ? self::formatDuration($this->response_time_minutes) : null,
                 'icon' => 'bi-lightning-charge-fill',
             ],
             [
                 'key' => 'STOP_CLOCK',
                 'title' => 'Jeda SLA (Stop Clock)',
                 'description' => $this->total_stop_clock_minutes > 0
-                    ? $this->total_stop_clock_minutes . ' mnt jeda tercatat'
+                    ? self::formatDuration($this->total_stop_clock_minutes) . ' jeda tercatat'
                     : ($this->is_stop_clock ? 'Sedang dijeda' : 'Tidak ada jeda'),
                 'timestamp' => $this->activeStopClock ? $this->activeStopClock->start_time->format('H:i') : null,
                 'is_completed' => $this->total_stop_clock_minutes > 0,
                 'is_current' => (bool) $this->is_stop_clock,
-                'badge' => $this->total_stop_clock_minutes > 0 ? $this->total_stop_clock_minutes . ' mnt' : null,
+                'badge' => $this->total_stop_clock_minutes > 0 ? self::formatDuration($this->total_stop_clock_minutes) : null,
                 'icon' => 'bi-pause-circle-fill',
             ],
             [

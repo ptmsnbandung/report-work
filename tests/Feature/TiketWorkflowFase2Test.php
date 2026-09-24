@@ -106,11 +106,11 @@ class TiketWorkflowFase2Test extends TestCase
 
         $this->assertEquals('FIRST_RESPONSE', $stages[1]['key']);
         $this->assertTrue($stages[1]['is_completed']);
-        $this->assertEquals('15 mnt', $stages[1]['badge']);
+        $this->assertEquals('15 menit', $stages[1]['badge']);
 
         $this->assertEquals('STOP_CLOCK', $stages[2]['key']);
         $this->assertTrue($stages[2]['is_completed']);
-        $this->assertEquals('30 mnt', $stages[2]['badge']);
+        $this->assertEquals('30 menit', $stages[2]['badge']);
 
         $this->assertEquals('CLOSING_AWAL', $stages[3]['key']);
         $this->assertFalse($stages[3]['is_completed']);

@@ -207,17 +207,6 @@ class KpiService
      */
     protected function formatMinutes(int $minutes): string
     {
-        if ($minutes <= 0) {
-            return '0 mnt';
-        }
-
-        $jam = floor($minutes / 60);
-        $menit = $minutes % 60;
-
-        if ($jam > 0) {
-            return "{$jam} jam {$menit} mnt";
-        }
-
-        return "{$menit} mnt";
+        return \App\Models\Tiket::formatDuration($minutes);
     }
 }

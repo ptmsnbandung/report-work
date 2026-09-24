@@ -331,7 +331,7 @@
                     <div class="stat-metric-number number-compact fw-bold text-navy text-truncate">
                         {{ $metrics['avg_mttr_formatted'] }}
                     </div>
-                    <small class="text-muted d-block stat-desc-text">{{ $metrics['avg_mttr_minutes'] }} mnt rata-rata</small>
+                    <small class="text-muted d-block stat-desc-text">{{ $metrics['avg_mttr_minutes'] }} menit rata-rata</small>
                 </div>
             </div>
         </div>
@@ -504,8 +504,8 @@
                         <div class="d-flex align-items-center justify-content-between bg-light rounded-lg p-2 mb-2">
                             <div class="small text-muted" style="font-size: 0.72rem;">Total Waktu Terjeda (Dikecualikan dari SLA)</div>
                             <div class="fw-bold text-danger font-monospace" style="font-size: 0.88rem;">
-                                {{ floor($stopClockImpact['total_paused_minutes'] / 60) }}j {{ $stopClockImpact['total_paused_minutes'] % 60 }}m
-                                <span class="text-muted fw-normal" style="font-size: 0.68rem;">({{ $stopClockImpact['total_paused_minutes'] }} mnt)</span>
+                                {{ \App\Models\Tiket::formatDuration($stopClockImpact['total_paused_minutes']) }}
+                                <span class="text-muted fw-normal" style="font-size: 0.68rem;">({{ $stopClockImpact['total_paused_minutes'] }} menit)</span>
                             </div>
                         </div>
                         @if(count($stopClockImpact['by_reason']) > 0)
@@ -553,7 +553,7 @@
                                     <div class="progress-bar" role="progressbar" style="width: {{ $pct }}%; background: linear-gradient(90deg, #2C7FFF, #1b39da); border-radius: 4px;"></div>
                                 </div>
                                 <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.68rem;">
-                                    <span>Avg MTTR: <strong>{{ $ts['avg_mttr'] }} mnt</strong></span>
+                                    <span>Avg MTTR: <strong>{{ \App\Models\Tiket::formatDuration($ts['avg_mttr']) }}</strong></span>
                                     @if($ts['total_over_sla'] > 0)
                                         <span class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-0.5"></i>{{ $ts['total_over_sla'] }} over SLA</span>
                                     @else
@@ -782,7 +782,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 const val = context.parsed.y;
                                 const hours = Math.floor(val / 60);
                                 const mins = val % 60;
-                                return `Avg MTTR: ${hours}j ${mins}m (${val} mnt)`;
+                                const dur = (hours > 0 ? `${hours} jam ` : '') + (mins > 0 || hours === 0 ? `${mins} menit` : '');
+                                return `Avg MTTR: ${dur} (${val} menit)`;
                             }
                         }
                     }

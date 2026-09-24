@@ -132,8 +132,8 @@ class WhatsAppService
         return "🎉 *[GANGGUAN SELESAI / TIKET CLOSED - NOC CJP]*\n\n"
             . "📌 *No Tiket:* {$tiket->no_tiket}\n"
             . "📍 *Segment:* {$tiket->backbone_segment}\n"
-            . "⏱️ *MTTR:* {$tiket->formatted_mttr} ({$tiket->mttr_minutes} mnt)\n"
-            . "📊 *Status SLA:* {$slaStatus} (Target: {$tiket->sla_target_minutes} mnt)\n"
+            . "⏱️ *MTTR:* {$tiket->formatted_mttr} ({$tiket->mttr_minutes} menit)\n"
+            . "📊 *Status SLA:* {$slaStatus} (Target: {$tiket->formatted_sla_target})\n"
             . "👤 *Ditutup Oleh:* " . ($tiket->closer ? $tiket->closer->name : 'HelpDesk') . "\n\n"
             . "Jaringan telah kembali normal. Terima kasih atas kerjasamanya.\n"
             . "🔗 " . route('tiket.show', $tiket->id);

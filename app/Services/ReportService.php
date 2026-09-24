@@ -81,9 +81,7 @@ class ReportService
         $totalLebih = $closedTikets->where('sla_status', 'LEBIH')->count();
 
         $avgMttrMinutes = (int) round($closedTikets->avg('mttr_minutes') ?? 0);
-        $jam = floor($avgMttrMinutes / 60);
-        $menit = $avgMttrMinutes % 60;
-        $avgMttrFormatted = $avgMttrMinutes > 0 ? "{$jam} jam {$menit} mnt" : '-';
+        $avgMttrFormatted = $avgMttrMinutes > 0 ? \App\Models\Tiket::formatDuration($avgMttrMinutes) : '-';
 
         $slaComplianceRate = $totalClose > 0
             ? round(($totalTepat / $totalClose) * 100, 1)

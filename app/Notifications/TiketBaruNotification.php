@@ -43,7 +43,7 @@ class TiketBaruNotification extends Notification
             'id_tiket' => $this->tiket->id,
             'no_tiket' => $this->tiket->no_tiket,
             'title' => "Tiket Baru Dibuka: {$this->tiket->no_tiket}",
-            'message' => "Gangguan backbone di {$this->tiket->backbone_segment}. Target SLA: {$this->tiket->sla_target_minutes} mnt.",
+            'message' => "Gangguan backbone di {$this->tiket->backbone_segment}. Target SLA: {$this->tiket->formatted_sla_target}.",
             'icon' => 'bi-ticket-detailed-fill',
             'color' => 'danger',
             'url' => route('tiket.show', $this->tiket->id),

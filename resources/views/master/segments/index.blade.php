@@ -60,7 +60,7 @@
                     @php
                         $jam = floor($s->sla_target_minutes / 60);
                         $menit = $s->sla_target_minutes % 60;
-                        $formattedSla = ($jam > 0 ? "{$jam} Jam " : "") . ($menit > 0 ? "{$menit} Mnt" : "");
+                        $formattedSla = ($jam > 0 ? "{$jam} Jam " : "") . ($menit > 0 ? "{$menit} Menit" : "");
                     @endphp
                     <tr>
                         <td class="ps-3 text-muted">{{ $segments->firstItem() + $idx }}</td>

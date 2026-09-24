@@ -31,7 +31,7 @@ class TiketClosedNotification extends Notification
             ->line("Tiket gangguan **{$this->tiket->no_tiket}** telah berhasil diselesaikan dan di-CLOSE.")
             ->line("Segment Backbone: **{$this->tiket->backbone_segment}**")
             ->line("Durasi MTTR: **{$this->tiket->formatted_mttr}** ({$this->tiket->mttr_minutes} menit)")
-            ->line("Status SLA: **{$slaStatus}** (Target: {$this->tiket->sla_target_minutes} mnt)")
+            ->line("Status SLA: **{$slaStatus}** (Target: {$this->tiket->formatted_sla_target})")
             ->action('Lihat Rekap & Berita Acara', $url)
             ->line('Silakan informasikan update perbaikan ini kepada pelanggan/client terkait.');
     }

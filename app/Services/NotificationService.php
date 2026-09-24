@@ -51,7 +51,7 @@ class NotificationService
                 $this->webPushService->sendToUsers(
                     $recipients,
                     "🚨 Tiket Baru: {$tiket->no_tiket}",
-                    "Gangguan di {$tiket->backbone_segment}. Target SLA: {$tiket->sla_target_minutes} mnt.",
+                    "Gangguan di {$tiket->backbone_segment}. Target SLA: {$tiket->formatted_sla_target}.",
                     route('tiket.show', $tiket->id)
                 );
             } catch (\Throwable $e) {

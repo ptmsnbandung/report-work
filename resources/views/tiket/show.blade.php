@@ -5839,7 +5839,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const hours = Math.floor(diffMinutes / 60);
             const minutes = diffMinutes % 60;
 
-            modalMttrPreview.textContent = `${hours} jam ${minutes} mnt (${diffMinutes} menit)`;
+            const durText = (hours > 0 ? `${hours} jam ` : '') + (minutes > 0 || hours === 0 ? `${minutes} menit` : '');
+            modalMttrPreview.textContent = `${durText} (${diffMinutes} menit)`;
 
             if (diffMinutes <= slaMinutes) {
                 modalSlaPreview.className = 'badge bg-success';

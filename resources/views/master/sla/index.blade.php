@@ -85,7 +85,7 @@
                         </td>
                         <td>
                             <span class="badge bg-light text-dark border px-2.5 py-1.5 fw-bold font-monospace">
-                                {{ $s->sla_target_minutes }} mnt
+                                {{ $s->sla_target_minutes }} menit
                             </span>
                         </td>
                         <td>

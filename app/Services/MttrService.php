@@ -56,9 +56,7 @@ class MttrService
         $avgMinutes = (int) round($query->avg('mttr_minutes') ?? 0);
         $totalClosed = $query->count();
 
-        $jam = floor($avgMinutes / 60);
-        $menit = $avgMinutes % 60;
-        $formatted = $avgMinutes > 0 ? "{$jam} jam {$menit} mnt" : '-';
+        $formatted = $avgMinutes > 0 ? \App\Models\Tiket::formatDuration($avgMinutes) : '-';
 
         return [
             'average_minutes' => $avgMinutes,

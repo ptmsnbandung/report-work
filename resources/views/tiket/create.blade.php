@@ -331,7 +331,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center py-1">
                             <span class="text-white-50">Target SLA:</span>
-                            <span class="badge px-2 py-1 rounded-pill" style="background: rgba(44, 127, 255, 0.35); border: 1px solid rgba(147, 197, 253, 0.4); color: #93c5fd;" id="previewSla">6.0 Jam (360 mnt)</span>
+                            <span class="badge px-2 py-1 rounded-pill" style="background: rgba(44, 127, 255, 0.35); border: 1px solid rgba(147, 197, 253, 0.4); color: #93c5fd;" id="previewSla">6 Jam (360 menit)</span>
                         </div>
                     </div>
                 </div>
@@ -408,11 +408,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function formatDurationJs(minutes) {
+        const mins = parseInt(minutes) || 0;
+        if (mins <= 0) return '0 menit';
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (h > 0 && m > 0) return `${h} jam ${m} menit`;
+        if (h > 0) return `${h} jam`;
+        return `${m} menit`;
+    }
+
     function updateSlaPreview(minutes) {
         const mins = parseInt(minutes) || 0;
-        const hours = (mins / 60).toFixed(1);
-        if (slaHoursPreview) slaHoursPreview.textContent = `${hours} Jam`;
-        if (previewSla) previewSla.textContent = `${hours} Jam (${mins} mnt)`;
+        const formatted = formatDurationJs(mins);
+        if (slaHoursPreview) slaHoursPreview.textContent = formatted;
+        if (previewSla) previewSla.textContent = `${formatted} (${mins} menit)`;
     }
 
     segmentSelect.addEventListener('change', updateSlaFromSegment);
