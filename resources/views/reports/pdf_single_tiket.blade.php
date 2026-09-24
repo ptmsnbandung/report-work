@@ -296,16 +296,91 @@
         </tr>
     </table>
 
-    <!-- ── 4. MANUVER CORE OPTIK ── -->
+    <!-- ── 4. PENCATATAN KABEL & JOINT CLOSURE (JC) ── -->
+    @if($tiket->jointClosures->count() > 0)
+    <div class="section-title">4. Pencatatan Kabel &amp; Sambungan Joint Closure (JC)</div>
+    @foreach($tiket->jointClosures as $jc)
+    <table class="data-table" style="margin-bottom: 6px;">
+        <thead>
+            <tr style="background-color: #0f172a; color: #ffffff;">
+                <th colspan="4" style="background-color: #1e293b; color: #ffffff; padding: 4px 6px;">
+                    <span style="font-size: 9pt; font-weight: bold;">{{ $jc->nama_closure }}</span>
+                    &nbsp;
+                    @if($jc->is_aset_baru)
+                        <span class="badge badge-success">ASET BARU (NEW CLOSURE)</span>
+                    @else
+                        <span class="badge badge-gray">EKSISTING</span>
+                    @endif
+                    &nbsp;&bull;&nbsp;
+                    <span style="font-size: 8pt; font-weight: normal; color: #94a3b8;">
+                        Tipe: {{ $jc->jenis_closure }} | Lokasi: {{ str_replace('_', ' ', $jc->lokasi_fisik) }}
+                        @if($jc->latitude && $jc->longitude)
+                            | GPS: {{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
+                        @endif
+                    </span>
+                </th>
+            </tr>
+            <tr style="background-color: #f8fafc;">
+                <td colspan="4" style="font-size: 8pt; padding: 4px 6px; color: #334155;">
+                    <strong>Spesifikasi Kabel:</strong> 
+                    Kabel Asal: <strong>{{ $jc->kapasitas_kabel_asal }} Core</strong> ({{ $jc->jumlah_tube_asal }} Tube)
+                    &nbsp;&bull;&nbsp;
+                    Kabel Jumper: <strong>{{ $jc->kapasitas_kabel_jumper }} Core</strong> ({{ $jc->jumlah_tube_jumper }} Tube)
+                    @if($jc->keterangan)
+                        &nbsp;&bull;&nbsp; Catatan: {{ $jc->keterangan }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <th style="width: 30%;">Kabel Asal (Tube - Core)</th>
+                <th style="width: 30%;">Kabel Jumper (Tube - Core)</th>
+                <th style="width: 20%;">Status &amp; Loss</th>
+                <th style="width: 20%;">Keterangan</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($jc->cores as $core)
+            <tr>
+                <td style="font-family: monospace; font-size: 8pt;">{{ $core->tube_asal }} &bull; {{ $core->core_asal }}</td>
+                <td style="font-family: monospace; font-size: 8pt;">
+                    @if($core->tube_jumper || $core->core_jumper)
+                        {{ $core->tube_jumper ?: '-' }} &bull; {{ $core->core_jumper ?: '-' }}
+                    @else
+                        <span style="color: #94a3b8; font-style: italic;">Dikosongkan (Spare)</span>
+                    @endif
+                </td>
+                <td>
+                    <span class="badge {{ $core->status === 'TERHUBUNG' ? 'badge-success' : ($core->status === 'LOSS_PUTUS' ? 'badge-danger' : 'badge-gray') }}">
+                        {{ str_replace('_', ' ', $core->status) }}
+                    </span>
+                    @if($core->loss_db !== null)
+                        <small style="font-family: monospace;">({{ number_format($core->loss_db, 2) }} dB)</small>
+                    @endif
+                </td>
+                <td style="font-size: 7.5pt; color: #475569;">{{ $core->keterangan ?: '-' }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" style="text-align: center; color: #94a3b8; font-size: 8pt;">Belum ada baris mapping sambungan core tercatat.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+    @endforeach
+    @endif
+
+    <!-- ── 5. MANUVER CORE OPTIK ── -->
     @if($tiket->manuverCores->count() > 0)
-    <div class="section-title">4. Alokasi & Manuver Core Optik</div>
+    <div class="section-title">5. Alokasi &amp; Manuver Core Optik</div>
     <table class="data-table">
         <thead>
             <tr>
-                <th style="width: 15%;">Titik</th>
-                <th style="width: 15%;">Tipe</th>
-                <th style="width: 35%;">Core Asal / Input</th>
-                <th style="width: 35%;">Core Tujuan / Output</th>
+                <th style="width: 15%;">Titik / Lokasi</th>
+                <th style="width: 12%;">Tipe</th>
+                <th style="width: 15%;">Lokasi Aset</th>
+                <th style="width: 28%;">Core Asal ➔ Tujuan</th>
+                <th style="width: 18%;">Sifat &amp; Status Aset</th>
+                <th style="width: 12%;">Ket / Dialihkan</th>
             </tr>
         </thead>
         <tbody>
@@ -317,22 +392,34 @@
                         {{ $mc->tipe }}
                     </span>
                 </td>
-                <td style="font-family: monospace;">{{ $mc->core_asal }}</td>
-                <td style="font-family: monospace;">{{ $mc->core_tujuan }}</td>
+                <td style="font-size: 7.5pt;">{{ str_replace('_', ' ', $mc->lokasi_tipe) }}</td>
+                <td style="font-family: monospace; font-size: 7.5pt;">
+                    {{ $mc->core_asal }} ➔ {{ $mc->core_tujuan }}
+                </td>
+                <td style="font-size: 7.5pt;">
+                    <span class="badge {{ $mc->status_manuver === 'PERMANENT' ? 'badge-primary' : 'badge-gray' }}">
+                        {{ $mc->status_manuver }}
+                    </span>
+                    <br>
+                    <small style="color: #64748b;">{{ str_replace('_', ' ', $mc->status_core_aset) }}</small>
+                </td>
+                <td style="font-size: 7.5pt; color: #475569;">
+                    {{ $mc->core_dialihkan ? "Dialihkan: {$mc->core_dialihkan}" : ($mc->keterangan ?: '-') }}
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
     @endif
 
-    <!-- ── 5. TIMELINE KRONOLOGIS LAPANGAN ── -->
-    <div class="section-title">5. Timeline Kronologis Koordinasi Lapangan</div>
+    <!-- ── 6. TIMELINE KRONOLOGIS LAPANGAN ── -->
+    <div class="section-title">6. Timeline Kronologis Koordinasi Lapangan</div>
     <table class="data-table">
         <thead>
             <tr>
                 <th style="width: 22%;">Waktu (WIB)</th>
                 <th style="width: 23%;">PIC / Teknis</th>
-                <th style="width: 55%;">Informasi & Catatan Lapangan</th>
+                <th style="width: 55%;">Informasi &amp; Catatan Lapangan</th>
             </tr>
         </thead>
         <tbody>
@@ -352,9 +439,9 @@
         </tbody>
     </table>
 
-    <!-- ── 6. RIWAYAT SERAH TERIMA / HANDOVER SHIFT (JIKA ADA) ── -->
+    <!-- ── 7. RIWAYAT SERAH TERIMA / HANDOVER SHIFT (JIKA ADA) ── -->
     @if($tiket->handoverShifts->count() > 0)
-    <div class="section-title">6. Riwayat Serah Terima / Oper Shift</div>
+    <div class="section-title">7. Riwayat Serah Terima / Oper Shift</div>
     <table class="data-table">
         <thead>
             <tr>

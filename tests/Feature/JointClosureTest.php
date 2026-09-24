@@ -205,4 +205,44 @@ class JointClosureTest extends TestCase
             'status_core_aset' => 'OCCUPIED_MANUVER',
         ]);
     }
+
+    public function test_single_tiket_pdf_and_excel_export_includes_joint_closure()
+    {
+        $jc = TiketJointClosure::create([
+            'id_tiket' => $this->tiket->id,
+            'created_by' => $this->teknis->id,
+            'nama_closure' => 'JC-PDF-TEST',
+            'tipe_closure' => 'DOME',
+            'lokasi_penempatan' => 'POLE',
+            'kapasitas_kabel_asal' => 96,
+            'jumlah_tube_asal' => 8,
+            'kapasitas_kabel_jumper' => 48,
+            'jumlah_tube_jumper' => 4,
+            'status_aset' => 'ASET_BARU',
+            'latitude' => -6.917464,
+            'longitude' => 107.619123,
+        ]);
+
+        TiketJointClosureCore::create([
+            'id_joint_closure' => $jc->id,
+            'tube_asal' => 'Tube 1',
+            'core_asal' => 'Core 1',
+            'tube_tujuan' => 'Tube 1',
+            'core_tujuan' => 'Core 1',
+            'status_core' => 'TERHUBUNG',
+            'loss_db' => 0.02,
+            'keterangan' => 'Spliced',
+        ]);
+
+        // PDF single tiket
+        $pdfResponse = $this->actingAs($this->admin)
+            ->get(route('reports.export.tiket.pdf', $this->tiket->id));
+        $pdfResponse->assertOk();
+        $this->assertEquals('application/pdf', $pdfResponse->headers->get('Content-Type'));
+
+        // Excel export
+        $excelResponse = $this->actingAs($this->admin)
+            ->get(route('reports.export.excel'));
+        $excelResponse->assertOk();
+    }
 }

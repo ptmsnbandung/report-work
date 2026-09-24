@@ -25,7 +25,7 @@ class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
      */
     public function collection(): Collection
     {
-        $query = Tiket::with(['creator', 'closer', 'resume', 'materials', 'titikPerbaikans'])
+        $query = Tiket::with(['creator', 'closer', 'resume', 'materials', 'titikPerbaikans', 'jointClosures.cores'])
             ->orderBy('tanggal_open', 'desc');
 
         if (!empty($this->filters['status'])) {
@@ -77,6 +77,8 @@ class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             'Durasi MTTR',
             'Target SLA (Menit)',
             'Status SLA',
+            'Joint Closure (JC)',
+            'Aset Fisik Baru',
             'Problem / Temuan',
             'Tindakan Perbaikan',
             'Team OM Teknis',
@@ -100,6 +102,20 @@ class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             $teamOmStr = implode(', ', $tiket->resume->team_om);
         }
 
+        $jcSummary = '-';
+        $newAssetSummary = 'Tidak';
+        if ($tiket->jointClosures && $tiket->jointClosures->count() > 0) {
+            $jcNames = $tiket->jointClosures->map(function ($jc) {
+                return "{$jc->nama_closure} ({$jc->kapasitas_kabel_asal}C -> {$jc->kapasitas_kabel_jumper}C)";
+            })->implode('; ');
+            $jcSummary = $jcNames;
+
+            $newAssetCount = $tiket->jointClosures->where('status_aset', 'ASET_BARU')->count();
+            if ($newAssetCount > 0) {
+                $newAssetSummary = "Ya ({$newAssetCount} Aset Baru)";
+            }
+        }
+
         return [
             $rowNumber,
             $tiket->no_tiket,
@@ -112,6 +128,8 @@ class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
             $tiket->formatted_mttr,
             $tiket->sla_target_minutes ?? '-',
             $tiket->sla_status,
+            $jcSummary,
+            $newAssetSummary,
             $tiket->resume?->problem_temuan ?? '-',
             $tiket->resume?->action ?? '-',
             $teamOmStr,

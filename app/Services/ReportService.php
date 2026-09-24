@@ -114,7 +114,9 @@ class ReportService
             'resume',
             'materials',
             'titikPerbaikans',
-            'manuverCores',
+            'jointClosures.cores',
+            'jointClosures.creator',
+            'manuverCores.user',
             'dokumentasis'
         ]);
 

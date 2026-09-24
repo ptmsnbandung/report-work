@@ -130,7 +130,7 @@ class Tiket extends Model
     {
         $hasResume = $this->resume !== null && !empty($this->resume->problem_temuan) && !empty($this->resume->action);
         $hasDokumentasi = $this->dokumentasis()->count() > 0;
-        $hasTitikPerbaikan = $this->titikPerbaikans()->count() > 0;
+        $hasTitikPerbaikan = $this->titikPerbaikans()->count() > 0 || $this->jointClosures()->count() > 0;
         $hasTipePenanganan = !empty($this->tipe_penanganan) || (!empty($this->resume?->tipe_penanganan));
 
         $missing = [];
