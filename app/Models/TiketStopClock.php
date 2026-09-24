@@ -44,6 +44,16 @@ class TiketStopClock extends Model
         return $this->belongsTo(User::class, 'requested_by');
     }
 
+    public function stopper(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'stopped_by');
+    }
+
+    public function stoppedBy(): BelongsTo
+    {
+        return $this->stopper();
+    }
+
     public function user(): BelongsTo
     {
         return $this->requester();
