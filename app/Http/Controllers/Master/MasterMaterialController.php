@@ -26,7 +26,19 @@ class MasterMaterialController extends Controller
         ->paginate(10)
         ->withQueryString();
 
-        return view('master.materials.index', compact('materials', 'search'));
+        $totalCount = MasterMaterial::count();
+        $totalStok = (int) (MasterMaterial::sum('stok_tersedia') ?? 0);
+        $activeCount = MasterMaterial::where('is_active', true)->count();
+        $criticalStock = MasterMaterial::where('stok_tersedia', '<=', 20)->where('is_active', true)->count();
+
+        $stats = [
+            'total' => $totalCount,
+            'total_stok' => $totalStok,
+            'active' => $activeCount,
+            'critical' => $criticalStock,
+        ];
+
+        return view('master.materials.index', compact('materials', 'search', 'stats'));
     }
 
     /**

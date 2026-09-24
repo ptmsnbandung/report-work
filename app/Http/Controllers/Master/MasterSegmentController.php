@@ -24,7 +24,19 @@ class MasterSegmentController extends Controller
         ->paginate(10)
         ->withQueryString();
 
-        return view('master.segments.index', compact('segments', 'search'));
+        $totalCount = MasterSla::count();
+        $avgSla = (int) round(MasterSla::avg('sla_target_minutes') ?? 0);
+        $minSla = (int) (MasterSla::min('sla_target_minutes') ?? 0);
+        $maxSla = (int) (MasterSla::max('sla_target_minutes') ?? 0);
+
+        $stats = [
+            'total' => $totalCount,
+            'avg_sla' => $avgSla,
+            'min_sla' => $minSla,
+            'max_sla' => $maxSla,
+        ];
+
+        return view('master.segments.index', compact('segments', 'search', 'stats'));
     }
 
     /**

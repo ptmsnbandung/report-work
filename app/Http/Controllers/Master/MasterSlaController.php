@@ -24,7 +24,19 @@ class MasterSlaController extends Controller
         ->paginate(10)
         ->withQueryString();
 
-        return view('master.sla.index', compact('slas', 'search'));
+        $totalCount = MasterSla::count();
+        $under4h = MasterSla::where('sla_target_minutes', '<=', 240)->count();
+        $over4h = MasterSla::where('sla_target_minutes', '>', 240)->count();
+        $avgHours = round((MasterSla::avg('sla_target_minutes') ?? 0) / 60, 1);
+
+        $stats = [
+            'total' => $totalCount,
+            'under_4h' => $under4h,
+            'over_4h' => $over4h,
+            'avg_hours' => $avgHours,
+        ];
+
+        return view('master.sla.index', compact('slas', 'search', 'stats'));
     }
 
     /**

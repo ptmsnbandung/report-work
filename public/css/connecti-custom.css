@@ -3019,6 +3019,87 @@ h6 { font-size: 0.95rem; }
     box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
+/* ─── MASTER DATA & MANAGEMENT MODULE STYLING ─── */
+.master-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.master-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+}
+.master-stat-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+}
+.master-stat-card.border-c-blue::before    { background: linear-gradient(90deg, #3b82f6, #1d4ed8); }
+.master-stat-card.border-c-teal::before    { background: linear-gradient(90deg, #0d9488, #0f766e); }
+.master-stat-card.border-c-amber::before   { background: linear-gradient(90deg, #f59e0b, #d97706); }
+.master-stat-card.border-c-purple::before  { background: linear-gradient(90deg, #8b5cf6, #6d28d9); }
+.master-stat-card.border-c-emerald::before { background: linear-gradient(90deg, #10b981, #059669); }
+.master-stat-card.border-c-rose::before    { background: linear-gradient(90deg, #ef4444, #dc2626); }
+
+.master-stat-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.master-stat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+.master-stat-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+}
+.master-stat-desc {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-top: 0.2rem;
+    line-height: 1.25;
+}
+
+.master-mobile-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.master-mobile-card:hover {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
 
 
 
