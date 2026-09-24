@@ -377,7 +377,7 @@
                 @endphp
                 <div class="tiket-mobile-card border shadow-sm mb-2.5">
                     <!-- Top Status Stripe -->
-                    <div class="{{ $act->status === 'OPEN' ? 'card-stripe-open' : ($act->status === 'PROSES' ? 'card-stripe-proses' : 'card-stripe-close') }}"></div>
+                    <div class="{{ $act->card_stripe_class }}"></div>
 
                     <div class="tiket-mobile-card-body p-3">
                         <!-- Row 1: No Tiket & Durasi Berjalan / Over SLA -->
@@ -487,7 +487,7 @@
             @forelse($latestTikets as $tiket)
             <div class="tiket-mobile-card">
                 <!-- Top Status Stripe -->
-                <div class="{{ $tiket->status === 'OPEN' ? 'card-stripe-open' : ($tiket->status === 'PROSES' ? 'card-stripe-proses' : 'card-stripe-close') }}"></div>
+                <div class="{{ $tiket->card_stripe_class }}"></div>
 
                 <div class="tiket-mobile-card-body">
                     <!-- Row 1: No Tiket & Status / SLA Badges -->

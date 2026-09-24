@@ -260,6 +260,33 @@ class Tiket extends Model
     }
 
     /**
+     * Mobile card stripe CSS class
+     * Melebihi SLA -> card-stripe-danger (Merah)
+     * OPEN -> card-stripe-open (Biru)
+     * PROSES / PENDING_VERIFIKASI -> card-stripe-proses (Kuning)
+     * CLOSE -> card-stripe-close (Hijau)
+     */
+    public function getCardStripeClassAttribute(): string
+    {
+        if ($this->sla_status === 'LEBIH') {
+            return 'card-stripe-danger';
+        }
+
+        if ($this->status !== 'CLOSE' && $this->sla_target_minutes > 0) {
+            $runningMinutes = $this->tanggal_open ? (int) $this->tanggal_open->diffInMinutes(now()) : 0;
+            if ($runningMinutes > $this->sla_target_minutes) {
+                return 'card-stripe-danger';
+            }
+        }
+
+        return match ($this->status) {
+            'OPEN' => 'card-stripe-open',
+            'PROSES', 'PENDING_VERIFIKASI' => 'card-stripe-proses',
+            default => 'card-stripe-close',
+        };
+    }
+
+    /**
      * Label teks SLA yang deskriptif
      */
     public function getSlaStatusLabelAttribute(): string

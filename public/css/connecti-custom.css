@@ -1442,9 +1442,11 @@ h6 { font-size: 0.95rem; }
     box-shadow: var(--neu-inset-sm);
 }
 
-.tiket-mobile-card .card-stripe-open   { height: 3.5px; background: #ef4444; }
+.tiket-mobile-card .card-stripe-open   { height: 3.5px; background: #2563eb; }
 .tiket-mobile-card .card-stripe-proses { height: 3.5px; background: #f59e0b; }
 .tiket-mobile-card .card-stripe-close  { height: 3.5px; background: #10b981; }
+.tiket-mobile-card .card-stripe-danger,
+.tiket-mobile-card .card-stripe-lebih  { height: 3.5px; background: #ef4444; }
 
 .tiket-mobile-card-body {
     padding: 1rem;

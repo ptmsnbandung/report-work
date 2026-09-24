@@ -584,7 +584,7 @@
                     @forelse($tikets as $t)
                     <div class="tiket-mobile-card">
                         <!-- Top Status Stripe -->
-                        <div class="{{ $t->status === 'OPEN' ? 'card-stripe-open' : ($t->status === 'PROSES' ? 'card-stripe-proses' : 'card-stripe-close') }}"></div>
+                        <div class="{{ $t->card_stripe_class }}"></div>
 
                         <div class="tiket-mobile-card-body">
                             <!-- Row 1: No Tiket & Status / SLA Badges -->
