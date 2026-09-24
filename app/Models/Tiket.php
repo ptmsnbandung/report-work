@@ -267,4 +267,157 @@ class Tiket extends Model
     {
         return $this->status === 'CLOSE';
     }
+
+    /**
+     * Update kronologis terakhir dari lapangan
+     */
+    public function getLastKronologisAttribute()
+    {
+        return $this->kronologis()->latest('timestamp')->first();
+    }
+
+    /**
+     * Hitung berapa menit sejak update kronologis terakhir
+     */
+    public function getMinutesSinceLastUpdateAttribute(): int
+    {
+        $last = $this->last_kronologis;
+        $referenceTime = $last ? $last->timestamp : $this->tanggal_open;
+
+        if (!$referenceTime) {
+            return 0;
+        }
+
+        return max(0, (int) Carbon::parse($referenceTime)->diffInMinutes(Carbon::now()));
+    }
+
+    /**
+     * Status kepatuhan update laporan berkala 30 menit
+     * Return: 'CLOSED' | 'STOP_CLOCK' | 'NORMAL' (<=20m) | 'WARNING' (21-30m) | 'OVERDUE' (>30m)
+     */
+    public function getFieldUpdateStatusAttribute(): string
+    {
+        if ($this->status === 'CLOSE') {
+            return 'CLOSED';
+        }
+
+        if ($this->is_stop_clock) {
+            return 'STOP_CLOCK';
+        }
+
+        $minutes = $this->minutes_since_last_update;
+
+        if ($minutes <= 20) {
+            return 'NORMAL';
+        }
+
+        if ($minutes <= 30) {
+            return 'WARNING';
+        }
+
+        return 'OVERDUE';
+    }
+
+    /**
+     * Rata-rata interval antar laporan lapangan pada tiket ini (dalam menit)
+     */
+    public function getAverageReportIntervalMinutesAttribute(): int
+    {
+        $kronologisList = $this->kronologis()->orderBy('timestamp', 'asc')->get();
+        if ($kronologisList->count() < 2) {
+            return $this->minutes_since_last_update;
+        }
+
+        $intervals = [];
+        for ($i = 1; $i < $kronologisList->count(); $i++) {
+            $prev = Carbon::parse($kronologisList[$i - 1]->timestamp);
+            $curr = Carbon::parse($kronologisList[$i]->timestamp);
+            $intervals[] = max(0, $prev->diffInMinutes($curr));
+        }
+
+        return count($intervals) > 0 ? (int) round(array_sum($intervals) / count($intervals)) : 0;
+    }
+
+    /**
+     * Hitung durasi verifikasi HelpDesk NOC (dari closing awal ke closing akhir)
+     */
+    public function getVerificationDurationMinutesAttribute(): ?int
+    {
+        if (!$this->resolved_at || !$this->tanggal_close) {
+            return null;
+        }
+
+        $resolved = Carbon::parse($this->resolved_at);
+        $closed = Carbon::parse($this->tanggal_close);
+
+        return max(0, (int) $resolved->diffInMinutes($closed));
+    }
+
+    /**
+     * Breakdown Tahapan Garis Waktu SLA (Visual Stepper Stages)
+     */
+    public function getSlaTimelineStagesAttribute(): array
+    {
+        $isOpenDone = $this->tanggal_open !== null;
+        $isResponseDone = $this->first_response_at !== null || $this->status !== 'OPEN';
+        $isFieldDone = $this->resolved_at !== null || $this->status === 'CLOSE';
+        $isCloseDone = $this->status === 'CLOSE';
+
+        return [
+            [
+                'key' => 'OPEN',
+                'title' => 'Open Tiket',
+                'description' => $this->creator?->name ? 'Oleh ' . $this->creator->name : 'Tiket diterbitkan',
+                'timestamp' => $this->tanggal_open ? $this->tanggal_open->format('d/m/Y H:i') : null,
+                'is_completed' => $isOpenDone,
+                'is_current' => $this->status === 'OPEN',
+                'badge' => 'Stage 1',
+                'icon' => 'bi-ticket-detailed-fill',
+            ],
+            [
+                'key' => 'FIRST_RESPONSE',
+                'title' => 'Respon Pertama',
+                'description' => $this->first_response_at
+                    ? 'Respon dalam ' . ($this->response_time_minutes ?? $this->tanggal_open->diffInMinutes($this->first_response_at)) . ' mnt'
+                    : ($this->status === 'OPEN' ? 'Menunggu respon teknisi' : 'Ditangani'),
+                'timestamp' => $this->first_response_at ? Carbon::parse($this->first_response_at)->format('d/m/Y H:i') : null,
+                'is_completed' => $isResponseDone,
+                'is_current' => $this->status === 'PROSES' && !$this->resolved_at,
+                'badge' => $this->response_time_minutes ? $this->response_time_minutes . ' mnt' : null,
+                'icon' => 'bi-lightning-charge-fill',
+            ],
+            [
+                'key' => 'STOP_CLOCK',
+                'title' => 'Jeda SLA (Stop Clock)',
+                'description' => $this->total_stop_clock_minutes > 0
+                    ? $this->total_stop_clock_minutes . ' mnt jeda tercatat'
+                    : ($this->is_stop_clock ? 'Sedang dijeda' : 'Tidak ada jeda'),
+                'timestamp' => $this->activeStopClock ? $this->activeStopClock->start_time->format('H:i') : null,
+                'is_completed' => $this->total_stop_clock_minutes > 0,
+                'is_current' => (bool) $this->is_stop_clock,
+                'badge' => $this->total_stop_clock_minutes > 0 ? $this->total_stop_clock_minutes . ' mnt' : null,
+                'icon' => 'bi-pause-circle-fill',
+            ],
+            [
+                'key' => 'CLOSING_AWAL',
+                'title' => 'Closing Awal Lapangan',
+                'description' => $this->resolver?->name ? 'Selesai oleh ' . $this->resolver->name : 'Pekerjaan fisik selesai',
+                'timestamp' => $this->resolved_at ? Carbon::parse($this->resolved_at)->format('d/m/Y H:i') : null,
+                'is_completed' => $isFieldDone,
+                'is_current' => $this->status === 'PENDING_VERIFIKASI',
+                'badge' => $this->tipe_penanganan ? str_replace('_', ' ', $this->tipe_penanganan) : null,
+                'icon' => 'bi-check2-all',
+            ],
+            [
+                'key' => 'CLOSING_AKHIR',
+                'title' => 'Closing Akhir (NOC)',
+                'description' => $this->closed_by ? 'Verifikasi NOC: ' . ($this->closer?->name ?? 'Helpdesk') : 'Verifikasi link UP & Closing',
+                'timestamp' => $this->tanggal_close ? $this->tanggal_close->format('d/m/Y H:i') : null,
+                'is_completed' => $isCloseDone,
+                'is_current' => false,
+                'badge' => $this->status === 'CLOSE' ? $this->formatted_mttr : null,
+                'icon' => 'bi-shield-fill-check',
+            ],
+        ];
+    }
 }

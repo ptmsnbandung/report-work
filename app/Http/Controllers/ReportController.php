@@ -50,6 +50,27 @@ class ReportController extends Controller
     }
 
     /**
+     * Halaman Dashboard KPI (Key Performance Indicator) Teknisi & NOC
+     */
+    public function kpi(Request $request, \App\Services\KpiService $kpiService): View
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate);
+        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate);
+        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate);
+
+        return view('reports.kpi', compact(
+            'executiveKpi',
+            'teknisiKpi',
+            'helpdeskKpi',
+            'startDate',
+            'endDate'
+        ));
+    }
+
+    /**
      * API Endpoint JSON Data MTTR Bulanan untuk Chart.js
      */
     public function mttr(Request $request): JsonResponse

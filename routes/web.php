@@ -129,6 +129,7 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     // Modul MTTR / SLA & Reporting (Fase 6)
     Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/kpi', [\App\Http\Controllers\ReportController::class, 'kpi'])->name('reports.kpi');
     Route::get('/reports/mttr-data', [\App\Http\Controllers\ReportController::class, 'mttr'])->name('reports.mttr');
     Route::get('/reports/sla-data', [\App\Http\Controllers\ReportController::class, 'sla'])->name('reports.sla');
     Route::get('/reports/export/pdf', [\App\Http\Controllers\ReportController::class, 'exportPdf'])->name('reports.export.pdf');

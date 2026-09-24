@@ -1508,9 +1508,85 @@
         box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4) !important;
     }
 
-    .btn-tiket-hero:active {
-        transform: translateY(1px) !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+    /* ═══════════════════════════════════════════════════════════════════
+       SLA TIMELINE STEPPER (POINT 5)
+       ═══════════════════════════════════════════════════════════════════ */
+    .sla-stepper-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .sla-stepper-track {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        min-width: 580px;
+        position: relative;
+    }
+    .sla-step-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        padding: 0 4px;
+    }
+    .sla-step-node-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        justify-content: center;
+    }
+    .sla-step-node {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        font-weight: 700;
+        z-index: 2;
+        background: #f1f5f9;
+        color: #64748b;
+        border: 2px solid #cbd5e1;
+        transition: all 0.25s ease;
+    }
+    .sla-step-line {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100%;
+        height: 3px;
+        background: #e2e8f0;
+        transform: translateY(-50%);
+        z-index: 1;
+    }
+    .sla-step-line.line-completed {
+        background: #10b981;
+    }
+    .sla-step-line.line-active {
+        background: linear-gradient(90deg, #10b981, #2563eb);
+    }
+    .sla-step-item.step-completed .sla-step-node {
+        background: #10b981;
+        color: #ffffff;
+        border-color: #059669;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+    }
+    .sla-step-item.step-active .sla-step-node {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #1d4ed8;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    }
+    .sla-step-item.step-paused .sla-step-node {
+        background: #f59e0b;
+        color: #ffffff;
+        border-color: #d97706;
+        box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
     }
 </style>
 @endpush
@@ -1859,6 +1935,206 @@
             </div>
         </div>
     </div>
+
+    <!-- ── VISUAL SLA TIMELINE STEPPER (POINT 5) ── -->
+    @php
+        $slaStages = $tiket->sla_timeline_stages;
+    @endphp
+    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">
+        <div class="card-body p-3 p-md-3.5">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary bg-opacity-10 p-1.5 text-primary d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
+                        <i class="bi bi-bezier2"></i>
+                    </div>
+                    <div>
+                        <span class="fw-bold text-navy small">Garis Alur SLA &amp; Siklus Hidup Tiket</span>
+                        <span class="text-muted small ms-1 d-none d-sm-inline">(Open &rarr; Respon &rarr; Stop Clock &rarr; Closing Lapangan &rarr; Closing NOC)</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge {{ $tiket->status === 'CLOSE' ? ($tiket->sla_status === 'LEBIH' ? 'bg-danger text-white' : 'bg-success text-white') : 'bg-primary text-white' }} px-2.5 py-1 rounded-pill small fw-bold">
+                        @if($tiket->status === 'CLOSE')
+                            {{ $tiket->sla_status === 'LEBIH' ? 'SLA OVERDUE (' . $tiket->formatted_mttr . ')' : 'SLA ACHIEVED (' . $tiket->formatted_mttr . ')' }}
+                        @else
+                            Target SLA: {{ $tiket->formatted_sla_target }} (Aktif)
+                        @endif
+                    </span>
+                </div>
+            </div>
+
+            <!-- Horizontal Stepper Progress -->
+            <div class="sla-stepper-wrapper py-2">
+                <div class="sla-stepper-track">
+                    @foreach($slaStages as $index => $stage)
+                        @php
+                            $isCompleted = (bool) ($stage['is_completed'] ?? false);
+                            $isCurrent = (bool) ($stage['is_current'] ?? false);
+                            
+                            $nodeColorClass = 'step-pending';
+                            if ($isCompleted) {
+                                $nodeColorClass = 'step-completed';
+                            } elseif ($isCurrent) {
+                                $nodeColorClass = ($stage['key'] === 'STOP_CLOCK' ? 'step-paused' : 'step-active');
+                            }
+                        @endphp
+                        <div class="sla-step-item {{ $nodeColorClass }}">
+                            <div class="sla-step-node-container">
+                                <div class="sla-step-node">
+                                    @if($isCompleted)
+                                        <i class="bi bi-check-lg"></i>
+                                    @elseif($isCurrent)
+                                        @if($stage['key'] === 'STOP_CLOCK')
+                                            <i class="bi bi-pause-fill"></i>
+                                        @else
+                                            <span class="spinner-grow spinner-grow-sm text-white" style="width: 10px; height: 10px;" role="status"></span>
+                                        @endif
+                                    @else
+                                        <span class="step-num">{{ $index + 1 }}</span>
+                                    @endif
+                                </div>
+                                @if(!$loop->last)
+                                    <div class="sla-step-line {{ $isCompleted ? 'line-completed' : ($isCurrent ? 'line-active' : '') }}"></div>
+                                @endif
+                            </div>
+                            <div class="sla-step-content mt-2">
+                                <div class="sla-step-title fw-bold text-navy small">{{ $stage['title'] }}</div>
+                                <div class="sla-step-timestamp text-muted small" style="font-size: 0.7rem;">
+                                    {{ $stage['timestamp'] ?: '-' }}
+                                </div>
+                                <div class="sla-step-badge mt-1">
+                                    @if(!empty($stage['badge']))
+                                        <span class="badge {{ $isCompleted ? 'bg-success bg-opacity-15 text-success' : ($isCurrent ? 'bg-primary bg-opacity-15 text-primary' : 'bg-light text-muted') }} rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                            {{ $stage['badge'] }}
+                                        </span>
+                                    @elseif($isCompleted)
+                                        <span class="badge bg-success bg-opacity-15 text-success rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                            Selesai
+                                        </span>
+                                    @elseif($isCurrent)
+                                        <span class="badge bg-primary bg-opacity-15 text-primary rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                            Sedang Proses
+                                        </span>
+                                    @else
+                                        <span class="badge bg-light text-muted rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                            Menunggu
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── 30-MINUTE FIELD REPORT INTERVAL & STOP CLOCK REMINDER WIDGET (POINT 6 & 9) ── -->
+    @if($tiket->status !== 'CLOSE')
+        @php
+            $fieldStatus = $tiket->field_update_status;
+            $minsSinceLast = $tiket->minutes_since_last_update;
+            $avgInterval = $tiket->average_report_interval_minutes;
+            $lastKronologis = $tiket->last_kronologis;
+        @endphp
+
+        <div class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden {{ $fieldStatus === 'OVERDUE' ? 'border-2 border-danger' : ($fieldStatus === 'WARNING' ? 'border-2 border-warning' : 'bg-white') }}">
+            <div class="card-body p-3 p-md-3.5">
+                <div class="row align-items-center g-3">
+                    <!-- Left: Interval Monitor Status -->
+                    <div class="col-12 col-md-7">
+                        <div class="d-flex align-items-start gap-3">
+                            @if($fieldStatus === 'OVERDUE')
+                                <div class="rounded-circle bg-danger bg-opacity-15 p-2.5 text-danger d-flex align-items-center justify-content-center flex-shrink-0 animate__animated animate__pulse animate__infinite" style="width: 44px; height: 44px;">
+                                    <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-danger text-white fw-bold">OVERDUE > 30 MENIT</span>
+                                        <span class="fw-bold text-danger">Wajib Kirim Update Kondisi Lapangan!</span>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        Laporan kronologis terakhir diupdate <strong>{{ $minsSinceLast !== null ? $minsSinceLast . ' menit yang lalu' : 'belum pernah ada laporan' }}</strong>.
+                                        SOP mewajibkan minimal per <strong>30 menit</strong> teknisi memberikan info perkembangan di lapangan.
+                                    </div>
+                                </div>
+                            @elseif($fieldStatus === 'WARNING')
+                                <div class="rounded-circle bg-warning bg-opacity-20 p-2.5 text-warning-emphasis d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                                    <i class="bi bi-hourglass-bottom fs-4 text-warning"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-warning text-dark fw-bold">PERINGATAN 20-30 MENIT</span>
+                                        <span class="fw-bold text-navy">Persiapkan Update Laporan Lapangan</span>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        Laporan terakhir <strong>{{ $minsSinceLast }} menit yang lalu</strong>. Segera input update progress sebelum batas 30 menit terlewati.
+                                    </div>
+                                </div>
+                            @else
+                                <div class="rounded-circle bg-success bg-opacity-15 p-2.5 text-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
+                                    <i class="bi bi-shield-check fs-4"></i>
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-success bg-opacity-15 text-success fw-bold border border-success border-opacity-25">INTERVAL UPDATE NORMAL</span>
+                                        <span class="fw-bold text-navy">Kepatuhan Update Lapangan Terjaga</span>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        Laporan terakhir <strong>{{ $minsSinceLast !== null ? $minsSinceLast . ' menit lalu' : 'baru dimulai' }}</strong>. 
+                                        Rata-rata frekuensi report: <strong>{{ $avgInterval ? $avgInterval . ' menit/update' : '-' }}</strong>.
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Right: Quick Action & Stats -->
+                    <div class="col-12 col-md-5">
+                        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-md-end gap-2">
+                            <div class="p-2 rounded bg-light border text-center flex-fill">
+                                <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Update Terakhir</div>
+                                <div class="fw-bold text-navy" style="font-size: 0.85rem;">
+                                    {{ $lastKronologis ? $lastKronologis->created_at->format('H:i') . ' WIB' : '-' }}
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-light border text-center flex-fill">
+                                <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Rata-rata Interval</div>
+                                <div class="fw-bold text-navy" style="font-size: 0.85rem;">
+                                    {{ $avgInterval ? $avgInterval . ' Menit' : '-' }}
+                                </div>
+                            </div>
+                            @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                <button type="button" class="btn {{ $fieldStatus === 'OVERDUE' ? 'btn-danger' : 'btn-primary' }} btn-sm px-3 py-2 fw-semibold rounded-pill shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill" onclick="document.getElementById('kronologis-tab')?.click(); document.getElementById('waMessageInput')?.focus();">
+                                    <i class="bi bi-chat-left-dots-fill"></i>
+                                    <span>Kirim Update</span>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Point 9: Helpdesk Stop Clock Reminder & Checklist -->
+                @if($tiket->is_stop_clock && $tiket->activeStopClock)
+                    <div class="mt-3 pt-2.5 border-top border-warning border-opacity-30">
+                        <div class="d-flex align-items-start gap-2.5 p-2.5 rounded-3" style="background: #fffbeb; border: 1px dashed #f59e0b;">
+                            <i class="bi bi-bell-fill text-warning fs-5 flex-shrink-0 mt-0.5"></i>
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <strong class="text-dark small"><i class="bi bi-exclamation-circle me-1"></i>Reminder Helpdesk (Stop Clock Aktif):</strong>
+                                    <span class="badge bg-warning text-dark font-monospace" style="font-size: 0.7rem;">Follow-up Diperlukan</span>
+                                </div>
+                                <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                    Pastikan Helpdesk secara berkala mengontak pihak eksternal (PLN / Vendor / Perizinan) terkait kendala <em>"{{ $tiket->activeStopClock->reason_label }}"</em>.
+                                    Segera lakukan <strong>Resume Clock</strong> begitu hambatan terselesaikan agar perhitungan MTTR tetap akurat.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endif
 
     <!-- ── MANDATORY CLOSING CHECKLIST CARD (ANTI CLOSING SEMBARANGAN) ── -->
     @php
