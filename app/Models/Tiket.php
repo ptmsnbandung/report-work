@@ -272,13 +272,6 @@ class Tiket extends Model
             return 'card-stripe-danger';
         }
 
-        if ($this->status !== 'CLOSE' && $this->sla_target_minutes > 0) {
-            $runningMinutes = $this->tanggal_open ? (int) $this->tanggal_open->diffInMinutes(now()) : 0;
-            if ($runningMinutes > $this->sla_target_minutes) {
-                return 'card-stripe-danger';
-            }
-        }
-
         return match ($this->status) {
             'OPEN' => 'card-stripe-open',
             'PROSES', 'PENDING_VERIFIKASI' => 'card-stripe-proses',

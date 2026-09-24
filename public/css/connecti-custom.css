@@ -1442,11 +1442,16 @@ h6 { font-size: 0.95rem; }
     box-shadow: var(--neu-inset-sm);
 }
 
-.tiket-mobile-card .card-stripe-open   { height: 3.5px; background: #2563eb; }
-.tiket-mobile-card .card-stripe-proses { height: 3.5px; background: #f59e0b; }
-.tiket-mobile-card .card-stripe-close  { height: 3.5px; background: #10b981; }
+.card-stripe-open,
+.tiket-mobile-card .card-stripe-open   { height: 3.5px; background: #2563eb !important; }
+.card-stripe-proses,
+.tiket-mobile-card .card-stripe-proses { height: 3.5px; background: #f59e0b !important; }
+.card-stripe-close,
+.tiket-mobile-card .card-stripe-close  { height: 3.5px; background: #10b981 !important; }
+.card-stripe-danger,
+.card-stripe-lebih,
 .tiket-mobile-card .card-stripe-danger,
-.tiket-mobile-card .card-stripe-lebih  { height: 3.5px; background: #ef4444; }
+.tiket-mobile-card .card-stripe-lebih  { height: 3.5px; background: #ef4444 !important; }
 
 .tiket-mobile-card-body {
     padding: 1rem;
