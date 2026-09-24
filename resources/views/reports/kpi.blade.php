@@ -81,7 +81,7 @@
     <!-- ── BREADCRUMB ── -->
     <div class="d-none d-md-block mb-3">
         <x-breadcrumb :items="[
-            'Laporan & Analisis' => route('reports.index'),
+            'Monitoring' => route('reports.index'),
             'Dashboard KPI' => null
         ]" />
     </div>

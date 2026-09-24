@@ -79,11 +79,11 @@
         @endif
     </a>
 
-    <!-- 5. Monitoring MTTR & SLA (Role Helpdesk & Teknis) / Profil Akun (Role Lainnya) -->
+    <!-- 5. Monitoring (Role Helpdesk & Teknis) / Profil Akun (Role Lainnya) -->
     @if($currentUser && $currentUser->hasRole(['helpdesk', 'teknis']))
-    <a href="{{ route('reports.index') }}" class="bottom-nav-item {{ str_starts_with($currentRoute, 'reports.') ? 'active' : '' }}" title="Monitoring MTTR & SLA">
+    <a href="{{ route('reports.index') }}" class="bottom-nav-item {{ str_starts_with($currentRoute, 'reports.') ? 'active' : '' }}" title="Monitoring">
         <i class="bi {{ str_starts_with($currentRoute, 'reports.') ? 'bi-graph-up-arrow' : 'bi-graph-up' }}"></i>
-        <span>MTTR & SLA</span>
+        <span>Monitoring</span>
     </a>
     @else
     <a href="{{ route('profile') }}" class="bottom-nav-item {{ $currentRoute === 'profile' ? 'active' : '' }}">

@@ -78,7 +78,7 @@
 
         <a href="{{ route('reports.index') }}" class="sidebar-link {{ $currentRoute === 'reports.index' ? 'active' : '' }}">
             <i class="bi bi-graph-up-arrow"></i>
-            <span>Monitoring MTTR & SLA</span>
+            <span>Monitoring</span>
         </a>
 
         <a href="{{ route('reports.export.excel') }}" class="sidebar-link">

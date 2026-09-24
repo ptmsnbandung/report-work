@@ -108,7 +108,7 @@
 
     <!-- ── BREADCRUMB (DESKTOP) ── -->
     <div class="d-none d-md-block mb-3">
-        <x-breadcrumb :items="['Monitoring MTTR & SLA' => null]" />
+        <x-breadcrumb :items="['Monitoring' => null]" />
     </div>
 
     <!-- ── PAGE HEADER & EXPORT ACTIONS ── -->
