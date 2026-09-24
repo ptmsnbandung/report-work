@@ -269,6 +269,24 @@
             @auth
             registerServiceWorkerAndPush();
             @endauth
+
+            // Smooth transition feedback on Report navigation tabs
+            const reportNavItems = document.querySelectorAll('.report-nav-item');
+            reportNavItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (this.classList.contains('active') || e.ctrlKey || e.metaKey || e.shiftKey) return;
+                    
+                    reportNavItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const mainContent = document.querySelector('.app-content');
+                    if (mainContent) {
+                        mainContent.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
+                        mainContent.style.opacity = '0.72';
+                        mainContent.style.transform = 'translateY(2px)';
+                    }
+                });
+            });
         });
     </script>
 

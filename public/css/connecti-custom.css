@@ -152,11 +152,21 @@ h6 { font-size: 0.95rem; }
     min-width: 0;
     transition: margin-left var(--transition-normal);
     background: var(--cjp-bg-page);
+@keyframes pageFadeIn {
+    from {
+        opacity: 0.88;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .app-content {
     flex-grow: 1;
     padding: 1.25rem 1.5rem;
+    animation: pageFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .app-footer {
@@ -2908,6 +2918,7 @@ h6 { font-size: 0.95rem; }
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .report-nav-scroll::-webkit-scrollbar {
@@ -2918,26 +2929,36 @@ h6 { font-size: 0.95rem; }
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.42rem 1rem;
+    padding: 0.45rem 1.15rem;
     border-radius: 9999px;
     font-size: 0.82rem;
     font-weight: 600;
     color: #64748b;
     text-decoration: none;
     white-space: nowrap;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
 }
 
 .report-nav-item:hover {
     color: #0f172a;
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
+
+.report-nav-item:active {
+    transform: scale(0.96);
 }
 
 .report-nav-item.active {
     background: linear-gradient(135deg, #07152b 0%, #1e3a8a 100%);
     color: #ffffff !important;
-    box-shadow: 0 2px 8px rgba(7, 21, 43, 0.25);
+    box-shadow: 0 4px 12px rgba(7, 21, 43, 0.28);
+    transform: none;
 }
 
 .report-nav-item.active i.bi-trophy-fill {
