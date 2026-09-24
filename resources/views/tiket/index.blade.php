@@ -2,6 +2,54 @@
 
 @section('title', 'Daftar Tiket Gangguan')
 
+@push('styles')
+<style>
+    /* ── TIKET INDEX HERO BANNER (DASHBOARD-STYLE DARK TECH GRADIENT) ── */
+    .tiket-index-hero {
+        background: linear-gradient(145deg, #071530 0%, #0d2352 55%, #133070 100%);
+        border-radius: var(--neu-radius-lg, 16px);
+        padding: 1.15rem 1.4rem;
+        margin-bottom: 1.15rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.12);
+        color: #ffffff;
+    }
+
+    .tiket-index-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(44, 127, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(44, 127, 255, 0.08) 1px, transparent 1px);
+        background-size: 28px 28px;
+        pointer-events: none;
+    }
+
+    .tiket-index-hero > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn-tiket-index-ghost {
+        background: rgba(255, 255, 255, 0.14);
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-tiket-index-ghost:hover {
+        background: rgba(255, 255, 255, 0.25);
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+</style>
+@endpush
+
 @section('content')
 @php
     $isTugasSaya = ($filters['status'] ?? '') === 'AKTIF' || request('view') === 'tugas_saya';
@@ -20,25 +68,30 @@
         @endif
     </div>
 
-    <!-- ── PAGE HEADER (ELEGANT & CLEAN) ── -->
-    <div class="d-flex justify-content-between align-items-center mb-3 page-header-row p-3 px-md-3.5 rounded-xl bg-white shadow-xs border border-light">
+    <!-- ── PAGE HEADER HERO (DASHBOARD-STYLE DARK TECH GRADIENT) ── -->
+    <div class="d-flex justify-content-between align-items-center tiket-index-hero">
         <div class="d-flex align-items-center gap-2.5 overflow-hidden">
-            <div class="page-title-icon-box shadow-xs" style="{{ $isTugasSaya ? 'background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);' : (auth()->user()->hasRole('teknis') ? 'background: linear-gradient(135deg, #2C7FFF, #1b39da); box-shadow: 0 4px 12px rgba(44, 127, 255, 0.35);' : '') }}">
+            <div class="page-title-icon-box shadow-xs flex-shrink-0" style="{{ $isTugasSaya ? 'background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;' : (auth()->user()->hasRole('teknis') ? 'background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;' : 'background: linear-gradient(135deg, #2563eb, #1d4ed8); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;') }}">
                 <i class="bi {{ $isTugasSaya ? 'bi-tools' : (auth()->user()->hasRole('teknis') ? 'bi-clock-history' : 'bi-ticket-detailed-fill') }}"></i>
             </div>
             <div class="overflow-hidden">
-                <h1 class="page-title-text mb-0 text-truncate fw-bold text-navy" style="font-size:1.1rem;">
+                <div class="d-flex align-items-center gap-2">
+                    <h1 class="page-title-text mb-0 text-truncate fw-bold text-white" style="font-size:1.15rem; letter-spacing: -0.2px;">
+                        @if($isTugasSaya)
+                            Tugas Saya
+                            <span class="visually-hidden">Daftar Tiket Gangguan Backbone</span>
+                        @elseif(auth()->user()->hasRole('teknis'))
+                            History Tiket Gangguan
+                            <span class="visually-hidden">Daftar Tiket Gangguan Backbone</span>
+                        @else
+                            Daftar Tiket Gangguan Backbone
+                        @endif
+                    </h1>
                     @if($isTugasSaya)
-                        Tugas Saya <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 font-monospace px-2 py-0.5" style="font-size:0.68rem; font-weight:700;">AKTIF</span>
-                        <span class="visually-hidden">Daftar Tiket Gangguan Backbone</span>
-                    @elseif(auth()->user()->hasRole('teknis'))
-                        History Tiket Gangguan
-                        <span class="visually-hidden">Daftar Tiket Gangguan Backbone</span>
-                    @else
-                        Daftar Tiket Gangguan Backbone
+                        <span class="badge font-monospace px-2 py-0.5 rounded-pill" style="background: rgba(245, 158, 11, 0.22); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); font-size: 0.68rem; font-weight: 700;">AKTIF</span>
                     @endif
-                </h1>
-                <p class="text-muted small mb-0 d-none d-md-block" style="font-size:0.75rem; margin-top:2px;">
+                </div>
+                <p class="small mb-0 d-none d-md-block" style="color: rgba(186, 214, 235, 0.85); font-size:0.76rem; margin-top:2px;">
                     @if($isTugasSaya)
                         Daftar penugasan gangguan backbone yang sedang aktif ditangani
                     @elseif(auth()->user()->hasRole('teknis'))
@@ -51,13 +104,13 @@
         </div>
         <div class="flex-shrink-0 ms-2">
             @if($isTugasSaya)
-            <a href="{{ route('tiket.index') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1.5 shadow-xs rounded-pill px-3" title="{{ auth()->user()->hasRole('teknis') ? 'Lihat History' : 'Kembali ke Semua Tiket' }}">
+            <a href="{{ route('tiket.index') }}" class="btn btn-tiket-index-ghost btn-sm d-flex align-items-center gap-1.5 rounded-pill px-3.5 shadow-xs" title="{{ auth()->user()->hasRole('teknis') ? 'Lihat History' : 'Kembali ke Semua Tiket' }}">
                 <i class="bi {{ auth()->user()->hasRole('teknis') ? 'bi-clock-history' : 'bi-list-ul' }}"></i>
                 <span class="d-none d-sm-inline">{{ auth()->user()->hasRole('teknis') ? 'History' : 'Semua Tiket' }}</span>
                 <span class="d-inline d-sm-none">{{ auth()->user()->hasRole('teknis') ? 'History' : 'Semua' }}</span>
             </a>
             @elseif(auth()->user()->hasRole(['admin', 'helpdesk']))
-            <a href="{{ route('tiket.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1.5 shadow-xs rounded-pill px-3" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
+            <a href="{{ route('tiket.create') }}" class="btn btn-primary btn-sm d-flex align-items-center gap-1.5 shadow-xs rounded-pill px-3.5 fw-semibold" style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border: 1px solid rgba(255, 255, 255, 0.25);">
                 <i class="bi bi-plus-lg"></i>
                 <span class="d-none d-sm-inline">Open Tiket Baru</span>
                 <span class="d-inline d-sm-none">Tiket</span>
@@ -254,16 +307,16 @@
     </div>
     @endif
 
-    <!-- ── SMART COLLAPSIBLE FILTER CARD (DROPDOWN SEPERTI MENU MTTR) ── -->
+    <!-- ── SMART COLLAPSIBLE FILTER CARD ── -->
     @php
-        $hasActiveFilter = request()->filled('q') || request()->filled('segment') || request()->filled('sla_status') || request()->filled('tanggal') || (request()->filled('status') && (!auth()->user()->hasRole('teknis') || request('status') !== 'CLOSE'));
+        $isCustomFiltered = request()->filled('q') || request()->filled('segment') || request()->filled('sla_status') || request()->filled('tanggal');
     @endphp
     <div class="card border-0 shadow-sm rounded-xl mb-3 mb-md-4 overflow-hidden bg-white">
         <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center border-bottom"
              role="button"
              data-bs-toggle="collapse"
              data-bs-target="#tiketFilterCollapse"
-             aria-expanded="{{ $hasActiveFilter ? 'true' : 'false' }}"
+             aria-expanded="false"
              aria-controls="tiketFilterCollapse"
              style="cursor: pointer; user-select: none;">
             <div class="d-flex align-items-center gap-2">
@@ -271,7 +324,7 @@
                     <i class="bi bi-funnel-fill" style="font-size: 0.85rem;"></i>
                 </div>
                 <span class="fw-bold text-navy small">Filter &amp; Pencarian Tiket</span>
-                @if($hasActiveFilter)
+                @if($isCustomFiltered)
                     <span class="badge rounded-pill fw-bold" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 0.65rem;">
                         Filter Aktif
                     </span>
@@ -279,13 +332,13 @@
             </div>
             <div class="d-flex align-items-center gap-2">
                 <span class="text-muted small d-none d-sm-inline" id="tiketFilterToggleText" style="font-size: 0.72rem;">
-                    {{ $hasActiveFilter ? 'Sembunyikan filter' : 'Tampilkan filter' }}
+                    Tampilkan filter
                 </span>
-                <i class="bi bi-chevron-down text-muted transition-transform {{ $hasActiveFilter ? 'rotate-180' : '' }}" id="tiketFilterChevron"></i>
+                <i class="bi bi-chevron-down text-muted transition-transform" id="tiketFilterChevron"></i>
             </div>
         </div>
 
-        <div class="collapse {{ $hasActiveFilter ? 'show' : '' }}" id="tiketFilterCollapse">
+        <div class="collapse" id="tiketFilterCollapse">
             <div class="card-body p-3.5 p-md-4 bg-light bg-opacity-50">
                 <form action="{{ route('tiket.index') }}" method="GET" class="row g-3 g-md-3.5 align-items-end">
                     @if(request('view') === 'tugas_saya')
