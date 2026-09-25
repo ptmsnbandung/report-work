@@ -440,7 +440,7 @@ class TiketController extends Controller
     public function updateTipePenanganan(Request $request, Tiket $tiket): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
-            'tipe_penanganan' => ['required', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,LAINNYA'],
+            'tipe_penanganan' => ['required', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,KEDUA,KOMBINASI,SEMUA,LAINNYA'],
         ]);
 
         $tiket->update(['tipe_penanganan' => $validated['tipe_penanganan']]);

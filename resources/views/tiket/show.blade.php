@@ -770,10 +770,29 @@
         font-size: 0.65rem;
         color: #667781;
     }
-    .wa-double-check {
-        font-size: 0.82rem;
-        color: #53bdeb;
+    .wa-status-icon {
         line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        transition: color 0.3s ease, transform 0.2s ease;
+    }
+    .wa-status-pending {
+        font-size: 0.72rem !important;
+        color: #8696a0 !important;
+        animation: waClockPulse 1.4s infinite ease-in-out;
+    }
+    .wa-status-sent {
+        font-size: 0.85rem !important;
+        color: #8696a0 !important; /* Ceklis 2 abu */
+    }
+    .wa-status-read,
+    .wa-double-check {
+        font-size: 0.85rem !important;
+        color: #53bdeb !important; /* Ceklis 2 biru */
+    }
+    @keyframes waClockPulse {
+        0%, 100% { opacity: 0.6; transform: scale(0.95); }
+        50% { opacity: 1; transform: scale(1.05); }
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -1880,29 +1899,85 @@
     }
     .jc-card-pro {
         background: #ffffff;
-        border-radius: 16px;
+        border-radius: 14px;
         border: 1px solid #e2e8f0;
-        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
         overflow: hidden;
         transition: all 0.2s ease;
     }
     .jc-card-pro:hover {
         border-color: #cbd5e1;
-        box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
     }
     .jc-header-pro {
-        padding: 0.95rem 1.25rem;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border-bottom: 1px solid #e2e8f0;
+        padding: 0.85rem 1.15rem;
+        background: #ffffff;
+        border-bottom: 1px solid #edf2f7;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 0.75rem;
         flex-wrap: wrap;
     }
+    .jc-title-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: #0f172a;
+        color: #38bdf8;
+        font-family: 'JetBrains Mono', Consolas, monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid #1e293b;
+        letter-spacing: 0.3px;
+    }
+    .jc-meta-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        white-space: nowrap;
+    }
+    .jc-chip-eksisting {
+        background: #f1f5f9;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+    }
+    .jc-chip-baru {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+    .jc-chip-type {
+        background: #f8fafc;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+    }
+    .jc-chip-location {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fed7aa;
+    }
+    .jc-chip-geo {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+        text-decoration: none;
+        transition: all 0.15s ease;
+    }
+    .jc-chip-geo:hover {
+        background: #dbeafe;
+        color: #1e40af;
+        border-color: #93c5fd;
+    }
     .jc-spec-banner {
         background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #edf2f7;
         border-radius: 12px;
         padding: 0.85rem 1rem;
     }
@@ -1910,8 +1985,43 @@
         background: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 10px;
-        padding: 0.65rem 0.85rem;
+        padding: 0.75rem 0.95rem;
         height: 100%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    .jc-tube-badge-asal {
+        display: inline-block;
+        background: #eef2ff !important;
+        color: #4338ca !important;
+        border: 1px solid #c7d2fe !important;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 20px;
+    }
+    .jc-tube-badge-jumper {
+        display: inline-block;
+        background: #ecfdf5 !important;
+        color: #065f46 !important;
+        border: 1px solid #a7f3d0 !important;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        border-radius: 20px;
+    }
+    .jc-btn-delete {
+        background: #fff1f2;
+        color: #e11d48;
+        border: 1px solid #fecdd3;
+        border-radius: 6px;
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+        transition: all 0.15s ease;
+    }
+    .jc-btn-delete:hover {
+        background: #e11d48;
+        color: #ffffff;
+        border-color: #e11d48;
     }
     .jc-core-row {
         padding: 0.65rem 0.85rem;
@@ -1951,35 +2061,56 @@
         background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 100%);
         border: 1px solid rgba(148, 163, 184, 0.25);
         border-radius: 16px;
-        padding: 1.15rem;
+        padding: 1rem;
         box-shadow: 0 12px 32px rgba(15, 23, 42, 0.35);
         color: #f8fafc;
         position: relative;
         overflow: hidden;
     }
+    @media (max-width: 575.98px) {
+        .fiber-patcher-box {
+            padding: 0.75rem 0.5rem;
+            border-radius: 12px;
+        }
+    }
     .fiber-patcher-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-bottom: 0.75rem;
-        margin-bottom: 0.85rem;
+        padding-bottom: 0.65rem;
+        margin-bottom: 0.65rem;
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.4rem;
+    }
+    .fiber-preset-actions-scroll {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        overflow-x: auto;
+        max-width: 100%;
+        padding-bottom: 2px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .fiber-preset-actions-scroll::-webkit-scrollbar {
+        display: none;
     }
     .fiber-preset-btn {
         background: rgba(30, 41, 59, 0.85);
         border: 1px solid rgba(148, 163, 184, 0.3);
         color: #e2e8f0;
-        font-size: 0.75rem;
+        font-size: 0.73rem;
         font-weight: 600;
-        padding: 0.32rem 0.75rem;
+        padding: 0.3rem 0.65rem;
         border-radius: 50rem;
         transition: all 0.2s ease;
         display: inline-flex;
         align-items: center;
+        white-space: nowrap;
         cursor: pointer;
         text-decoration: none;
+        flex-shrink: 0;
     }
     .fiber-preset-btn:hover {
         background: rgba(59, 130, 246, 0.25);
@@ -2002,10 +2133,11 @@
         border: 1px solid rgba(148, 163, 184, 0.3);
         color: #38bdf8;
         font-weight: 700;
-        font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        font-size: 0.72rem;
+        padding: 0.2rem 0.4rem;
         border-radius: 6px;
         outline: none;
+        max-width: 110px;
     }
     .fiber-cap-select option {
         background: #0f172a;
@@ -2013,47 +2145,60 @@
     }
     .fiber-patcher-grid {
         display: grid;
-        grid-template-columns: 1fr 140px 1fr;
-        gap: 0.85rem;
+        grid-template-columns: 1fr 120px 1fr;
+        gap: 0.75rem;
         align-items: stretch;
         position: relative;
     }
     @media (max-width: 991.98px) {
         .fiber-patcher-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .fiber-canvas-center {
+            display: none !important;
         }
     }
     .fiber-panel-card {
         background: rgba(30, 41, 59, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 12px;
-        padding: 0.85rem;
+        padding: 0.75rem 0.65rem;
         backdrop-filter: blur(8px);
     }
+    @media (max-width: 575.98px) {
+        .fiber-panel-card {
+            padding: 0.5rem 0.4rem;
+            border-radius: 10px;
+        }
+    }
     .fiber-panel-title {
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.6rem;
+        letter-spacing: 0.4px;
+        margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.3rem;
     }
     .fiber-tube-tabs {
         display: flex;
-        gap: 0.35rem;
-        margin-bottom: 0.75rem;
+        gap: 0.3rem;
+        margin-bottom: 0.6rem;
         overflow-x: auto;
-        padding-bottom: 4px;
-        scrollbar-width: thin;
+        padding-bottom: 3px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .fiber-tube-tabs::-webkit-scrollbar {
+        display: none;
     }
     .fiber-tube-tab-btn {
-        padding: 0.25rem 0.65rem;
-        font-size: 0.72rem;
+        padding: 0.2rem 0.55rem;
+        font-size: 0.7rem;
         font-weight: 600;
         border-radius: 6px;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -2062,6 +2207,7 @@
         cursor: pointer;
         transition: all 0.15s ease;
         white-space: nowrap;
+        flex-shrink: 0;
     }
     .fiber-tube-tab-btn:hover {
         color: #f8fafc;
@@ -2076,32 +2222,43 @@
     .fiber-core-list {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.4rem;
+        gap: 0.35rem;
         max-height: 270px;
         overflow-y: auto;
         padding-right: 2px;
+        scrollbar-width: thin;
     }
-    @media (max-width: 575.98px) {
+    @media (max-width: 991.98px) {
         .fiber-core-list {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.35rem;
+            grid-template-columns: 1fr;
+            gap: 0.3rem;
+            max-height: 250px;
         }
     }
     .fiber-port-btn {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
-        padding: 0.38rem 0.55rem;
+        gap: 0.4rem;
+        padding: 0.35rem 0.5rem;
         border-radius: 8px;
         border: 1px solid rgba(255, 255, 255, 0.15);
         background: rgba(15, 23, 42, 0.9);
         color: #f1f5f9;
-        font-size: 0.76rem;
+        font-size: 0.75rem;
         cursor: pointer;
         transition: all 0.15s ease;
         text-align: left;
         user-select: none;
         position: relative;
+        min-height: 32px;
+    }
+    @media (max-width: 575.98px) {
+        .fiber-port-btn {
+            padding: 0.28rem 0.35rem;
+            font-size: 0.7rem;
+            gap: 0.3rem;
+            min-height: 30px;
+        }
     }
     .fiber-port-btn:hover {
         background: rgba(51, 65, 85, 0.95);
@@ -2121,7 +2278,7 @@
     .fiber-port-btn.connected::after {
         content: '✓';
         position: absolute;
-        right: 6px;
+        right: 4px;
         font-size: 0.65rem;
         font-weight: 800;
         color: #34d399;
@@ -2130,24 +2287,28 @@
         font-weight: 700;
         color: #ffffff;
         font-family: monospace;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
+        letter-spacing: -0.2px;
     }
     .fiber-port-label-name {
         color: #cbd5e1;
-        font-size: 0.7rem;
+        font-size: 0.68rem;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
     .fiber-dot {
-        width: 13px;
-        height: 13px;
+        width: 12px;
+        height: 12px;
         border-radius: 50%;
         display: inline-block;
         flex-shrink: 0;
         box-shadow: 0 0 5px rgba(0,0,0,0.6);
     }
     .fiber-dot-sm {
-        width: 9px;
-        height: 9px;
+        width: 8px;
+        height: 8px;
         border-radius: 50%;
         display: inline-block;
         flex-shrink: 0;
@@ -2158,25 +2319,31 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        min-height: 200px;
-        padding: 0.5rem;
+        min-height: 140px;
+        max-height: 220px;
+        padding: 0.25rem;
+    }
+    @media (max-width: 991.98px) {
+        .fiber-canvas-center {
+            display: none !important;
+        }
     }
     .fiber-svg-wire {
         width: 100%;
         height: 100%;
-        min-height: 180px;
+        max-height: 180px;
         overflow: visible;
     }
     .fiber-wire-path {
-        stroke-dasharray: 6, 6;
+        stroke-dasharray: 4, 4;
         animation: fiberLaserFlow 1.2s linear infinite;
-        filter: drop-shadow(0 0 4px currentColor);
+        filter: drop-shadow(0 0 2px currentColor);
         cursor: pointer;
         transition: stroke-width 0.2s ease;
     }
     .fiber-wire-path:hover {
-        stroke-width: 5.5 !important;
-        filter: drop-shadow(0 0 8px currentColor) !important;
+        stroke-width: 4 !important;
+        filter: drop-shadow(0 0 6px currentColor) !important;
     }
     @keyframes fiberLaserFlow {
         from { stroke-dashoffset: 24; }
@@ -2199,6 +2366,38 @@
     }
     .fiber-pulse-laser {
         animation: laserPulseAnim 1.5s infinite ease-in-out;
+    }
+    .btn-fiber-connect,
+    #btnJcConnectSelected {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border: 1px solid #34d399 !important;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+        font-weight: 700 !important;
+        font-size: 0.78rem !important;
+        padding: 0.35rem 0.95rem !important;
+        border-radius: 50rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.35rem !important;
+        letter-spacing: 0.3px !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+        cursor: pointer !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .btn-fiber-connect:hover,
+    #btnJcConnectSelected:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #ffffff !important;
+        border-color: #6ee7b7 !important;
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.65) !important;
+        transform: translateY(-1px) scale(1.04) !important;
+    }
+    .btn-fiber-connect:active,
+    #btnJcConnectSelected:active {
+        transform: translateY(0) scale(0.98) !important;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4) !important;
     }
     @keyframes laserPulseAnim {
         0%, 100% { transform: scale(1); opacity: 0.9; }
@@ -2336,8 +2535,9 @@
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                 <div class="min-w-0 w-100 w-md-auto">
                     <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-                        <span class="d-inline-flex align-items-center text-white font-monospace px-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); font-size:0.78rem; font-weight:700; letter-spacing:0.5px;">
-                            <i class="bi bi-ticket-perforated-fill me-1.5 text-info"></i>{{ $tiket->no_tiket }}
+                        <span class="d-inline-flex align-items-center gap-2 text-white font-monospace px-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); font-size:0.78rem; font-weight:700; letter-spacing:0.5px;">
+                            <i class="bi bi-ticket-perforated-fill text-info" style="font-size: 0.95rem;"></i>
+                            <span>{{ $tiket->no_tiket }}</span>
                         </span>
                         @if($tiket->status === 'OPEN')
                             <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
@@ -3487,7 +3687,11 @@
                                         </button>
                                     </div>
                                     <div class="resume-card-text">
-                                        @if(($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan) === 'JOINTING_LURUS')
+                                        @if(in_array(($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan), ['KEDUA', 'KOMBINASI', 'SEMUA']))
+                                            <span class="badge bg-indigo text-white px-2.5 py-1 rounded-pill" style="background: #6366f1 !important;">
+                                                <i class="bi bi-layers-fill me-1"></i> Jointing Lurus &amp; Manuver Core (Keduanya)
+                                            </span>
+                                        @elseif(($tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan) === 'JOINTING_LURUS')
                                             <span class="badge bg-success text-white px-2.5 py-1 rounded-pill">
                                                 <i class="bi bi-diagram-3-fill me-1"></i> Jointing Lurus (Kabel &amp; JC)
                                             </span>
@@ -3551,50 +3755,83 @@
                 <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
                 <div class="tab-pane fade" id="penanganan-pane" role="tabpanel">
                     @php
-                        $activePenanganan = ($tiket->tipe_penanganan === 'MANUVER_CORE') ? 'MANUVER_CORE' : (($tiket->tipe_penanganan === 'JOINTING_LURUS' || $tiket->jointClosures->count() > 0) ? 'JOINTING_LURUS' : ($tiket->manuverCores->count() > 0 ? 'MANUVER_CORE' : 'JOINTING_LURUS'));
+                        $rawPenanganan = $tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan;
+                        $hasJc = $tiket->jointClosures->count() > 0;
+                        $hasManuver = $tiket->manuverCores->count() > 0;
+
+                        if (in_array($rawPenanganan, ['KEDUA', 'KOMBINASI', 'SEMUA']) || ($hasJc && $hasManuver)) {
+                            $activePenanganan = 'KEDUA';
+                        } elseif ($rawPenanganan === 'MANUVER_CORE' || (!$hasJc && $hasManuver)) {
+                            $activePenanganan = 'MANUVER_CORE';
+                        } elseif ($rawPenanganan === 'JOINTING_LURUS' || ($hasJc && !$hasManuver)) {
+                            $activePenanganan = 'JOINTING_LURUS';
+                        } else {
+                            $activePenanganan = 'JOINTING_LURUS';
+                        }
+
+                        $isJointingActive = in_array($activePenanganan, ['JOINTING_LURUS', 'KEDUA', 'KOMBINASI', 'SEMUA']);
+                        $isManuverActive = in_array($activePenanganan, ['MANUVER_CORE', 'KEDUA', 'KOMBINASI', 'SEMUA']);
                     @endphp
 
                     <!-- Tipe Penanganan Switcher Banner -->
                     <div class="card border-0 shadow-sm rounded-xl mb-4 bg-white overflow-hidden">
                         <div class="card-body p-3 p-md-4">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-2 border-bottom">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2.5 mb-3 pb-2 border-bottom">
                                 <div>
                                     <div class="fw-bold text-navy fs-6 d-flex align-items-center gap-2">
                                         <i class="bi bi-bezier2" style="color: #6366f1;"></i>
                                         <span>Pilih Metode Penanganan Fisik / Core</span>
                                     </div>
                                     <div class="text-muted small" style="font-size: 0.8rem;">
-                                        Tentukan metode perbaikan kabel yang dilakukan untuk tiket ini. Klik salah satu opsi di bawah untuk beralih dan menyimpan pilihan otomatis.
+                                        Tentukan metode perbaikan kabel. Anda dapat memilih salah satu atau <strong>mengaktifkan keduanya</strong> sekaligus.
                                     </div>
                                 </div>
-                                <div id="penangananStatusIndicator" class="d-flex align-items-center gap-2">
+                                <div id="penangananStatusIndicator" class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge bg-light text-navy border px-2.5 py-1.5 rounded-pill small">
-                                        Pilihan Aktif: <strong id="penangananActiveLabel" class="text-primary">{{ $activePenanganan === 'MANUVER_CORE' ? 'Manuver Core (Swapping Core)' : 'Jointing Lurus (Kabel & JC)' }}</strong>
+                                        Pilihan Aktif: <strong id="penangananActiveLabel" class="text-primary">
+                                            @if($activePenanganan === 'KEDUA')
+                                                Jointing Lurus &amp; Manuver Core (Keduanya)
+                                            @elseif($activePenanganan === 'MANUVER_CORE')
+                                                Manuver Core (Swapping Core)
+                                            @else
+                                                Jointing Lurus (Kabel &amp; JC)
+                                            @endif
+                                        </strong>
                                     </span>
+                                    <button type="button" 
+                                            class="btn btn-xs rounded-pill px-2.5 py-1 fw-semibold {{ $activePenanganan === 'KEDUA' ? 'btn-primary' : 'btn-outline-primary' }}" 
+                                            id="btnToggleKedua"
+                                            onclick="switchPenangananMode($activeCurrentMode === 'KEDUA' ? 'JOINTING_LURUS' : 'KEDUA', true)"
+                                            title="Pilih dan aktifkan kedua metode sekaligus">
+                                        <i class="bi bi-layers-fill me-1"></i> Pilih Keduanya
+                                    </button>
                                 </div>
                             </div>
 
-                            <div class="row g-3" id="penangananModeSelector">
+                            <div class="row g-2.5 g-md-3" id="penangananModeSelector">
                                 <!-- Option 1: Jointing Lurus -->
                                 <div class="col-12 col-md-6">
-                                    <div class="penanganan-mode-card {{ $activePenanganan === 'JOINTING_LURUS' ? 'active is-selected' : '' }}"
+                                    <div class="penanganan-mode-card {{ $isJointingActive ? 'active is-selected' : '' }}"
                                          id="cardModeJointing"
-                                         onclick="switchPenangananMode('JOINTING_LURUS', true)">
-                                        <div class="d-flex align-items-start gap-3 p-3 rounded-3 h-100 position-relative border penanganan-mode-inner">
-                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                         style="cursor: pointer;"
+                                         onclick="togglePenangananCard('JOINTING_LURUS')">
+                                        <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 h-100 border penanganan-mode-inner">
+                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5" style="width: 42px; height: 42px; font-size: 1.2rem;">
                                                 <i class="bi bi-diagram-3-fill"></i>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                                    <div class="fw-bold text-navy" style="font-size: 0.95rem;">1. Jointing Lurus</div>
-                                                    <span class="badge bg-indigo-subtle text-indigo font-monospace" style="font-size: 0.72rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
+                                            <div class="flex-grow-1 min-w-0">
+                                                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                                                    <div class="fw-bold text-navy text-truncate" style="font-size: 0.95rem;">1. Jointing Lurus</div>
+                                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                        <span class="badge bg-indigo-subtle text-indigo font-monospace" style="font-size: 0.72rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
+                                                        <div class="penanganan-radio-check d-flex align-items-center">
+                                                            <i class="bi {{ $isJointingActive ? 'bi-check-circle-fill text-indigo fs-5' : 'bi-circle text-muted fs-5' }}"></i>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
                                                     Penyambungan kabel lurus eksisting &amp; jumper, mapping tube-core per tray, serta penambahan closure baru.
                                                 </div>
-                                            </div>
-                                            <div class="penanganan-radio-check position-absolute top-0 end-0 m-2">
-                                                <i class="bi {{ $activePenanganan === 'JOINTING_LURUS' ? 'bi-check-circle-fill text-indigo fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -3602,24 +3839,27 @@
 
                                 <!-- Option 2: Manuver Core -->
                                 <div class="col-12 col-md-6">
-                                    <div class="penanganan-mode-card {{ $activePenanganan === 'MANUVER_CORE' ? 'active is-selected' : '' }}"
+                                    <div class="penanganan-mode-card {{ $isManuverActive ? 'active is-selected' : '' }}"
                                          id="cardModeManuver"
-                                         onclick="switchPenangananMode('MANUVER_CORE', true)">
-                                        <div class="d-flex align-items-start gap-3 p-3 rounded-3 h-100 position-relative border penanganan-mode-inner">
-                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 1.25rem;">
+                                         style="cursor: pointer;"
+                                         onclick="togglePenangananCard('MANUVER_CORE')">
+                                        <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 h-100 border penanganan-mode-inner">
+                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5" style="width: 42px; height: 42px; font-size: 1.2rem;">
                                                 <i class="bi bi-shuffle"></i>
                                             </div>
-                                            <div class="flex-grow-1">
-                                                <div class="d-flex align-items-center justify-content-between mb-1">
-                                                    <div class="fw-bold text-navy" style="font-size: 0.95rem;">2. Manuver Core</div>
-                                                    <span class="badge bg-purple-subtle text-purple font-monospace" style="font-size: 0.72rem;">{{ $tiket->manuverCores->count() }} Record</span>
+                                            <div class="flex-grow-1 min-w-0">
+                                                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
+                                                    <div class="fw-bold text-navy text-truncate" style="font-size: 0.95rem;">2. Manuver Core</div>
+                                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                                                        <span class="badge bg-purple-subtle text-purple font-monospace" style="font-size: 0.72rem;">{{ $tiket->manuverCores->count() }} Record</span>
+                                                        <div class="penanganan-radio-check d-flex align-items-center">
+                                                            <i class="bi {{ $isManuverActive ? 'bi-check-circle-fill text-purple fs-5' : 'bi-circle text-muted fs-5' }}"></i>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
                                                     Pengalihan alokasi core serat optik (swapping core / bypass jalur putus) sebelum dan sesudah perbaikan.
                                                 </div>
-                                            </div>
-                                            <div class="penanganan-radio-check position-absolute top-0 end-0 m-2">
-                                                <i class="bi {{ $activePenanganan === 'MANUVER_CORE' ? 'bi-check-circle-fill text-purple fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -3629,7 +3869,7 @@
                     </div>
 
                     <!-- ── SUB-VIEW: JOINTING LURUS (KABEL & JC) ── -->
-                    <div id="penangananSubViewJointing" class="{{ $activePenanganan === 'JOINTING_LURUS' ? '' : 'd-none' }}">
+                    <div id="penangananSubViewJointing" class="{{ $isJointingActive ? '' : 'd-none' }}">
                         <div class="tab-header-banner">
                             <div class="tab-header-left">
                                 <div class="tab-header-icon-box icon-box-indigo">
@@ -3655,47 +3895,47 @@
                                     <!-- JC Card Header -->
                                     <div class="jc-header-pro">
                                         <div class="d-flex align-items-center gap-2 flex-wrap">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <span class="badge bg-navy text-white font-monospace fs-6 px-2.5 py-1.5 shadow-xs">
-                                                    <i class="bi bi-box-seam me-1 text-teal"></i>{{ $jc->nama_closure }}
-                                                </span>
-                                                @if($jc->is_aset_baru)
-                                                    <span class="badge bg-success text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
-                                                        <i class="bi bi-stars me-1"></i>ASET BARU
-                                                    </span>
-                                                @else
-                                                    <span class="badge bg-secondary text-white px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
-                                                        EKSISTING
-                                                    </span>
-                                                @endif
+                                            <div class="jc-title-badge">
+                                                <i class="bi bi-box-seam text-cyan"></i>
+                                                <span>{{ $jc->nama_closure }}</span>
                                             </div>
 
-                                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                                <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
-                                                    <i class="bi bi-tag-fill text-indigo me-1"></i>{{ $jc->jenis_closure }}
+                                            @if($jc->is_aset_baru)
+                                                <span class="jc-meta-chip jc-chip-baru">
+                                                    <i class="bi bi-stars"></i> ASET BARU
                                                 </span>
-                                                <span class="badge bg-light text-navy border px-2 py-1" style="font-size: 0.72rem;">
-                                                    <i class="bi bi-geo-fill text-danger me-1"></i>{{ str_replace('_', ' ', $jc->lokasi_fisik) }}
+                                            @else
+                                                <span class="jc-meta-chip jc-chip-eksisting">
+                                                    <i class="bi bi-layers"></i> EKSISTING
                                                 </span>
-                                                @if($jc->latitude && $jc->longitude)
-                                                <a href="{{ $jc->google_maps_url }}" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 text-decoration-none" style="font-size: 0.72rem;" title="Buka di Google Maps">
-                                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
-                                                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.65rem;"></i>
-                                                </a>
-                                                @endif
-                                            </div>
+                                            @endif
+
+                                            <span class="jc-meta-chip jc-chip-type">
+                                                <i class="bi bi-tag-fill text-indigo"></i> {{ $jc->jenis_closure }}
+                                            </span>
+
+                                            <span class="jc-meta-chip jc-chip-location">
+                                                <i class="bi bi-geo-fill text-orange"></i> {{ str_replace('_', ' ', $jc->lokasi_fisik) }}
+                                            </span>
+
+                                            @if($jc->latitude && $jc->longitude)
+                                            <a href="{{ $jc->google_maps_url }}" target="_blank" class="jc-meta-chip jc-chip-geo" title="Buka di Google Maps">
+                                                <i class="bi bi-geo-alt-fill text-primary"></i> {{ round($jc->latitude, 5) }}, {{ round($jc->longitude, 5) }}
+                                                <i class="bi bi-box-arrow-up-right ms-0.5" style="font-size: 0.6rem;"></i>
+                                            </a>
+                                            @endif
                                         </div>
 
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="text-muted small" style="font-size: 0.75rem;">
-                                                <i class="bi bi-person-fill text-secondary me-1"></i>{{ $jc->creator?->name ?? 'Sistem' }} &bull; {{ $jc->created_at->format('d/m H:i') }}
+                                                <i class="bi bi-person text-secondary me-1"></i>{{ $jc->creator?->name ?? 'Sistem' }} &bull; {{ $jc->created_at->format('d/m H:i') }}
                                             </span>
                                             @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
                                             <form action="{{ route('tiket.joint-closure.destroy', $jc->id) }}" method="POST"
                                                   onsubmit="return confirm('Apakah Anda yakin ingin menghapus data Joint Closure {{ $jc->nama_closure }} beserta semua sambungan core di dalamnya?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger py-0.5 px-2 rounded-pill" title="Hapus Joint Closure">
+                                                <button type="submit" class="jc-btn-delete" title="Hapus Joint Closure">
                                                     <i class="bi bi-trash3"></i>
                                                 </button>
                                             </form>
@@ -3711,16 +3951,16 @@
                                                 <div class="col-12 col-md-5">
                                                     <div class="jc-spec-box">
                                                         <div class="d-flex align-items-center justify-content-between mb-1">
-                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
-                                                                <i class="bi bi-arrow-down-right-circle text-primary me-1"></i>Kabel Eksisting / Asal
+                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.3px;">
+                                                                <i class="bi bi-arrow-down-right-circle text-indigo me-1"></i>Kabel Eksisting / Asal
                                                             </span>
-                                                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                            <span class="jc-tube-badge-asal">
                                                                 {{ $jc->jumlah_tube_asal }} Tube
                                                             </span>
                                                         </div>
                                                         <div class="d-flex align-items-baseline gap-2">
-                                                            <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_asal }}</span>
-                                                            <span class="text-muted small">Core</span>
+                                                            <span class="fw-bold text-navy fs-4">{{ $jc->kapasitas_kabel_asal }}</span>
+                                                            <span class="text-muted small fw-semibold">Core</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3735,16 +3975,16 @@
                                                 <div class="col-12 col-md-5">
                                                     <div class="jc-spec-box">
                                                         <div class="d-flex align-items-center justify-content-between mb-1">
-                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">
-                                                                <i class="bi bi-arrow-up-left-circle text-teal me-1"></i>Kabel Jumper / Distribusi
+                                                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.3px;">
+                                                                <i class="bi bi-arrow-up-left-circle text-success me-1"></i>Kabel Jumper / Distribusi
                                                             </span>
-                                                            <span class="badge bg-teal bg-opacity-10 text-teal border border-teal border-opacity-25 px-2 py-0.5" style="font-size: 0.7rem;">
+                                                            <span class="jc-tube-badge-jumper">
                                                                 {{ $jc->jumlah_tube_jumper }} Tube
                                                             </span>
                                                         </div>
                                                         <div class="d-flex align-items-baseline gap-2">
-                                                            <span class="fw-bold text-navy fs-5">{{ $jc->kapasitas_kabel_jumper }}</span>
-                                                            <span class="text-muted small">Core</span>
+                                                            <span class="fw-bold text-navy fs-4">{{ $jc->kapasitas_kabel_jumper }}</span>
+                                                            <span class="text-muted small fw-semibold">Core</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3763,23 +4003,23 @@
                                                 @php
                                                     $cSummary = $jc->core_summary;
                                                 @endphp
-                                                <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 rounded-pill small fw-semibold">
                                                     <i class="bi bi-check2-circle me-1"></i>{{ $cSummary['terhubung'] }} Terhubung
                                                 </span>
-                                                <span class="badge bg-secondary bg-opacity-15 text-secondary border border-secondary border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2.5 py-1 rounded-pill small fw-semibold">
                                                     <i class="bi bi-dash-circle me-1"></i>{{ $cSummary['spare'] }} Core Sisa / Spare
                                                 </span>
                                                 @if($cSummary['loss'] > 0)
-                                                <span class="badge bg-danger bg-opacity-15 text-danger border border-danger border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1 rounded-pill small fw-semibold">
                                                     <i class="bi bi-x-circle me-1"></i>{{ $cSummary['loss'] }} Loss / Putus
                                                 </span>
                                                 @endif
                                                 @if($cSummary['manuver'] > 0)
-                                                <span class="badge bg-warning bg-opacity-15 text-warning-emphasis border border-warning border-opacity-25 px-2.5 py-1 rounded-pill small fw-semibold">
+                                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2.5 py-1 rounded-pill small fw-semibold">
                                                     <i class="bi bi-shuffle me-1"></i>{{ $cSummary['manuver'] }} Manuver
                                                 </span>
                                                 @endif
-                                                <span class="badge bg-light text-navy border px-2.5 py-1 rounded-pill small">
+                                                <span class="badge bg-light text-navy border px-2.5 py-1 rounded-pill small fw-semibold">
                                                     Total: {{ $cSummary['total'] }} Splice
                                                 </span>
                                             </div>
@@ -3788,6 +4028,10 @@
                                             <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-semibold open-add-core-btn"
                                                     data-jc-id="{{ $jc->id }}"
                                                     data-jc-name="{{ $jc->nama_closure }}"
+                                                    data-jc-cap-asal="{{ $jc->kapasitas_kabel_asal ?? 24 }}"
+                                                    data-jc-cap-jumper="{{ $jc->kapasitas_kabel_jumper ?? 24 }}"
+                                                    data-jc-tube-asal="{{ $jc->jumlah_tube_asal ?? 2 }}"
+                                                    data-jc-tube-jumper="{{ $jc->jumlah_tube_jumper ?? 2 }}"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#addJointClosureCoreModal">
                                                 <i class="bi bi-plus-lg me-1"></i> Tambah Sambungan Core
@@ -3800,42 +4044,54 @@
                                             <div class="table-responsive">
                                                 <table class="table table-sm table-hover align-middle border mb-0 rounded-3 overflow-hidden">
                                                     <thead class="table-light">
-                                                        <tr style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.3px;">
-                                                            <th class="ps-3">Kabel Asal (Tube - Core)</th>
-                                                            <th></th>
-                                                            <th>Kabel Jumper (Tube - Core)</th>
-                                                            <th>Status</th>
-                                                            <th>Loss (dB)</th>
-                                                            <th>Keterangan</th>
+                                                        <tr style="font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.4px; color: #475569;">
+                                                            <th class="ps-3 py-2">Kabel Asal (Tube - Core)</th>
+                                                            <th style="width: 30px;"></th>
+                                                            <th class="py-2">Kabel Jumper (Tube - Core)</th>
+                                                            <th class="py-2">Status</th>
+                                                            <th class="py-2">Loss (dB)</th>
+                                                            <th class="py-2">Keterangan</th>
                                                             @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                                            <th class="text-end pe-3">Aksi</th>
+                                                            <th class="text-end pe-3 py-2">Aksi</th>
                                                             @endif
                                                         </tr>
                                                     </thead>
                                                     <tbody style="font-size: 0.82rem;">
                                                         @foreach($jc->cores as $c)
                                                         <tr>
-                                                            <td class="ps-3 font-monospace fw-semibold text-navy">
-                                                                <i class="bi bi-diagram-2 text-primary me-1"></i>{{ $c->tube_asal }} &bull; {{ $c->core_asal }}
+                                                            <td class="ps-3">
+                                                                <span class="badge bg-indigo-subtle text-indigo font-monospace px-2 py-0.5 me-1" style="font-size: 0.72rem;">
+                                                                    {{ $c->tube_asal }}
+                                                                </span>
+                                                                <span class="font-monospace fw-bold text-navy">
+                                                                    {{ $c->core_asal }}
+                                                                </span>
                                                             </td>
                                                             <td class="text-center text-muted px-1" style="width: 30px;">
                                                                 <i class="bi bi-arrow-right text-indigo"></i>
                                                             </td>
-                                                            <td class="font-monospace fw-semibold text-navy">
+                                                            <td>
                                                                 @if($c->tube_jumper || $c->core_jumper)
-                                                                    <i class="bi bi-diagram-2 text-teal me-1"></i>{{ $c->tube_jumper ?: '-' }} &bull; {{ $c->core_jumper ?: '-' }}
+                                                                    <span class="badge bg-success-subtle text-success font-monospace px-2 py-0.5 me-1" style="font-size: 0.72rem;">
+                                                                        {{ $c->tube_jumper ?: '-' }}
+                                                                    </span>
+                                                                    <span class="font-monospace fw-bold text-navy">
+                                                                        {{ $c->core_jumper ?: '-' }}
+                                                                    </span>
                                                                 @else
-                                                                    <span class="text-muted fst-italic">Tanpa Sambungan (Dikosongkan)</span>
+                                                                    <span class="text-muted fst-italic small">Tanpa Sambungan (Dikosongkan)</span>
                                                                 @endif
                                                             </td>
                                                             <td>
-                                                                <span class="badge {{ $c->status_badge_class }} px-2 py-0.5 rounded-pill" style="font-size: 0.72rem;">
+                                                                <span class="badge {{ $c->status_badge_class }} px-2 py-1 rounded-pill" style="font-size: 0.72rem;">
                                                                     {{ str_replace('_', ' ', $c->status) }}
                                                                 </span>
                                                             </td>
                                                             <td class="font-monospace">
                                                                 @if($c->loss_db !== null)
-                                                                    {{ number_format($c->loss_db, 2) }} dB
+                                                                    <span class="badge bg-light text-navy border font-monospace px-2 py-0.5">
+                                                                        {{ number_format($c->loss_db, 2) }} dB
+                                                                    </span>
                                                                 @else
                                                                     <span class="text-muted">-</span>
                                                                 @endif
@@ -3849,7 +4105,7 @@
                                                                       onsubmit="return confirm('Hapus baris sambungan ini?');" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <button type="submit" class="btn btn-link text-danger p-0 px-1" title="Hapus baris core">
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger p-0 px-1.5 py-0.5 rounded" title="Hapus baris core">
                                                                         <i class="bi bi-trash3"></i>
                                                                     </button>
                                                                 </form>
@@ -3867,6 +4123,10 @@
                                                 <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 open-add-core-btn"
                                                         data-jc-id="{{ $jc->id }}"
                                                         data-jc-name="{{ $jc->nama_closure }}"
+                                                        data-jc-cap-asal="{{ $jc->kapasitas_kabel_asal ?? 24 }}"
+                                                        data-jc-cap-jumper="{{ $jc->kapasitas_kabel_jumper ?? 24 }}"
+                                                        data-jc-tube-asal="{{ $jc->jumlah_tube_asal ?? 2 }}"
+                                                        data-jc-tube-jumper="{{ $jc->jumlah_tube_jumper ?? 2 }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#addJointClosureCoreModal">
                                                     <i class="bi bi-plus-circle me-1"></i> Tambah Baris Core Pertama
@@ -3898,7 +4158,7 @@
                     </div>
 
                     <!-- ── SUB-VIEW: MANUVER CORE ── -->
-                    <div id="penangananSubViewManuver" class="{{ $activePenanganan === 'MANUVER_CORE' ? '' : 'd-none' }}">
+                    <div id="penangananSubViewManuver" class="{{ $isManuverActive ? '' : 'd-none' }} {{ ($isJointingActive && $isManuverActive) ? 'mt-4 pt-3 border-top' : '' }}">
                         <div class="tab-header-banner">
                             <div class="tab-header-left">
                                 <div class="tab-header-icon-box icon-box-violet">
@@ -4851,66 +5111,111 @@
 
                     <!-- Section 3: Visual Interactive Splicing Tray & Dynamic Core Splicing Matrix -->
                     <div class="p-3 bg-light rounded-3 border">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
-                            <h6 class="fw-bold text-navy mb-0 small text-uppercase letter-spacing-1">
-                                <i class="bi bi-bezier2 text-primary me-1"></i> 3. Visual Splicing Tray (Animasi Sambung Kabel)
-                            </h6>
-                            <div class="d-flex gap-1.5">
-                                <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 py-1 text-white shadow-xs" id="btnJcAutoSpliceAll">
-                                    <i class="bi bi-magic me-1"></i> Auto-Splice 1-to-1 Semua Core
-                                </button>
-                                <button type="button" class="btn btn-xs btn-outline-danger rounded-pill px-2.5 py-1" id="btnJcClearAllSplice">
-                                    <i class="bi bi-trash3 me-1"></i> Reset Tray
-                                </button>
-                            </div>
-                        </div>
-                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">
-                            Klik core pada kabel asal dan kabel jumper, lalu tekan tombol <strong>Sambungkan</strong> atau gunakan <strong>Auto-Splice</strong> untuk menyambung otomatis.
-                        </p>
-
                         <!-- Visual Interactive Splicing Tray Component -->
                         <div class="fiber-patcher-box mb-3">
+                            <div class="fiber-patcher-header">
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                    <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                        <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher (Jointing Lurus)
+                                    </span>
+                                </div>
+                                <div class="fiber-preset-actions-scroll">
+                                    <button type="button" class="fiber-preset-btn" id="btnJcStraightPreset" title="Sambungkan 1:1 untuk tube yang sedang aktif">
+                                        <i class="bi bi-arrows-expand me-1 text-info"></i> Sambung (1:1)
+                                    </button>
+                                    <button type="button" class="fiber-preset-btn fiber-preset-btn-warning" id="btnJcSwapPreset" title="Swap sambungan Tube 1 ke Tube 2">
+                                        <i class="bi bi-shuffle me-1 text-warning"></i> Swap T1 &rarr; T2
+                                    </button>
+                                    <button type="button" class="fiber-preset-btn fiber-preset-btn-danger" id="btnJcClearPreset" title="Hapus semua sambungan kabel">
+                                        <i class="bi bi-trash3 me-1 text-danger"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Connection Real-time Indicator -->
+                            <div class="text-center mb-2">
+                                <div class="fiber-conn-status-badge" id="jcLiveWireBadge">
+                                    <span class="fiber-pulse-laser text-info"><i class="bi bi-lightning-charge-fill"></i></span>
+                                    <span id="jcLiveWireText">Klik port core (C1–C12) untuk langsung menyambung 1-ke-1 secara otomatis</span>
+                                </div>
+                            </div>
+
                             <div class="fiber-patcher-grid">
                                 <!-- Left: Kabel Asal / Eksisting -->
                                 <div class="fiber-panel-card">
                                     <div class="fiber-panel-title text-info">
                                         <span><i class="bi bi-arrow-right-circle me-1"></i> Kabel Asal (Input)</span>
-                                        <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="jcAsalActiveBadge">Tube 1 Core 1</span>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <select class="fiber-cap-select" id="jcAsalCapacity">
+                                                <option value="2">2 Core</option>
+                                                <option value="4">4 Core</option>
+                                                <option value="6">6 Core</option>
+                                                <option value="8">8 Core</option>
+                                                <option value="12">12 Core</option>
+                                                <option value="24" selected>24 Core (2T)</option>
+                                                <option value="48">48 Core (4T)</option>
+                                                <option value="96">96 Core (8T)</option>
+                                                <option value="144">144 Core (12T)</option>
+                                                <option value="288">288 Core (24T)</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="fiber-tube-tabs" id="jcAsalTubeTabs">
-                                        <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                    </div>
+                                    <!-- Dynamic Tube Tabs -->
+                                    <div class="fiber-tube-tabs" id="jcAsalTubeTabs"></div>
+                                    <!-- Dynamic Fiber Core Ports List -->
                                     <div class="fiber-core-list" id="jcAsalCoreList"></div>
                                 </div>
 
-                                <!-- Center: Laser Wire Canvas -->
-                                <div class="fiber-canvas-center">
-                                    <svg class="fiber-svg-wire" id="jcSvgCanvas" viewBox="0 0 130 200" preserveAspectRatio="none">
-                                        <path id="jcWirePath" class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#10b981" stroke-width="3.5" fill="none" />
-                                        <circle id="jcStartDot" cx="0" cy="100" r="5" fill="#10b981" />
-                                        <circle id="jcEndDot" cx="130" cy="100" r="5" fill="#10b981" />
+                                <!-- Center: Interactive Multi-Wire SVG Fiber Laser Canvas (Desktop) -->
+                                <div class="fiber-canvas-center d-none d-lg-flex">
+                                    <svg class="fiber-svg-wire" id="jcSvgCanvas" viewBox="0 0 120 260" preserveAspectRatio="none">
+                                        <g id="jcSvgWiresGroup">
+                                            <!-- Dynamic SVG Paths rendered via JavaScript -->
+                                        </g>
                                     </svg>
-                                    <button type="button" class="btn btn-xs btn-success rounded-pill px-3 py-1 shadow-sm mt-2 text-white fw-semibold" id="btnJcConnectSelected">
-                                        <i class="bi bi-plug-fill me-1"></i> Sambungkan
-                                    </button>
+                                    <div class="text-center mt-1">
+                                        <div class="badge bg-dark bg-opacity-75 border border-secondary text-info font-monospace" style="font-size:0.68rem;" id="jcWireCountBadge">
+                                            <i class="bi bi-arrow-left-right me-1"></i> 0 Sambungan
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Right: Kabel Jumper / Distribusi -->
                                 <div class="fiber-panel-card">
                                     <div class="fiber-panel-title text-teal">
                                         <span><i class="bi bi-arrow-left-circle me-1"></i> Kabel Jumper (Output)</span>
-                                        <span class="badge bg-teal bg-opacity-25 text-teal font-monospace" id="jcJumperActiveBadge">Tube 1 Core 1</span>
+                                        <div class="d-flex align-items-center gap-1">
+                                            <select class="fiber-cap-select" id="jcJumperCapacity">
+                                                <option value="2">2 Core</option>
+                                                <option value="4">4 Core</option>
+                                                <option value="6">6 Core</option>
+                                                <option value="8">8 Core</option>
+                                                <option value="12">12 Core</option>
+                                                <option value="24" selected>24 Core (2T)</option>
+                                                <option value="48">48 Core (4T)</option>
+                                                <option value="96">96 Core (8T)</option>
+                                                <option value="144">144 Core (12T)</option>
+                                                <option value="288">288 Core (24T)</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="fiber-tube-tabs" id="jcJumperTubeTabs">
-                                        <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                        <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                    </div>
+                                    <!-- Dynamic Tube Tabs -->
+                                    <div class="fiber-tube-tabs" id="jcJumperTubeTabs"></div>
+                                    <!-- Dynamic Fiber Core Ports List -->
                                     <div class="fiber-core-list" id="jcJumperCoreList"></div>
+                                </div>
+                            </div>
+
+                            <!-- Connected Chips Tray -->
+                            <div class="fiber-chips-tray">
+                                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                    <span class="small fw-bold text-white" style="font-size:0.75rem;">
+                                        <i class="bi bi-link-45deg me-1 text-info"></i> Daftar Sambungan Aktif:
+                                    </span>
+                                    <span class="small text-muted" id="jcTotalCoresText" style="font-size:0.7rem;">0 Core Terhubung</span>
+                                </div>
+                                <div class="fiber-connections-chips" id="jcConnectionsChips">
+                                    <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>
                                 </div>
                             </div>
                         </div>
@@ -4994,44 +5299,66 @@
                     <div class="fiber-patcher-box mb-3">
                         <div class="fiber-patcher-header">
                             <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-teal text-white px-2 py-0.5 rounded-pill font-monospace" style="font-size:0.75rem;">Single Core Splicer</span>
-                                <span class="small text-light" style="font-size:0.75rem;">Pilih port asal dan port jumper di bawah</span>
+                                <span class="badge bg-teal text-white px-2 py-0.5 rounded-pill font-monospace" style="font-size:0.75rem;">
+                                    <i class="bi bi-bezier2 me-1"></i> Single Core Splicer (Jointing Lurus)
+                                </span>
+                                <span class="small text-light" style="font-size:0.75rem;">Klik nomor port core (C1–C12) untuk memilih titik sambungan</span>
                             </div>
                         </div>
                         <div class="fiber-patcher-grid">
                             <!-- Left: Asal -->
                             <div class="fiber-panel-card">
                                 <div class="fiber-panel-title text-info">
-                                    <span>Port Asal</span>
-                                    <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="singleAsalActiveBadge">Tube 1 Core 1</span>
+                                    <span><i class="bi bi-arrow-right-circle me-1"></i> Kabel Asal (Input)</span>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <select class="fiber-cap-select" id="singleAsalCapacity">
+                                            <option value="2">2 Core</option>
+                                            <option value="4">4 Core</option>
+                                            <option value="6">6 Core</option>
+                                            <option value="8">8 Core</option>
+                                            <option value="12">12 Core</option>
+                                            <option value="24" selected>24 Core (2T)</option>
+                                            <option value="48">48 Core (4T)</option>
+                                            <option value="96">96 Core (8T)</option>
+                                            <option value="144">144 Core (12T)</option>
+                                            <option value="288">288 Core (24T)</option>
+                                        </select>
+                                        <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="singleAsalActiveBadge">T1 C1 (Biru)</span>
+                                    </div>
                                 </div>
-                                <div class="fiber-tube-tabs" id="singleAsalTubeTabs">
-                                    <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                </div>
+                                <div class="fiber-tube-tabs" id="singleAsalTubeTabs"></div>
                                 <div class="fiber-core-list" id="singleAsalCoreList"></div>
                             </div>
-                            <!-- Center -->
+                            <!-- Center: Laser Wire -->
                             <div class="fiber-canvas-center">
-                                <svg class="fiber-svg-wire" viewBox="0 0 130 200" preserveAspectRatio="none">
-                                    <path class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#06b6d4" stroke-width="3" fill="none" />
+                                <svg class="fiber-svg-wire" id="singleSvgCanvas" viewBox="0 0 130 220" preserveAspectRatio="none">
+                                    <path class="fiber-wire-path" id="singleSvgWirePath" d="M 0 20 C 65 20, 65 20, 130 20" stroke="#2563eb" stroke-width="3" fill="none" />
                                 </svg>
-                                <i class="bi bi-plug text-info fs-4"></i>
+                                <div class="badge bg-dark bg-opacity-75 border border-secondary text-info font-monospace mt-1" style="font-size:0.68rem;" id="singleWireCountBadge">
+                                    1:1 Straight
+                                </div>
                             </div>
                             <!-- Right: Jumper -->
                             <div class="fiber-panel-card">
                                 <div class="fiber-panel-title text-teal">
-                                    <span>Port Jumper</span>
-                                    <span class="badge bg-teal bg-opacity-25 text-teal font-monospace" id="singleJumperActiveBadge">Tube 1 Core 1</span>
+                                    <span><i class="bi bi-arrow-left-circle me-1"></i> Kabel Jumper (Output)</span>
+                                    <div class="d-flex align-items-center gap-1">
+                                        <select class="fiber-cap-select" id="singleJumperCapacity">
+                                            <option value="2">2 Core</option>
+                                            <option value="4">4 Core</option>
+                                            <option value="6">6 Core</option>
+                                            <option value="8">8 Core</option>
+                                            <option value="12">12 Core</option>
+                                            <option value="24" selected>24 Core (2T)</option>
+                                            <option value="48">48 Core (4T)</option>
+                                            <option value="96">96 Core (8T)</option>
+                                            <option value="144">144 Core (12T)</option>
+                                            <option value="288">288 Core (24T)</option>
+                                        </select>
+                                        <span class="badge bg-teal bg-opacity-25 text-teal font-monospace" id="singleJumperActiveBadge">T1 C1 (Biru)</span>
+                                    </div>
                                 </div>
-                                <div class="fiber-tube-tabs" id="singleJumperTubeTabs">
-                                    <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                    <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                </div>
+                                <div class="fiber-tube-tabs" id="singleJumperTubeTabs"></div>
                                 <div class="fiber-core-list" id="singleJumperCoreList"></div>
                             </div>
                         </div>
@@ -5315,21 +5642,29 @@
 <!-- ── MODAL TAMBAH MANUVER CORE (FASE 5) ── -->
 <div class="modal fade" id="addManuverModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
             <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
                 @csrf
-                <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold text-white">
-                        <i class="bi bi-shuffle text-teal me-2"></i>Tambah Record Manuver Core Fiber Optik
-                    </h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-navy text-white px-3 px-md-4 py-2.5">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1.5 text-teal" style="width: 32px; height: 32px;">
+                            <i class="bi bi-shuffle fs-6 text-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title fw-bold text-white mb-0" style="font-size: 0.95rem;">
+                                Tambah Record Manuver Core
+                            </h6>
+                            <div class="text-white-50" style="font-size: 0.72rem;">Splicing & Bypassing Fiber Optik</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
-                    <div class="row g-3">
+                <div class="modal-body p-3 p-md-4" style="max-height: calc(100dvh - 125px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                    <div class="row g-2.5 g-md-3">
                         <!-- Titik Lokasi & Jenis Lokasi -->
                         <div class="col-12 col-md-7">
-                            <label for="titik_manuver" class="form-label small fw-bold text-navy">
-                                Titik / Nama Lokasi Manuver <span class="text-danger">*</span>
+                            <label for="titik_manuver" class="form-label small fw-bold text-navy mb-1">
+                                Titik / Lokasi Manuver <span class="text-danger">*</span>
                             </label>
                             <input type="text"
                                    class="form-control form-control-sm text-uppercase font-monospace"
@@ -5339,15 +5674,15 @@
                                    required>
                             <!-- Quick suggestions from existing Titik Perbaikan & Joint Closures -->
                             @if($tiket->titikPerbaikans->count() > 0 || $tiket->jointClosures->count() > 0)
-                            <div class="d-flex flex-wrap gap-1 mt-2 align-items-center">
-                                <span class="small text-muted me-1">Pilih titik:</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1.5 align-items-center">
+                                <span class="small text-muted me-1" style="font-size: 0.7rem;">Pilih preset:</span>
                                 @foreach($tiket->titikPerbaikans as $tp)
-                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-2" data-titik="{{ $tp->nama_titik }}">
+                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-2" style="font-size: 0.7rem;" data-titik="{{ $tp->nama_titik }}">
                                     {{ $tp->nama_titik }}
                                 </button>
                                 @endforeach
                                 @foreach($tiket->jointClosures as $jc)
-                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-2" data-titik="{{ $jc->nama_closure }}">
+                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-2" style="font-size: 0.7rem;" data-titik="{{ $jc->nama_closure }}">
                                     {{ $jc->nama_closure }}
                                 </button>
                                 @endforeach
@@ -5356,7 +5691,7 @@
                         </div>
 
                         <div class="col-12 col-md-5">
-                            <label for="lokasi_tipe_manuver" class="form-label small fw-bold text-navy">
+                            <label for="lokasi_tipe_manuver" class="form-label small fw-bold text-navy mb-1">
                                 Tipe Lokasi Aset <span class="text-danger">*</span>
                             </label>
                             <select class="form-select form-select-sm" id="lokasi_tipe_manuver" name="lokasi_tipe" required>
@@ -5368,36 +5703,36 @@
                         </div>
 
                         <!-- Tipe Manuver (Sebelum / Sesudah) -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small fw-bold text-navy d-block">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-bold text-navy d-block mb-1">
                                 Status Alokasi <span class="text-danger">*</span>
                             </label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
-                                <label class="btn btn-outline-secondary btn-sm" for="tipeSebelum">
+                                <label class="btn btn-outline-secondary btn-sm py-1.5" for="tipeSebelum" style="font-size: 0.78rem;">
                                     <i class="bi bi-clock-history me-1"></i> SEBELUM (Awal)
                                 </label>
 
                                 <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
-                                <label class="btn btn-outline-success btn-sm" for="tipeSesudah">
+                                <label class="btn btn-outline-success btn-sm py-1.5" for="tipeSesudah" style="font-size: 0.78rem;">
                                     <i class="bi bi-check2-circle me-1"></i> SESUDAH (Hasil)
                                 </label>
                             </div>
                         </div>
 
                         <!-- Durasi Status Manuver -->
-                        <div class="col-12 col-md-6">
-                            <label class="form-label small fw-bold text-navy d-block">
+                        <div class="col-12 col-sm-6">
+                            <label class="form-label small fw-bold text-navy d-block mb-1">
                                 Sifat Manuver <span class="text-danger">*</span>
                             </label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="status_manuver" id="manuverTemp" value="TEMPORARY" autocomplete="off" checked>
-                                <label class="btn btn-outline-warning btn-sm" for="manuverTemp">
+                                <label class="btn btn-outline-warning btn-sm py-1.5" for="manuverTemp" style="font-size: 0.78rem;">
                                     <i class="bi bi-hourglass-split me-1"></i> SEMENTARA (Darurat)
                                 </label>
 
                                 <input type="radio" class="btn-check" name="status_manuver" id="manuverPerm" value="PERMANENT" autocomplete="off">
-                                <label class="btn btn-outline-primary btn-sm" for="manuverPerm">
+                                <label class="btn btn-outline-primary btn-sm py-1.5" for="manuverPerm" style="font-size: 0.78rem;">
                                     <i class="bi bi-pin-angle-fill me-1"></i> PERMANEN
                                 </label>
                             </div>
@@ -5407,15 +5742,12 @@
                         <div class="col-12">
                             <div class="fiber-patcher-box">
                                 <div class="fiber-patcher-header">
-                                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                                        <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill">
+                                    <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                        <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
                                             <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher
                                         </span>
-                                        <span class="small text-light d-none d-sm-inline" style="font-size:0.75rem;">
-                                            Klik port Asal lalu port Tujuan untuk menyambung. Bisa menyambung <strong>banyak garis/core</strong> sekaligus.
-                                        </span>
                                     </div>
-                                    <div class="d-flex gap-1.5 flex-wrap">
+                                    <div class="fiber-preset-actions-scroll">
                                         <button type="button" class="fiber-preset-btn" id="btnManuverStraightPreset" title="Sambungkan 1:1 untuk tube yang sedang aktif">
                                             <i class="bi bi-arrows-expand me-1 text-info"></i> Sambung (1:1)
                                         </button>
@@ -5429,10 +5761,10 @@
                                 </div>
 
                                 <!-- Connection Real-time Indicator -->
-                                <div class="text-center mb-2.5">
+                                <div class="text-center mb-2">
                                     <div class="fiber-conn-status-badge" id="manuverLiveWireBadge">
                                         <span class="fiber-pulse-laser text-info"><i class="bi bi-lightning-charge-fill"></i></span>
-                                        <span id="manuverLiveWireText">Klik port Asal &rarr; klik port Tujuan untuk menambah sambungan</span>
+                                        <span id="manuverLiveWireText">Tap Port Asal (Kiri) &rarr; Tap Port Tujuan (Kanan)</span>
                                     </div>
                                 </div>
 
@@ -5440,9 +5772,8 @@
                                     <!-- Panel Kiri: Port Asal / Input Cable -->
                                     <div class="fiber-panel-card">
                                         <div class="fiber-panel-title text-info">
-                                            <span><i class="bi bi-box-arrow-in-right me-1"></i> Port Asal (Input)</span>
+                                            <span><i class="bi bi-box-arrow-in-right me-1"></i> ASAL (INPUT)</span>
                                             <div class="d-flex align-items-center gap-1">
-                                                <label class="small text-muted font-monospace" style="font-size:0.68rem;">Kapasitas:</label>
                                                 <select class="fiber-cap-select" id="manuverAsalCapacity">
                                                     <option value="2">2 Core</option>
                                                     <option value="4">4 Core</option>
@@ -5462,16 +5793,16 @@
                                         <div class="fiber-core-list" id="manuverAsalCoreList"></div>
                                     </div>
 
-                                    <!-- Center: Interactive Multi-Wire SVG Fiber Laser Canvas -->
-                                    <div class="fiber-canvas-center">
-                                        <svg class="fiber-svg-wire" id="manuverSvgCanvas" viewBox="0 0 140 260" preserveAspectRatio="none">
+                                    <!-- Center: Interactive Multi-Wire SVG Fiber Laser Canvas (Desktop) -->
+                                    <div class="fiber-canvas-center d-none d-lg-flex">
+                                        <svg class="fiber-svg-wire" id="manuverSvgCanvas" viewBox="0 0 120 260" preserveAspectRatio="none">
                                             <g id="manuverSvgWiresGroup">
                                                 <!-- Dynamic SVG Paths rendered via JavaScript -->
                                             </g>
                                         </svg>
                                         <div class="text-center mt-1">
                                             <div class="badge bg-dark bg-opacity-75 border border-secondary text-info font-monospace" style="font-size:0.68rem;" id="manuverWireCountBadge">
-                                                <i class="bi bi-arrow-left-right me-1"></i> 0 Garis Tersambung
+                                                <i class="bi bi-arrow-left-right me-1"></i> 0 Garis
                                             </div>
                                         </div>
                                     </div>
@@ -5479,9 +5810,8 @@
                                     <!-- Panel Kanan: Port Tujuan / Output Cable -->
                                     <div class="fiber-panel-card">
                                         <div class="fiber-panel-title text-success">
-                                            <span><i class="bi bi-box-arrow-right me-1"></i> Port Tujuan (Output)</span>
+                                            <span><i class="bi bi-box-arrow-right me-1"></i> TUJUAN (OUTPUT)</span>
                                             <div class="d-flex align-items-center gap-1">
-                                                <label class="small text-muted font-monospace" style="font-size:0.68rem;">Kapasitas:</label>
                                                 <select class="fiber-cap-select" id="manuverTujuanCapacity">
                                                     <option value="2">2 Core</option>
                                                     <option value="4">4 Core</option>
@@ -5506,12 +5836,12 @@
                                 <div class="fiber-chips-tray" id="manuverChipsTray">
                                     <div class="d-flex align-items-center justify-content-between mb-1.5">
                                         <span class="small fw-bold text-light" style="font-size:0.75rem;">
-                                            <i class="bi bi-diagram-3 me-1 text-info"></i> Daftar Sambungan Aktif:
+                                            <i class="bi bi-diagram-3 me-1 text-info"></i> Sambungan Terpasang:
                                         </span>
                                         <span class="small text-muted font-monospace" style="font-size:0.68rem;" id="manuverTotalCoresText">0 Core</span>
                                     </div>
                                     <div class="fiber-connections-chips" id="manuverConnectionsChips">
-                                        <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Klik port asal lalu tujuan.</span>
+                                        <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>
                                     </div>
                                 </div>
                             </div>
@@ -5524,19 +5854,19 @@
                         </div>
 
                         <!-- Core Dialihkan & Titik Kembali -->
-                        <div class="col-12 col-md-6">
-                            <label for="core_dialihkan" class="form-label small fw-semibold text-navy">Core Yang Dialihkan (Opsional)</label>
+                        <div class="col-12 col-sm-6">
+                            <label for="core_dialihkan" class="form-label small fw-semibold text-navy mb-1">Core Yang Dialihkan (Opsional)</label>
                             <input type="text" class="form-control form-control-sm font-monospace" id="core_dialihkan" name="core_dialihkan" placeholder="Contoh: Core 4 dialihkan ke Core 12">
                         </div>
 
-                        <div class="col-12 col-md-6">
-                            <label for="titik_kembali" class="form-label small fw-semibold text-navy">Titik Normalisasi / Kembali (Opsional)</label>
+                        <div class="col-12 col-sm-6">
+                            <label for="titik_kembali" class="form-label small fw-semibold text-navy mb-1">Titik Normalisasi / Kembali (Opsional)</label>
                             <input type="text" class="form-control form-control-sm font-monospace" id="titik_kembali" name="titik_kembali" placeholder="Contoh: OTB POP Bandung Rack 2">
                         </div>
 
                         <!-- Status Core Aset -->
-                        <div class="col-12 col-md-6">
-                            <label for="status_core_aset" class="form-label small fw-bold text-navy">Status Core Aset</label>
+                        <div class="col-12 col-sm-6">
+                            <label for="status_core_aset" class="form-label small fw-bold text-navy mb-1">Status Core Aset</label>
                             <select class="form-select form-select-sm" id="status_core_aset" name="status_core_aset">
                                 <option value="OCCUPIED_MANUVER" selected>OCCUPIED MANUVER (Terpakai Jalur Baru)</option>
                                 <option value="BROKEN_LOSS">BROKEN / LOSS (Core Rusak)</option>
@@ -5545,15 +5875,15 @@
                         </div>
 
                         <!-- Keterangan -->
-                        <div class="col-12 col-md-6">
-                            <label for="keterangan_manuver" class="form-label small fw-semibold text-navy">Keterangan / Alasan Manuver</label>
+                        <div class="col-12 col-sm-6">
+                            <label for="keterangan_manuver" class="form-label small fw-semibold text-navy mb-1">Keterangan / Alasan Manuver</label>
                             <input type="text" class="form-control form-control-sm" id="keterangan_manuver" name="keterangan" placeholder="Contoh: Bypassing kabel putus span 14">
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-light btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-cjp-teal btn-sm px-4">
+                <div class="modal-footer bg-light px-3 px-md-4 py-2.5 d-flex justify-content-between align-items-center">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-cjp-teal btn-sm px-4 fw-semibold shadow-xs">
                         <i class="bi bi-save me-1"></i> Simpan Manuver Core
                     </button>
                 </div>
@@ -7681,7 +8011,7 @@ document.addEventListener('DOMContentLoaded', function() {
             path.setAttribute('d', d);
             path.setAttribute('class', 'fiber-wire-path');
             path.setAttribute('stroke', conn.color || '#38bdf8');
-            path.setAttribute('stroke-width', isVisible ? '3.5' : '1.8');
+            path.setAttribute('stroke-width', isVisible ? '2.5' : '1.4');
             path.setAttribute('stroke-opacity', isVisible ? '1' : (isPartial ? '0.45' : '0.2'));
             path.setAttribute('fill', 'none');
             path.setAttribute('data-index', index);
@@ -7695,19 +8025,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dot1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 dot1.setAttribute('cx', '2');
                 dot1.setAttribute('cy', y1);
-                dot1.setAttribute('r', '5');
+                dot1.setAttribute('r', '3.5');
                 dot1.setAttribute('fill', conn.color || '#38bdf8');
                 dot1.setAttribute('stroke', '#ffffff');
-                dot1.setAttribute('stroke-width', '1.5');
+                dot1.setAttribute('stroke-width', '1');
                 manuverSvgWiresGroup.appendChild(dot1);
 
                 const dot2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                dot2.setAttribute('cx', '138');
+                dot2.setAttribute('cx', '118');
                 dot2.setAttribute('cy', y2);
-                dot2.setAttribute('r', '5');
+                dot2.setAttribute('r', '3.5');
                 dot2.setAttribute('fill', conn.color || '#38bdf8');
                 dot2.setAttribute('stroke', '#ffffff');
-                dot2.setAttribute('stroke-width', '1.5');
+                dot2.setAttribute('stroke-width', '1');
                 manuverSvgWiresGroup.appendChild(dot2);
             }
         });
@@ -7988,235 +8318,155 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initManuverPatcher();
 
-    // ── B. JOINT CLOSURE SPLICING TRAY CONTROLLER ──
+    // ── B. JOINT CLOSURE SPLICING TRAY CONTROLLER (MULTI-CORE / MULTI-PORT) ──
+    let jcAsalCap = 24;
+    let jcJumperCap = 24;
     let jcAsalTube = 1;
-    let jcAsalCore = 1;
     let jcJumperTube = 1;
-    let jcJumperCore = 1;
+    let jcSelectedAsalCore = null; // Port clicked on Asal awaiting jumper destination
+    let jcConnections = []; // Array of { id, asalTube, asalCore, asalName, jumperTube, jumperCore, jumperName, color, status, loss }
 
-    const jcAsalCoreList = document.getElementById('jcAsalCoreList');
-    const jcJumperCoreList = document.getElementById('jcJumperCoreList');
+    const jcAsalCapSelect = document.getElementById('jcAsalCapacity');
+    const jcJumperCapSelect = document.getElementById('jcJumperCapacity');
+    const jc_kapasitas_asal = document.getElementById('jc_kapasitas_asal');
+    const jc_kapasitas_jumper = document.getElementById('jc_kapasitas_jumper');
+    const jc_tube_asal = document.getElementById('jc_tube_asal');
+    const jc_tube_jumper = document.getElementById('jc_tube_jumper');
+
     const jcAsalTubeTabs = document.getElementById('jcAsalTubeTabs');
     const jcJumperTubeTabs = document.getElementById('jcJumperTubeTabs');
-    const jcWirePath = document.getElementById('jcWirePath');
-    const jcStartDot = document.getElementById('jcStartDot');
-    const jcEndDot = document.getElementById('jcEndDot');
-    const jcAsalActiveBadge = document.getElementById('jcAsalActiveBadge');
-    const jcJumperActiveBadge = document.getElementById('jcJumperActiveBadge');
-    const btnJcConnectSelected = document.getElementById('btnJcConnectSelected');
-    const btnJcAutoSpliceAll = document.getElementById('btnJcAutoSpliceAll');
-    const btnJcClearAllSplice = document.getElementById('btnJcClearAllSplice');
-
-    function syncJcPatcher() {
-        const asalColor = FIBER_COLORS.find(c => c.num === jcAsalCore) || FIBER_COLORS[0];
-        const jumperColor = FIBER_COLORS.find(c => c.num === jcJumperCore) || FIBER_COLORS[0];
-
-        if (jcAsalActiveBadge) jcAsalActiveBadge.textContent = `T${jcAsalTube} C${jcAsalCore} (${asalColor.name})`;
-        if (jcJumperActiveBadge) jcJumperActiveBadge.textContent = `T${jcJumperTube} C${jcJumperCore} (${jumperColor.name})`;
-
-        updateLaserCurve(jcWirePath, jcStartDot, jcEndDot, jcAsalCore, jcJumperCore, asalColor.hex);
-    }
-
-    function initJcPatcher() {
-        if (!jcAsalCoreList || !jcJumperCoreList) return;
-
-        renderFiberPortButtons(jcAsalCoreList, jcAsalTube, jcAsalCore, (num) => {
-            jcAsalCore = num;
-            syncJcPatcher();
-        });
-
-        renderFiberPortButtons(jcJumperCoreList, jcJumperTube, jcJumperCore, (num) => {
-            jcJumperCore = num;
-            syncJcPatcher();
-        });
-
-        jcAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                jcAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                jcAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncJcPatcher();
-            });
-        });
-
-        jcJumperTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                jcJumperTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                jcJumperTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncJcPatcher();
-            });
-        });
-
-        syncJcPatcher();
-    }
-
-    initJcPatcher();
-
-    // Connect Selected Button Handler
-    btnJcConnectSelected?.addEventListener('click', function() {
-        if (!jcCoreRowsContainer) return;
-
-        const asalColor = FIBER_COLORS.find(c => c.num === jcAsalCore) || FIBER_COLORS[0];
-        const jumperColor = FIBER_COLORS.find(c => c.num === jcJumperCore) || FIBER_COLORS[0];
-
-        const tAsal = `Tube ${jcAsalTube}`;
-        const cAsal = `Core ${jcAsalCore} (${asalColor.name})`;
-        const tJumper = `Tube ${jcJumperTube}`;
-        const cJumper = `Core ${jcJumperCore} (${jumperColor.name})`;
-
-        const firstRow = jcCoreRowsContainer.querySelector('.jc-core-input-row');
-        const firstAsalInput = firstRow?.querySelector('input[name="core_asal[]"]');
-
-        const newRow = document.createElement('div');
-        newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
-        newRow.innerHTML = `
-            <div class="row g-2 align-items-center">
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
-                    <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="${tAsal}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
-                    <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="${cAsal}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
-                    <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="${tJumper}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
-                    <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="${cJumper}">
-                </div>
-                <div class="col-6 col-md-2">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
-                    <select class="form-select form-select-sm" name="core_status[]">
-                        <option value="TERHUBUNG" selected>TERHUBUNG</option>
-                        <option value="SPARE">SPARE (Sisa)</option>
-                        <option value="LOSS_PUTUS">LOSS / PUTUS</option>
-                        <option value="MANUVER">MANUVER</option>
-                    </select>
-                </div>
-                <div class="col-5 col-md-1">
-                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
-                    <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
-                </div>
-                <div class="col-1 text-end pt-3">
-                    <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
-                        <i class="bi bi-x-circle fs-5"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-
-        if (firstRow && firstAsalInput && (!firstAsalInput.value || firstAsalInput.value === 'Core 1')) {
-            firstRow.replaceWith(newRow);
-        } else {
-            jcCoreRowsContainer.appendChild(newRow);
-        }
-
-        if (jcAsalCore < 12) jcAsalCore++;
-        if (jcJumperCore < 12) jcJumperCore++;
-        initJcPatcher();
-    });
-
-    // Auto-Splice All Cores Button Handler
-    btnJcAutoSpliceAll?.addEventListener('click', function() {
-        if (!jcCoreRowsContainer) return;
-        jcCoreRowsContainer.innerHTML = '';
-
-        const capAsal = parseInt(document.getElementById('jc_kapasitas_asal')?.value) || 24;
-        const totalCores = Math.min(24, capAsal);
-
-        for (let i = 1; i <= totalCores; i++) {
-            const tubeNum = Math.ceil(i / 12);
-            const coreIndex = ((i - 1) % 12) + 1;
-            const color = FIBER_COLORS[coreIndex - 1] || FIBER_COLORS[0];
-
-            const row = document.createElement('div');
-            row.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
-            row.innerHTML = `
-                <div class="row g-2 align-items-center">
-                    <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="Tube ${tubeNum}">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="Core ${coreIndex} (${color.name})">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="Tube ${tubeNum}">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="Core ${coreIndex} (${color.name})">
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
-                        <select class="form-select form-select-sm" name="core_status[]">
-                            <option value="TERHUBUNG" selected>TERHUBUNG</option>
-                            <option value="SPARE">SPARE (Sisa)</option>
-                            <option value="LOSS_PUTUS">LOSS / PUTUS</option>
-                            <option value="MANUVER">MANUVER</option>
-                        </select>
-                    </div>
-                    <div class="col-5 col-md-1">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
-                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
-                    </div>
-                    <div class="col-1 text-end pt-3">
-                        <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
-                            <i class="bi bi-x-circle fs-5"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            jcCoreRowsContainer.appendChild(row);
-        }
-
-        if (typeof showCopyToast === 'function') {
-            showCopyToast(`Auto-Splice ${totalCores} core berhasil dibuat!`);
-        }
-    });
-
-    btnJcClearAllSplice?.addEventListener('click', function() {
-        if (!jcCoreRowsContainer) return;
-        jcCoreRowsContainer.innerHTML = '';
-        btnAddCoreRow?.click();
-    });
-
-    // Dynamic Splicing Row Builder in tambahJointClosureModal
-    const btnAddCoreRow = document.getElementById('btnAddCoreRow');
+    const jcAsalCoreList = document.getElementById('jcAsalCoreList');
+    const jcJumperCoreList = document.getElementById('jcJumperCoreList');
+    const jcSvgWiresGroup = document.getElementById('jcSvgWiresGroup');
+    const jcLiveWireText = document.getElementById('jcLiveWireText');
+    const jcWireCountBadge = document.getElementById('jcWireCountBadge');
+    const jcTotalCoresText = document.getElementById('jcTotalCoresText');
+    const jcConnectionsChips = document.getElementById('jcConnectionsChips');
     const jcCoreRowsContainer = document.getElementById('jcCoreRowsContainer');
+    const btnAddCoreRow = document.getElementById('btnAddCoreRow');
 
-    if (btnAddCoreRow && jcCoreRowsContainer) {
-        btnAddCoreRow.addEventListener('click', function() {
-            const rowCount = jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length + 1;
-            const coreIndex = ((rowCount - 1) % 12) + 1;
-            const color = FIBER_COLORS[coreIndex - 1] || FIBER_COLORS[0];
-            const tubeNum = Math.ceil(rowCount / 12);
+    function syncJcMultiWires() {
+        if (jcSvgWiresGroup) {
+            jcSvgWiresGroup.innerHTML = '';
+            const asalConfig = getCapacityConfig(jcAsalCap);
+            const jumperConfig = getCapacityConfig(jcJumperCap);
+            const maxAsalCores = asalConfig.coresPerTube;
+            const maxJumperCores = jumperConfig.coresPerTube;
 
+            jcConnections.forEach((conn, index) => {
+                const isVisible = (conn.asalTube === jcAsalTube && conn.jumperTube === jcJumperTube);
+                const isPartial = (conn.asalTube === jcAsalTube || conn.jumperTube === jcJumperTube);
+
+                const y1 = maxAsalCores > 1 
+                    ? Math.round(20 + ((conn.asalCore - 1) / (maxAsalCores - 1)) * 220) 
+                    : 130;
+                const y2 = maxJumperCores > 1 
+                    ? Math.round(20 + ((conn.jumperCore - 1) / (maxJumperCores - 1)) * 220) 
+                    : 130;
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const d = `M 0 ${y1} C 70 ${y1}, 70 ${y2}, 140 ${y2}`;
+                path.setAttribute('d', d);
+                path.setAttribute('class', 'fiber-wire-path');
+                path.setAttribute('stroke', conn.color || '#10b981');
+                path.setAttribute('stroke-width', isVisible ? '2.5' : '1.4');
+                path.setAttribute('stroke-opacity', isVisible ? '1' : (isPartial ? '0.45' : '0.2'));
+                path.setAttribute('fill', 'none');
+                path.setAttribute('data-index', index);
+
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = `T${conn.asalTube} C${conn.asalCore} (${conn.asalName}) ➔ T${conn.jumperTube} C${conn.jumperCore} (${conn.jumperName})`;
+                path.appendChild(title);
+                jcSvgWiresGroup.appendChild(path);
+
+                if (isVisible) {
+                    const dot1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    dot1.setAttribute('cx', '2');
+                    dot1.setAttribute('cy', y1);
+                    dot1.setAttribute('r', '3.5');
+                    dot1.setAttribute('fill', conn.color || '#10b981');
+                    dot1.setAttribute('stroke', '#ffffff');
+                    dot1.setAttribute('stroke-width', '1');
+                    jcSvgWiresGroup.appendChild(dot1);
+
+                    const dot2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    dot2.setAttribute('cx', '118');
+                    dot2.setAttribute('cy', y2);
+                    dot2.setAttribute('r', '3.5');
+                    dot2.setAttribute('fill', conn.color || '#10b981');
+                    dot2.setAttribute('stroke', '#ffffff');
+                    dot2.setAttribute('stroke-width', '1');
+                    jcSvgWiresGroup.appendChild(dot2);
+                }
+            });
+        }
+
+        // Update chips list
+        if (jcConnectionsChips) {
+            jcConnectionsChips.innerHTML = '';
+            if (jcConnections.length === 0) {
+                jcConnectionsChips.innerHTML = '<span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>';
+            } else {
+                jcConnections.forEach((conn, idx) => {
+                    const chip = document.createElement('div');
+                    chip.className = 'fiber-conn-chip';
+                    chip.innerHTML = `
+                        <span class="fiber-dot-sm" style="background-color: ${conn.color};"></span>
+                        <span>T${conn.asalTube}C${conn.asalCore} <span class="text-muted">(${conn.asalName})</span> &rarr; T${conn.jumperTube}C${conn.jumperCore} <span class="text-muted">(${conn.jumperName})</span></span>
+                        <button type="button" class="fiber-conn-chip-del" data-index="${idx}" title="Putuskan sambungan ini">&times;</button>
+                    `;
+                    chip.querySelector('.fiber-conn-chip-del').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeJcConnection(idx);
+                    });
+                    jcConnectionsChips.appendChild(chip);
+                });
+            }
+        }
+
+        // Update counts & status
+        const total = jcConnections.length;
+        if (jcWireCountBadge) {
+            jcWireCountBadge.innerHTML = `<i class="bi bi-bezier2 me-1"></i> ${total} Sambungan Aktif`;
+        }
+        if (jcTotalCoresText) {
+            jcTotalCoresText.textContent = `${total} Core Terhubung`;
+        }
+
+        // Synchronize table input rows
+        syncJcTableRows();
+
+        // Re-render ports
+        renderJcAsalPorts();
+        renderJcJumperPorts();
+    }
+
+    function syncJcTableRows() {
+        if (!jcCoreRowsContainer) return;
+        jcCoreRowsContainer.innerHTML = '';
+
+        if (jcConnections.length === 0) {
+            // Default template row
             const newRow = document.createElement('div');
             newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
             newRow.innerHTML = `
                 <div class="row g-2 align-items-center">
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube ${tubeNum}">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core ${coreIndex}" value="Core ${coreIndex} (${color.name})">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core 1" value="Core 1">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube ${tubeNum}">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core ${coreIndex}" value="Core ${coreIndex} (${color.name})">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core 1" value="Core 1">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
@@ -8229,7 +8479,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="col-5 col-md-1">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
-                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
+                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02" value="0.02">
                     </div>
                     <div class="col-1 text-end pt-3">
                         <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
@@ -8239,29 +8489,353 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             jcCoreRowsContainer.appendChild(newRow);
-        });
+        } else {
+            jcConnections.forEach((conn, idx) => {
+                const tAsal = `Tube ${conn.asalTube}`;
+                const cAsal = `Core ${conn.asalCore} (${conn.asalName})`;
+                const tJumper = `Tube ${conn.jumperTube}`;
+                const cJumper = `Core ${conn.jumperCore} (${conn.jumperName})`;
+                const status = conn.status || 'TERHUBUNG';
+                const loss = conn.loss !== undefined ? conn.loss : '0.02';
 
-        jcCoreRowsContainer.addEventListener('click', function(e) {
-            const removeBtn = e.target.closest('.btn-remove-core-row');
-            if (removeBtn) {
-                const row = removeBtn.closest('.jc-core-input-row');
-                if (row) {
-                    if (jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length > 1) {
-                        row.remove();
-                    } else {
-                        row.querySelectorAll('input').forEach(i => i.value = '');
-                    }
-                }
-            }
-        });
+                const newRow = document.createElement('div');
+                newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+                newRow.innerHTML = `
+                    <div class="row g-2 align-items-center">
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="${tAsal}">
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="${cAsal}">
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="${tJumper}">
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                            <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="${cJumper}">
+                        </div>
+                        <div class="col-6 col-md-2">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                            <select class="form-select form-select-sm" name="core_status[]">
+                                <option value="TERHUBUNG" ${status === 'TERHUBUNG' ? 'selected' : ''}>TERHUBUNG</option>
+                                <option value="SPARE" ${status === 'SPARE' ? 'selected' : ''}>SPARE (Sisa)</option>
+                                <option value="LOSS_PUTUS" ${status === 'LOSS_PUTUS' ? 'selected' : ''}>LOSS / PUTUS</option>
+                                <option value="MANUVER" ${status === 'MANUVER' ? 'selected' : ''}>MANUVER</option>
+                            </select>
+                        </div>
+                        <div class="col-5 col-md-1">
+                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                            <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="${loss}">
+                        </div>
+                        <div class="col-1 text-end pt-3">
+                            <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" data-index="${idx}" title="Hapus baris ini">
+                                <i class="bi bi-x-circle fs-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                jcCoreRowsContainer.appendChild(newRow);
+            });
+        }
     }
 
+    function removeJcConnection(index) {
+        jcConnections.splice(index, 1);
+        syncJcMultiWires();
+    }
+
+    function toggleStraightConnection(coreNum, colorObj) {
+        const existingIdx = jcConnections.findIndex(
+            c => c.asalTube === jcAsalTube && c.asalCore === coreNum && c.jumperTube === jcJumperTube && c.jumperCore === coreNum
+        );
+
+        if (existingIdx >= 0) {
+            jcConnections.splice(existingIdx, 1);
+            if (jcLiveWireText) {
+                jcLiveWireText.innerHTML = `Sambungan Lurus diputuskan: <strong style="color:${colorObj.hex};">Tube ${jcAsalTube} Core ${coreNum} (${colorObj.name})</strong>`;
+            }
+        } else {
+            // Add straight 1:1 connection
+            const newConn = {
+                id: Date.now() + Math.random(),
+                asalTube: jcAsalTube,
+                asalCore: coreNum,
+                asalName: colorObj.name,
+                jumperTube: jcJumperTube,
+                jumperCore: coreNum,
+                jumperName: colorObj.name,
+                color: colorObj.hex,
+                status: 'TERHUBUNG',
+                loss: 0.02
+            };
+            jcConnections.push(newConn);
+            if (jcLiveWireText) {
+                jcLiveWireText.innerHTML = `Tersambung Lurus (1:1): <strong style="color:${colorObj.hex};">Tube ${jcAsalTube} Core ${coreNum} (${colorObj.name})</strong> &rarr; <strong style="color:${colorObj.hex};">Tube ${jcJumperTube} Core ${coreNum} (${colorObj.name})</strong>`;
+            }
+        }
+        syncJcMultiWires();
+    }
+
+    function renderJcAsalPorts() {
+        if (!jcAsalCoreList) return;
+        const asalConfig = getCapacityConfig(jcAsalCap);
+        const connectedCoresInActiveTube = jcConnections
+            .filter(c => c.asalTube === jcAsalTube && c.jumperTube === jcJumperTube && c.asalCore === c.jumperCore)
+            .map(c => c.asalCore);
+
+        renderFiberPortButtons(
+            jcAsalCoreList,
+            jcAsalTube,
+            asalConfig.coresPerTube,
+            null,
+            connectedCoresInActiveTube,
+            (coreNum, colorObj) => {
+                toggleStraightConnection(coreNum, colorObj);
+            }
+        );
+    }
+
+    function renderJcJumperPorts() {
+        if (!jcJumperCoreList) return;
+        const jumperConfig = getCapacityConfig(jcJumperCap);
+        const connectedCoresInActiveTube = jcConnections
+            .filter(c => c.asalTube === jcAsalTube && c.jumperTube === jcJumperTube && c.asalCore === c.jumperCore)
+            .map(c => c.jumperCore);
+
+        renderFiberPortButtons(
+            jcJumperCoreList,
+            jcJumperTube,
+            jumperConfig.coresPerTube,
+            null,
+            connectedCoresInActiveTube,
+            (coreNum, colorObj) => {
+                toggleStraightConnection(coreNum, colorObj);
+            }
+        );
+    }
+
+    function initJcPatcher() {
+        if (!jcAsalCoreList || !jcJumperCoreList) return;
+
+        // Capacity Change Listeners
+        function updateAsalCapacity(val) {
+            jcAsalCap = parseInt(val) || 24;
+            if (jcAsalCapSelect && jcAsalCapSelect.value != jcAsalCap) jcAsalCapSelect.value = jcAsalCap;
+            if (jc_kapasitas_asal && jc_kapasitas_asal.value != jcAsalCap) jc_kapasitas_asal.value = jcAsalCap;
+            
+            jcAsalTube = 1;
+            jcSelectedAsalCore = null;
+            const config = getCapacityConfig(jcAsalCap);
+            if (jc_tube_asal) jc_tube_asal.value = config.tubes;
+
+            renderTubesForPatcher(jcAsalTubeTabs, config, jcAsalTube, (t) => {
+                jcAsalTube = t;
+                renderJcAsalPorts();
+                syncJcMultiWires();
+            });
+            renderJcAsalPorts();
+            syncJcMultiWires();
+        }
+
+        function updateJumperCapacity(val) {
+            jcJumperCap = parseInt(val) || 24;
+            if (jcJumperCapSelect && jcJumperCapSelect.value != jcJumperCap) jcJumperCapSelect.value = jcJumperCap;
+            if (jc_kapasitas_jumper && jc_kapasitas_jumper.value != jcJumperCap) jc_kapasitas_jumper.value = jcJumperCap;
+            
+            jcJumperTube = 1;
+            const config = getCapacityConfig(jcJumperCap);
+            if (jc_tube_jumper) jc_tube_jumper.value = config.tubes;
+
+            renderTubesForPatcher(jcJumperTubeTabs, config, jcJumperTube, (t) => {
+                jcJumperTube = t;
+                renderJcJumperPorts();
+                syncJcMultiWires();
+            });
+            renderJcJumperPorts();
+            syncJcMultiWires();
+        }
+
+        jcAsalCapSelect?.addEventListener('change', function() { updateAsalCapacity(this.value); });
+        jc_kapasitas_asal?.addEventListener('change', function() { updateAsalCapacity(this.value); });
+
+        jcJumperCapSelect?.addEventListener('change', function() { updateJumperCapacity(this.value); });
+        jc_kapasitas_jumper?.addEventListener('change', function() { updateJumperCapacity(this.value); });
+
+        // Initialize default tube tabs
+        const asalConfig = getCapacityConfig(jcAsalCap);
+        renderTubesForPatcher(jcAsalTubeTabs, asalConfig, jcAsalTube, (t) => {
+            jcAsalTube = t;
+            renderJcAsalPorts();
+            syncJcMultiWires();
+        });
+
+        const jumperConfig = getCapacityConfig(jcJumperCap);
+        renderTubesForPatcher(jcJumperTubeTabs, jumperConfig, jcJumperTube, (t) => {
+            jcJumperTube = t;
+            renderJcJumperPorts();
+            syncJcMultiWires();
+        });
+
+        // Presets: Sambung Lurus 1:1 on active tube
+        const applyStraightPreset = function() {
+            const count = Math.min(asalConfig.coresPerTube, jumperConfig.coresPerTube);
+            for (let i = 1; i <= count; i++) {
+                const color = FIBER_COLORS[i - 1] || FIBER_COLORS[0];
+                const existingIdx = jcConnections.findIndex(c => c.asalTube === jcAsalTube && c.asalCore === i);
+                const item = {
+                    id: Date.now() + i,
+                    asalTube: jcAsalTube,
+                    asalCore: i,
+                    asalName: color.name,
+                    jumperTube: jcJumperTube,
+                    jumperCore: i,
+                    jumperName: color.name,
+                    color: color.hex,
+                    status: 'TERHUBUNG',
+                    loss: 0.02
+                };
+                if (existingIdx >= 0) {
+                    jcConnections[existingIdx] = item;
+                } else {
+                    jcConnections.push(item);
+                }
+            }
+            jcSelectedAsalCore = null;
+            if (jcLiveWireText) {
+                jcLiveWireText.innerHTML = `Auto-Splice 1:1 (Tube ${jcAsalTube} &rarr; Tube ${jcJumperTube}) berhasil disambungkan!`;
+            }
+            syncJcMultiWires();
+        };
+
+        document.getElementById('btnJcStraightPreset')?.addEventListener('click', applyStraightPreset);
+        document.getElementById('btnJcAutoSpliceAll')?.addEventListener('click', applyStraightPreset);
+
+        // Presets: Swap Tube 1 -> Tube 2
+        document.getElementById('btnJcSwapPreset')?.addEventListener('click', function() {
+            jcAsalTube = 1;
+            jcJumperTube = Math.min(2, jumperConfig.tubes);
+            const count = Math.min(asalConfig.coresPerTube, jumperConfig.coresPerTube);
+            for (let i = 1; i <= count; i++) {
+                const color = FIBER_COLORS[i - 1] || FIBER_COLORS[0];
+                const existingIdx = jcConnections.findIndex(c => c.asalTube === 1 && c.asalCore === i);
+                const item = {
+                    id: Date.now() + i,
+                    asalTube: 1,
+                    asalCore: i,
+                    asalName: color.name,
+                    jumperTube: jcJumperTube,
+                    jumperCore: i,
+                    jumperName: color.name,
+                    color: color.hex,
+                    status: 'TERHUBUNG',
+                    loss: 0.02
+                };
+                if (existingIdx >= 0) {
+                    jcConnections[existingIdx] = item;
+                } else {
+                    jcConnections.push(item);
+                }
+            }
+            renderTubesForPatcher(jcAsalTubeTabs, asalConfig, 1, (t) => { jcAsalTube = t; renderJcAsalPorts(); syncJcMultiWires(); });
+            renderTubesForPatcher(jcJumperTubeTabs, jumperConfig, jcJumperTube, (t) => { jcJumperTube = t; renderJcJumperPorts(); syncJcMultiWires(); });
+            jcSelectedAsalCore = null;
+            if (jcLiveWireText) {
+                jcLiveWireText.innerHTML = `Swap Tube 1 &rarr; Tube ${jcJumperTube} berhasil diterapkan!`;
+            }
+            syncJcMultiWires();
+        });
+
+        // Presets: Clear All
+        const clearAllSplices = function() {
+            jcConnections = [];
+            jcSelectedAsalCore = null;
+            if (jcLiveWireText) {
+                jcLiveWireText.innerHTML = `Klik port Asal &rarr; klik port Jumper untuk menambah sambungan`;
+            }
+            syncJcMultiWires();
+        };
+
+        document.getElementById('btnJcClearPreset')?.addEventListener('click', clearAllSplices);
+        document.getElementById('btnJcClearAllSplice')?.addEventListener('click', clearAllSplices);
+
+        // Manual Row Add / Remove Listeners
+        if (btnAddCoreRow) {
+            btnAddCoreRow.addEventListener('click', function() {
+                const nextNum = jcConnections.length + 1;
+                const cIndex = ((nextNum - 1) % 12) + 1;
+                const color = FIBER_COLORS[cIndex - 1] || FIBER_COLORS[0];
+                const tNum = Math.ceil(nextNum / 12);
+
+                jcConnections.push({
+                    id: Date.now(),
+                    asalTube: tNum,
+                    asalCore: cIndex,
+                    asalName: color.name,
+                    jumperTube: tNum,
+                    jumperCore: cIndex,
+                    jumperName: color.name,
+                    color: color.hex,
+                    status: 'TERHUBUNG',
+                    loss: 0.02
+                });
+                syncJcMultiWires();
+            });
+        }
+
+        if (jcCoreRowsContainer) {
+            jcCoreRowsContainer.addEventListener('click', function(e) {
+                const removeBtn = e.target.closest('.btn-remove-core-row');
+                if (removeBtn) {
+                    const idx = removeBtn.getAttribute('data-index');
+                    if (idx !== null && idx !== undefined && jcConnections[idx]) {
+                        removeJcConnection(parseInt(idx));
+                    } else {
+                        const row = removeBtn.closest('.jc-core-input-row');
+                        if (row) {
+                            if (jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length > 1) {
+                                row.remove();
+                            } else {
+                                row.querySelectorAll('input').forEach(i => i.value = '');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial default connection (T1 C1 -> T1 C1) so form starts with a ready pair
+        jcConnections.push({
+            id: Date.now(),
+            asalTube: 1,
+            asalCore: 1,
+            asalName: 'Biru',
+            jumperTube: 1,
+            jumperCore: 1,
+            jumperName: 'Biru',
+            color: FIBER_COLORS[0].hex,
+            status: 'TERHUBUNG',
+            loss: 0.02
+        });
+
+        syncJcMultiWires();
+    }
+
+    initJcPatcher();
+
     // ── C. SINGLE CORE SPLICER CONTROLLER ──
+    let singleAsalCap = 24;
+    let singleJumperCap = 24;
     let singleAsalTube = 1;
     let singleAsalCore = 1;
     let singleJumperTube = 1;
     let singleJumperCore = 1;
 
+    const singleAsalCapSelect = document.getElementById('singleAsalCapacity');
+    const singleJumperCapSelect = document.getElementById('singleJumperCapacity');
     const singleAsalCoreList = document.getElementById('singleAsalCoreList');
     const singleJumperCoreList = document.getElementById('singleJumperCoreList');
     const singleAsalTubeTabs = document.getElementById('singleAsalTubeTabs');
@@ -8270,6 +8844,56 @@ document.addEventListener('DOMContentLoaded', function() {
     const single_core_asal = document.getElementById('single_core_asal');
     const single_tube_jumper = document.getElementById('single_tube_jumper');
     const single_core_jumper = document.getElementById('single_core_jumper');
+    const singleSvgWirePath = document.getElementById('singleSvgWirePath');
+
+    function updateSingleLaserWire() {
+        if (!singleSvgWirePath) return;
+        const asalConfig = getCapacityConfig(singleAsalCap);
+        const jumperConfig = getCapacityConfig(singleJumperCap);
+        const maxAsal = asalConfig.coresPerTube || 12;
+        const maxJumper = jumperConfig.coresPerTube || 12;
+
+        const y1 = maxAsal > 1 ? Math.round(15 + ((singleAsalCore - 1) / (maxAsal - 1)) * 190) : 110;
+        const y2 = maxJumper > 1 ? Math.round(15 + ((singleJumperCore - 1) / (maxJumper - 1)) * 190) : 110;
+
+        const color = FIBER_COLORS[singleAsalCore - 1] ? FIBER_COLORS[singleAsalCore - 1].hex : '#38bdf8';
+        singleSvgWirePath.setAttribute('d', `M 0 ${y1} C 65 ${y1}, 65 ${y2}, 130 ${y2}`);
+        singleSvgWirePath.setAttribute('stroke', color);
+    }
+
+    function renderSingleAsalPorts() {
+        if (!singleAsalCoreList) return;
+        const asalConfig = getCapacityConfig(singleAsalCap);
+        renderFiberPortButtons(
+            singleAsalCoreList,
+            singleAsalTube,
+            asalConfig.coresPerTube,
+            singleAsalCore,
+            null,
+            (coreNum, colorObj) => {
+                singleAsalCore = coreNum;
+                // Di jointing lurus 1:1, memilih core pada asal otomatis menyelaraskan core jumper
+                singleJumperCore = coreNum;
+                syncSingleCorePatcher();
+            }
+        );
+    }
+
+    function renderSingleJumperPorts() {
+        if (!singleJumperCoreList) return;
+        const jumperConfig = getCapacityConfig(singleJumperCap);
+        renderFiberPortButtons(
+            singleJumperCoreList,
+            singleJumperTube,
+            jumperConfig.coresPerTube,
+            singleJumperCore,
+            null,
+            (coreNum, colorObj) => {
+                singleJumperCore = coreNum;
+                syncSingleCorePatcher();
+            }
+        );
+    }
 
     function syncSingleCorePatcher() {
         const asalColor = FIBER_COLORS.find(c => c.num === singleAsalCore) || FIBER_COLORS[0];
@@ -8282,42 +8906,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const singleAsalActiveBadge = document.getElementById('singleAsalActiveBadge');
         const singleJumperActiveBadge = document.getElementById('singleJumperActiveBadge');
-        if (singleAsalActiveBadge) singleAsalActiveBadge.textContent = `T${singleAsalTube} C${singleAsalCore} (${asalColor.name})`;
-        if (singleJumperActiveBadge) singleJumperActiveBadge.textContent = `T${singleJumperTube} C${singleJumperCore} (${jumperColor.name})`;
+        if (singleAsalActiveBadge) {
+            singleAsalActiveBadge.textContent = `T${singleAsalTube} C${singleAsalCore} (${asalColor.name})`;
+            singleAsalActiveBadge.style.backgroundColor = `${asalColor.hex}25`;
+            singleAsalActiveBadge.style.color = asalColor.border || '#38bdf8';
+        }
+        if (singleJumperActiveBadge) {
+            singleJumperActiveBadge.textContent = `T${singleJumperTube} C${singleJumperCore} (${jumperColor.name})`;
+            singleJumperActiveBadge.style.backgroundColor = `${jumperColor.hex}25`;
+            singleJumperActiveBadge.style.color = jumperColor.border || '#38bdf8';
+        }
+
+        renderSingleAsalPorts();
+        renderSingleJumperPorts();
+        updateSingleLaserWire();
+    }
+
+    function updateSingleAsalCapacity(val) {
+        singleAsalCap = parseInt(val) || 24;
+        if (singleAsalCapSelect && singleAsalCapSelect.value != singleAsalCap) singleAsalCapSelect.value = singleAsalCap;
+        singleAsalTube = 1;
+        const config = getCapacityConfig(singleAsalCap);
+        if (singleAsalCore > config.coresPerTube) singleAsalCore = 1;
+
+        renderTubesForPatcher(singleAsalTubeTabs, config, singleAsalTube, (t) => {
+            singleAsalTube = t;
+            syncSingleCorePatcher();
+        });
+        syncSingleCorePatcher();
+    }
+
+    function updateSingleJumperCapacity(val) {
+        singleJumperCap = parseInt(val) || 24;
+        if (singleJumperCapSelect && singleJumperCapSelect.value != singleJumperCap) singleJumperCapSelect.value = singleJumperCap;
+        singleJumperTube = 1;
+        const config = getCapacityConfig(singleJumperCap);
+        if (singleJumperCore > config.coresPerTube) singleJumperCore = 1;
+
+        renderTubesForPatcher(singleJumperTubeTabs, config, singleJumperTube, (t) => {
+            singleJumperTube = t;
+            syncSingleCorePatcher();
+        });
+        syncSingleCorePatcher();
     }
 
     function initSingleCorePatcher() {
         if (!singleAsalCoreList || !singleJumperCoreList) return;
 
-        renderFiberPortButtons(singleAsalCoreList, singleAsalTube, singleAsalCore, (num) => {
-            singleAsalCore = num;
-            syncSingleCorePatcher();
-        });
+        singleAsalCapSelect?.addEventListener('change', function() { updateSingleAsalCapacity(this.value); });
+        singleJumperCapSelect?.addEventListener('change', function() { updateSingleJumperCapacity(this.value); });
 
-        renderFiberPortButtons(singleJumperCoreList, singleJumperTube, singleJumperCore, (num) => {
-            singleJumperCore = num;
-            syncSingleCorePatcher();
-        });
-
-        singleAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                singleAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                singleAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncSingleCorePatcher();
-            });
-        });
-
-        singleJumperTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                singleJumperTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                singleJumperTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncSingleCorePatcher();
-            });
-        });
-
-        syncSingleCorePatcher();
+        updateSingleAsalCapacity(singleAsalCap);
+        updateSingleJumperCapacity(singleJumperCap);
     }
 
     initSingleCorePatcher();
@@ -8329,15 +8969,32 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             const jcId = this.getAttribute('data-jc-id');
             const jcName = this.getAttribute('data-jc-name');
+            const capAsal = this.getAttribute('data-jc-cap-asal') || 24;
+            const capJumper = this.getAttribute('data-jc-cap-jumper') || 24;
+
             if (formAddSingleCore) {
                 formAddSingleCore.action = `/tiket/joint-closure/${jcId}/add-core`;
             }
             if (modalCoreJcTitle) {
                 modalCoreJcTitle.textContent = jcName || 'JC';
             }
-            initSingleCorePatcher();
+
+            singleAsalCap = parseInt(capAsal) || 24;
+            singleJumperCap = parseInt(capJumper) || 24;
+            if (singleAsalCapSelect) singleAsalCapSelect.value = singleAsalCap;
+            if (singleJumperCapSelect) singleJumperCapSelect.value = singleJumperCap;
+            updateSingleAsalCapacity(singleAsalCap);
+            updateSingleJumperCapacity(singleJumperCap);
         });
     });
+
+    const tambahJointClosureModal = document.getElementById('tambahJointClosureModal');
+    if (tambahJointClosureModal) {
+        tambahJointClosureModal.addEventListener('shown.bs.modal', function() {
+            if (jc_kapasitas_asal) jcAsalCapSelect.value = jc_kapasitas_asal.value;
+            if (jc_kapasitas_jumper) jcJumperCapSelect.value = jc_kapasitas_jumper.value;
+        });
+    }
 
     // Map Picker & GPS for Joint Closure Modal
     const btnGetLocationJc = document.getElementById('btnGetLocationJc');
@@ -8420,42 +9077,92 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ── 12.5. SWITCH METODE PENANGANAN (JOINTING LURUS / MANUVER CORE) ──
+    // ── 12.5. SWITCH & TOGGLE METODE PENANGANAN (JOINTING / MANUVER / KEDUANYA) ──
+    window.activeCurrentMode = @json($activePenanganan);
+
+    window.togglePenangananCard = function(clickedCard) {
+        if (window.activeCurrentMode === 'KEDUA' || window.activeCurrentMode === 'KOMBINASI') {
+            if (clickedCard === 'JOINTING_LURUS') {
+                window.switchPenangananMode('MANUVER_CORE', true);
+            } else {
+                window.switchPenangananMode('JOINTING_LURUS', true);
+            }
+        } else if (window.activeCurrentMode === 'JOINTING_LURUS') {
+            if (clickedCard === 'MANUVER_CORE') {
+                window.switchPenangananMode('KEDUA', true);
+            } else {
+                window.switchPenangananMode('JOINTING_LURUS', true);
+            }
+        } else if (window.activeCurrentMode === 'MANUVER_CORE') {
+            if (clickedCard === 'JOINTING_LURUS') {
+                window.switchPenangananMode('KEDUA', true);
+            } else {
+                window.switchPenangananMode('MANUVER_CORE', true);
+            }
+        } else {
+            window.switchPenangananMode(clickedCard, true);
+        }
+    };
+
     window.switchPenangananMode = function(mode, saveToServer = true) {
+        window.activeCurrentMode = mode;
         const cardJointing = document.getElementById('cardModeJointing');
         const cardManuver = document.getElementById('cardModeManuver');
         const subJointing = document.getElementById('penangananSubViewJointing');
         const subManuver = document.getElementById('penangananSubViewManuver');
         const activeLabel = document.getElementById('penangananActiveLabel');
+        const btnToggleKedua = document.getElementById('btnToggleKedua');
 
         if (!cardJointing || !cardManuver || !subJointing || !subManuver) return;
 
-        if (mode === 'JOINTING_LURUS') {
+        const jointingCheck = cardJointing.querySelector('.penanganan-radio-check i');
+        const manuverCheck = cardManuver.querySelector('.penanganan-radio-check i');
+
+        if (mode === 'KEDUA' || mode === 'KOMBINASI' || mode === 'SEMUA') {
+            cardJointing.classList.add('is-selected', 'active');
+            cardManuver.classList.add('is-selected', 'active');
+            if (jointingCheck) jointingCheck.className = 'bi bi-check-circle-fill text-indigo fs-5';
+            if (manuverCheck) manuverCheck.className = 'bi bi-check-circle-fill text-purple fs-5';
+
+            subJointing.classList.remove('d-none');
+            subManuver.classList.remove('d-none');
+            subManuver.classList.add('mt-4', 'pt-3', 'border-top');
+
+            if (activeLabel) activeLabel.textContent = 'Jointing Lurus & Manuver Core (Keduanya)';
+            if (btnToggleKedua) {
+                btnToggleKedua.className = 'btn btn-xs rounded-pill px-2.5 py-1 fw-semibold btn-primary text-white shadow-xs';
+                btnToggleKedua.innerHTML = '<i class="bi bi-check2-all me-1"></i> Keduanya Aktif';
+            }
+        } else if (mode === 'JOINTING_LURUS') {
             cardJointing.classList.add('is-selected', 'active');
             cardManuver.classList.remove('is-selected', 'active');
-            
-            const jointingCheck = cardJointing.querySelector('.penanganan-radio-check i');
-            const manuverCheck = cardManuver.querySelector('.penanganan-radio-check i');
             if (jointingCheck) jointingCheck.className = 'bi bi-check-circle-fill text-indigo fs-5';
             if (manuverCheck) manuverCheck.className = 'bi bi-circle text-muted fs-5';
 
             subJointing.classList.remove('d-none');
             subManuver.classList.add('d-none');
+            subManuver.classList.remove('mt-4', 'pt-3', 'border-top');
 
             if (activeLabel) activeLabel.textContent = 'Jointing Lurus (Kabel & JC)';
+            if (btnToggleKedua) {
+                btnToggleKedua.className = 'btn btn-xs rounded-pill px-2.5 py-1 fw-semibold btn-outline-primary';
+                btnToggleKedua.innerHTML = '<i class="bi bi-layers-fill me-1"></i> Pilih Keduanya';
+            }
         } else if (mode === 'MANUVER_CORE') {
             cardManuver.classList.add('is-selected', 'active');
             cardJointing.classList.remove('is-selected', 'active');
-
-            const jointingCheck = cardJointing.querySelector('.penanganan-radio-check i');
-            const manuverCheck = cardManuver.querySelector('.penanganan-radio-check i');
             if (jointingCheck) jointingCheck.className = 'bi bi-circle text-muted fs-5';
             if (manuverCheck) manuverCheck.className = 'bi bi-check-circle-fill text-purple fs-5';
 
             subManuver.classList.remove('d-none');
+            subManuver.classList.remove('mt-4', 'pt-3', 'border-top');
             subJointing.classList.add('d-none');
 
             if (activeLabel) activeLabel.textContent = 'Manuver Core (Swapping Core)';
+            if (btnToggleKedua) {
+                btnToggleKedua.className = 'btn btn-xs rounded-pill px-2.5 py-1 fw-semibold btn-outline-primary';
+                btnToggleKedua.innerHTML = '<i class="bi bi-layers-fill me-1"></i> Pilih Keduanya';
+            }
         }
 
         if (saveToServer) {
@@ -9340,7 +10047,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             }
         }
 
-        // Submitting Chat Form via AJAX (No page reload, no scroll to top!)
+        // Submitting Chat Form via AJAX (WhatsApp-Native Optimistic UI: Clock -> Sent (Grey 2-ticks) -> Read (Blue 2-ticks))
         waDirectChatForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const textVal = waChatTextInput ? waChatTextInput.value.trim() : '';
@@ -9349,28 +10056,23 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
             if (!textVal && !hasPhoto && !hasLoc) return;
 
-            // Tunggu jika proses kompresi foto masih berjalan
-            if (waCompressionPromise) {
-                if (btnWaSendMsg) {
-                    btnWaSendMsg.disabled = true;
-                    btnWaSendMsg.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" style="width: 0.9rem; height: 0.9rem;"></span>';
-                }
-                try {
-                    await waCompressionPromise;
-                } catch(e) {}
-            }
+            // Simpan data form & previews sebelum input di-reset
+            const photoThumbSrc = (waPhotoThumb && !waPhotoThumb.classList.contains('d-none')) ? waPhotoThumb.src : null;
+            const latVal = waChatLat ? waChatLat.value : '';
+            const lngVal = waChatLng ? waChatLng.value : '';
+            const activeReply = activeReplyData ? { ...activeReplyData } : null;
 
-            if (btnWaSendMsg) {
-                btnWaSendMsg.disabled = true;
-                btnWaSendMsg.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="width: 0.9rem; height: 0.9rem;"></span>';
+            // Tunggu jika proses kompresi foto di background sedang berlangsung
+            if (waCompressionPromise) {
+                try { await waCompressionPromise; } catch(e) {}
             }
 
             const formData = new FormData(waDirectChatForm);
             
             // Pasang teks kutipan jika sedang membalas pesan (Reply)
-            if (activeReplyData) {
-                const snippet = (activeReplyData.text || '').substring(0, 80).replace(/\n/g, ' ');
-                const quotedText = `[Membalas ${activeReplyData.sender}]: ${snippet}\n\n` + textVal;
+            if (activeReply) {
+                const snippet = (activeReply.text || '').substring(0, 80).replace(/\n/g, ' ');
+                const quotedText = `[Membalas ${activeReply.sender}]: ${snippet}\n\n` + textVal;
                 formData.set('informasi', quotedText);
                 cancelReply();
             }
@@ -9380,6 +10082,91 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 formData.set('foto', currentWaCompressedPhoto, currentWaCompressedPhoto.name);
             }
 
+            // 1. LANGSUNG BERSIHKAN INPUT TANPA MENAMPILKAN SPINNER LOADING DI TOMBOL/INPUT
+            if (waChatTextInput) {
+                waChatTextInput.value = '';
+                waChatTextInput.style.height = 'auto';
+                if (window.innerWidth < 768) {
+                    waChatTextInput.blur();
+                }
+            }
+            currentWaCompressedPhoto = null;
+            waCompressionPromise = null;
+            if (waChatFotoInput) waChatFotoInput.value = '';
+            if (waChatLat) waChatLat.value = '';
+            if (waChatLng) waChatLng.value = '';
+            if (waPhotoThumb) {
+                waPhotoThumb.src = '#';
+                waPhotoThumb.classList.add('d-none');
+            }
+            if (waPhotoDefaultIcon) {
+                waPhotoDefaultIcon.classList.remove('d-none');
+            }
+            if (waPhotoPreviewChip) {
+                waPhotoPreviewChip.classList.add('d-none');
+                waPhotoPreviewChip.classList.remove('d-flex');
+            }
+            if (waLocationChip) {
+                waLocationChip.classList.add('d-none');
+                waLocationChip.classList.remove('d-flex');
+            }
+            checkPreviewBarEmpty();
+
+            // 2. OPTIMISTIC MESSAGE INSERTION (ICON JAM / CLOCK STATUS)
+            const tempId = 'temp-msg-' + Date.now();
+            const now = new Date();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ' WIB';
+
+            const wrapper = document.getElementById('timelineWrapper');
+            let stream = document.getElementById('timelineList');
+            const emptyEl = document.getElementById('emptyTimeline');
+            if (emptyEl) emptyEl.remove();
+
+            if (!stream && wrapper) {
+                wrapper.innerHTML = '<div class="wa-chat-stream" id="timelineList"></div>';
+                stream = document.getElementById('timelineList');
+                attachStreamScrollListener(stream);
+            }
+
+            if (stream) {
+                const optimisticHtml = `
+                    <div class="wa-message-row wa-row-outgoing" id="${tempId}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
+                        <div class="wa-bubble wa-bubble-outgoing">
+                            <div class="wa-bubble-header">
+                                <div class="wa-sender-info">
+                                    <span class="wa-sender-name" style="color: #0f766e;">Anda</span>
+                                    <span class="wa-role-pill">{{ auth()->user()->role_short ?? 'User' }}</span>
+                                </div>
+                            </div>
+                            <div class="wa-msg-text">${formatMessageWithMentions(formData.get('informasi') || textVal)}</div>
+                            ${hasPhoto && photoThumbSrc && photoThumbSrc !== '#' ? `
+                            <div class="wa-media-card" style="opacity: 0.85;">
+                                <img src="${photoThumbSrc}" alt="Mengunggah Foto..." class="wa-media-img" style="filter: brightness(0.92);">
+                                <div class="wa-media-badge">
+                                    <span class="spinner-border spinner-border-sm me-1" style="width: 0.72rem; height: 0.72rem;"></span>
+                                    <span>Mengunggah foto...</span>
+                                </div>
+                            </div>` : ''}
+                            ${hasLoc ? `
+                            <div class="wa-location-card">
+                                <div class="wa-loc-icon"><i class="bi bi-geo-alt-fill text-danger"></i></div>
+                                <div class="wa-loc-info">
+                                    <div class="wa-loc-title">Lokasi Titik Lapangan</div>
+                                    <div class="wa-loc-coords">${latVal}, ${lngVal}</div>
+                                </div>
+                            </div>` : ''}
+                            <div class="wa-bubble-footer">
+                                <span class="wa-time">${timeStr}</span>
+                                <i class="bi bi-clock wa-status-icon wa-status-pending" id="status-icon-${tempId}" title="Mengirim..."></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                stream.insertAdjacentHTML('beforeend', optimisticHtml);
+                stream.scrollTop = stream.scrollHeight;
+            }
+
+            // 3. KIRIM DATA KE SERVER VIA FETCH
             fetch(waDirectChatForm.action, {
                 method: 'POST',
                 body: formData,
@@ -9390,48 +10177,68 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             })
             .then(res => res.json())
             .then(res => {
-                if (btnWaSendMsg) {
-                    btnWaSendMsg.disabled = false;
-                    btnWaSendMsg.innerHTML = '<i class="bi bi-send-fill"></i>';
-                }
+                if (res.success && res.data) {
+                    const tempEl = document.getElementById(tempId);
+                    if (tempEl) {
+                        tempEl.id = 'krono-item-' + res.data.id;
+                        const statusIcon = document.getElementById('status-icon-' + tempId);
+                        if (statusIcon) {
+                            // TAHAP 1: CEKLIS 2 ABU-ABU (SENT / TERKIRIM)
+                            statusIcon.id = 'status-icon-' + res.data.id;
+                            statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
+                            statusIcon.title = 'Terkirim';
 
-                if (res.success) {
-                    // Reset input fields
-                    if (waChatTextInput) {
-                        waChatTextInput.value = '';
-                        waChatTextInput.style.height = 'auto';
-                        // Tutup keyboard di mobile setelah kirim pesan
-                        if (window.innerWidth < 768) {
-                            waChatTextInput.blur();
+                            // TAHAP 2: CEKLIS 2 BIRU (READ / DILIHAT) SETELAH 1.4 DETIK
+                            setTimeout(() => {
+                                statusIcon.className = 'bi bi-check2-all wa-double-check wa-status-read';
+                                statusIcon.title = 'Dilihat';
+                            }, 1400);
                         }
-                    }
-                    currentWaCompressedPhoto = null;
-                    waCompressionPromise = null;
-                    if (waChatFotoInput) waChatFotoInput.value = '';
-                    if (waChatLat) waChatLat.value = '';
-                    if (waChatLng) waChatLng.value = '';
-                    if (waPhotoThumb) {
-                        waPhotoThumb.src = '#';
-                        waPhotoThumb.classList.add('d-none');
-                    }
-                    if (waPhotoDefaultIcon) {
-                        waPhotoDefaultIcon.classList.remove('d-none');
-                    }
-                    if (waPhotoPreviewChip) {
-                        waPhotoPreviewChip.classList.add('d-none');
-                        waPhotoPreviewChip.classList.remove('d-flex');
-                    }
-                    if (waLocationChip) {
-                        waLocationChip.classList.add('d-none');
-                        waLocationChip.classList.remove('d-flex');
-                    }
-                    checkPreviewBarEmpty();
 
-                    // Langsung append pesan baru ke timeline secara seamless
-                    if (res.data) {
-                        appendSingleKronoToTimeline(res.data);
+                        // Update foto url asli jika upload foto
+                        if (res.data.foto_url) {
+                            const mediaCard = tempEl.querySelector('.wa-media-card');
+                            if (mediaCard) {
+                                mediaCard.style.opacity = '1';
+                                mediaCard.onclick = () => zoomPhoto(res.data.foto_url, `${res.data.kategori} - ${res.data.formatted_time}`);
+                                const img = mediaCard.querySelector('.wa-media-img');
+                                if (img) {
+                                    img.src = res.data.foto_url;
+                                    img.style.filter = 'none';
+                                }
+                                const badge = mediaCard.querySelector('.wa-media-badge');
+                                if (badge) {
+                                    badge.innerHTML = '<i class="bi bi-arrows-fullscreen me-1"></i><span>Klik untuk memperbesar</span>';
+                                }
+                            }
+                        }
+
+                        // Pasang action menu 3-dots
+                        const header = tempEl.querySelector('.wa-bubble-header');
+                        if (header && !header.querySelector('.wa-bubble-menu-wrapper')) {
+                            const safeInfoAttr = rawEscape(res.data.informasi || '');
+                            header.insertAdjacentHTML('beforeend', `
+                                <div class="dropdown wa-bubble-menu-wrapper">
+                                    <button type="button" class="wa-msg-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan pesan">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end wa-msg-dropdown-menu shadow border-0">
+                                        <li>
+                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-copy" data-id="${res.data.id}" data-text="${safeInfoAttr}">
+                                                <i class="bi bi-clipboard text-primary"></i> Salin
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${res.data.id}" data-sender="Anda" data-text="${safeInfoAttr}">
+                                                <i class="bi bi-reply-fill text-info"></i> Balas
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            `);
+                        }
                     } else {
-                        pollTimeline();
+                        appendSingleKronoToTimeline(res.data);
                     }
 
                     // Hilangkan banner peringatan 30 menit secara real-time karena update sudah dikirim
@@ -9454,13 +10261,19 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                         setTimeout(() => intervalBanner.remove(), 400);
                     }
                 } else {
+                    const statusIcon = document.getElementById('status-icon-' + tempId);
+                    if (statusIcon) {
+                        statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
+                        statusIcon.title = 'Gagal terkirim: ' + (res.message || 'Error');
+                    }
                     alert('Gagal mengirim pesan: ' + (res.message || 'Terjadi kesalahan.'));
                 }
             })
             .catch(err => {
-                if (btnWaSendMsg) {
-                    btnWaSendMsg.disabled = false;
-                    btnWaSendMsg.innerHTML = '<i class="bi bi-send-fill"></i>';
+                const statusIcon = document.getElementById('status-icon-' + tempId);
+                if (statusIcon) {
+                    statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
+                    statusIcon.title = 'Gagal terkirim: ' + err.message;
                 }
                 alert('Gagal mengirim pesan: ' + err.message);
             });

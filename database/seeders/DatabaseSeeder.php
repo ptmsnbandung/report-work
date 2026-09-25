@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MasterSlaSeeder::class,
             MasterMaterialSeeder::class,
+            TiketDummySeeder::class,
         ]);
     }
 }

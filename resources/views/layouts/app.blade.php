@@ -122,11 +122,21 @@
         @media (max-width: 991.98px) {
             #webPushPromptBanner,
             #pwaInstallBanner {
-                bottom: 80px !important;
-                left: 12px !important;
-                right: 12px !important;
-                max-width: calc(100% - 24px) !important;
-                width: calc(100% - 24px) !important;
+                bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
+                left: 10px !important;
+                right: 10px !important;
+                max-width: calc(100% - 20px) !important;
+                width: calc(100% - 20px) !important;
+            }
+        }
+        @media (max-width: 380px) {
+            #webPushPromptBanner,
+            #pwaInstallBanner {
+                bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+                left: 6px !important;
+                right: 6px !important;
+                max-width: calc(100% - 12px) !important;
+                width: calc(100% - 12px) !important;
             }
         }
     </style>

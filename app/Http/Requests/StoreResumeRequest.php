@@ -23,7 +23,7 @@ class StoreResumeRequest extends FormRequest
             'team_om'            => ['required'],
             'problem_temuan'     => ['required', 'string', 'max:5000'],
             'action'             => ['required', 'string', 'max:5000'],
-            'tipe_penanganan'    => ['nullable', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,LAINNYA'],
+            'tipe_penanganan'    => ['nullable', 'string', 'in:JOINTING_LURUS,MANUVER_CORE,KEDUA,KOMBINASI,SEMUA,LAINNYA'],
             'joint_closure_type' => ['nullable', 'string', 'max:255'],
             'core_count_jointed' => ['nullable', 'integer', 'min:0'],
             'catatan_tambahan'   => ['nullable', 'string', 'max:5000'],

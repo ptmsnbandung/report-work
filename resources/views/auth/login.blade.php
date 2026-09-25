@@ -2,298 +2,332 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login | Sistem Tiketing Gangguan PT MSN</title>
-    <meta name="description" content="Login ke Sistem Tiketing Gangguan Backbone PT MSN">
+    <meta name="description" content="Portal Terpadu Sistem Manajemen Gangguan & Tiketing Jaringan Backbone PT MSN">
 
     <!-- Favicon & PWA Primary Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#071525">
+    <meta name="theme-color" content="#060e18">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MSN Report">
-    <meta name="application-name" content="MSN Report">
-    <meta name="msapplication-TileColor" content="#071525">
+    <meta name="apple-mobile-web-app-title" content="MSN Backbone">
+    <meta name="application-name" content="MSN Backbone">
+    <meta name="msapplication-TileColor" content="#060e18">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/icon-512.png') }}">
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Plus Jakarta Sans / Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap 5.3 CSS -->
+    <!-- Bootstrap 5.3 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         :root {
-            --navy:   #071525;
-            --navy-m: #0c1f35;
-            --teal:   #0d9488;
-            --teal-l: #14b8a6;
-            --elec:   #38bdf8;
+            --bg-deep: #050b14;
+            --bg-card: rgba(10, 22, 38, 0.82);
+            --navy-primary: #0a192f;
+            --navy-surface: #0e2442;
+            --teal-accent: #0d9488;
+            --teal-light: #14b8a6;
+            --cyan-glow: #38bdf8;
+            --indigo-accent: #6366f1;
+            --border-glass: rgba(56, 189, 248, 0.16);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         html, body {
-            height: 100%;
-            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            background: var(--navy);
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
             position: relative;
-            overflow: hidden;
-            zoom: 0.9;
+            overflow-x: hidden;
+            padding: 1.5rem 0.75rem;
         }
 
-        /* ── NETWORK CANVAS BACKGROUND ── */
+        /* ── CANVAS & BACKGROUND GLOW ── */
         #networkCanvas {
             position: fixed;
             inset: 0;
+            width: 100%;
+            height: 100%;
             z-index: 0;
             pointer-events: none;
         }
 
-        /* ── AMBIENT GLOW ORBS ── */
-        .glow-orb {
+        .ambient-glow {
             position: fixed;
             border-radius: 50%;
             pointer-events: none;
-            filter: blur(80px);
+            filter: blur(100px);
             z-index: 0;
+            opacity: 0.65;
+            transition: all 1s ease;
         }
-        .glow-orb-1 {
-            width: 500px; height: 500px;
-            background: radial-gradient(circle, rgba(13,148,136,0.18) 0%, transparent 70%);
-            top: -100px; left: -100px;
+        .glow-1 {
+            width: 520px; height: 520px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.22) 0%, rgba(13, 148, 136, 0) 70%);
+            top: -120px;
+            left: -100px;
         }
-        .glow-orb-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(56,189,248,0.12) 0%, transparent 70%);
-            bottom: -80px; right: -60px;
+        .glow-2 {
+            width: 480px; height: 480px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 70%);
+            bottom: -100px;
+            right: -80px;
         }
-        .glow-orb-3 {
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(15,61,99,0.3) 0%, transparent 70%);
-            top: 50%; left: 50%;
+        .glow-3 {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, rgba(99, 102, 241, 0) 70%);
+            top: 45%;
+            left: 50%;
             transform: translate(-50%, -50%);
         }
 
-        /* ── MAIN CONTAINER ── */
-        .login-container {
+        /* ── MAIN LOGIN CONTAINER ── */
+        .login-wrapper {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 980px;
-            margin: 1.5rem;
-            border-radius: 24px;
+            max-width: 1060px;
+            margin: auto;
+            border-radius: 28px;
+            background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-glass);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                0 30px 70px -15px rgba(0, 0, 0, 0.75),
+                0 0 45px rgba(13, 148, 136, 0.12);
             overflow: hidden;
             display: flex;
-            box-shadow:
-                0 0 0 1px rgba(13,148,136,0.15),
-                0 25px 60px rgba(0,0,0,0.5),
-                inset 0 0 0 1px rgba(255,255,255,0.04);
+            flex-direction: column;
+        }
+
+        @media (min-width: 992px) {
+            .login-wrapper {
+                flex-direction: row;
+                min-height: 640px;
+            }
         }
 
         /* ── LEFT BRAND PANEL ── */
         .brand-panel {
-            width: 42%;
-            flex-shrink: 0;
-            background: linear-gradient(160deg, #0c1f35 0%, #071525 60%, #030e1a 100%);
-            padding: 2.5rem;
+            background: linear-gradient(155deg, rgba(14, 36, 66, 0.92) 0%, rgba(7, 18, 34, 0.96) 60%, rgba(4, 11, 20, 0.98) 100%);
+            padding: 3rem 2.75rem;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             position: relative;
             overflow: hidden;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
-        /* Grid pattern on brand panel */
+        @media (min-width: 992px) {
+            .brand-panel {
+                width: 46%;
+                flex-shrink: 0;
+                border-bottom: none;
+                border-right: 1px solid var(--border-subtle);
+                padding: 3.25rem 2.75rem;
+            }
+        }
+
+        /* Subtle grid & circuit accents */
         .brand-panel::before {
             content: '';
             position: absolute;
             inset: 0;
             background-image:
-                linear-gradient(rgba(13,148,136,0.06) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(13,148,136,0.06) 1px, transparent 1px);
-            background-size: 28px 28px;
+                linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+            background-size: 32px 32px;
+            pointer-events: none;
         }
 
-        /* Glowing divider line */
-        .brand-panel::after {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; bottom: 0;
-            width: 1px;
-            background: linear-gradient(
-                180deg,
-                transparent 0%,
-                var(--teal) 30%,
-                var(--elec) 65%,
-                transparent 100%
-            );
-            opacity: 0.5;
+        .brand-header {
+            position: relative;
+            z-index: 2;
         }
 
-        .brand-panel > * { position: relative; z-index: 1; }
-
-        /* Network node decorations */
-        .node-deco {
-            position: absolute;
-            border-radius: 50%;
-            border: 1px solid rgba(13,148,136,0.3);
-            animation: node-pulse 4s ease-in-out infinite;
+        .brand-logo-img {
+            height: 48px;
+            width: auto;
+            max-width: 220px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+            transition: transform 0.3s ease;
         }
-        .node-deco.n1 {
-            width: 180px; height: 180px;
-            top: -60px; right: -60px;
-            animation-delay: 0s;
-        }
-        .node-deco.n2 {
-            width: 100px; height: 100px;
-            bottom: 80px; left: -30px;
-            animation-delay: 1.5s;
-        }
-        .node-deco.n3 {
-            width: 60px; height: 60px;
-            bottom: 60px; right: 40px;
-            background: rgba(13,148,136,0.06);
-            animation-delay: 2.5s;
+        .brand-logo-img:hover {
+            transform: scale(1.02);
         }
 
-        @keyframes node-pulse {
-            0%, 100% { transform: scale(1);   opacity: 0.3; }
-            50%       { transform: scale(1.08); opacity: 0.6; }
-        }
-
-        /* Logo */
-        .brand-logo {
-            display: flex;
+        /* Live status badge */
+        .portal-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 0.85rem;
-            margin-bottom: auto;
-        }
-
-        .logo-icon {
-            width: 46px; height: 46px;
-            background: linear-gradient(135deg, var(--teal) 0%, var(--elec) 100%);
-            border-radius: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(13,148,136,0.5), 0 0 40px rgba(13,148,136,0.2);
-            flex-shrink: 0;
-        }
-        .logo-icon i { color: #fff; font-size: 1.4rem; }
-
-        .logo-text strong {
-            display: block;
-            font-size: 1.15rem;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: -0.3px;
-        }
-        .logo-text span {
-            font-size: 0.67rem;
-            color: var(--teal-l);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            gap: 0.5rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
             font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--cyan-glow);
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            margin-top: 1.25rem;
+            backdrop-filter: blur(8px);
         }
 
-        /* Brand Content */
-        .brand-content {
-            margin-top: 2.5rem;
-            flex-grow: 1;
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
         }
 
         .brand-headline {
-            font-size: 1.6rem;
+            font-size: 1.75rem;
             font-weight: 800;
-            color: #fff;
-            line-height: 1.2;
-            letter-spacing: -0.5px;
-            margin-bottom: 1rem;
+            line-height: 1.25;
+            letter-spacing: -0.6px;
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+            color: #ffffff;
         }
 
-        .brand-headline .highlight {
-            background: linear-gradient(90deg, var(--teal-l), var(--elec));
+        .brand-headline .gradient-text {
+            background: linear-gradient(120deg, #38bdf8 0%, #14b8a6 50%, #818cf8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .brand-desc {
-            font-size: 0.83rem;
-            color: rgba(148, 180, 200, 0.8);
-            line-height: 1.7;
+        .brand-subtitle {
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: rgba(226, 232, 240, 0.75);
             margin-bottom: 2rem;
         }
 
-        /* Feature pills */
-        .feature-list {
+        /* Feature Cards Grid */
+        .feature-cards {
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.85rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .feature-item {
+        .feature-card {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
-            font-size: 0.8rem;
-            color: rgba(148, 180, 200, 0.85);
+            gap: 0.9rem;
+            padding: 0.85rem 1.1rem;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.25s ease;
+        }
+        .feature-card:hover {
+            background: rgba(56, 189, 248, 0.06);
+            border-color: rgba(56, 189, 248, 0.2);
+            transform: translateX(4px);
         }
 
-        .feature-icon {
-            width: 28px; height: 28px;
-            border-radius: 8px;
-            background: rgba(13,148,136,0.15);
-            border: 1px solid rgba(13,148,136,0.25);
+        .feature-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
-        .feature-icon i { font-size: 0.85rem; color: var(--teal-l); }
+        .icon-teal { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.25); }
+        .icon-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
+        .icon-indigo { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
 
-        /* Brand Footer */
+        .feature-card-title {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 0.1rem;
+        }
+        .feature-card-desc {
+            font-size: 0.74rem;
+            color: rgba(148, 163, 184, 0.8);
+            line-height: 1.35;
+        }
+
         .brand-footer {
             margin-top: 2rem;
             padding-top: 1.25rem;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.72rem;
-            color: rgba(148, 180, 200, 0.45);
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: rgba(148, 163, 184, 0.6);
+            position: relative;
+            z-index: 2;
         }
 
         /* ── RIGHT FORM PANEL ── */
         .form-panel {
             flex-grow: 1;
             background: #ffffff;
-            padding: 2.5rem 2.75rem;
+            padding: 2.75rem 2.25rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
+        }
+
+        @media (min-width: 576px) {
+            .form-panel {
+                padding: 3.25rem 3rem;
+            }
         }
 
         .form-header {
-            margin-bottom: 2rem;
+            margin-bottom: 1.85rem;
         }
 
-        .form-header h3 {
-            font-size: 1.5rem;
+        .form-header h2 {
+            font-size: 1.6rem;
             font-weight: 800;
             color: #0f172a;
             letter-spacing: -0.5px;
@@ -301,290 +335,384 @@
         }
 
         .form-header p {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             color: #64748b;
             margin: 0;
         }
 
-        /* Form label */
-        .form-label {
+        /* Form Labels & Controls */
+        .form-group-custom {
+            margin-bottom: 1.25rem;
+        }
+
+        .custom-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 0.82rem;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.45rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 0.5rem;
         }
 
-        /* Input styling */
-        .form-control, .form-select {
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-box .input-icon-left {
+            position: absolute;
+            left: 14px;
+            color: #94a3b8;
+            font-size: 1.05rem;
+            pointer-events: none;
+            transition: color 0.2s ease;
+            z-index: 5;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 48px;
+            padding: 0.65rem 1rem 0.65rem 44px;
+            border-radius: 12px;
             border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 0.65rem 0.9rem;
-            font-size: 0.875rem;
+            background: #f8fafc;
             color: #0f172a;
-            background: #fafbfc;
-            transition: all 0.18s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .form-control:focus {
-            border-color: var(--teal-l);
-            box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-            background: #fff;
+        .custom-input:focus {
+            background: #ffffff;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
             outline: none;
         }
 
-        .input-group .form-control {
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-        }
-        .input-group .form-control:focus {
-            border-color: var(--teal-l);
-            box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-            z-index: 3;
+        .input-box:focus-within .input-icon-left {
+            color: #0d9488;
         }
 
-        .input-group-text {
-            border: 1.5px solid #e2e8f0;
-            border-right: none;
-            border-radius: 10px 0 0 10px;
-            background: #f8fafc;
+        .btn-toggle-pwd {
+            position: absolute;
+            right: 8px;
+            background: transparent;
+            border: none;
             color: #94a3b8;
-            padding: 0 0.9rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            z-index: 5;
+        }
+        .btn-toggle-pwd:hover {
+            color: #475569;
+            background: #f1f5f9;
         }
 
-        .input-group:focus-within .input-group-text {
-            border-color: var(--teal-l);
+        /* Checkbox */
+        .custom-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            user-select: none;
+            cursor: pointer;
         }
 
-        .input-group .btn-icon-right {
-            border: 1.5px solid #e2e8f0;
-            border-left: none;
-            border-radius: 0 10px 10px 0;
-            background: #f8fafc;
-            color: #94a3b8;
-            padding: 0 0.9rem;
+        .form-check-input {
+            width: 1.15rem;
+            height: 1.15rem;
+            border-radius: 6px;
+            border: 1.5px solid #cbd5e1;
             cursor: pointer;
             transition: all 0.15s ease;
         }
 
-        .input-group .btn-icon-right:hover { color: #475569; background: #f1f5f9; }
-
-        /* Remember + submit */
         .form-check-input:checked {
-            background-color: var(--teal);
-            border-color: var(--teal);
+            background-color: #0d9488;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
         }
 
-        /* Submit Button */
-        .btn-login {
-            background: linear-gradient(135deg, #0f3d63 0%, #0d9488 100%);
+        /* Main Submit Button */
+        .btn-submit-login {
+            width: 100%;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0a2540 0%, #0d9488 100%);
             border: none;
-            color: #fff;
+            color: #ffffff;
+            font-size: 0.95rem;
             font-weight: 700;
-            font-size: 0.9rem;
-            padding: 0.75rem;
-            border-radius: 10px;
             letter-spacing: 0.2px;
-            transition: all 0.18s ease;
-            box-shadow: 0 4px 14px rgba(13,148,136,0.35);
+            box-shadow: 0 8px 20px -4px rgba(13, 148, 136, 0.45);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
         }
 
-        .btn-login::before {
+        .btn-submit-login::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-            transition: opacity 0.18s ease;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
         }
 
-        .btn-login:hover {
+        .btn-submit-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(13,148,136,0.45);
-            color: #fff;
+            box-shadow: 0 12px 28px -4px rgba(13, 148, 136, 0.6);
+            color: #ffffff;
         }
-        .btn-login:active { transform: translateY(0); }
+        .btn-submit-login:hover::before {
+            opacity: 1;
+        }
+        .btn-submit-login:active {
+            transform: translateY(0);
+        }
 
-        /* Divider */
-        .divider-text {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #94a3b8;
+        /* Divider & Demo Grid */
+        .divider-box {
             position: relative;
-            margin: 1.5rem 0 1rem;
+            text-align: center;
+            margin: 1.6rem 0 1.25rem;
         }
-        .divider-text::before, .divider-text::after {
+        .divider-box::before {
             content: '';
             position: absolute;
+            left: 0;
             top: 50%;
-            width: calc(50% - 50px);
+            width: 100%;
             height: 1px;
             background: #e2e8f0;
         }
-        .divider-text::before { left: 0; }
-        .divider-text::after  { right: 0; }
-
-        /* Quick Demo Login */
-        .demo-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
+        .divider-box span {
+            position: relative;
+            background: #ffffff;
+            padding: 0 12px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: #94a3b8;
         }
 
-        .demo-btn {
-            padding: 0.5rem 0.75rem;
+        .quick-roles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+
+        @media (max-width: 575px) {
+            .quick-roles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .role-chip-btn {
             border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            background: #fafbfc;
+            border-radius: 12px;
+            background: #f8fafc;
+            padding: 0.65rem 0.75rem;
             cursor: pointer;
+            transition: all 0.2s ease;
             text-align: left;
-            font-size: 0.78rem;
-            transition: all 0.15s ease;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.65rem;
+        }
+        .role-chip-btn:hover {
+            border-color: #0d9488;
+            background: #f0fdfa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.12);
+        }
+        .role-chip-btn:active {
+            transform: scale(0.98);
         }
 
-        .demo-btn:hover {
-            border-color: var(--teal-l);
-            background: rgba(13,148,136,0.04);
-            transform: translateY(-1px);
-        }
-
-        .demo-btn-icon {
-            width: 28px; height: 28px;
+        .role-chip-icon {
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.95rem;
             flex-shrink: 0;
         }
 
-        .demo-btn-text strong {
-            display: block;
-            font-size: 0.78rem;
+        .role-chip-info {
+            overflow: hidden;
+        }
+        .role-chip-name {
+            font-size: 0.8rem;
             font-weight: 700;
             color: #1e293b;
             line-height: 1.2;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+        .role-chip-sub {
+            font-size: 0.68rem;
+            color: #64748b;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
-        .demo-btn-text small {
-            font-size: 0.67rem;
-            color: #94a3b8;
-        }
-
-        /* Alert */
-        .alert-custom {
-            border-radius: 10px;
-            border: none;
-            font-size: 0.82rem;
-            padding: 0.65rem 0.9rem;
+        /* Alert styling */
+        .toast-banner {
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-size: 0.84rem;
+            font-weight: 500;
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            align-items: flex-start;
+            gap: 0.75rem;
             margin-bottom: 1.25rem;
+            animation: fadeInDown 0.3s ease;
+        }
+        .toast-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+        .toast-info {
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            color: #0f766e;
         }
 
-        /* Mobile */
-        @media (max-width: 767px) {
-            .brand-panel { display: none !important; }
-            .login-container { margin: 1rem; border-radius: 16px; }
-            .form-panel { padding: 2rem 1.5rem; }
-        }
-
-        @media (max-width: 991px) {
-            .brand-panel { width: 38%; padding: 2rem; }
-            .form-panel  { padding: 2rem 2rem; }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-<!-- Network Canvas Background -->
+<!-- Network Canvas Ambient Animation -->
 <canvas id="networkCanvas"></canvas>
 
-<!-- Ambient Glow Orbs -->
-<div class="glow-orb glow-orb-1"></div>
-<div class="glow-orb glow-orb-2"></div>
-<div class="glow-orb glow-orb-3"></div>
+<!-- Ambient Glow Elements -->
+<div class="ambient-glow glow-1"></div>
+<div class="ambient-glow glow-2"></div>
+<div class="ambient-glow glow-3"></div>
 
-<!-- Main Login Container -->
-<div class="login-container">
+<!-- Main Container Card -->
+<div class="login-wrapper">
 
-    <!-- ── LEFT: BRAND PANEL ── -->
-    <div class="brand-panel d-none d-md-flex flex-column">
-        <!-- Network node decorations -->
-        <div class="node-deco n1"></div>
-        <div class="node-deco n2"></div>
-        <div class="node-deco n3"></div>
+    <!-- ── LEFT: BRAND & CAPABILITIES PANEL ── -->
+    <div class="brand-panel">
+        <div class="brand-header">
+            <!-- Brand Logo -->
+            <div class="d-flex align-items-center justify-content-between">
+                <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
+                     alt="Logo PT MSN"
+                     class="brand-logo-img">
+            </div>
 
-        <!-- Logo -->
-        <div class="brand-logo mb-3">
-            <img src="{{ asset('assets/logo-msn BG Trans.png') }}" alt="Logo PT MSN" style="height: 42px; width: auto; max-width: 220px; object-fit: contain;">
-        </div>
+            <div class="portal-badge">
+                <span class="pulse-dot"></span>
+                <span>BACKBONE NOC PORTAL</span>
+            </div>
 
-        <!-- Main Content -->
-        <div class="brand-content">
-            <h2 class="brand-headline">
-                Sistem Tiketing<br>
-                <span class="highlight">Backbone Network</span>
-            </h2>
-            <p class="brand-desc">
-                Platform terpusat pengelolaan gangguan jaringan backbone.
-                Monitoring realtime, tracking SLA, dan kolaborasi tim teknis secara efisien.
+            <h1 class="brand-headline">
+                Sistem Tiketing Gangguan Backbone<br>
+                <span class="gradient-text">Network Operations Center</span>
+            </h1>
+
+            <p class="brand-subtitle">
+                Platform terpadu Sistem Tiketing Gangguan Backbone untuk pengelolaan insiden fiber optik, tracking SLA, pemetaan joint closure, dan koordinasi cepat antar divisi.
             </p>
 
-            <div class="feature-list">
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-ticket-detailed-fill"></i></div>
-                    <span>Tiket Gangguan Terintegrasi</span>
+            <!-- Feature Value Cards -->
+            <div class="feature-cards">
+                <div class="feature-card">
+                    <div class="feature-card-icon icon-teal">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <div class="feature-card-title">Realtime MTTR & SLA Alert</div>
+                        <div class="feature-card-desc">Kalkulasi presisi durasi penanganan & stop clock otomatis.</div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-clock-history"></i></div>
-                    <span>Monitoring MTTR & SLA Realtime</span>
+
+                <div class="feature-card">
+                    <div class="feature-card-icon icon-blue">
+                        <i class="bi bi-diagram-3-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-card-title">Joint Closure & Manuver Core</div>
+                        <div class="feature-card-desc">Visualisasi alur tube/core kabel FO & pencatatan titik sambung.</div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-geo-alt-fill"></i></div>
-                    <span>Tagging Titik Perbaikan FO/Backbone</span>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
-                    <span>Role-Based Multi-Team Access</span>
+
+                <div class="feature-card">
+                    <div class="feature-card-icon icon-indigo">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div>
+                        <div class="feature-card-title">Kolaborasi Multi-Role</div>
+                        <div class="feature-card-desc">Sinkronisasi tugas terpadu antara Admin, Helpdesk, dan Teknis.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Footer -->
+        <!-- Footer Info -->
         <div class="brand-footer">
-            <i class="bi bi-shield-check" style="color: var(--teal-l); font-size: 0.9rem;"></i>
-            &copy; {{ date('Y') }} PT MSN. All rights reserved.
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-shield-check text-info"></i>
+                <span>Enterprise Grade Security</span>
+            </div>
+            <span>&copy; {{ date('Y') }} PT MSN</span>
         </div>
     </div>
 
-    <!-- ── RIGHT: FORM PANEL ── -->
+    <!-- ── RIGHT: LOGIN FORM PANEL ── -->
     <div class="form-panel">
-        <!-- Mobile Logo (visible only on small screens) -->
-        <div class="d-md-none d-flex align-items-center mb-3">
-            <img src="{{ asset('assets/logo-msn BG Trans.png') }}" alt="Logo PT MSN" style="height: 32px; max-width: 165px; object-fit: contain;">
+        <!-- Mobile Brand Header (only on small screens) -->
+        <div class="d-lg-none text-center mb-4">
+            <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
+                 alt="Logo PT MSN"
+                 style="height: 38px; max-width: 180px; object-fit: contain;">
+            <div class="portal-badge mt-2">
+                <span class="pulse-dot"></span>
+                <span>BACKBONE NOC PORTAL</span>
+            </div>
         </div>
 
         <div class="form-header">
-            <h3>Masuk ke Sistem</h3>
-            <p>Gunakan akun yang telah diberikan oleh administrator.</p>
+            <h2>Masuk ke Akun Anda</h2>
+            <p>Silakan masukkan kredensial akun terdaftar untuk melanjutkan.</p>
         </div>
 
-        <!-- Alert Error -->
+        <!-- Flash Alert Error -->
         @if($errors->any())
-            <div class="alert-custom" style="background:#fef2f2;color:#b91c1c;">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+            <div class="toast-banner toast-error">
+                <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0"></i>
                 <div>{{ $errors->first() }}</div>
             </div>
         @endif
 
         @if(session('info'))
-            <div class="alert-custom" style="background:#eff6ff;color:#1d4ed8;">
-                <i class="bi bi-info-circle-fill"></i>
+            <div class="toast-banner toast-info">
+                <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
                 <div>{{ session('info') }}</div>
             </div>
         @endif
@@ -598,100 +726,104 @@
                 <input type="hidden" name="redirect_url" value="{{ session('url.intended') }}">
             @endif
 
-            <!-- Email -->
-            <div class="mb-3">
-                <label for="email" class="form-label">Alamat Email</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-envelope"></i>
-                    </span>
+            <!-- Email Address Input -->
+            <div class="form-group-custom">
+                <label for="email" class="custom-label">
+                    <span>Email Perusahaan</span>
+                </label>
+                <div class="input-box">
+                    <i class="bi bi-envelope input-icon-left"></i>
                     <input type="email"
-                           class="form-control @error('email') is-invalid @enderror"
-                           id="email" name="email"
+                           class="custom-input @error('email') is-invalid @enderror"
+                           id="email"
+                           name="email"
                            value="{{ old('email') }}"
                            placeholder="nama@connecti.id"
-                           required autofocus autocomplete="username">
+                           required
+                           autofocus
+                           autocomplete="username">
                 </div>
             </div>
 
-            <!-- Password -->
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-lock"></i>
-                    </span>
+            <!-- Password Input -->
+            <div class="form-group-custom">
+                <div class="custom-label">
+                    <span>Kata Sandi (Password)</span>
+                </div>
+                <div class="input-box">
+                    <i class="bi bi-lock input-icon-left"></i>
                     <input type="password"
-                           class="form-control @error('password') is-invalid @enderror"
-                           id="password" name="password"
-                           placeholder="••••••••"
-                           required autocomplete="current-password">
-                    <button class="btn-icon-right" type="button" id="togglePassword" title="Tampilkan/sembunyikan password">
+                           class="custom-input @error('password') is-invalid @enderror"
+                           id="password"
+                           name="password"
+                           placeholder="••••••••••••"
+                           required
+                           autocomplete="current-password">
+                    <button class="btn-toggle-pwd" type="button" id="togglePassword" title="Tampilkan/sembunyikan password" aria-label="Toggle password visibility">
                         <i class="bi bi-eye" id="eyeIcon"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Remember Me (Default Active 30 Days) -->
+            <!-- Remember Me Session (Default Active 30 Days) -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="form-check mb-0">
+                <label class="custom-checkbox-container" for="remember">
                     <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
-                    <label class="form-check-label small text-muted" for="remember" style="font-size:0.82rem;">
-                        Ingat saya di perangkat ini (aktif 1 bulan)
-                    </label>
-                </div>
+                    <span class="small text-secondary fw-semibold" style="font-size: 0.82rem;">
+                        Ingat saya di perangkat ini (30 Hari)
+                    </span>
+                </label>
             </div>
 
-            <!-- Submit -->
-            <button type="submit" class="btn-login w-100" id="loginSubmitBtn">
-                <span id="loginBtnText">
-                    <i class="bi bi-box-arrow-in-right me-2"></i> Masuk Sekarang
+            <!-- Action Button -->
+            <button type="submit" class="btn-submit-login" id="loginSubmitBtn">
+                <span id="loginBtnText" class="d-flex align-items-center gap-2">
+                    <i class="bi bi-box-arrow-in-right fs-5"></i>
+                    <span>Masuk ke Dashboard</span>
                 </span>
-                <span id="loginBtnLoading" class="d-none">
-                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                    Memproses...
+                <span id="loginBtnLoading" class="d-none d-flex align-items-center gap-2">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span>Memverifikasi Akun...</span>
                 </span>
             </button>
         </form>
 
-        <!-- Quick Demo Login -->
-        <div class="divider-text">Quick Demo Login</div>
+        <!-- Quick Demo Switcher -->
+        <div class="divider-box">
+            <span>Akses Cepat Demo Akun</span>
+        </div>
 
-        <div class="demo-grid">
-            <button type="button" class="demo-btn" onclick="fillLogin('admin@connecti.id', 'password')">
-                <div class="demo-btn-icon" style="background:#eff6ff;">
-                    <i class="bi bi-shield-lock-fill" style="color:#3b82f6;"></i>
+        <div class="quick-roles-grid">
+            <!-- Admin -->
+            <button type="button" class="role-chip-btn" onclick="fillLogin('admin@connecti.id', 'password')">
+                <div class="role-chip-icon" style="background:#eff6ff; color:#2563eb;">
+                    <i class="bi bi-shield-lock-fill"></i>
                 </div>
-                <div class="demo-btn-text">
-                    <strong>Admin NOC</strong>
-                    <small>admin@connecti.id</small>
-                </div>
-            </button>
-            <button type="button" class="demo-btn" onclick="fillLogin('helpdesk@connecti.id', 'password')">
-                <div class="demo-btn-icon" style="background:#f0fdf4;">
-                    <i class="bi bi-headset" style="color:#16a34a;"></i>
-                </div>
-                <div class="demo-btn-text">
-                    <strong>HelpDesk NOC (HelpDesk & SA/CS)</strong>
-                    <small>helpdesk@connecti.id</small>
+                <div class="role-chip-info">
+                    <div class="role-chip-name">Admin NOC</div>
+                    <div class="role-chip-sub">Full System</div>
                 </div>
             </button>
-            <button type="button" class="demo-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
-                <div class="demo-btn-icon" style="background:#fff7ed;">
-                    <i class="bi bi-tools" style="color:#ea580c;"></i>
+
+            <!-- HelpDesk NOC -->
+            <button type="button" class="role-chip-btn" onclick="fillLogin('helpdesk@connecti.id', 'password')">
+                <div class="role-chip-icon" style="background:#f0fdf4; color:#16a34a;">
+                    <i class="bi bi-headset"></i>
                 </div>
-                <div class="demo-btn-text">
-                    <strong>Team Teknis</strong>
-                    <small>teknis@connecti.id</small>
+                <div class="role-chip-info">
+                    <div class="role-chip-name">HelpDesk NOC</div>
+                    <div class="role-chip-sub">Tiket & Dispatch</div>
                 </div>
             </button>
-            <button type="button" class="demo-btn" onclick="fillLogin('client@connecti.id', 'password')">
-                <div class="demo-btn-icon" style="background:#fafafa;">
-                    <i class="bi bi-building" style="color:#64748b;"></i>
+
+            <!-- Teknis -->
+            <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
+                <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
+                    <i class="bi bi-tools"></i>
                 </div>
-                <div class="demo-btn-text">
-                    <strong>Client</strong>
-                    <small>client@connecti.id</small>
+                <div class="role-chip-info">
+                    <div class="role-chip-name">Tim Teknis</div>
+                    <div class="role-chip-sub">Lapangan & JC</div>
                 </div>
             </button>
         </div>
@@ -701,17 +833,17 @@
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* ── NETWORK CANVAS ANIMATION ── */
+/* ── SMOOTH HIGH-PERFORMANCE NETWORK CANVAS ── */
 (function () {
     const canvas = document.getElementById('networkCanvas');
-    const ctx    = canvas.getContext('2d');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
 
     let W, H, nodes = [], raf;
-
-    const NODE_COUNT = 55;
-    const MAX_DIST   = 140;
-    const TEAL       = 'rgba(13,148,136,';
-    const ELECTRIC   = 'rgba(56,189,248,';
+    const NODE_COUNT = window.innerWidth < 768 ? 32 : 55;
+    const MAX_DIST   = window.innerWidth < 768 ? 110 : 150;
+    const COLOR_TEAL = 'rgba(20, 184, 166, ';
+    const COLOR_CYAN = 'rgba(56, 189, 248, ';
 
     function resize() {
         W = canvas.width  = window.innerWidth;
@@ -724,10 +856,10 @@
             nodes.push({
                 x:  Math.random() * W,
                 y:  Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.45,
-                vy: (Math.random() - 0.5) * 0.45,
-                r:  Math.random() * 2 + 1.5,
-                type: Math.random() > 0.6 ? 'elec' : 'teal',
+                vx: (Math.random() - 0.5) * 0.35,
+                vy: (Math.random() - 0.5) * 0.35,
+                r:  Math.random() * 2 + 1.2,
+                type: Math.random() > 0.5 ? 'cyan' : 'teal',
                 pulse: Math.random() * Math.PI * 2
             });
         }
@@ -737,42 +869,46 @@
         ctx.clearRect(0, 0, W, H);
 
         // Update positions
-        nodes.forEach(n => {
+        for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
             n.x += n.vx;
             n.y += n.vy;
-            n.pulse += 0.025;
+            n.pulse += 0.02;
+
             if (n.x < 0 || n.x > W) n.vx *= -1;
             if (n.y < 0 || n.y > H) n.vy *= -1;
-        });
+        }
 
-        // Draw connections
+        // Connect nodes
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
-                const dx   = nodes[i].x - nodes[j].x;
-                const dy   = nodes[i].y - nodes[j].y;
+                const dx = nodes[i].x - nodes[j].x;
+                const dy = nodes[i].y - nodes[j].y;
                 const dist = Math.sqrt(dx * dx + dy * dy);
+
                 if (dist < MAX_DIST) {
-                    const alpha = (1 - dist / MAX_DIST) * 0.18;
-                    const color = nodes[i].type === 'elec' ? ELECTRIC : TEAL;
+                    const alpha = (1 - dist / MAX_DIST) * 0.16;
+                    const color = nodes[i].type === 'cyan' ? COLOR_CYAN : COLOR_TEAL;
                     ctx.beginPath();
                     ctx.moveTo(nodes[i].x, nodes[i].y);
                     ctx.lineTo(nodes[j].x, nodes[j].y);
                     ctx.strokeStyle = color + alpha + ')';
-                    ctx.lineWidth   = 0.8;
+                    ctx.lineWidth   = 0.75;
                     ctx.stroke();
                 }
             }
         }
 
-        // Draw nodes
-        nodes.forEach(n => {
-            const pulse = 0.5 + 0.5 * Math.sin(n.pulse);
-            const alpha = 0.35 + 0.3 * pulse;
-            const color = n.type === 'elec' ? ELECTRIC : TEAL;
+        // Draw particle dots
+        for (let i = 0; i < nodes.length; i++) {
+            const n = nodes[i];
+            const pulse = 0.6 + 0.4 * Math.sin(n.pulse);
+            const alpha = 0.4 + 0.4 * pulse;
+            const color = n.type === 'cyan' ? COLOR_CYAN : COLOR_TEAL;
 
-            // Outer glow ring
+            // Outer subtle halo
             ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r * 2.5, 0, Math.PI * 2);
+            ctx.arc(n.x, n.y, n.r * 2.8, 0, Math.PI * 2);
             ctx.fillStyle = color + (alpha * 0.15) + ')';
             ctx.fill();
 
@@ -781,7 +917,7 @@
             ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
             ctx.fillStyle = color + alpha + ')';
             ctx.fill();
-        });
+        }
 
         raf = requestAnimationFrame(draw);
     }
@@ -797,26 +933,30 @@ function fillLogin(email, password) {
     const emailInput = document.getElementById('email');
     const pwdInput   = document.getElementById('password');
 
+    if (!emailInput || !pwdInput) return;
+
     emailInput.value = email;
     pwdInput.value   = password;
 
-    // Flash effect on inputs
+    // Visual feedback highlight
     [emailInput, pwdInput].forEach(el => {
         el.style.borderColor = '#0d9488';
-        el.style.boxShadow   = '0 0 0 3px rgba(13,148,136,0.15)';
+        el.style.backgroundColor = '#f0fdfa';
         setTimeout(() => {
             el.style.borderColor = '';
-            el.style.boxShadow   = '';
-        }, 700);
+            el.style.backgroundColor = '';
+        }, 500);
     });
+
+    emailInput.focus();
 }
 
-// Toggle password visibility
+// Password toggle eye icon
 const toggleBtn = document.getElementById('togglePassword');
 const pwdInput  = document.getElementById('password');
 const eyeIcon   = document.getElementById('eyeIcon');
 
-if (toggleBtn && pwdInput) {
+if (toggleBtn && pwdInput && eyeIcon) {
     toggleBtn.addEventListener('click', () => {
         const isPassword = pwdInput.type === 'password';
         pwdInput.type = isPassword ? 'text' : 'password';
@@ -824,21 +964,27 @@ if (toggleBtn && pwdInput) {
     });
 }
 
-// Loading state on submit
+// Loading state on form submit
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', () => {
-        document.getElementById('loginBtnText').classList.add('d-none');
-        document.getElementById('loginBtnLoading').classList.remove('d-none');
-        document.getElementById('loginSubmitBtn').disabled = true;
+        const btnText = document.getElementById('loginBtnText');
+        const btnLoad = document.getElementById('loginBtnLoading');
+        const submitBtn = document.getElementById('loginSubmitBtn');
+
+        if (btnText && btnLoad && submitBtn) {
+            btnText.classList.add('d-none');
+            btnLoad.classList.remove('d-none');
+            submitBtn.disabled = true;
+        }
     });
 }
 
-// Register PWA Service Worker
+// Service Worker for PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.debug('SW Registration failed:', err);
+            console.debug('SW Registration info:', err);
         });
     });
 }

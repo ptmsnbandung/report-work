@@ -31,9 +31,9 @@
         @endif
 
         <!-- PT MSN Brand Logo (Mobile only, hidden on Desktop to avoid duplicate with sidebar) -->
-        <a href="{{ route('dashboard') }}" class="d-flex d-lg-none align-items-center text-decoration-none gap-2 py-1" title="PT MSN - Dashboard">
-            <img src="{{ asset('assets/logo-msn BG Trans.png') }}" alt="Logo PT MSN" style="height: 28px; max-width: 140px; width: auto; object-fit: contain;">
-            <span class="badge" style="{{ $badgeStyle }} font-size:0.62rem; font-weight:700; padding:2.5px 7px; border-radius:5px; letter-spacing:0.3px;">
+        <a href="{{ route('dashboard') }}" class="d-flex d-lg-none align-items-center text-decoration-none gap-1.5 py-1" title="PT MSN - Dashboard">
+            <img src="{{ asset('assets/logo-msn BG Trans.png') }}" alt="Logo PT MSN" class="brand-logo-img" style="height: 26px; max-width: 125px; width: auto; object-fit: contain;">
+            <span class="badge d-none d-xs-inline-block" style="{{ $badgeStyle }} font-size:0.6rem; font-weight:700; padding:2px 6px; border-radius:5px; letter-spacing:0.3px;">
                 {{ $badgeText }}
             </span>
         </a>
@@ -50,7 +50,7 @@
     <div class="flex-grow-1"></div>
 
     <!-- ── RIGHT SECTION ── -->
-    <div class="d-flex align-items-center gap-2.5">
+    <div class="d-flex align-items-center gap-1.5 gap-sm-2.5">
 
         <!-- Live Clock Widget -->
         <div class="topbar-clock d-none d-sm-flex align-items-center">
@@ -90,7 +90,7 @@
                 @endif
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="width:340px;padding:0;overflow:hidden;border-radius:14px;">
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="width:340px; max-width: calc(100vw - 20px); padding:0; overflow:hidden; border-radius:14px;">
                 <li class="d-flex align-items-center justify-content-between px-3 py-2.5"
                     style="background:#f8fafc;border-bottom:1px solid #f1f5f9;">
                     <div class="d-flex align-items-center gap-2">

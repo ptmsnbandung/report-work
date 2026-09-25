@@ -80,16 +80,16 @@ class TiketJointClosureCore extends Model
     }
 
     /**
-     * Badge CSS class untuk status core
+     * Badge CSS class untuk status core (Soft pastel palette dengan kontras tinggi)
      */
     public function getStatusBadgeClassAttribute(): string
     {
         return match ($this->status) {
-            'TERHUBUNG' => 'bg-success text-white',
-            'SPARE' => 'bg-info bg-opacity-15 text-info border border-info border-opacity-25',
-            'LOSS_PUTUS' => 'bg-danger text-white',
-            'MANUVER' => 'bg-warning text-dark',
-            default => 'bg-secondary text-white',
+            'TERHUBUNG' => 'bg-success-subtle text-success border border-success-subtle fw-semibold',
+            'SPARE' => 'bg-secondary-subtle text-secondary border border-secondary-subtle fw-semibold',
+            'LOSS_PUTUS' => 'bg-danger-subtle text-danger border border-danger-subtle fw-semibold',
+            'MANUVER' => 'bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-semibold',
+            default => 'bg-light text-dark border',
         };
     }
 }

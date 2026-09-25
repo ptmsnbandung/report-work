@@ -243,6 +243,7 @@ class Tiket extends Model
         return match ($this->tipe_penanganan) {
             'JOINTING_LURUS' => 'Jointing Lurus (Straight Splice)',
             'MANUVER_CORE' => 'Manuver Core (Swapping Core)',
+            'KEDUA', 'KOMBINASI', 'SEMUA' => 'Jointing Lurus & Manuver Core',
             default => 'Lainnya / Normalisasi',
         };
     }
