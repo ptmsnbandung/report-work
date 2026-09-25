@@ -6256,6 +6256,7 @@ let _lastDetectedGps = null;
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         (pos) => {
+            localStorage.setItem('perm_geo_granted', '1');
             _lastDetectedGps = {
                 latitude: pos.coords.latitude,
                 longitude: pos.coords.longitude,

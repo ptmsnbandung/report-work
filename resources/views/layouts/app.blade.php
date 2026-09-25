@@ -292,7 +292,10 @@
             }
             setInterval(pollNotifications, 30000);
 
-            // ── WEB PUSH NOTIFICATION REGISTRATION (VAPID / GOOGLE FCM) ──
+            // ── DEVICE PERMISSION ENGINE (NOTIFIKASI, MAPS GPS, & KAMERA) ──
+            const REPROMPT_COOLDOWN_MS = 2.5 * 60 * 1000; // 2.5 Menit (minta izin lagi setelah beberapa saat)
+            let repromptTimer = null;
+
             function urlBase64ToUint8Array(base64String) {
                 const padding = '='.repeat((4 - base64String.length % 4) % 4);
                 const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
@@ -304,27 +307,111 @@
                 return outputArray;
             }
 
-            async function registerServiceWorkerAndPush() {
-                if (!('serviceWorker' in navigator)) return;
+            async function checkAllPermissionsState() {
+                const state = {
+                    notification: ('Notification' in window) ? Notification.permission : 'unsupported',
+                    geolocation: 'prompt',
+                    camera: 'prompt'
+                };
 
-                try {
-                    const reg = await navigator.serviceWorker.register('/sw.js');
-                    
-                    @auth
-                    if ('PushManager' in window) {
-                        if (Notification.permission === 'granted') {
-                            subscribeDeviceToPush(reg);
-                        } else if (Notification.permission === 'default') {
-                            const pushBanner = document.getElementById('webPushPromptBanner');
-                            if (pushBanner && !sessionStorage.getItem('dismiss_push_prompt')) {
-                                pushBanner.classList.remove('d-none');
-                            }
-                        }
+                // Check Geolocation Permission
+                if ('permissions' in navigator && navigator.permissions.query) {
+                    try {
+                        const geoStatus = await navigator.permissions.query({ name: 'geolocation' });
+                        state.geolocation = geoStatus.state; // 'granted', 'prompt', 'denied'
+                    } catch(e) {
+                        state.geolocation = localStorage.getItem('perm_geo_granted') === '1' ? 'granted' : 'prompt';
                     }
-                    @endauth
-                } catch (e) {
-                    console.debug('ServiceWorker registration note:', e);
+                } else if (localStorage.getItem('perm_geo_granted') === '1') {
+                    state.geolocation = 'granted';
                 }
+
+                // Check Camera Permission
+                if ('permissions' in navigator && navigator.permissions.query) {
+                    try {
+                        const camStatus = await navigator.permissions.query({ name: 'camera' });
+                        state.camera = camStatus.state; // 'granted', 'prompt', 'denied'
+                    } catch(e) {
+                        state.camera = localStorage.getItem('perm_cam_granted') === '1' ? 'granted' : 'prompt';
+                    }
+                } else if (localStorage.getItem('perm_cam_granted') === '1') {
+                    state.camera = 'granted';
+                }
+
+                // Update UI Badges
+                updatePermBadge('badgePermNotif', state.notification);
+                updatePermBadge('badgePermGeo', state.geolocation);
+                updatePermBadge('badgePermCam', state.camera);
+
+                const hasPending = (state.notification !== 'granted') || (state.geolocation !== 'granted') || (state.camera !== 'granted');
+                return { state, hasPending };
+            }
+
+            function updatePermBadge(badgeId, status) {
+                const el = document.getElementById(badgeId);
+                if (!el) return;
+                if (status === 'granted') {
+                    el.style.background = 'rgba(34, 197, 94, 0.2)';
+                    el.style.borderColor = 'rgba(34, 197, 94, 0.45)';
+                    el.style.color = '#86efac';
+                    const dot = el.querySelector('.perm-dot');
+                    if (dot) {
+                        dot.className = 'perm-dot text-success';
+                        dot.innerHTML = '✓';
+                    }
+                } else {
+                    el.style.background = 'rgba(255, 255, 255, 0.08)';
+                    el.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                    el.style.color = '#ffffff';
+                    const dot = el.querySelector('.perm-dot');
+                    if (dot) {
+                        dot.className = 'perm-dot text-warning';
+                        dot.innerHTML = '•';
+                    }
+                }
+            }
+
+            async function evaluateAndDisplayPermissionBanner() {
+                const banner = document.getElementById('webPushPromptBanner');
+                if (!banner) return;
+
+                const { state, hasPending } = await checkAllPermissionsState();
+
+                // If all permissions granted, hide banner
+                if (!hasPending) {
+                    banner.classList.add('d-none');
+                    return;
+                }
+
+                // Check cooldown timer
+                const dismissedAt = localStorage.getItem('app_perms_dismissed_at');
+                const now = Date.now();
+                if (dismissedAt && (now - Number(dismissedAt) < REPROMPT_COOLDOWN_MS)) {
+                    // Masih dalam cooldown, jangan tampilkan dulu tapi set timer untuk muncul nanti
+                    const remainingMs = REPROMPT_COOLDOWN_MS - (now - Number(dismissedAt));
+                    clearTimeout(repromptTimer);
+                    repromptTimer = setTimeout(() => {
+                        evaluateAndDisplayPermissionBanner();
+                    }, Math.max(remainingMs, 5000));
+                    return;
+                }
+
+                // Tampilkan banner
+                banner.classList.remove('d-none');
+            }
+
+            function dismissPermissionsBanner() {
+                const banner = document.getElementById('webPushPromptBanner');
+                if (banner) banner.classList.add('d-none');
+                
+                // Simpan timestamp kapan di-dismiss
+                localStorage.setItem('app_perms_dismissed_at', Date.now().toString());
+
+                // Minta izin lagi setelah beberapa saat (cooldown 2.5 menit)
+                clearTimeout(repromptTimer);
+                repromptTimer = setTimeout(() => {
+                    evaluateAndDisplayPermissionBanner();
+                }, REPROMPT_COOLDOWN_MS);
             }
 
             async function subscribeDeviceToPush(registration) {
@@ -349,37 +436,104 @@
                         },
                         body: JSON.stringify(sub.toJSON())
                     });
-
-                    const promptBanner = document.getElementById('webPushPromptBanner');
-                    if (promptBanner) promptBanner.classList.add('d-none');
                 } catch (err) {
                     console.warn('Subscription error:', err);
                 }
             }
 
-            window.enableWebPush = async function() {
-                if (!('Notification' in window)) {
-                    alert('Browser Anda tidak mendukung notifikasi Web Push.');
-                    return;
+            window.enableAllAppPermissions = async function() {
+                const btn = document.getElementById('btnEnableWebPush');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" style="width:0.75rem;height:0.75rem;"></span> Memproses...';
                 }
-                const perm = await Notification.requestPermission();
-                if (perm === 'granted') {
-                    const reg = await navigator.serviceWorker.ready;
-                    await subscribeDeviceToPush(reg);
-                    alert('Notifikasi HP berhasil diaktifkan! Anda akan menerima update tiket langsung di perangkat ini.');
+
+                // 1. Minta Izin Notifikasi Web Push
+                if ('Notification' in window) {
+                    try {
+                        const notifPerm = await Notification.requestPermission();
+                        if (notifPerm === 'granted') {
+                            const reg = await navigator.serviceWorker.ready;
+                            await subscribeDeviceToPush(reg);
+                        }
+                    } catch(e) {
+                        console.warn('Notif perm request error:', e);
+                    }
+                }
+
+                // 2. Minta Izin Lokasi GPS
+                if (navigator.geolocation) {
+                    try {
+                        await new Promise((resolve) => {
+                            navigator.geolocation.getCurrentPosition(
+                                (pos) => {
+                                    localStorage.setItem('perm_geo_granted', '1');
+                                    resolve(true);
+                                },
+                                (err) => {
+                                    console.warn('Geo perm error:', err);
+                                    resolve(false);
+                                },
+                                { enableHighAccuracy: true, timeout: 6000 }
+                            );
+                        });
+                    } catch(e) {}
+                }
+
+                // 3. Minta Izin Kamera
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    try {
+                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        localStorage.setItem('perm_cam_granted', '1');
+                        // Matikan kamera segera setelah izin didapat
+                        stream.getTracks().forEach(track => track.stop());
+                    } catch(e) {
+                        console.warn('Camera perm error:', e);
+                    }
+                }
+
+                // Update UI
+                const { hasPending } = await checkAllPermissionsState();
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Izinkan Semua';
+                }
+
+                if (!hasPending) {
+                    const banner = document.getElementById('webPushPromptBanner');
+                    if (banner) banner.classList.add('d-none');
+                    localStorage.removeItem('app_perms_dismissed_at');
+                    alert('✅ Semua izin perangkat (Notifikasi, Lokasi GPS, Kamera) berhasil diaktifkan!');
                 } else {
-                    alert('Izin notifikasi ditolak. Anda dapat mengaktifkannya lewat pengaturan browser (ikon gembok di URL bar).');
+                    dismissPermissionsBanner();
                 }
             };
 
-            const closePushPrompt = function() {
-                document.getElementById('webPushPromptBanner')?.classList.add('d-none');
-                sessionStorage.setItem('dismiss_push_prompt', '1');
-            };
+            async function registerServiceWorkerAndPush() {
+                if (!('serviceWorker' in navigator)) return;
 
-            document.getElementById('btnEnableWebPush')?.addEventListener('click', window.enableWebPush);
-            document.getElementById('btnDismissWebPush')?.addEventListener('click', closePushPrompt);
-            document.getElementById('btnCloseWebPush')?.addEventListener('click', closePushPrompt);
+                try {
+                    const reg = await navigator.serviceWorker.register('/sw.js');
+                    
+                    @auth
+                    if ('PushManager' in window && Notification.permission === 'granted') {
+                        subscribeDeviceToPush(reg);
+                    }
+                    evaluateAndDisplayPermissionBanner();
+                    @endauth
+                } catch (e) {
+                    console.debug('ServiceWorker registration note:', e);
+                }
+            }
+
+            document.getElementById('btnEnableWebPush')?.addEventListener('click', window.enableAllAppPermissions);
+            document.getElementById('btnDismissWebPush')?.addEventListener('click', dismissPermissionsBanner);
+            document.getElementById('btnCloseWebPush')?.addEventListener('click', dismissPermissionsBanner);
+
+            // Periodically re-evaluate permissions every 45s while on page
+            @auth
+            setInterval(evaluateAndDisplayPermissionBanner, 45000);
+            @endauth
 
             // Always register Service Worker for PWA caching & offline support
             registerServiceWorkerAndPush();
@@ -521,9 +675,9 @@
         </div>
     </div>
 
-    <!-- Web Push Permission Floating Prompt -->
+    <!-- Device Permissions & Web Push Floating Prompt (Notifikasi, Maps GPS, & Kamera) -->
     @auth
-    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 380px;">
+    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 410px; width: calc(100% - 24px);">
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.35) !important; box-shadow: 0 16px 36px rgba(0,0,0,0.55) !important;">
             <!-- Close Button -->
             <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2.5 p-1" id="btnCloseWebPush" aria-label="Tutup" style="font-size: 0.65rem; opacity: 0.75; z-index: 5;"></button>
@@ -531,16 +685,33 @@
             <div class="card-body p-3.5">
                 <div class="d-flex align-items-start gap-3">
                     <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background: rgba(44, 127, 255, 0.25); color: #38bdf8; font-size: 1.25rem; border: 1px solid rgba(56, 189, 248, 0.3);">
-                        <i class="bi bi-bell-fill"></i>
+                        <i class="bi bi-shield-check"></i>
                     </div>
                     <div class="flex-grow-1 pe-2">
-                        <h6 class="fw-bold mb-1 text-white" style="font-size: 0.92rem; color: #ffffff !important; letter-spacing: -0.2px;">Aktifkan Notifikasi HP</h6>
-                        <p class="text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.7rem !important;">
-                            Dapatkan pemberitahuan tiket baru &amp; pesan koordinasi langsung ke HP Anda secara instan.
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem; color: #ffffff !important; letter-spacing: -0.2px;">Izin Akses Aplikasi</h6>
+                            <span class="badge" id="permStatusBadge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.6rem; padding: 2px 6px; font-weight: 700;">Diperlukan</span>
+                        </div>
+                        <p class="text-white-50 mb-2" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.55rem !important;">
+                            Aktifkan izin untuk notifikasi tiket, penandaan lokasi GPS lapangan, dan foto dokumentasi:
                         </p>
+
+                        <!-- Chips status izin per fitur -->
+                        <div class="d-flex flex-wrap gap-1.5 mb-2.5" id="permChipsContainer">
+                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermNotif" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
+                                <i class="bi bi-bell"></i> Notifikasi <span class="perm-dot text-warning">•</span>
+                            </span>
+                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermGeo" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
+                                <i class="bi bi-geo-alt"></i> Lokasi GPS <span class="perm-dot text-warning">•</span>
+                            </span>
+                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermCam" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
+                                <i class="bi bi-camera"></i> Kamera <span class="perm-dot text-warning">•</span>
+                            </span>
+                        </div>
+
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3.5 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnEnableWebPush" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
-                                <i class="bi bi-check-circle-fill"></i> Izinkan
+                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnEnableWebPush" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
+                                <i class="bi bi-check-circle-fill"></i> Izinkan Semua
                             </button>
                             <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 text-white-50 text-nowrap" id="btnDismissWebPush" style="font-size: 0.76rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
                                 Nanti Saja
