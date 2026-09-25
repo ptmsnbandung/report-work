@@ -7443,8 +7443,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.querySelectorAll('.wa-msg-outgoing').forEach(row => {
                         const checkIcon = row.querySelector('.wa-status-sent');
                         if (checkIcon) {
-                            const msgTimestamp = parseInt(row.getAttribute('data-timestamp') || '0', 10);
-                            if (res.is_closed_or_verified || (res.max_read_timestamp && msgTimestamp <= res.max_read_timestamp)) {
+                            const rawTs = row.getAttribute('data-timestamp');
+                            if (!rawTs) return;
+                            const msgTimestamp = parseInt(rawTs, 10);
+                            if (msgTimestamp > 0 && (res.is_closed_or_verified || (res.max_read_timestamp && msgTimestamp <= res.max_read_timestamp))) {
                                 checkIcon.className = 'bi bi-check2-all wa-status-icon wa-status-read';
                                 checkIcon.title = 'Dilihat oleh tim';
                             }
@@ -7749,11 +7751,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!stream) return;
 
-        // Jika ada pesan baru masuk dari anggota tim lain, ubah semua status pesan outgoing sebelumnya menjadi ceklis biru (Read)
+        // Jika ada pesan baru masuk dari anggota tim lain, ubah status pesan outgoing yang dikirim sebelum/saat pesan ini menjadi ceklis biru (Read)
         if (k.user_id !== currentUserId) {
+            const newKronoTs = k.timestamp ? Math.floor(new Date(k.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000);
             document.querySelectorAll('.wa-bubble-outgoing .wa-status-sent').forEach(el => {
-                el.className = 'bi bi-check2-all wa-status-icon wa-status-read';
-                el.title = 'Dilihat oleh tim';
+                const row = el.closest('.wa-msg-row');
+                const rowTs = row ? parseInt(row.getAttribute('data-timestamp') || '0', 10) : 0;
+                if (rowTs > 0 && rowTs <= newKronoTs) {
+                    el.className = 'bi bi-check2-all wa-status-icon wa-status-read';
+                    el.title = 'Dilihat oleh tim';
+                }
             });
         }
 
@@ -10617,7 +10624,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
             if (stream) {
                 const optimisticHtml = `
-                    <div class="wa-msg-row wa-msg-outgoing" id="${tempId}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
+                    <div class="wa-msg-row wa-msg-outgoing" id="${tempId}" data-timestamp="${Math.floor(Date.now() / 1000)}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
                         <div class="wa-bubble wa-bubble-outgoing">
                             <div class="wa-bubble-header">
                                 <div class="wa-sender-info">
@@ -10668,6 +10675,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                     const tempEl = document.getElementById(tempId);
                     if (tempEl) {
                         tempEl.id = 'krono-item-' + res.data.id;
+                        tempEl.setAttribute('data-id', res.data.id);
+                        const parsedTs = res.data.timestamp ? Math.floor(new Date(res.data.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000);
+                        tempEl.setAttribute('data-timestamp', parsedTs);
                         const statusIcon = document.getElementById('status-icon-' + tempId);
                         if (statusIcon) {
                             // TAHAP: CEKLIS 2 ABU-ABU (SENT / TERKIRIM - MENUNGGU DILIHAT)
