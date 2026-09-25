@@ -6,23 +6,23 @@
     <title>Login | MSN Work Report</title>
     <meta name="description" content="Portal Terpadu Sistem Manajemen Gangguan & Tiketing Jaringan MSN Work Report - PT MSN">
 
-    <!-- Favicon & PWA Primary Tags -->
+    <!-- Favicon & PWA Primary Tags (Matched with Dashboard) -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#0b63e5">
+    <meta name="theme-color" content="#07152b">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="MSN Work Report">
     <meta name="application-name" content="MSN Work Report">
-    <meta name="msapplication-TileColor" content="#0b63e5">
+    <meta name="msapplication-TileColor" content="#07152b">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/icon-512.png') }}">
 
-    <!-- Google Fonts: Plus Jakarta Sans / Inter -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,12 +30,14 @@
 
     <style>
         :root {
-            --primary-blue: #0b63e5;
-            --primary-dark: #0052cc;
-            --primary-light: #2684ff;
-            --text-dark: #1e293b;
+            --brand-navy: #07152b;
+            --brand-navy-mid: #0d2757;
+            --brand-strong: #1b39da;
+            --brand-base: #2C7FFF;
+            --brand-cyan: #38bdf8;
+            --text-dark: #0f172a;
             --text-muted: #64748b;
-            --input-bg: #f1f5fb;
+            --input-bg: #f8fafc;
             --input-border: #e2e8f0;
         }
 
@@ -51,7 +53,7 @@
             min-height: 100dvh;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: #ffffff;
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
@@ -68,12 +70,12 @@
             position: relative;
         }
 
-        /* ── DESKTOP LEFT BRAND SIDE (FULL HEIGHT) ── */
+        /* ── DESKTOP LEFT BRAND SIDE (FULL HEIGHT - DASHBOARD NAVY & ROYAL BLUE THEME) ── */
         .desktop-brand-side {
             width: 45%;
             min-height: 100vh;
             min-height: 100dvh;
-            background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 45%, #0548b8 100%);
+            background: linear-gradient(150deg, #07152b 0%, #0d2757 45%, #1b39da 85%, #2C7FFF 100%);
             padding: 4rem 3.5rem;
             display: flex;
             flex-direction: column;
@@ -104,7 +106,7 @@
             align-items: center;
             justify-content: center;
             margin: 1.8rem auto 1.25rem;
-            box-shadow: 0 14px 30px rgba(0, 40, 120, 0.28);
+            box-shadow: 0 14px 32px rgba(7, 21, 43, 0.4), 0 0 0 3px rgba(44, 127, 255, 0.25);
             padding: 16px;
             position: relative;
             z-index: 2;
@@ -126,7 +128,7 @@
             letter-spacing: -0.4px;
             color: #ffffff;
             margin-bottom: 0.85rem;
-            text-shadow: 0 2px 8px rgba(0, 30, 90, 0.2);
+            text-shadow: 0 2px 10px rgba(7, 21, 43, 0.5);
         }
 
         .brand-desc {
@@ -141,14 +143,14 @@
             font-size: 0.75rem;
             font-weight: 700;
             letter-spacing: 0.8px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.75);
             text-transform: uppercase;
             margin-top: 1.5rem;
             position: relative;
             z-index: 2;
         }
 
-        /* ── DESKTOP VERTICAL CLOUD/WAVE TRANSITION ── */
+        /* ── DESKTOP VERTICAL WAVE DIVIDER ── */
         .desktop-wave-wrapper {
             position: absolute;
             top: 0;
@@ -247,13 +249,13 @@
 
         .custom-input:focus {
             background: #ffffff;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3.5px rgba(11, 99, 229, 0.14);
+            border-color: var(--brand-base);
+            box-shadow: 0 0 0 3.5px rgba(44, 127, 255, 0.16);
             outline: none;
         }
 
         .input-box:focus-within .input-icon-left {
-            color: var(--primary-blue);
+            color: var(--brand-base);
         }
 
         .btn-toggle-pwd {
@@ -288,23 +290,23 @@
         }
 
         .form-check-input:checked {
-            background-color: var(--primary-blue);
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 2px rgba(11, 99, 229, 0.2);
+            background-color: var(--brand-base);
+            border-color: var(--brand-base);
+            box-shadow: 0 0 0 2px rgba(44, 127, 255, 0.2);
         }
 
-        /* Submit Action Button */
+        /* Submit Action Button (Dashboard Gradient Match) */
         .btn-submit-login {
             width: 100%;
             height: 50px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #0b63e5 0%, #0052cc 100%);
+            background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%);
             border: none;
             color: #ffffff;
             font-size: 0.96rem;
             font-weight: 700;
             letter-spacing: 0.2px;
-            box-shadow: 0 10px 24px -5px rgba(11, 99, 229, 0.45);
+            box-shadow: 0 10px 24px -5px rgba(44, 127, 255, 0.45);
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -316,7 +318,7 @@
 
         .btn-submit-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 14px 28px -5px rgba(11, 99, 229, 0.6);
+            box-shadow: 0 14px 28px -5px rgba(44, 127, 255, 0.6);
             color: #ffffff;
         }
         .btn-submit-login:active {
@@ -368,10 +370,10 @@
             gap: 0.55rem;
         }
         .role-chip-btn:hover {
-            border-color: var(--primary-blue);
+            border-color: var(--brand-base);
             background: #eff6ff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(11, 99, 229, 0.12);
+            box-shadow: 0 4px 12px rgba(44, 127, 255, 0.15);
         }
         .role-chip-btn:active {
             transform: scale(0.98);
@@ -454,12 +456,12 @@
                 display: none !important;
             }
 
-            /* Mobile Top Full-Width Blue Banner */
+            /* Mobile Top Full-Width Dashboard Theme Header */
             .mobile-brand-top {
                 display: flex !important;
                 flex-direction: column;
                 width: 100%;
-                background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 55%, #0548b8 100%);
+                background: linear-gradient(155deg, #07152b 0%, #0d2757 50%, #1b39da 100%);
                 padding: 1rem 1rem 0;
                 text-align: center;
                 position: relative;
@@ -479,7 +481,7 @@
                 height: 54px;
                 margin: 0.2rem auto 0.35rem;
                 padding: 6px;
-                box-shadow: 0 6px 14px rgba(0, 30, 90, 0.22);
+                box-shadow: 0 6px 16px rgba(7, 21, 43, 0.4), 0 0 0 2px rgba(44, 127, 255, 0.3);
             }
 
             .mobile-brand-top .brand-app-name {
@@ -592,7 +594,7 @@
                 height: 40px;
                 font-size: 0.86rem;
                 border-radius: 10px;
-                box-shadow: 0 6px 16px -4px rgba(11, 99, 229, 0.45);
+                box-shadow: 0 6px 16px -4px rgba(44, 127, 255, 0.45);
             }
 
             .divider-box {
@@ -639,24 +641,29 @@
             }
         }
 
-        /* ── PT MSN SIGNATURE LOADER BACKDROP ── */
+        /* ═══════════════════════════════════════════════════════════════════
+           PT MSN SIGNATURE LOGO SPINNER LOADER (100% MATCH WITH DASHBOARD)
+           ═══════════════════════════════════════════════════════════════════ */
         .msn-loader-backdrop {
             position: fixed;
+            inset: 0;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(11, 99, 229, 0.88);
+            background: rgba(7, 21, 43, 0.86);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            z-index: 99999;
+            z-index: 999999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .msn-loader-backdrop.fade-out {
@@ -667,13 +674,14 @@
 
         .msn-logo-loader-container {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 96px;
+            height: 96px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* Outer spinning neon glow ring */
         .msn-loader-ring {
             position: absolute;
             top: 0;
@@ -681,56 +689,110 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 3.5px solid rgba(255, 255, 255, 0.2);
-            border-top-color: #ffffff;
+            border: 3.5px solid rgba(255, 255, 255, 0.08);
+            border-top-color: #0080ff;
+            border-right-color: #00d2ff;
+            border-bottom-color: #38bdf8;
             animation: msnRingSpin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
         }
 
+        /* Secondary outer counter-spinning dash ring */
+        .msn-loader-ring-pulse {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: calc(100% + 12px);
+            height: calc(100% + 12px);
+            border-radius: 50%;
+            border: 2px dashed rgba(56, 189, 248, 0.4);
+            animation: msnRingSpinReverse 4s linear infinite;
+        }
+
+        /* Inner logo circle container */
         .msn-loader-logo-wrap {
-            width: 62px;
-            height: 62px;
+            width: 64px;
+            height: 64px;
+            max-width: 64px;
+            max-height: 64px;
             border-radius: 50%;
             background: #ffffff;
             padding: 6px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(0, 128, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
+            overflow: hidden;
+            animation: msnLogoBreathing 1.8s ease-in-out infinite alternate;
         }
 
         .msn-loader-logo-img {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 52px !important;
+            max-height: 52px !important;
             object-fit: contain;
+            border-radius: 50%;
+            display: block;
         }
 
         .msn-loader-text {
-            margin-top: 1.2rem;
-            font-size: 0.9rem;
+            margin-top: 1.25rem;
+            font-size: 0.88rem;
             font-weight: 600;
             color: #ffffff;
             letter-spacing: 0.3px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
+
+        .msn-loader-dots span {
+            animation: msnDots 1.4s infinite;
+            opacity: 0;
+        }
+        .msn-loader-dots span:nth-child(1) { animation-delay: 0s; }
+        .msn-loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .msn-loader-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes msnRingSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @keyframes msnRingSpinReverse {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes msnLogoBreathing {
+            0% { transform: scale(0.95); box-shadow: 0 4px 12px rgba(0, 128, 255, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 6px 24px rgba(0, 210, 255, 0.6); }
+        }
+
+        @keyframes msnDots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
 
-<!-- PT MSN Signature Preloader -->
+<!-- ════ PT MSN SIGNATURE LOGO PRELOADER (EXACT MATCH WITH DASHBOARD) ════ -->
 <div id="msnGlobalPreloader" class="msn-loader-backdrop">
     <div class="msn-logo-loader-container">
+        <div class="msn-loader-ring-pulse"></div>
         <div class="msn-loader-ring"></div>
         <div class="msn-loader-logo-wrap">
             <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" class="msn-loader-logo-img">
         </div>
     </div>
-    <div class="msn-loader-text">
-        <span id="msnLoaderMsg">Memuat Aplikasi...</span>
+    <div class="msn-loader-text" id="msnGlobalLoaderText">
+        <span id="msnLoaderMsg">Memuat Halaman</span>
+        <span class="msn-loader-dots"><span>.</span><span>.</span><span>.</span></span>
     </div>
 </div>
 
@@ -761,9 +823,9 @@
         <div class="desktop-wave-wrapper">
             <svg viewBox="0 0 120 1000" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <!-- Layer 1: Sky Blue Shadow Contour -->
-                <path d="M0,0 C50,80 15,200 55,320 C95,440 35,560 70,680 C100,780 40,890 80,1000 L120,1000 L120,0 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <path d="M0,0 C50,80 15,200 55,320 C95,440 35,560 70,680 C100,780 40,890 80,1000 L120,1000 L120,0 Z" fill="rgba(44, 127, 255, 0.35)"/>
                 <!-- Layer 2: Light Blue Contour -->
-                <path d="M25,0 C70,90 35,220 75,340 C115,460 55,580 90,700 C120,800 65,910 100,1000 L120,1000 L120,0 Z" fill="rgba(219, 234, 254, 0.8)"/>
+                <path d="M25,0 C70,90 35,220 75,340 C115,460 55,580 90,700 C120,800 65,910 100,1000 L120,1000 L120,0 Z" fill="rgba(219, 234, 254, 0.85)"/>
                 <!-- Layer 3: Pure White Flowing Wave -->
                 <path d="M50,0 C95,105 55,240 95,360 C135,480 80,600 110,720 C140,820 90,930 120,1000 L120,1000 L120,0 Z" fill="#ffffff"/>
             </svg>
@@ -783,9 +845,9 @@
         <div class="mobile-wave-wrapper">
             <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <!-- Layer 1: Sky Blue Shadow Layer -->
-                <path d="M0,0 C240,60 480,15 720,55 C960,95 1200,30 1440,60 L1440,140 L0,140 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <path d="M0,0 C240,60 480,15 720,55 C960,95 1200,30 1440,60 L1440,140 L0,140 Z" fill="rgba(44, 127, 255, 0.35)"/>
                 <!-- Layer 2: Light Blue Layer -->
-                <path d="M0,25 C260,80 520,30 760,75 C1000,120 1220,50 1440,85 L1440,140 L0,140 Z" fill="rgba(219, 234, 254, 0.8)"/>
+                <path d="M0,25 C260,80 520,30 760,75 C1000,120 1220,50 1440,85 L1440,140 L0,140 Z" fill="rgba(219, 234, 254, 0.85)"/>
                 <!-- Layer 3: Solid White Flowing Wave -->
                 <path d="M0,50 C280,105 540,55 800,95 C1060,135 1260,75 1440,110 L1440,140 L0,140 Z" fill="#ffffff"/>
             </svg>
@@ -936,7 +998,7 @@ function fillLogin(email, password) {
     pwdInput.value   = password;
 
     [emailInput, pwdInput].forEach(el => {
-        el.style.borderColor = '#0b63e5';
+        el.style.borderColor = '#2C7FFF';
         el.style.backgroundColor = '#eff6ff';
         setTimeout(() => {
             el.style.borderColor = '';
@@ -960,7 +1022,7 @@ if (toggleBtn && pwdInput && eyeIcon) {
     });
 }
 
-// PT MSN Signature Loader
+// PT MSN Signature Loader (Exact match with dashboard)
 window.showMsnLoader = function(text) {
     const el = document.getElementById('msnGlobalPreloader');
     const txt = document.getElementById('msnLoaderMsg');
@@ -983,8 +1045,8 @@ window.hideMsnLoader = function() {
     }
 };
 
-window.addEventListener('load', () => setTimeout(window.hideMsnLoader, 150));
-document.addEventListener('DOMContentLoaded', () => setTimeout(window.hideMsnLoader, 300));
+window.addEventListener('load', () => setTimeout(window.hideMsnLoader, 120));
+document.addEventListener('DOMContentLoaded', () => setTimeout(window.hideMsnLoader, 250));
 setTimeout(window.hideMsnLoader, 1200);
 
 // Submit loading state
