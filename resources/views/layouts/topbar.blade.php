@@ -42,7 +42,7 @@
         <div class="topbar-status d-none d-lg-inline-flex align-items-center">
             <span class="status-dot-pulse"></span>
             <span class="fw-bold text-dark" style="font-size: 0.78rem; letter-spacing: 0.2px;">Backbone Monitoring</span>
-            <span class="badge bg-success-subtle text-success fw-bold px-2 py-0.5 rounded-pill" style="font-size: 0.65rem; border: 1px solid rgba(16,185,129,0.25);">LIVE</span>
+            <span class="badge bg-success text-white fw-bold px-2 py-0.5 rounded-pill shadow-xs" style="font-size: 0.62rem; letter-spacing: 0.4px;">LIVE</span>
         </div>
     </div>
 
