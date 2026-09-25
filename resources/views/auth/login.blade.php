@@ -648,7 +648,7 @@
         }
 
         /* ═══════════════════════════════════════════════════════════════════
-           PT MSN SIGNATURE LOGO SPINNER LOADER (100% MATCH WITH DASHBOARD)
+           PT MSN SIGNATURE LOGO SPINNER LOADER (100% MATCH WITH DASHBOARD - 60FPS GPU)
            ═══════════════════════════════════════════════════════════════════ */
         .msn-loader-backdrop {
             position: fixed;
@@ -659,7 +659,7 @@
             bottom: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(7, 21, 43, 0.86);
+            background: rgba(7, 21, 43, 0.88);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 999999;
@@ -669,7 +669,11 @@
             justify-content: center;
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            will-change: opacity, transform;
+            transform: translate3d(0, 0, 0);
+            -webkit-transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.35s ease;
         }
 
         .msn-loader-backdrop.fade-out {
@@ -685,6 +689,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transform: translateZ(0);
         }
 
         /* Outer spinning neon glow ring */
@@ -699,6 +704,8 @@
             border-top-color: #0080ff;
             border-right-color: #00d2ff;
             border-bottom-color: #38bdf8;
+            will-change: transform;
+            transform: translateZ(0);
             animation: msnRingSpin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
             box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
         }
@@ -712,6 +719,8 @@
             height: calc(100% + 12px);
             border-radius: 50%;
             border: 2px dashed rgba(56, 189, 248, 0.4);
+            will-change: transform;
+            transform: translateZ(0);
             animation: msnRingSpinReverse 4s linear infinite;
         }
 
@@ -730,6 +739,8 @@
             justify-content: center;
             z-index: 2;
             overflow: hidden;
+            will-change: transform;
+            transform: translateZ(0);
             animation: msnLogoBreathing 1.8s ease-in-out infinite alternate;
         }
 
@@ -764,18 +775,18 @@
         .msn-loader-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes msnRingSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg) translateZ(0); }
+            100% { transform: rotate(360deg) translateZ(0); }
         }
 
         @keyframes msnRingSpinReverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
+            0% { transform: rotate(360deg) translateZ(0); }
+            100% { transform: rotate(0deg) translateZ(0); }
         }
 
         @keyframes msnLogoBreathing {
-            0% { transform: scale(0.95); box-shadow: 0 4px 12px rgba(0, 128, 255, 0.2); }
-            100% { transform: scale(1.05); box-shadow: 0 6px 24px rgba(0, 210, 255, 0.6); }
+            0% { transform: scale(0.94) translateZ(0); }
+            100% { transform: scale(1.06) translateZ(0); }
         }
 
         @keyframes msnDots {
@@ -1030,31 +1041,41 @@ if (toggleBtn && pwdInput && eyeIcon) {
     });
 }
 
-// PT MSN Signature Loader (Exact match with dashboard)
+// PT MSN Signature Loader (Smooth 60fps)
+let msnLoaderHidden = false;
 window.showMsnLoader = function(text) {
+    msnLoaderHidden = false;
     const el = document.getElementById('msnGlobalPreloader');
     const txt = document.getElementById('msnLoaderMsg');
     if (txt && text) txt.textContent = text;
     if (el) {
-        el.classList.remove('fade-out');
         el.style.display = 'flex';
+        requestAnimationFrame(() => {
+            el.classList.remove('fade-out');
+        });
     }
 };
 
 window.hideMsnLoader = function() {
+    if (msnLoaderHidden) return;
     const el = document.getElementById('msnGlobalPreloader');
-    if (el) {
-        el.classList.add('fade-out');
-        setTimeout(() => {
-            if (el.classList.contains('fade-out')) {
-                el.style.display = 'none';
-            }
-        }, 350);
-    }
+    if (!el) return;
+    msnLoaderHidden = true;
+    el.classList.add('fade-out');
+    setTimeout(() => {
+        el.style.display = 'none';
+    }, 380);
 };
 
-window.addEventListener('load', () => setTimeout(window.hideMsnLoader, 120));
-document.addEventListener('DOMContentLoaded', () => setTimeout(window.hideMsnLoader, 250));
+if (document.readyState === 'complete') {
+    setTimeout(window.hideMsnLoader, 100);
+} else {
+    window.addEventListener('load', function() {
+        requestAnimationFrame(() => {
+            setTimeout(window.hideMsnLoader, 120);
+        });
+    });
+}
 setTimeout(window.hideMsnLoader, 1200);
 
 // Submit loading state
