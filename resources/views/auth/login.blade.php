@@ -167,12 +167,18 @@
             display: block;
         }
 
-        /* ── DESKTOP RIGHT FORM SIDE ── */
+        /* ── DESKTOP RIGHT FORM SIDE (TEXTURED BACKGROUND) ── */
         .desktop-form-side {
             width: 55%;
             min-height: 100vh;
             min-height: 100dvh;
-            background: #ffffff;
+            background-color: #fcfdfe;
+            background-image:
+                radial-gradient(circle at 85% 15%, rgba(44, 127, 255, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 15% 85%, rgba(13, 148, 136, 0.04) 0%, transparent 45%),
+                radial-gradient(rgba(15, 23, 42, 0.065) 1.2px, transparent 1.2px),
+                linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%);
+            background-size: 100% 100%, 100% 100%, 22px 22px, 100% 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -471,42 +477,42 @@
             }
 
             .mobile-brand-header {
-                padding: 1.85rem 1.25rem 0.6rem;
+                padding: 2.25rem 1.25rem 0.65rem;
                 width: 100%;
             }
 
             .mobile-brand-top .brand-welcome-title {
-                font-size: 0.95rem;
+                font-size: 1rem;
                 font-weight: 600;
-                margin-bottom: 0.2rem;
+                margin-bottom: 0.25rem;
                 opacity: 0.95;
             }
 
             .mobile-brand-top .brand-logo-circle {
-                width: 72px;
-                height: 72px;
-                margin: 0.45rem auto 0.55rem;
-                padding: 8px;
-                box-shadow: 0 8px 20px rgba(7, 21, 43, 0.45), 0 0 0 2.5px rgba(44, 127, 255, 0.35);
+                width: 78px;
+                height: 78px;
+                margin: 0.5rem auto 0.65rem;
+                padding: 10px;
+                box-shadow: 0 10px 24px rgba(7, 21, 43, 0.45), 0 0 0 2.5px rgba(44, 127, 255, 0.35);
             }
 
             .mobile-brand-top .brand-app-name {
-                font-size: 1.3rem;
+                font-size: 1.38rem;
                 font-weight: 800;
-                margin-bottom: 0.2rem;
+                margin-bottom: 0.25rem;
                 letter-spacing: -0.2px;
             }
 
             .mobile-brand-top .mobile-brand-sub {
-                font-size: 0.74rem;
+                font-size: 0.76rem;
                 color: rgba(255, 255, 255, 0.88);
-                margin-bottom: 0.6rem;
+                margin-bottom: 0.75rem;
             }
 
             /* Mobile Wave Transition SVG (Full-Width Edge to Edge) */
             .mobile-wave-wrapper {
                 width: 100%;
-                height: 48px;
+                height: 54px;
                 margin-bottom: -1px;
                 display: block;
                 overflow: hidden;
@@ -518,13 +524,18 @@
                 display: block;
             }
 
-            /* Mobile Bottom Full-Width White Form */
+            /* Mobile Bottom Full-Width White Form with Textured Pattern */
             .desktop-form-side {
                 width: 100% !important;
                 min-height: auto !important;
                 flex-grow: 1;
-                padding: 0.6rem 1.25rem 0.9rem !important;
-                background: #ffffff;
+                padding: 0.75rem 1.25rem 1rem !important;
+                background-color: #fcfdfe;
+                background-image:
+                    radial-gradient(circle at 90% 10%, rgba(44, 127, 255, 0.04) 0%, transparent 40%),
+                    radial-gradient(rgba(15, 23, 42, 0.055) 1.2px, transparent 1.2px),
+                    linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%);
+                background-size: 100% 100%, 20px 20px, 100% 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
