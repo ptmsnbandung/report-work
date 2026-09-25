@@ -171,6 +171,113 @@
         margin-bottom: 1.5rem;
         box-shadow: var(--neu-flat, 6px 6px 14px #c2ccd9, -6px -6px 14px #ffffff);
     }
+
+    /* ── ELEGANT DASHBOARD ENTRANCE ANIMATIONS ── */
+    @keyframes dashEntranceFadeDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-18px) scale(0.985);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes dashEntranceFadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(22px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes dashShimmerSweep {
+        0% {
+            transform: translateX(-120%) skewX(-20deg);
+        }
+        100% {
+            transform: translateX(250%) skewX(-20deg);
+        }
+    }
+
+    @keyframes waveHandAnim {
+        0% { transform: rotate(0deg); }
+        15% { transform: rotate(14deg); }
+        30% { transform: rotate(-8deg); }
+        45% { transform: rotate(14deg); }
+        60% { transform: rotate(-4deg); }
+        75% { transform: rotate(10deg); }
+        100% { transform: rotate(0deg); }
+    }
+
+    .anim-hero {
+        animation: dashEntranceFadeDown 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+        position: relative;
+        will-change: transform, opacity;
+    }
+
+    .anim-hero-shimmer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+        pointer-events: none;
+        z-index: 2;
+        animation: dashShimmerSweep 1.6s cubic-bezier(0.4, 0, 0.2, 1) 0.35s 1 forwards;
+    }
+
+    .greeting-hand {
+        display: inline-block;
+        transform-origin: 70% 70%;
+        animation: waveHandAnim 1.5s ease-in-out 0.4s 1;
+    }
+
+    .anim-sla-alert {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+        will-change: transform, opacity;
+    }
+
+    .anim-stat-1 {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+        will-change: transform, opacity;
+    }
+    .anim-stat-2 {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.23s both;
+        will-change: transform, opacity;
+    }
+    .anim-stat-3 {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both;
+        will-change: transform, opacity;
+    }
+    .anim-stat-4 {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.37s both;
+        will-change: transform, opacity;
+    }
+
+    .anim-banner {
+        animation: dashEntranceFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.43s both;
+        will-change: transform, opacity;
+    }
+
+    .anim-chart-left {
+        animation: dashEntranceFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.49s both;
+        will-change: transform, opacity;
+    }
+    .anim-chart-right {
+        animation: dashEntranceFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+        will-change: transform, opacity;
+    }
+
+    .anim-recent-section {
+        animation: dashEntranceFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.61s both;
+        will-change: transform, opacity;
+    }
 </style>
 @endpush
 
@@ -178,15 +285,16 @@
 <div class="container-fluid px-0 pb-5 mb-5">
 
     {{-- ── GREETING HERO ── --}}
-    <div class="dash-greeting">
-        <div class="d-flex align-items-start align-items-md-center justify-content-between flex-column flex-md-row gap-3">
+    <div class="dash-greeting anim-hero">
+        <div class="anim-hero-shimmer"></div>
+        <div class="d-flex align-items-start align-items-md-center justify-content-between flex-column flex-md-row gap-3 position-relative" style="z-index: 3;">
             <div>
                 <h1 class="greeting-title">
                     @php
                         $hour = now()->hour;
                         $greet = $hour < 12 ? 'Selamat Pagi' : ($hour < 17 ? 'Selamat Siang' : 'Selamat Malam');
                     @endphp
-                    {{ $greet }}, {{ explode(' ', $user->name)[0] }}! 👋
+                    {{ $greet }}, {{ explode(' ', $user->name)[0] }}! <span class="greeting-hand">👋</span>
                 </h1>
                 <p class="greeting-sub">
                     Berikut ringkasan operasional gangguan backbone terkini &bull; {{ now()->translatedFormat('l, d F Y') }}
@@ -217,7 +325,7 @@
 
     {{-- ── SLA EXCEEDED ALERT ── --}}
     @if(($totalSlaExceeded > 0 || count($overSlaActiveTikets) > 0) && $user->hasRole(['admin', 'helpdesk', 'sa_cs']))
-    <div class="sla-alert">
+    <div class="sla-alert anim-sla-alert">
         <div style="width:38px;height:38px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
             <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444;font-size:1.1rem;"></i>
         </div>
@@ -238,12 +346,12 @@
     {{-- ── STAT CARDS ROW ── --}}
     <div class="row g-3 mb-4">
         {{-- Total Tiket --}}
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg-3 anim-stat-1">
             <div class="stat-card c-all">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Total Tiket</div>
-                        <div class="stat-number" style="color:#1e40af;">{{ $totalTiket }}</div>
+                        <div class="stat-number count-up" data-target="{{ $totalTiket }}" style="color:#1e40af;">{{ $totalTiket }}</div>
                         <div class="stat-desc">Insiden tercatat</div>
                     </div>
                     <div class="stat-icon-wrap" style="background:#eff6ff;">
@@ -254,12 +362,12 @@
         </div>
 
         {{-- Tiket OPEN --}}
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg-3 anim-stat-2">
             <div class="stat-card c-open">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Tiket OPEN</div>
-                        <div class="stat-number" style="color:#d97706;">{{ $totalOpen }}</div>
+                        <div class="stat-number count-up" data-target="{{ $totalOpen }}" style="color:#d97706;">{{ $totalOpen }}</div>
                         <div class="stat-desc">Menunggu penanganan</div>
                     </div>
                     <div class="stat-icon-wrap" style="background:#fffbeb;">
@@ -270,12 +378,12 @@
         </div>
 
         {{-- Tiket PROSES --}}
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg-3 anim-stat-3">
             <div class="stat-card c-proses">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Dalam Proses</div>
-                        <div class="stat-number" style="color:#7c3aed;">{{ $totalProses }}</div>
+                        <div class="stat-number count-up" data-target="{{ $totalProses }}" style="color:#7c3aed;">{{ $totalProses }}</div>
                         <div class="stat-desc">Tim di lapangan</div>
                     </div>
                     <div class="stat-icon-wrap" style="background:#f5f3ff;">
@@ -286,12 +394,12 @@
         </div>
 
         {{-- Tiket CLOSE --}}
-        <div class="col-6 col-lg-3">
+        <div class="col-6 col-lg-3 anim-stat-4">
             <div class="stat-card c-close">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="stat-label">Tiket Selesai</div>
-                        <div class="stat-number" style="color:#065f46;">{{ $totalClose }}</div>
+                        <div class="stat-number count-up" data-target="{{ $totalClose }}" style="color:#065f46;">{{ $totalClose }}</div>
                         <div class="stat-desc">Terselesaikan</div>
                     </div>
                     <div class="stat-icon-wrap" style="background:#f0fdf4;">
@@ -303,7 +411,7 @@
     </div>
 
     {{-- ── PWA DOWNLOAD / INSTALL BANNER (BELOW STATS) ── --}}
-    <div class="card border-0 mb-4 pwa-download-dash-card" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); border-radius: var(--neu-radius, 16px); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28) !important; box-shadow: 0 8px 24px rgba(7, 21, 43, 0.18); overflow: hidden;">
+    <div class="card border-0 mb-4 pwa-download-dash-card anim-banner" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); border-radius: var(--neu-radius, 16px); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28) !important; box-shadow: 0 8px 24px rgba(7, 21, 43, 0.18); overflow: hidden;">
         <div class="card-body py-2.5 px-3 px-md-4">
             <div class="row align-items-center g-3">
                 <div class="col-auto d-flex align-items-center">
@@ -334,7 +442,7 @@
     {{-- ── ROLE SPECIFIC WIDGETS & CHARTS ROW ── --}}
     <div class="row g-4 mb-4">
         {{-- Left: Daily Incidents Chart (7 Days) --}}
-        <div class="col-12 col-lg-7">
+        <div class="col-12 col-lg-7 anim-chart-left">
             <div class="card border-0 shadow-sm rounded-xl p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
@@ -349,7 +457,7 @@
         </div>
 
         {{-- Right: SLA Compliance & Performance Card --}}
-        <div class="col-12 col-lg-5">
+        <div class="col-12 col-lg-5 anim-chart-right">
             <div class="card border-0 shadow-sm rounded-xl p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h6 class="fw-bold mb-0 text-navy"><i class="bi bi-speedometer2 text-teal me-1"></i> Performa SLA & MTTR</h6>
@@ -368,7 +476,7 @@
                         <div class="neu-recessed-tile">
                             <span class="small text-muted text-uppercase fw-bold" style="font-size: 0.68rem; letter-spacing: 0.5px;">Kepatuhan SLA</span>
                             <div class="h4 fw-bold {{ $slaComplianceRate >= 85 ? 'text-success' : 'text-danger' }} mt-1 mb-0">
-                                {{ $slaComplianceRate }}%
+                                <span class="count-up" data-target="{{ $slaComplianceRate }}">{{ $slaComplianceRate }}</span>%
                             </div>
                             <small class="text-muted" style="font-size: 0.7rem;">Target: 95%</small>
                         </div>
@@ -501,7 +609,7 @@
     @endif
 
     {{-- ── DAFTAR TIKET TERBARU ── --}}
-    <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-4">
+    <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-4 anim-recent-section">
         <div class="card-header bg-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
             <h6 class="fw-bold mb-0 text-navy d-flex align-items-center gap-2">
                 <i class="bi bi-ticket-detailed-fill text-primary"></i> Daftar Tiket Terbaru
@@ -653,7 +761,35 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ── 1. DAILY INCIDENTS BAR CHART ──
+    // ── 1. SMOOTH NUMBER COUNT-UP ANIMATION ──
+    const countElements = document.querySelectorAll('.count-up');
+    countElements.forEach(function(el) {
+        const rawTarget = el.getAttribute('data-target') || el.textContent.trim();
+        const target = parseFloat(rawTarget);
+        if (isNaN(target)) return;
+
+        let start = 0;
+        const duration = 900;
+        const startTime = performance.now();
+
+        function updateCount(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Smooth easeOutExpo curve
+            const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            const current = Math.round(start + (target - start) * ease);
+            el.textContent = current;
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCount);
+            } else {
+                el.textContent = target;
+            }
+        }
+        requestAnimationFrame(updateCount);
+    });
+
+    // ── 2. DAILY INCIDENTS BAR CHART ──
     const ctxDaily = document.getElementById('dailyIncidentsChart');
     if (ctxDaily) {
         new Chart(ctxDaily, {
@@ -671,6 +807,10 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: {
+                    duration: 1100,
+                    easing: 'easeOutQuart'
+                },
                 plugins: {
                     legend: { display: false }
                 },
@@ -688,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ── 2. AUTO-REFRESH DASHBOARD TIAP 60 DETIK ──
+    // ── 3. AUTO-REFRESH DASHBOARD TIAP 60 DETIK ──
     setTimeout(function() {
         window.location.reload();
     }, 60000);
