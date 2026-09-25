@@ -632,12 +632,12 @@
                 </div>
             </div>
 
-            <!-- Remember Me -->
+            <!-- Remember Me (Default Active 30 Days) -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="form-check mb-0">
-                    <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1">
+                    <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
                     <label class="form-check-label small text-muted" for="remember" style="font-size:0.82rem;">
-                        Ingat saya di perangkat ini
+                        Ingat saya di perangkat ini (aktif 1 bulan)
                     </label>
                 </div>
             </div>
