@@ -40,6 +40,55 @@
     <link rel="stylesheet" href="{{ asset('css/connecti-custom.css') }}?v={{ file_exists(public_path('css/connecti-custom.css')) ? filemtime(public_path('css/connecti-custom.css')) : time() }}">
 
     <style>
+        /* ── CORPORATE SWEETALERT2 STYLING (PT MSN THEME) ── */
+        .swal2-popup.msn-swal-popup {
+            border-radius: 18px !important;
+            padding: 1.5rem 1.4rem 1.25rem !important;
+            background: #ffffff !important;
+            border: 1px solid rgba(15, 23, 42, 0.1) !important;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2), 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+            max-width: 440px !important;
+            width: calc(100% - 32px) !important;
+        }
+        .swal2-popup.msn-swal-popup .swal2-title {
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
+            color: #0f172a !important;
+            padding: 0 0 0.35rem 0 !important;
+            letter-spacing: -0.2px !important;
+        }
+        .swal2-popup.msn-swal-popup .swal2-html-container {
+            font-size: 0.88rem !important;
+            color: #475569 !important;
+            line-height: 1.5 !important;
+            margin: 0.35rem 0 1.25rem 0 !important;
+        }
+        .swal2-popup.msn-swal-popup .swal2-actions {
+            gap: 0.6rem !important;
+            width: 100% !important;
+            margin: 0.4rem 0 0 0 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+        }
+        .swal2-popup.msn-swal-popup .swal2-confirm,
+        .swal2-popup.msn-swal-popup .swal2-cancel {
+            border-radius: 999px !important;
+            padding: 0.52rem 1.35rem !important;
+            font-size: 0.84rem !important;
+            font-weight: 600 !important;
+            box-shadow: none !important;
+            transition: all 0.18s ease !important;
+        }
+        .swal2-popup.msn-swal-popup .swal2-confirm:hover,
+        .swal2-popup.msn-swal-popup .swal2-cancel:hover {
+            transform: translateY(-1px) !important;
+        }
+        .swal2-icon {
+            transform: scale(0.85) !important;
+            margin: 0.5rem auto 0.5rem auto !important;
+        }
+
         /* ── PHONE MOCKUP FRAME (APP PREVIEW) ── */
         .phone-mockup-frame {
             width: 52px;
@@ -211,6 +260,9 @@
     <!-- Bootstrap 5 Bundle JS (with Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
+    <!-- SweetAlert2 (Enterprise Confirmation & Notification Dialogs) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Chart.js & Leaflet & Flatpickr -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -219,6 +271,77 @@
 
     <!-- App Common Scripts -->
     <script>
+        // ── GLOBAL ENTERPRISE CONFIRMATION DIALOG (SWEETALERT2) ──
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (form.dataset.swalBypassed === 'true') {
+                delete form.dataset.swalBypassed;
+                return;
+            }
+
+            const onsubmitAttr = form.getAttribute('onsubmit');
+            const dataConfirm = form.getAttribute('data-confirm');
+
+            let confirmMsg = null;
+            let isDestructive = false;
+            let isResumeClock = false;
+            let confirmTitle = 'Konfirmasi Tindakan';
+            let confirmBtnText = 'Ya, Lanjutkan';
+            let confirmIcon = 'question';
+
+            if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
+                const match = onsubmitAttr.match(/confirm\(\s*['"](.+?)['"]\s*\)/);
+                if (match && match[1]) {
+                    confirmMsg = match[1];
+                }
+                form.removeAttribute('onsubmit');
+            } else if (dataConfirm) {
+                confirmMsg = dataConfirm;
+                if (form.getAttribute('data-confirm-title')) confirmTitle = form.getAttribute('data-confirm-title');
+                if (form.getAttribute('data-confirm-btn')) confirmBtnText = form.getAttribute('data-confirm-btn');
+            }
+
+            if (confirmMsg) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const lower = confirmMsg.toLowerCase();
+                if (lower.includes('hapus') || lower.includes('delete')) {
+                    isDestructive = true;
+                    confirmTitle = 'Konfirmasi Hapus Data';
+                    confirmBtnText = '<i class="bi bi-trash3-fill me-1"></i> Ya, Hapus';
+                    confirmIcon = 'warning';
+                } else if (lower.includes('resume') || lower.includes('lanjutkan') || lower.includes('sla')) {
+                    isResumeClock = true;
+                    confirmTitle = 'Lanjutkan Perhitungan SLA?';
+                    confirmBtnText = '<i class="bi bi-play-fill me-1"></i> Ya, Lanjutkan SLA';
+                    confirmIcon = 'info';
+                }
+
+                Swal.fire({
+                    title: confirmTitle,
+                    html: `<div style="font-size: 0.9rem; color: #475569;">${confirmMsg}</div>`,
+                    icon: confirmIcon,
+                    showCancelButton: true,
+                    confirmButtonText: confirmBtnText,
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true,
+                    focusCancel: true,
+                    customClass: {
+                        popup: 'msn-swal-popup',
+                        confirmButton: `btn ${isDestructive ? 'btn-danger' : (isResumeClock ? 'btn-success' : 'btn-primary')} rounded-pill px-4 py-2 fw-semibold`,
+                        cancelButton: 'btn btn-light border rounded-pill px-4 py-2 fw-semibold text-secondary'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.dataset.swalBypassed = 'true';
+                        form.submit();
+                    }
+                });
+            }
+        }, true);
+
         document.addEventListener('DOMContentLoaded', function () {
             // Ensure any modals defined inside page components are direct children of document.body
             // to avoid z-index/stacking context issues with nested parent wrappers
