@@ -1665,6 +1665,69 @@
         box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4) !important;
     }
 
+    /* ── UNIFIED HERO ACTION DROPDOWN MENU ── */
+    .tiket-hero-dropdown-menu {
+        min-width: 275px !important;
+        padding: 0.5rem !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(226, 232, 240, 0.9) !important;
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16), 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+        background: #ffffff !important;
+        animation: heroDropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes heroDropdownFadeIn {
+        from { opacity: 0; transform: translateY(6px) scale(0.97); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .tiket-hero-dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.45rem 0.65rem;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #1e293b;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+    }
+    .tiket-hero-dropdown-item:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+    }
+    .tiket-hero-dropdown-item.disabled,
+    .tiket-hero-dropdown-item:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        background: transparent !important;
+    }
+    .tiket-dropdown-icon-box {
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 0.92rem;
+        transition: transform 0.15s ease;
+    }
+    .tiket-hero-dropdown-item:hover .tiket-dropdown-icon-box {
+        transform: scale(1.08);
+    }
+    .tiket-dropdown-header-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: #94a3b8;
+        padding: 0.4rem 0.65rem 0.25rem 0.65rem;
+    }
+
     /* ═══════════════════════════════════════════════════════════════════
        SLA TIMELINE STEPPER (POINT 5)
        ═══════════════════════════════════════════════════════════════════ */
@@ -2613,14 +2676,16 @@
                             <i class="bi bi-grid-fill"></i>
                             <span>Menu Aksi</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end mt-1 py-2" style="min-width: 255px;">
+                        <ul class="dropdown-menu dropdown-menu-end mt-1 tiket-hero-dropdown-menu">
                             
                             <!-- 1. Workflow Actions (Closing / Verifikasi) -->
                             @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
                             <li>
-                                <button type="button" class="dropdown-item py-2 fw-semibold text-primary d-flex align-items-center"
+                                <button type="button" class="tiket-hero-dropdown-item text-primary"
                                         data-bs-toggle="modal" data-bs-target="#closingAwalModal">
-                                    <i class="bi bi-check2-all me-2.5 fs-6"></i>
+                                    <div class="tiket-dropdown-icon-box bg-primary-subtle text-primary">
+                                        <i class="bi bi-check2-all"></i>
+                                    </div>
                                     <span>Closing Awal (Selesai)</span>
                                 </button>
                             </li>
@@ -2629,25 +2694,31 @@
                             @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
                                 @if($tiket->status === 'PENDING_VERIFIKASI')
                                 <li>
-                                    <button type="button" class="dropdown-item py-2 fw-semibold text-success d-flex align-items-center"
+                                    <button type="button" class="tiket-hero-dropdown-item text-success"
                                             data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                                        <i class="bi bi-shield-check me-2.5 fs-6"></i>
+                                        <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
                                         <span>Verifikasi & Close Tiket</span>
                                     </button>
                                 </li>
                                 <li>
-                                    <button type="button" class="dropdown-item py-2 fw-semibold text-danger d-flex align-items-center"
+                                    <button type="button" class="tiket-hero-dropdown-item text-danger"
                                             data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
-                                        <i class="bi bi-x-circle me-2.5 fs-6"></i>
+                                        <div class="tiket-dropdown-icon-box bg-danger-subtle text-danger">
+                                            <i class="bi bi-x-circle"></i>
+                                        </div>
                                         <span>Reject Closing Awal</span>
                                     </button>
                                 </li>
                                 @else
                                 <li>
-                                    <span class="dropdown-item py-2 text-muted small d-flex align-items-center disabled" style="cursor: not-allowed;">
-                                        <i class="bi bi-hourglass-split me-2.5 fs-6 text-secondary"></i>
-                                        <span>Menunggu Closing Awal</span>
-                                    </span>
+                                    <div class="tiket-hero-dropdown-item disabled">
+                                        <div class="tiket-dropdown-icon-box bg-secondary-subtle text-secondary">
+                                            <i class="bi bi-hourglass-split"></i>
+                                        </div>
+                                        <span class="text-muted">Menunggu Closing Awal</span>
+                                    </div>
                                 </li>
                                 @endif
                             @endif
@@ -2656,18 +2727,22 @@
                             @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis', 'teknisi']))
                                 @if(!$tiket->is_stop_clock)
                                 <li>
-                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center"
+                                    <button type="button" class="tiket-hero-dropdown-item"
                                             data-bs-toggle="modal" data-bs-target="#startStopClockModal">
-                                        <i class="bi bi-pause-circle-fill text-warning me-2.5 fs-6"></i>
+                                        <div class="tiket-dropdown-icon-box bg-warning-subtle text-warning">
+                                            <i class="bi bi-pause-circle-fill"></i>
+                                        </div>
                                         <span>Stop Clock (Jeda SLA)</span>
                                     </button>
                                 </li>
                                 @else
                                 <li>
-                                    <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="m-0" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
+                                    <form action="{{ route('tiket.stop-clock.stop', $tiket->id) }}" method="POST" class="m-0 w-100" onsubmit="return confirm('Lanjutkan perhitungan SLA (Resume Clock)? Durasi jeda akan diakumulasikan.');">
                                         @csrf
-                                        <button type="submit" class="dropdown-item py-2 d-flex align-items-center text-success">
-                                            <i class="bi bi-play-circle-fill me-2.5 fs-6"></i>
+                                        <button type="submit" class="tiket-hero-dropdown-item text-success">
+                                            <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
+                                                <i class="bi bi-play-circle-fill"></i>
+                                            </div>
                                             <span>Resume Clock (Lanjut SLA)</span>
                                         </button>
                                     </form>
@@ -2675,9 +2750,11 @@
                                 @endif
 
                                 <li>
-                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center"
+                                    <button type="button" class="tiket-hero-dropdown-item"
                                             data-bs-toggle="modal" data-bs-target="#handoverShiftModal">
-                                        <i class="bi bi-arrow-left-right me-2.5 fs-6" style="color: #8b5cf6;"></i>
+                                        <div class="tiket-dropdown-icon-box" style="background-color: rgba(139, 92, 246, 0.12); color: #8b5cf6;">
+                                            <i class="bi bi-arrow-left-right"></i>
+                                        </div>
                                         <span>Oper Shift (Handover)</span>
                                     </button>
                                 </li>
@@ -2687,16 +2764,20 @@
                             @if(auth()->user()->hasRole(['admin', 'helpdesk']))
                                 @if($tiket->status === 'OPEN')
                                 <li>
-                                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="dropdown-item py-2 d-flex align-items-center">
-                                        <i class="bi bi-pencil-square text-warning me-2.5 fs-6"></i>
+                                    <a href="{{ route('tiket.edit', $tiket->id) }}" class="tiket-hero-dropdown-item">
+                                        <div class="tiket-dropdown-icon-box bg-warning-subtle text-warning">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </div>
                                         <span>Edit Data Tiket</span>
                                     </a>
                                 </li>
                                 @endif
 
                                 <li>
-                                    <button type="button" class="dropdown-item py-2 d-flex align-items-center" id="btnCopyWaBroadcast">
-                                        <i class="bi bi-whatsapp text-success me-2.5 fs-6"></i>
+                                    <button type="button" class="tiket-hero-dropdown-item" id="btnCopyWaBroadcast">
+                                        <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
+                                            <i class="bi bi-whatsapp"></i>
+                                        </div>
                                         <span>Salin Info WhatsApp</span>
                                     </button>
                                 </li>
@@ -2704,16 +2785,20 @@
 
                             <!-- 4. Export Section -->
                             <li><hr class="dropdown-divider my-1"></li>
-                            <li class="dropdown-header small text-muted text-uppercase fw-bold px-3 py-1" style="font-size: 0.68rem; letter-spacing: 0.5px;">Export Dokumen</li>
+                            <li class="tiket-dropdown-header-label">Export Dokumen</li>
                             <li>
-                                <a class="dropdown-item py-2 small d-flex align-items-center" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
-                                    <i class="bi bi-file-earmark-pdf-fill text-danger me-2.5 fs-6"></i>
+                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
+                                    <div class="tiket-dropdown-icon-box bg-danger-subtle text-danger">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                                    </div>
                                     <span>Export Berita Acara PDF</span>
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item py-2 small d-flex align-items-center" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
-                                    <i class="bi bi-file-earmark-excel-fill text-success me-2.5 fs-6"></i>
+                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
+                                    <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
+                                        <i class="bi bi-file-earmark-excel-fill"></i>
+                                    </div>
                                     <span>Export Data Excel</span>
                                 </a>
                             </li>
