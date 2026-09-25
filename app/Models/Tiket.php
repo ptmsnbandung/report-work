@@ -382,6 +382,41 @@ class Tiket extends Model
     }
 
     /**
+     * Format durasi menit ke representasi Jam dan Menit yang rapi
+     */
+    public function formatMinutesToHuman(?int $minutes): string
+    {
+        if ($minutes === null) {
+            return '-';
+        }
+        if ($minutes <= 0) {
+            return '0 Menit';
+        }
+        if ($minutes < 60) {
+            return "{$minutes} Menit";
+        }
+        $hours = intdiv($minutes, 60);
+        $rem = $minutes % 60;
+        return $rem > 0 ? "{$hours} Jam {$rem} Menit" : "{$hours} Jam";
+    }
+
+    /**
+     * Rata-rata interval diformat ke Jam & Menit
+     */
+    public function getAverageReportIntervalFormattedAttribute(): string
+    {
+        return $this->formatMinutesToHuman($this->average_report_interval_minutes);
+    }
+
+    /**
+     * Waktu sejak update terakhir diformat ke Jam & Menit
+     */
+    public function getMinutesSinceLastUpdateFormattedAttribute(): string
+    {
+        return $this->formatMinutesToHuman($this->minutes_since_last_update);
+    }
+
+    /**
      * Hitung durasi verifikasi HelpDesk NOC (dari closing awal ke closing akhir)
      */
     public function getVerificationDurationMinutesAttribute(): ?int

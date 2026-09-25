@@ -2630,38 +2630,44 @@
         @endphp
 
         @if($showIntervalAlert || $showStopClockAlert)
-        <div id="fieldReportIntervalBanner" class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden {{ $fieldStatus === 'OVERDUE' ? 'border-2 border-danger' : ($fieldStatus === 'WARNING' ? 'border-2 border-warning' : 'border-2 border-warning') }}">
+        <div id="fieldReportIntervalBanner" class="card border-0 mb-3 overflow-hidden shadow-sm" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 50%, #fee2e2 100%); border: 1px solid #fca5a5 !important; border-left: 5px solid #ef4444 !important; border-radius: 14px; box-shadow: 0 4px 20px -4px rgba(239, 68, 68, 0.12);' : 'background: linear-gradient(135deg, #fffdf0 0%, #fefce8 50%, #fef3c7 100%); border: 1px solid #fde047 !important; border-left: 5px solid #f59e0b !important; border-radius: 14px; box-shadow: 0 4px 20px -4px rgba(245, 158, 11, 0.12);' }}">
             <div class="card-body p-3 p-md-3.5">
                 @if($showIntervalAlert)
                 <div class="row align-items-center g-3" id="fieldIntervalStatusRow">
                     <!-- Left: Interval Monitor Status -->
-                    <div class="col-12 col-md-7">
+                    <div class="col-12 col-lg-7">
                         <div class="d-flex align-items-start gap-3">
                             @if($fieldStatus === 'OVERDUE')
-                                <div class="rounded-circle bg-danger bg-opacity-15 p-2.5 text-danger d-flex align-items-center justify-content-center flex-shrink-0 animate__animated animate__pulse animate__infinite" style="width: 44px; height: 44px;">
+                                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 46px; height: 46px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); border-radius: 12px;">
                                     <i class="bi bi-exclamation-triangle-fill fs-4"></i>
                                 </div>
-                                <div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-danger text-white fw-bold">OVERDUE > 30 MENIT</span>
-                                        <span class="fw-bold text-danger">Wajib Kirim Update Kondisi Lapangan!</span>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                        <span class="badge rounded-pill bg-danger text-white px-2.5 py-1 fw-bold shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.72rem; letter-spacing: 0.3px;">
+                                            <span class="spinner-grow spinner-grow-sm" style="width: 0.45rem; height: 0.45rem;" role="status"></span>
+                                            OVERDUE > 30 MENIT
+                                        </span>
+                                        <span class="fw-bold text-danger-emphasis fs-6" style="letter-spacing: -0.2px;">Wajib Kirim Update Kondisi Lapangan!</span>
                                     </div>
-                                    <div class="small text-muted mt-1">
-                                        Laporan kronologis terakhir diupdate <strong>{{ $minsSinceLast !== null ? $minsSinceLast . ' menit yang lalu' : 'belum pernah ada laporan' }}</strong>.
-                                        SOP mewajibkan minimal per <strong>30 menit</strong> teknisi memberikan info perkembangan di lapangan.
+                                    <div class="small text-muted" style="font-size: 0.8rem; line-height: 1.45;">
+                                        Laporan kronologis terakhir diupdate <strong class="text-danger fw-bold">{{ $tiket->minutes_since_last_update_formatted ? $tiket->minutes_since_last_update_formatted . ' yang lalu' : 'belum pernah ada laporan' }}</strong>.
+                                        SOP mewajibkan teknisi memberikan info perkembangan di lapangan minimal setiap <strong>30 Menit</strong>.
                                     </div>
                                 </div>
                             @elseif($fieldStatus === 'WARNING')
-                                <div class="rounded-circle bg-warning bg-opacity-20 p-2.5 text-warning-emphasis d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px;">
-                                    <i class="bi bi-hourglass-bottom fs-4 text-warning"></i>
+                                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 46px; height: 46px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: #ffffff; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); border-radius: 12px;">
+                                    <i class="bi bi-hourglass-split fs-4"></i>
                                 </div>
-                                <div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-warning text-dark fw-bold">PERINGATAN 20-30 MENIT</span>
-                                        <span class="fw-bold text-navy">Persiapkan Update Laporan Lapangan</span>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                        <span class="badge rounded-pill bg-warning text-dark px-2.5 py-1 fw-bold shadow-xs d-inline-flex align-items-center gap-1" style="font-size: 0.72rem; letter-spacing: 0.3px;">
+                                            <i class="bi bi-clock-history"></i>
+                                            PERINGATAN 20-30 MENIT
+                                        </span>
+                                        <span class="fw-bold text-dark fs-6" style="letter-spacing: -0.2px;">Persiapkan Update Laporan Lapangan</span>
                                     </div>
-                                    <div class="small text-muted mt-1">
-                                        Laporan terakhir <strong>{{ $minsSinceLast }} menit yang lalu</strong>. Segera input update progress sebelum batas 30 menit terlewati.
+                                    <div class="small text-muted" style="font-size: 0.8rem; line-height: 1.45;">
+                                        Laporan terakhir <strong class="text-dark fw-bold">{{ $tiket->minutes_since_last_update_formatted }} yang lalu</strong>. Segera input update progress sebelum batas 30 menit terlewati.
                                     </div>
                                 </div>
                             @endif
@@ -2669,22 +2675,31 @@
                     </div>
 
                     <!-- Right: Quick Action & Stats -->
-                    <div class="col-12 col-md-5">
-                        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-md-end gap-2">
-                            <div class="p-2 rounded bg-light border text-center flex-fill">
-                                <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Update Terakhir</div>
-                                <div class="fw-bold text-navy" style="font-size: 0.85rem;">
+                    <div class="col-12 col-lg-5">
+                        <div class="d-flex flex-row align-items-center justify-content-lg-end gap-2 flex-wrap flex-sm-nowrap">
+                            <!-- Metric 1: Update Terakhir -->
+                            <div class="p-2 px-3 rounded-3 text-center flex-fill" style="background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(203, 213, 225, 0.8); box-shadow: 0 2px 6px rgba(0,0,0,0.03); min-width: 105px;">
+                                <div class="text-muted d-flex align-items-center justify-content-center gap-1" style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.4px;">
+                                    <i class="bi bi-clock-history text-secondary"></i> Update Terakhir
+                                </div>
+                                <div class="fw-bold text-navy font-monospace mt-0.5" style="font-size: 0.92rem;">
                                     {{ $lastKronologis ? ($lastKronologis->timestamp ? $lastKronologis->timestamp->format('H:i') : $lastKronologis->created_at->format('H:i')) . ' WIB' : '-' }}
                                 </div>
                             </div>
-                            <div class="p-2 rounded bg-light border text-center flex-fill">
-                                <div class="text-muted" style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700;">Rata-rata Interval</div>
-                                <div class="fw-bold text-navy" style="font-size: 0.85rem;">
-                                    {{ $avgInterval ? $avgInterval . ' Menit' : '-' }}
+
+                            <!-- Metric 2: Rata-Rata Interval (Format Jam & Menit) -->
+                            <div class="p-2 px-3 rounded-3 text-center flex-fill" style="background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(203, 213, 225, 0.8); box-shadow: 0 2px 6px rgba(0,0,0,0.03); min-width: 120px;">
+                                <div class="text-muted d-flex align-items-center justify-content-center gap-1" style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.4px;">
+                                    <i class="bi bi-stopwatch text-secondary"></i> Rata-rata Interval
+                                </div>
+                                <div class="fw-bold text-navy mt-0.5" style="font-size: 0.88rem; white-space: nowrap;">
+                                    {{ $tiket->average_report_interval_formatted }}
                                 </div>
                             </div>
+
+                            <!-- Action CTA Button -->
                             @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                <button type="button" class="btn {{ $fieldStatus === 'OVERDUE' ? 'btn-danger' : 'btn-primary' }} btn-sm px-3 py-2 fw-semibold rounded-pill shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill" onclick="const kTab = document.getElementById('kronologis-tab'); if(kTab) kTab.click(); const waInp = document.getElementById('waChatTextInput') || document.getElementById('informasi'); if(waInp) { waInp.focus(); waInp.scrollIntoView({behavior: 'smooth', block: 'center'}); }">
+                                <button type="button" class="btn btn-sm px-3.5 py-2.5 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill text-white flex-shrink-0" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35); border: none;' : 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); border: none;' }}" onclick="const kTab = document.getElementById('kronologis-tab'); if(kTab) kTab.click(); const waInp = document.getElementById('waChatTextInput') || document.getElementById('informasi'); if(waInp) { waInp.focus(); waInp.scrollIntoView({behavior: 'smooth', block: 'center'}); }">
                                     <i class="bi bi-chat-left-dots-fill"></i>
                                     <span>Kirim Update</span>
                                 </button>
