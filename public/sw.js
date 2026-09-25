@@ -109,20 +109,31 @@ self.addEventListener('push', function (event) {
     );
 });
 
-// ── 3. HANDLE USER CLICK ON NOTIFICATION ──
+// ── 3. HANDLE USER CLICK ON NOTIFICATION (PWA APP ROUTING) ──
 self.addEventListener('notificationclick', function (event) {
     event.notification.close();
 
-    const targetUrl = event.notification.data?.url || '/';
+    const rawUrl = event.notification.data?.url || '/';
+    const targetUrl = new URL(rawUrl, self.location.origin).href;
 
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+            // If any PWA window / tab is open on this origin, navigate & focus it
             for (let i = 0; i < clientList.length; i++) {
                 const client = clientList[i];
-                if (client.url.includes(targetUrl) && 'focus' in client) {
+                if ('focus' in client) {
+                    if (client.url === targetUrl) {
+                        return client.focus();
+                    }
+                    if ('navigate' in client) {
+                        return client.navigate(targetUrl).then(function (c) {
+                            return c ? c.focus() : client.focus();
+                        });
+                    }
                     return client.focus();
                 }
             }
+            // If no window is open, open the PWA app window
             if (clients.openWindow) {
                 return clients.openWindow(targetUrl);
             }
