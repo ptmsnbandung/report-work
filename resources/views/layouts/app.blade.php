@@ -930,23 +930,8 @@
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPwaPrompt = e;
-
-                    if (pwaInstallBanner && !sessionStorage.getItem('dismiss_pwa_banner') && !window.applyPwaInstalledState()) {
-                        pwaInstallBanner.classList.remove('d-none');
-                    }
+                    // Prompt disimpan secara silent dan hanya dipicu saat pengguna menekan tombol Pasang/Download di Dashboard
                 });
-
-                if (btnPwaInstallAction) {
-                    btnPwaInstallAction.addEventListener('click', window.triggerPwaInstall);
-                }
-
-                const closeOrDismiss = () => {
-                    if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                    sessionStorage.setItem('dismiss_pwa_banner', '1');
-                };
-
-                if (btnDismissPwa) btnDismissPwa.addEventListener('click', closeOrDismiss);
-                if (btnClosePwaBanner) btnClosePwaBanner.addEventListener('click', closeOrDismiss);
 
                 document.querySelectorAll('.btn-trigger-pwa-install').forEach(btn => {
                     btn.addEventListener('click', window.triggerPwaInstall);
@@ -959,64 +944,8 @@
                 deferredPwaPrompt = null;
                 console.log('PT MSN PWA successfully installed!');
             });
-
-            // Smooth transition feedback on Report navigation tabs
-            const reportNavItems = document.querySelectorAll('.report-nav-item');
-            reportNavItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    if (this.classList.contains('active') || e.ctrlKey || e.metaKey || e.shiftKey) return;
-                    
-                    reportNavItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const mainContent = document.querySelector('.app-content');
-                    if (mainContent) {
-                        mainContent.style.transition = 'opacity 0.18s ease, transform 0.18s ease';
-                        mainContent.style.opacity = '0.72';
-                        mainContent.style.transform = 'translateY(2px)';
-                    }
-                });
-            });
         });
     </script>
-
-    <!-- PWA Install Floating Banner (100% Safe, Legal & No Security Warnings) -->
-    <div id="pwaInstallBanner" class="d-none position-fixed bottom-0 start-0 p-3" style="z-index: 1095; max-width: 410px; width: calc(100% - 24px);">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.35) !important; box-shadow: 0 16px 36px rgba(0,0,0,0.55) !important;">
-            <!-- Close Button -->
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2.5 p-1" id="btnClosePwaBanner" aria-label="Tutup" style="font-size: 0.65rem; opacity: 0.7; z-index: 5;"></button>
-            
-            <div class="card-body p-3.5">
-                <div class="d-flex align-items-center gap-3">
-                    <!-- Phone Mockup Frame with Logo -->
-                    <div class="phone-mockup-frame">
-                        <div class="phone-notch"></div>
-                        <div class="phone-screen-inner">
-                            <img src="{{ asset('assets/work-report.png') }}" alt="MSN Work Report" class="phone-app-img">
-                        </div>
-                        <div class="phone-bar"></div>
-                    </div>
-                    <div class="flex-grow-1 pe-2">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem; letter-spacing: -0.2px;">Install Aplikasi PT MSN</h6>
-                            <span class="badge" style="background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.62rem; padding: 2px 6px; font-weight: 700;">PWA App</span>
-                        </div>
-                        <p class="text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.7rem !important;">
-                            Pasang di HP / Desktop untuk akses instan full-screen, cepat, &amp; tanpa bar browser.
-                        </p>
-                        <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnPwaInstallAction" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #0052cc 100%); border: none; letter-spacing: 0.2px;">
-                                <i class="bi bi-download"></i> Pasang Aplikasi
-                            </button>
-                            <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 text-white-50 text-nowrap" id="btnDismissPwa" style="font-size: 0.76rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
-                                Nanti
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Device Permissions & Web Push Floating Prompt (Notifikasi, Maps GPS, & Kamera) -->
     @auth
