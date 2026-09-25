@@ -110,6 +110,14 @@
     <!-- App Common Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Ensure any modals defined inside page components are direct children of document.body
+            // to avoid z-index/stacking context issues with nested parent wrappers
+            document.querySelectorAll('.modal').forEach(function (modalEl) {
+                if (modalEl.parentElement !== document.body) {
+                    document.body.appendChild(modalEl);
+                }
+            });
+
             // Initialize All Tooltips
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
             [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el, { boundary: 'window' }));

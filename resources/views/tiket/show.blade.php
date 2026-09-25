@@ -1761,6 +1761,7 @@
         .closing-tile-desc {
             font-size: 0.66rem !important;
         }
+    }
     /* ═══════════════════════════════════════════════════════════════════
        FIBER OPTIC JOINT CLOSURE & CABLE SPLICING (PRO STYLES)
        ═══════════════════════════════════════════════════════════════════ */
