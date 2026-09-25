@@ -1006,7 +1006,7 @@
                 </button>
 
                 <!-- Tim Teknis -->
-                <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
+                <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'katasandi')">
                     <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
                         <i class="bi bi-tools"></i>
                     </div>
