@@ -22,25 +22,28 @@
         transition: border-radius 0.25s ease;
     }
 
-    /* ── FULLSCREEN MODE ── */
+    /* ── FULLSCREEN MODE (TRUE 100% FULLSCREEN FIX) ── */
     .wa-chat-container.wa-fullscreen {
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        z-index: 999999 !important;
+        z-index: 9999999 !important;
         border-radius: 0 !important;
         border: none !important;
         box-shadow: none !important;
         width: 100vw !important;
+        max-width: 100vw !important;
         height: 100vh !important;
         height: 100dvh !important;
-        max-height: none !important;
+        max-height: 100dvh !important;
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
         background: #ffffff !important;
+        margin: 0 !important;
+        transform: none !important;
     }
 
     .wa-chat-container.wa-fullscreen .wa-chat-header {
@@ -50,6 +53,7 @@
         background: #ffffff !important;
         border-bottom: 1px solid #e2e8f0 !important;
         flex-shrink: 0 !important;
+        padding-top: max(0.65rem, env(safe-area-inset-top, 0px)) !important;
     }
 
     .wa-chat-container.wa-fullscreen #timelineWrapper {
@@ -71,23 +75,46 @@
     .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
         flex-shrink: 0 !important;
         flex-grow: 0 !important;
+        padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px)) !important;
     }
 
-    /* Sembunyikan topbar header, navbar, bottom nav, sidebar, footer saat fullscreen */
+    /* Sembunyikan semua elemen lain saat fullscreen aktif */
     body.wa-chat-fullscreen-active .app-topbar,
     body.wa-chat-fullscreen-active header,
     body.wa-chat-fullscreen-active .mobile-bottom-nav,
     body.wa-chat-fullscreen-active .app-sidebar,
     body.wa-chat-fullscreen-active .app-footer,
-    body.wa-chat-fullscreen-active footer {
+    body.wa-chat-fullscreen-active footer,
+    body.wa-chat-fullscreen-active .card-header,
+    body.wa-chat-fullscreen-active #tiketTab,
+    body.wa-chat-fullscreen-active .nav-tabs-mobile,
+    body.wa-chat-fullscreen-active .sidebar-overlay,
+    body.wa-chat-fullscreen-active #pwaInstallBanner,
+    body.wa-chat-fullscreen-active #webPushPromptBanner,
+    body.wa-chat-fullscreen-active .toast-container {
         display: none !important;
     }
 
-    /* Hapus padding-bottom bawaan mobile agar input menempel di paling bawah */
+    /* Reset body & wrapper saat fullscreen agar tidak terpotong oleh zoom / transform */
     body.wa-chat-fullscreen-active {
+        zoom: 1 !important;
         padding: 0 !important;
         margin: 0 !important;
         overflow: hidden !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    body.wa-chat-fullscreen-active .app-wrapper,
+    body.wa-chat-fullscreen-active .app-main,
+    body.wa-chat-fullscreen-active .app-content {
+        transform: none !important;
+        filter: none !important;
+        perspective: none !important;
+        contain: none !important;
+        zoom: 1 !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     /* Tombol fullscreen */
