@@ -177,26 +177,31 @@
                 max-width: calc(100% - 20px) !important;
                 width: calc(100% - 20px) !important;
             }
+        }
+
         /* ═══════════════════════════════════════════════════════════════════
-           PT MSN SIGNATURE LOGO SPINNER LOADER
+           PT MSN SIGNATURE LOGO SPINNER LOADER (GLOBAL OVERLAY)
            ═══════════════════════════════════════════════════════════════════ */
         .msn-loader-backdrop {
             position: fixed;
+            inset: 0;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(7, 21, 43, 0.82);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 99999;
+            background: rgba(7, 21, 43, 0.86);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .msn-loader-backdrop.fade-out {
@@ -207,8 +212,8 @@
 
         .msn-logo-loader-container {
             position: relative;
-            width: 90px;
-            height: 90px;
+            width: 96px;
+            height: 96px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -244,24 +249,30 @@
 
         /* Inner logo circle container */
         .msn-loader-logo-wrap {
-            width: 62px;
-            height: 62px;
+            width: 64px;
+            height: 64px;
+            max-width: 64px;
+            max-height: 64px;
             border-radius: 50%;
             background: #ffffff;
-            padding: 5px;
+            padding: 6px;
             box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(0, 128, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
+            overflow: hidden;
             animation: msnLogoBreathing 1.8s ease-in-out infinite alternate;
         }
 
         .msn-loader-logo-img {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 52px !important;
+            max-height: 52px !important;
             object-fit: contain;
             border-radius: 50%;
+            display: block;
         }
 
         .msn-loader-text {
@@ -304,7 +315,7 @@
             50% { opacity: 1; }
             100% { opacity: 0; }
         }
-        }
+
         @media (max-width: 380px) {
             #webPushPromptBanner,
             #pwaInstallBanner {
@@ -328,7 +339,7 @@
             <div class="msn-loader-ring-pulse"></div>
             <div class="msn-loader-ring"></div>
             <div class="msn-loader-logo-wrap">
-                <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" class="msn-loader-logo-img">
+                <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" class="msn-loader-logo-img" style="width: 52px; height: 52px; max-width: 52px; max-height: 52px; object-fit: contain;">
             </div>
         </div>
         <div class="msn-loader-text" id="msnGlobalLoaderText">
@@ -438,13 +449,26 @@
 
         // Otomatis hilangkan loader saat halaman selesai dimuat
         window.addEventListener('load', function() {
-            setTimeout(window.hideMsnLoader, 150);
+            setTimeout(window.hideMsnLoader, 120);
         });
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(window.hideMsnLoader, 300);
+            setTimeout(window.hideMsnLoader, 250);
         });
-        // Batas waktu pengaman (maksimal 1.2 detik)
-        setTimeout(window.hideMsnLoader, 1200);
+        // Batas waktu pengaman (maksimal 1.5 detik)
+        setTimeout(window.hideMsnLoader, 1500);
+
+        // Tampilkan loader saat navigasi internal antar halaman (sidebar / menu / link)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not([download]):not(.no-loader)');
+            if (link && link.href && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.defaultPrevented) {
+                try {
+                    const url = new URL(link.href, window.location.origin);
+                    if (url.origin === window.location.origin && url.pathname !== window.location.pathname) {
+                        window.showMsnLoader('Memuat Halaman...');
+                    }
+                } catch(err) {}
+            }
+        });
 
         // ── GLOBAL ENTERPRISE CONFIRMATION DIALOG (SWEETALERT2) ──
         document.addEventListener('submit', function (e) {
