@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login | Sistem Tiketing Gangguan PT MSN</title>
-    <meta name="description" content="Portal Terpadu Sistem Manajemen Gangguan & Tiketing Jaringan Backbone PT MSN">
+    <title>Login | MSN Work Report</title>
+    <meta name="description" content="Portal Terpadu Sistem Manajemen Gangguan & Tiketing Jaringan MSN Work Report - PT MSN">
 
     <!-- Favicon & PWA Primary Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -12,8 +12,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MSN Backbone">
-    <meta name="application-name" content="MSN Backbone">
+    <meta name="apple-mobile-web-app-title" content="MSN Work Report">
+    <meta name="application-name" content="MSN Work Report">
     <meta name="msapplication-TileColor" content="#0b63e5">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
@@ -61,7 +61,7 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: clamp(1rem, 3vh, 2.5rem) clamp(0.75rem, 2vw, 1.5rem);
+            padding: clamp(0.75rem, 2.5vh, 2rem) clamp(0.75rem, 2vw, 1.5rem);
             overflow-x: hidden;
             background: radial-gradient(circle at 15% 15%, #dbeafe 0%, #eef4fc 40%, #e2edfb 100%);
         }
@@ -176,10 +176,10 @@
         }
 
         .brand-footer-links {
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
-            letter-spacing: 0.6px;
-            color: rgba(255, 255, 255, 0.75);
+            letter-spacing: 0.8px;
+            color: rgba(255, 255, 255, 0.8);
             text-transform: uppercase;
             margin-top: 1.5rem;
             position: relative;
@@ -458,23 +458,37 @@
             color: #1d4ed8;
         }
 
-        /* ── MOBILE RESPONSIVE LAYOUT (MATCHING REFERENCE PHONE SCREEN) ── */
+        /* ── MOBILE RESPONSIVE LAYOUT (CLEAN NO-SCROLL SINGLE SCREEN FIT) ── */
         .mobile-brand-top {
             display: none;
         }
 
         @media (max-width: 991px) {
+            html, body {
+                height: 100%;
+                min-height: 100dvh;
+                overflow: hidden;
+            }
+
             body {
-                padding: 1rem 0.75rem;
+                padding: 0.45rem 0.65rem;
                 background: #eef4fc;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .login-card-wrapper {
-                max-width: 440px;
+                max-width: 385px;
+                width: 100%;
+                max-height: calc(100dvh - 0.9rem);
+                height: auto;
                 min-height: auto;
-                border-radius: 28px;
+                border-radius: 24px;
                 flex-direction: column;
-                box-shadow: 0 15px 40px rgba(11, 99, 229, 0.15), 0 4px 15px rgba(0, 0, 0, 0.05);
+                justify-content: space-between;
+                box-shadow: 0 15px 35px rgba(11, 99, 229, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
+                overflow: hidden;
             }
 
             .brand-panel {
@@ -484,38 +498,47 @@
             /* Mobile Top Vibrant Blue Banner */
             .mobile-brand-top {
                 display: block;
+                flex-shrink: 0;
                 background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 55%, #0548b8 100%);
-                padding: 2.2rem 1.5rem 0;
+                padding: 0.9rem 1rem 0;
                 text-align: center;
                 position: relative;
                 color: #ffffff;
             }
 
+            .mobile-brand-top .brand-welcome-title {
+                font-size: 0.82rem;
+                font-weight: 600;
+                margin-bottom: 0.1rem;
+                opacity: 0.95;
+            }
+
             .mobile-brand-top .brand-logo-circle {
-                width: 86px;
-                height: 86px;
-                margin: 0 auto 0.75rem;
-                padding: 10px;
-                box-shadow: 0 8px 20px rgba(0, 30, 90, 0.25);
+                width: 54px;
+                height: 54px;
+                margin: 0.2rem auto 0.35rem;
+                padding: 6px;
+                box-shadow: 0 6px 14px rgba(0, 30, 90, 0.22);
             }
 
             .mobile-brand-top .brand-app-name {
-                font-size: 1.35rem;
+                font-size: 1.12rem;
                 font-weight: 800;
-                margin-bottom: 0.2rem;
+                margin-bottom: 0.1rem;
+                letter-spacing: -0.2px;
             }
 
             .mobile-brand-top .mobile-brand-sub {
-                font-size: 0.78rem;
-                color: rgba(255, 255, 255, 0.85);
-                margin-bottom: 1.25rem;
+                font-size: 0.68rem;
+                color: rgba(255, 255, 255, 0.88);
+                margin-bottom: 0.45rem;
             }
 
             /* Mobile Cloud Transition SVG */
             .mobile-cloud-divider {
                 width: 100%;
-                height: 48px;
-                margin-bottom: -2px;
+                height: 26px;
+                margin-bottom: -1px;
                 display: block;
             }
             .mobile-cloud-divider svg {
@@ -525,21 +548,92 @@
             }
 
             .form-panel {
-                padding: 1.6rem 1.5rem 1.85rem !important;
+                flex-grow: 1;
+                padding: 0.65rem 1.15rem 0.9rem !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
             }
 
             .form-title {
-                font-size: 1.4rem;
+                font-size: 1.12rem;
                 text-align: center;
+                margin-bottom: 0.1rem;
+                font-weight: 800;
             }
 
             .form-subtitle {
+                font-size: 0.72rem;
                 text-align: center;
-                margin-bottom: 1.15rem;
+                margin-bottom: 0.65rem;
+                line-height: 1.25;
+            }
+
+            .toast-banner {
+                padding: 0.4rem 0.7rem;
+                font-size: 0.74rem;
+                margin-bottom: 0.55rem;
+                border-radius: 8px;
+            }
+
+            .form-group-custom {
+                margin-bottom: 0.55rem;
+            }
+
+            .custom-label {
+                font-size: 0.74rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .custom-input {
+                height: 40px;
+                padding: 0.35rem 0.75rem 0.35rem 38px;
+                font-size: 0.82rem;
+                border-radius: 10px;
+            }
+
+            .input-box .input-icon-left {
+                left: 12px;
+                font-size: 0.92rem;
+            }
+
+            .btn-toggle-pwd {
+                right: 6px;
+                font-size: 1rem;
+                padding: 4px 6px;
+            }
+
+            .remember-container {
+                margin-bottom: 0.65rem !important;
+            }
+
+            .remember-container span {
+                font-size: 0.72rem !important;
+            }
+
+            .form-check-input {
+                width: 0.95rem;
+                height: 0.95rem;
+            }
+
+            .btn-submit-login {
+                height: 40px;
+                font-size: 0.86rem;
+                border-radius: 10px;
+                box-shadow: 0 6px 16px -4px rgba(11, 99, 229, 0.45);
+            }
+
+            .divider-box {
+                margin: 0.65rem 0 0.5rem;
+            }
+
+            .divider-box span {
+                font-size: 0.64rem;
+                padding: 0 8px;
             }
 
             .quick-roles-grid {
-                gap: 0.45rem !important;
+                gap: 0.35rem !important;
             }
 
             .role-chip-btn {
@@ -547,25 +641,27 @@
                 align-items: center !important;
                 justify-content: center !important;
                 text-align: center !important;
-                padding: 0.55rem 0.25rem !important;
-                border-radius: 10px !important;
-                gap: 0.3rem !important;
+                padding: 0.35rem 0.15rem !important;
+                border-radius: 8px !important;
+                gap: 0.15rem !important;
             }
 
             .role-chip-icon {
-                width: 28px !important;
-                height: 28px !important;
+                width: 22px !important;
+                height: 22px !important;
+                font-size: 0.72rem !important;
+                border-radius: 6px !important;
                 margin: 0 auto !important;
             }
 
             .role-chip-name {
-                font-size: 0.72rem !important;
+                font-size: 0.68rem !important;
                 width: 100% !important;
                 text-align: center !important;
             }
 
             .role-chip-sub {
-                font-size: 0.62rem !important;
+                font-size: 0.56rem !important;
                 width: 100% !important;
                 text-align: center !important;
             }
@@ -683,14 +779,14 @@
                 <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
             </div>
 
-            <div class="brand-app-name">MSN Backbone</div>
+            <div class="brand-app-name">MSN Work Report</div>
             <p class="brand-desc">
-                Portal operasional insiden &amp; manajemen jaringan fiber optik terpadu PT Media Solusi Network.
+                Sistem manajemen gangguan, tiket operasional &amp; pelaporan kerja jaringan terpadu PT Media Solusi Network.
             </p>
         </div>
 
         <div class="brand-footer-links">
-            PORTAL NOC &bull; PT MEDIA SOLUSI NETWORK
+            PT MEDIA SOLUSI NETWORK
         </div>
 
         <!-- Layered Cloud / Wave SVG Divider (Desktop) -->
@@ -708,11 +804,11 @@
 
     <!-- ── 2. MOBILE TOP BANNER (Vibrant Blue with Cloud Divider) ── -->
     <div class="mobile-brand-top">
-        <div class="brand-welcome-title" style="font-size: 1.15rem; font-weight: 600;">Selamat Datang di</div>
+        <div class="brand-welcome-title">Selamat Datang di</div>
         <div class="brand-logo-circle">
             <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
         </div>
-        <div class="brand-app-name">MSN Backbone</div>
+        <div class="brand-app-name">MSN Work Report</div>
         <div class="mobile-brand-sub">Sistem Tiketing &amp; Manajemen Jaringan</div>
 
         <!-- Layered Cloud / Wave SVG Divider (Mobile) -->
@@ -733,14 +829,14 @@
         <!-- Flash Alert Messages -->
         @if($errors->any())
             <div class="toast-banner toast-error">
-                <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0"></i>
+                <i class="bi bi-exclamation-triangle-fill fs-6 flex-shrink-0"></i>
                 <div>{{ $errors->first() }}</div>
             </div>
         @endif
 
         @if(session('info'))
             <div class="toast-banner toast-info">
-                <i class="bi bi-info-circle-fill fs-5 flex-shrink-0"></i>
+                <i class="bi bi-info-circle-fill fs-6 flex-shrink-0"></i>
                 <div>{{ session('info') }}</div>
             </div>
         @endif
@@ -790,10 +886,10 @@
             </div>
 
             <!-- Remember Me Session Checkbox -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center remember-container mb-3">
                 <label class="d-flex align-items-center gap-2" for="remember" style="cursor: pointer; user-select: none;">
                     <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
-                    <span class="small text-secondary fw-semibold" style="font-size: 0.82rem;">
+                    <span class="small text-secondary fw-semibold" style="font-size: 0.8rem;">
                         Ingat saya di perangkat ini (30 Hari)
                     </span>
                 </label>
