@@ -33,7 +33,6 @@
             --primary-blue: #0b63e5;
             --primary-dark: #0052cc;
             --primary-light: #2684ff;
-            --bg-page: #e8f1fc;
             --text-dark: #1e293b;
             --text-muted: #64748b;
             --input-bg: #f1f5fb;
@@ -47,103 +46,66 @@
         }
 
         html, body {
+            width: 100%;
             min-height: 100vh;
             min-height: 100dvh;
+            margin: 0;
+            padding: 0;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-page);
+            background-color: #ffffff;
             color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-        }
-
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: clamp(0.75rem, 2.5vh, 2rem) clamp(0.75rem, 2vw, 1.5rem);
             overflow-x: hidden;
-            background: radial-gradient(circle at 15% 15%, #dbeafe 0%, #eef4fc 40%, #e2edfb 100%);
         }
 
-        /* ── BACKGROUND AMBIENT GLOW ── */
-        .ambient-shape {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(80px);
-            z-index: 0;
-            opacity: 0.5;
-        }
-        .shape-1 {
-            width: 450px;
-            height: 450px;
-            background: rgba(38, 132, 255, 0.25);
-            top: -120px;
-            left: -100px;
-        }
-        .shape-2 {
-            width: 400px;
-            height: 400px;
-            background: rgba(11, 99, 229, 0.18);
-            bottom: -100px;
-            right: -80px;
-        }
-
-        /* ── MAIN LOGIN CONTAINER (DESKTOP) ── */
-        .login-card-wrapper {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 980px;
-            min-height: 560px;
-            background: #ffffff;
-            border-radius: 32px;
-            box-shadow:
-                0 25px 60px -15px rgba(11, 99, 229, 0.18),
-                0 10px 30px -5px rgba(0, 0, 0, 0.05),
-                0 0 0 1px rgba(11, 99, 229, 0.06);
-            overflow: hidden;
+        /* ── FULLSCREEN LOGIN LAYOUT ── */
+        .login-fullscreen-container {
             display: flex;
-            flex-direction: row;
+            width: 100vw;
+            min-height: 100vh;
+            min-height: 100dvh;
+            position: relative;
         }
 
-        /* ── LEFT BRAND PANEL (DESKTOP) ── */
-        .brand-panel {
-            width: 46%;
-            flex-shrink: 0;
+        /* ── DESKTOP LEFT BRAND SIDE (FULL HEIGHT) ── */
+        .desktop-brand-side {
+            width: 45%;
+            min-height: 100vh;
+            min-height: 100dvh;
             background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 45%, #0548b8 100%);
-            padding: 3rem 2.5rem;
+            padding: 4rem 3.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             text-align: center;
             position: relative;
-            overflow: hidden;
             color: #ffffff;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
         .brand-welcome-title {
-            font-size: 1.55rem;
+            font-size: 1.6rem;
             font-weight: 700;
             letter-spacing: -0.3px;
             color: #ffffff;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.35rem;
         }
 
         /* Centered White Circle Badge with Logo */
         .brand-logo-circle {
-            width: 105px;
-            height: 105px;
+            width: 110px;
+            height: 110px;
             background: #ffffff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 1.6rem auto 1.1rem;
-            box-shadow: 0 12px 28px rgba(0, 40, 120, 0.25);
-            padding: 14px;
+            margin: 1.8rem auto 1.25rem;
+            box-shadow: 0 14px 30px rgba(0, 40, 120, 0.28);
+            padding: 16px;
             position: relative;
             z-index: 2;
             transition: transform 0.3s ease;
@@ -159,24 +121,24 @@
         }
 
         .brand-app-name {
-            font-size: 1.45rem;
+            font-size: 1.55rem;
             font-weight: 800;
             letter-spacing: -0.4px;
             color: #ffffff;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
             text-shadow: 0 2px 8px rgba(0, 30, 90, 0.2);
         }
 
         .brand-desc {
-            font-size: 0.85rem;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.88);
-            max-width: 320px;
+            font-size: 0.88rem;
+            line-height: 1.65;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 330px;
             margin: 0 auto;
         }
 
         .brand-footer-links {
-            font-size: 0.74rem;
+            font-size: 0.75rem;
             font-weight: 700;
             letter-spacing: 0.8px;
             color: rgba(255, 255, 255, 0.8);
@@ -187,36 +149,43 @@
         }
 
         /* ── DESKTOP VERTICAL CLOUD/WAVE TRANSITION ── */
-        .desktop-cloud-divider {
+        .desktop-wave-wrapper {
             position: absolute;
             top: 0;
             right: -1px;
             bottom: 0;
-            width: 85px;
+            width: 95px;
             height: 100%;
             pointer-events: none;
             z-index: 5;
         }
-        .desktop-cloud-divider svg {
+        .desktop-wave-wrapper svg {
             width: 100%;
             height: 100%;
             display: block;
         }
 
-        /* ── RIGHT FORM PANEL ── */
-        .form-panel {
-            flex-grow: 1;
+        /* ── DESKTOP RIGHT FORM SIDE ── */
+        .desktop-form-side {
+            width: 55%;
+            min-height: 100vh;
+            min-height: 100dvh;
             background: #ffffff;
-            padding: 3.2rem 3rem;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             justify-content: center;
+            padding: 3rem 4rem;
             position: relative;
             z-index: 6;
         }
 
+        .form-inner-box {
+            width: 100%;
+            max-width: 440px;
+        }
+
         .form-title {
-            font-size: 1.65rem;
+            font-size: 1.75rem;
             font-weight: 800;
             color: var(--text-dark);
             letter-spacing: -0.5px;
@@ -224,18 +193,18 @@
         }
 
         .form-subtitle {
-            font-size: 0.86rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
-            margin-bottom: 1.45rem;
+            margin-bottom: 1.5rem;
         }
 
         /* Form Controls */
         .form-group-custom {
-            margin-bottom: 1.15rem;
+            margin-bottom: 1.2rem;
         }
 
         .custom-label {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             font-weight: 700;
             color: #334155;
             margin-bottom: 0.45rem;
@@ -458,52 +427,44 @@
             color: #1d4ed8;
         }
 
-        /* ── MOBILE RESPONSIVE LAYOUT (CLEAN NO-SCROLL SINGLE SCREEN FIT) ── */
+        /* ── MOBILE FULLSCREEN SINGLE SCREEN LAYOUT (NO SCROLL, FULL WIDTH) ── */
         .mobile-brand-top {
             display: none;
         }
 
         @media (max-width: 991px) {
             html, body {
+                width: 100vw;
                 height: 100%;
                 min-height: 100dvh;
                 overflow: hidden;
+                background: #ffffff;
             }
 
-            body {
-                padding: 0.45rem 0.65rem;
-                background: #eef4fc;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .login-card-wrapper {
-                max-width: 385px;
-                width: 100%;
-                max-height: calc(100dvh - 0.9rem);
-                height: auto;
-                min-height: auto;
-                border-radius: 24px;
+            .login-fullscreen-container {
                 flex-direction: column;
+                width: 100vw;
+                height: 100dvh;
+                min-height: 100dvh;
                 justify-content: space-between;
-                box-shadow: 0 15px 35px rgba(11, 99, 229, 0.16), 0 4px 12px rgba(0, 0, 0, 0.04);
                 overflow: hidden;
             }
 
-            .brand-panel {
+            .desktop-brand-side {
                 display: none !important;
             }
 
-            /* Mobile Top Vibrant Blue Banner */
+            /* Mobile Top Full-Width Blue Banner */
             .mobile-brand-top {
-                display: block;
-                flex-shrink: 0;
+                display: flex !important;
+                flex-direction: column;
+                width: 100%;
                 background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 55%, #0548b8 100%);
-                padding: 0.9rem 1rem 0;
+                padding: 1rem 1rem 0;
                 text-align: center;
                 position: relative;
                 color: #ffffff;
+                flex-shrink: 0;
             }
 
             .mobile-brand-top .brand-welcome-title {
@@ -534,25 +495,36 @@
                 margin-bottom: 0.45rem;
             }
 
-            /* Mobile Cloud Transition SVG */
-            .mobile-cloud-divider {
+            /* Mobile Wave Transition SVG (Full-Width Edge to Edge) */
+            .mobile-wave-wrapper {
                 width: 100%;
-                height: 26px;
+                height: 32px;
                 margin-bottom: -1px;
                 display: block;
+                overflow: hidden;
+                line-height: 0;
             }
-            .mobile-cloud-divider svg {
+            .mobile-wave-wrapper svg {
                 width: 100%;
                 height: 100%;
                 display: block;
             }
 
-            .form-panel {
+            /* Mobile Bottom Full-Width White Form */
+            .desktop-form-side {
+                width: 100% !important;
+                min-height: auto !important;
                 flex-grow: 1;
-                padding: 0.65rem 1.15rem 0.9rem !important;
+                padding: 0.6rem 1.25rem 0.9rem !important;
+                background: #ffffff;
                 display: flex;
-                flex-direction: column;
+                align-items: center;
                 justify-content: center;
+            }
+
+            .form-inner-box {
+                width: 100%;
+                max-width: 380px;
             }
 
             .form-title {
@@ -762,15 +734,11 @@
     </div>
 </div>
 
-<!-- Ambient Glow Shapes -->
-<div class="ambient-shape shape-1"></div>
-<div class="ambient-shape shape-2"></div>
+<!-- ════ FULLSCREEN CONTAINER (EDGE-TO-EDGE) ════ -->
+<div class="login-fullscreen-container">
 
-<!-- ════ MAIN CARD CONTAINER ════ -->
-<div class="login-card-wrapper">
-
-    <!-- ── 1. DESKTOP LEFT BRAND PANEL (Vibrant Blue with Cloud Divider) ── -->
-    <div class="brand-panel">
+    <!-- ── 1. DESKTOP LEFT BRAND PANEL (FULL-HEIGHT SPLIT) ── -->
+    <div class="desktop-brand-side">
         <div>
             <div class="brand-welcome-title">Selamat Datang di</div>
             
@@ -789,20 +757,20 @@
             PT MEDIA SOLUSI NETWORK
         </div>
 
-        <!-- Layered Cloud / Wave SVG Divider (Desktop) -->
-        <div class="desktop-cloud-divider">
-            <svg viewBox="0 0 100 700" preserveAspectRatio="none">
+        <!-- Layered Cloud / Wave SVG Divider (Desktop Full Height) -->
+        <div class="desktop-wave-wrapper">
+            <svg viewBox="0 0 120 1000" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <!-- Layer 1: Sky Blue Shadow Contour -->
-                <path d="M0,0 C45,60 15,140 50,210 C85,280 35,360 65,430 C95,500 45,590 75,650 C90,680 95,700 100,700 L100,0 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <path d="M0,0 C50,80 15,200 55,320 C95,440 35,560 70,680 C100,780 40,890 80,1000 L120,1000 L120,0 Z" fill="rgba(147, 197, 253, 0.45)"/>
                 <!-- Layer 2: Light Blue Contour -->
-                <path d="M20,0 C65,70 35,150 70,220 C105,290 55,370 85,440 C110,510 65,600 95,660 L100,700 L100,0 Z" fill="rgba(219, 234, 254, 0.75)"/>
-                <!-- Layer 3: Solid White Flowing Cloud Curve -->
-                <path d="M45,0 C85,80 55,160 90,230 C120,300 75,380 100,450 C120,520 85,610 100,670 L100,700 L100,0 Z" fill="#ffffff"/>
+                <path d="M25,0 C70,90 35,220 75,340 C115,460 55,580 90,700 C120,800 65,910 100,1000 L120,1000 L120,0 Z" fill="rgba(219, 234, 254, 0.8)"/>
+                <!-- Layer 3: Pure White Flowing Wave -->
+                <path d="M50,0 C95,105 55,240 95,360 C135,480 80,600 110,720 C140,820 90,930 120,1000 L120,1000 L120,0 Z" fill="#ffffff"/>
             </svg>
         </div>
     </div>
 
-    <!-- ── 2. MOBILE TOP BANNER (Vibrant Blue with Cloud Divider) ── -->
+    <!-- ── 2. MOBILE TOP BANNER (FULL-WIDTH WITH WAVE) ── -->
     <div class="mobile-brand-top">
         <div class="brand-welcome-title">Selamat Datang di</div>
         <div class="brand-logo-circle">
@@ -811,141 +779,146 @@
         <div class="brand-app-name">MSN Work Report</div>
         <div class="mobile-brand-sub">Sistem Tiketing &amp; Manajemen Jaringan</div>
 
-        <!-- Layered Cloud / Wave SVG Divider (Mobile) -->
-        <div class="mobile-cloud-divider">
-            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-                <path d="M0,0 C320,65 520,10 820,55 C1120,100 1280,30 1440,65 L1440,120 L0,120 Z" fill="rgba(147, 197, 253, 0.45)"/>
-                <path d="M0,25 C360,85 580,30 880,75 C1160,115 1320,50 1440,85 L1440,120 L0,120 Z" fill="rgba(219, 234, 254, 0.75)"/>
-                <path d="M0,50 C400,105 640,50 940,95 C1200,130 1360,70 1440,105 L1440,120 L0,120 Z" fill="#ffffff"/>
+        <!-- Layered Cloud / Wave SVG Divider (Mobile Edge to Edge) -->
+        <div class="mobile-wave-wrapper">
+            <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                <!-- Layer 1: Sky Blue Shadow Layer -->
+                <path d="M0,0 C240,60 480,15 720,55 C960,95 1200,30 1440,60 L1440,140 L0,140 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <!-- Layer 2: Light Blue Layer -->
+                <path d="M0,25 C260,80 520,30 760,75 C1000,120 1220,50 1440,85 L1440,140 L0,140 Z" fill="rgba(219, 234, 254, 0.8)"/>
+                <!-- Layer 3: Solid White Flowing Wave -->
+                <path d="M0,50 C280,105 540,55 800,95 C1060,135 1260,75 1440,110 L1440,140 L0,140 Z" fill="#ffffff"/>
             </svg>
         </div>
     </div>
 
-    <!-- ── 3. FORM PANEL (Clean Pure White) ── -->
-    <div class="form-panel">
-        <div class="form-title">Masuk ke Akun</div>
-        <div class="form-subtitle">Silakan masukkan kredensial akun Anda untuk login.</div>
+    <!-- ── 3. FORM SECTION (FULL-WIDTH / FULL-HEIGHT RIGHT SIDE) ── -->
+    <div class="desktop-form-side">
+        <div class="form-inner-box">
+            <div class="form-title">Masuk ke Akun</div>
+            <div class="form-subtitle">Silakan masukkan kredensial akun Anda untuk login.</div>
 
-        <!-- Flash Alert Messages -->
-        @if($errors->any())
-            <div class="toast-banner toast-error">
-                <i class="bi bi-exclamation-triangle-fill fs-6 flex-shrink-0"></i>
-                <div>{{ $errors->first() }}</div>
-            </div>
-        @endif
-
-        @if(session('info'))
-            <div class="toast-banner toast-info">
-                <i class="bi bi-info-circle-fill fs-6 flex-shrink-0"></i>
-                <div>{{ session('info') }}</div>
-            </div>
-        @endif
-
-        <!-- Form Login -->
-        <form method="POST" action="{{ route('login.post') }}" id="loginForm">
-            @csrf
-            @if(request()->has('redirect'))
-                <input type="hidden" name="redirect_url" value="{{ request('redirect') }}">
-            @elseif(session()->has('url.intended'))
-                <input type="hidden" name="redirect_url" value="{{ session('url.intended') }}">
+            <!-- Flash Alert Messages -->
+            @if($errors->any())
+                <div class="toast-banner toast-error">
+                    <i class="bi bi-exclamation-triangle-fill fs-6 flex-shrink-0"></i>
+                    <div>{{ $errors->first() }}</div>
+                </div>
             @endif
 
-            <!-- Email Address Input -->
-            <div class="form-group-custom">
-                <label for="email" class="custom-label">Email Perusahaan</label>
-                <div class="input-box">
-                    <i class="bi bi-envelope input-icon-left"></i>
-                    <input type="email"
-                           class="custom-input @error('email') is-invalid @enderror"
-                           id="email"
-                           name="email"
-                           value="{{ old('email') }}"
-                           placeholder="nama@connecti.id"
-                           required
-                           autofocus
-                           autocomplete="username">
+            @if(session('info'))
+                <div class="toast-banner toast-info">
+                    <i class="bi bi-info-circle-fill fs-6 flex-shrink-0"></i>
+                    <div>{{ session('info') }}</div>
                 </div>
-            </div>
+            @endif
 
-            <!-- Password Input -->
-            <div class="form-group-custom">
-                <label for="password" class="custom-label">Kata Sandi (Password)</label>
-                <div class="input-box">
-                    <i class="bi bi-lock input-icon-left"></i>
-                    <input type="password"
-                           class="custom-input @error('password') is-invalid @enderror"
-                           id="password"
-                           name="password"
-                           placeholder="••••••••••••"
-                           required
-                           autocomplete="current-password">
-                    <button class="btn-toggle-pwd" type="button" id="togglePassword" title="Tampilkan/sembunyikan password" aria-label="Toggle password visibility">
-                        <i class="bi bi-eye" id="eyeIcon"></i>
-                    </button>
+            <!-- Form Login -->
+            <form method="POST" action="{{ route('login.post') }}" id="loginForm">
+                @csrf
+                @if(request()->has('redirect'))
+                    <input type="hidden" name="redirect_url" value="{{ request('redirect') }}">
+                @elseif(session()->has('url.intended'))
+                    <input type="hidden" name="redirect_url" value="{{ session('url.intended') }}">
+                @endif
+
+                <!-- Email Address Input -->
+                <div class="form-group-custom">
+                    <label for="email" class="custom-label">Email Perusahaan</label>
+                    <div class="input-box">
+                        <i class="bi bi-envelope input-icon-left"></i>
+                        <input type="email"
+                               class="custom-input @error('email') is-invalid @enderror"
+                               id="email"
+                               name="email"
+                               value="{{ old('email') }}"
+                               placeholder="nama@connecti.id"
+                               required
+                               autofocus
+                               autocomplete="username">
+                    </div>
                 </div>
-            </div>
 
-            <!-- Remember Me Session Checkbox -->
-            <div class="d-flex justify-content-between align-items-center remember-container mb-3">
-                <label class="d-flex align-items-center gap-2" for="remember" style="cursor: pointer; user-select: none;">
-                    <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
-                    <span class="small text-secondary fw-semibold" style="font-size: 0.8rem;">
-                        Ingat saya di perangkat ini (30 Hari)
+                <!-- Password Input -->
+                <div class="form-group-custom">
+                    <label for="password" class="custom-label">Kata Sandi (Password)</label>
+                    <div class="input-box">
+                        <i class="bi bi-lock input-icon-left"></i>
+                        <input type="password"
+                               class="custom-input @error('password') is-invalid @enderror"
+                               id="password"
+                               name="password"
+                               placeholder="••••••••••••"
+                               required
+                               autocomplete="current-password">
+                        <button class="btn-toggle-pwd" type="button" id="togglePassword" title="Tampilkan/sembunyikan password" aria-label="Toggle password visibility">
+                            <i class="bi bi-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me Session Checkbox -->
+                <div class="d-flex justify-content-between align-items-center remember-container mb-3">
+                    <label class="d-flex align-items-center gap-2" for="remember" style="cursor: pointer; user-select: none;">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
+                        <span class="small text-secondary fw-semibold" style="font-size: 0.8rem;">
+                            Ingat saya di perangkat ini (30 Hari)
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit-login" id="loginSubmitBtn">
+                    <span id="loginBtnText" class="d-flex align-items-center gap-2">
+                        <i class="bi bi-box-arrow-in-right fs-5"></i>
+                        <span>Masuk ke Dashboard</span>
                     </span>
-                </label>
+                    <span id="loginBtnLoading" class="d-none d-flex align-items-center gap-2">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span>Memverifikasi Akun...</span>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Quick Demo Switcher -->
+            <div class="divider-box">
+                <span>Akses Cepat Demo Akun</span>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn-submit-login" id="loginSubmitBtn">
-                <span id="loginBtnText" class="d-flex align-items-center gap-2">
-                    <i class="bi bi-box-arrow-in-right fs-5"></i>
-                    <span>Masuk ke Dashboard</span>
-                </span>
-                <span id="loginBtnLoading" class="d-none d-flex align-items-center gap-2">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    <span>Memverifikasi Akun...</span>
-                </span>
-            </button>
-        </form>
+            <div class="quick-roles-grid">
+                <!-- Admin NOC -->
+                <button type="button" class="role-chip-btn" onclick="fillLogin('admin@connecti.id', 'password')">
+                    <div class="role-chip-icon" style="background:#eff6ff; color:#2563eb;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div class="role-chip-info">
+                        <div class="role-chip-name">Admin NOC</div>
+                        <div class="role-chip-sub">Full System</div>
+                    </div>
+                </button>
 
-        <!-- Quick Demo Switcher -->
-        <div class="divider-box">
-            <span>Akses Cepat Demo Akun</span>
-        </div>
+                <!-- HelpDesk NOC -->
+                <button type="button" class="role-chip-btn" onclick="fillLogin('helpdesk@connecti.id', 'password')">
+                    <div class="role-chip-icon" style="background:#f0fdf4; color:#16a34a;">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <div class="role-chip-info">
+                        <div class="role-chip-name">HelpDesk NOC</div>
+                        <div class="role-chip-sub">Tiket &amp; Dispatch</div>
+                    </div>
+                </button>
 
-        <div class="quick-roles-grid">
-            <!-- Admin NOC -->
-            <button type="button" class="role-chip-btn" onclick="fillLogin('admin@connecti.id', 'password')">
-                <div class="role-chip-icon" style="background:#eff6ff; color:#2563eb;">
-                    <i class="bi bi-shield-lock-fill"></i>
-                </div>
-                <div class="role-chip-info">
-                    <div class="role-chip-name">Admin NOC</div>
-                    <div class="role-chip-sub">Full System</div>
-                </div>
-            </button>
-
-            <!-- HelpDesk NOC -->
-            <button type="button" class="role-chip-btn" onclick="fillLogin('helpdesk@connecti.id', 'password')">
-                <div class="role-chip-icon" style="background:#f0fdf4; color:#16a34a;">
-                    <i class="bi bi-headset"></i>
-                </div>
-                <div class="role-chip-info">
-                    <div class="role-chip-name">HelpDesk NOC</div>
-                    <div class="role-chip-sub">Tiket &amp; Dispatch</div>
-                </div>
-            </button>
-
-            <!-- Tim Teknis -->
-            <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
-                <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
-                    <i class="bi bi-tools"></i>
-                </div>
-                <div class="role-chip-info">
-                    <div class="role-chip-name">Tim Teknis</div>
-                    <div class="role-chip-sub">Lapangan &amp; JC</div>
-                </div>
-            </button>
+                <!-- Tim Teknis -->
+                <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
+                    <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
+                        <i class="bi bi-tools"></i>
+                    </div>
+                    <div class="role-chip-info">
+                        <div class="role-chip-name">Tim Teknis</div>
+                        <div class="role-chip-sub">Lapangan &amp; JC</div>
+                    </div>
+                </button>
+            </div>
         </div>
     </div>
 </div>
