@@ -53,15 +53,17 @@
     }
 
     .wa-chat-container {
-        background-color: #f8fafc;
+        background-color: #e5ebf3;
         background-image: 
-            radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.04) 0%, transparent 75%),
-            radial-gradient(rgba(148, 163, 184, 0.28) 0.8px, transparent 0.8px);
-        background-size: 100% 100%, 22px 22px;
+            radial-gradient(circle at 15% 15%, rgba(44, 127, 255, 0.05) 0%, transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(13, 148, 136, 0.05) 0%, transparent 45%),
+            url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2364748b' fill-opacity='0.085' fill-rule='evenodd'%3E%3Cpath d='M28 0l3.5 3.5L28 7l-3.5-3.5L28 0zm0 28l3.5 3.5L28 35l-3.5-3.5L28 28zM0 28l3.5 3.5L0 35l-3.5-3.5L0 28zm56 0l3.5 3.5L56 35l-3.5-3.5L56 28zm-28 28l3.5 3.5L28 63l-3.5-3.5L28 56zM0 0l3.5 3.5L0 7l-3.5-3.5L0 0zm56 0l3.5 3.5L56 7l-3.5-3.5L56 0zm-56 56l3.5 3.5L0 63l-3.5-3.5L0 56zm56 56l3.5 3.5L56 63l-3.5-3.5L56 56z'/%3E%3Ccircle cx='28' cy='28' r='1.8'/%3E%3Ccircle cx='0' cy='28' r='1.8'/%3E%3Ccircle cx='56' cy='28' r='1.8'/%3E%3Ccircle cx='28' cy='0' r='1.8'/%3E%3Ccircle cx='28' cy='56' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 100% 100%, 100% 100%, 56px 56px;
+        background-attachment: local;
         border-radius: var(--neu-radius, 18px);
-        border: 1px solid #e2e8f0;
+        border: 1px solid #cbd5e1;
         overflow: hidden;
-        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
         display: flex;
         flex-direction: column;
         transition: border-radius 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
@@ -90,7 +92,13 @@
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
-        background: #ffffff !important;
+        background-color: #e5ebf3 !important;
+        background-image: 
+            radial-gradient(circle at 15% 15%, rgba(44, 127, 255, 0.05) 0%, transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(13, 148, 136, 0.05) 0%, transparent 45%),
+            url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2364748b' fill-opacity='0.085' fill-rule='evenodd'%3E%3Cpath d='M28 0l3.5 3.5L28 7l-3.5-3.5L28 0zm0 28l3.5 3.5L28 35l-3.5-3.5L28 28zM0 28l3.5 3.5L0 35l-3.5-3.5L0 28zm56 0l3.5 3.5L56 35l-3.5-3.5L56 28zm-28 28l3.5 3.5L28 63l-3.5-3.5L28 56zM0 0l3.5 3.5L0 7l-3.5-3.5L0 0zm56 0l3.5 3.5L56 7l-3.5-3.5L56 0zm-56 56l3.5 3.5L0 63l-3.5-3.5L0 56zm56 56l3.5 3.5L56 63l-3.5-3.5L56 56z'/%3E%3Ccircle cx='28' cy='28' r='1.8'/%3E%3Ccircle cx='0' cy='28' r='1.8'/%3E%3Ccircle cx='56' cy='28' r='1.8'/%3E%3Ccircle cx='28' cy='0' r='1.8'/%3E%3Ccircle cx='28' cy='56' r='1.8'/%3E%3C/g%3E%3C/svg%3E") !important;
+        background-size: 100% 100%, 100% 100%, 56px 56px !important;
+        background-attachment: local !important;
         margin: 0 !important;
         animation: waFullscreenIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         will-change: transform, opacity;
@@ -106,7 +114,8 @@
         top: 0 !important;
         z-index: 10 !important;
         background: #ffffff !important;
-        border-bottom: 1px solid #e2e8f0 !important;
+        border-bottom: 1px solid #d8e2ec !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
         flex-shrink: 0 !important;
         padding-top: max(0.65rem, env(safe-area-inset-top, 0px)) !important;
     }
@@ -205,7 +214,10 @@
     .wa-chat-header {
         background: #ffffff;
         padding: 0.85rem 1.15rem;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid #d8e2ec;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        position: relative;
+        z-index: 6;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -286,22 +298,23 @@
     .wa-date-divider {
         display: flex;
         justify-content: center;
-        margin: 0.5rem 0;
+        margin: 0.65rem 0;
         position: sticky;
         top: 6px;
         z-index: 4;
     }
 
     .wa-date-chip {
-        background: #ffffff;
+        background: rgba(255, 255, 255, 0.92);
         backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         color: #475569;
         font-size: 0.71rem;
         font-weight: 600;
         padding: 0.28rem 0.85rem;
         border-radius: 999px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
-        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+        border: 1px solid rgba(203, 213, 225, 0.85);
         display: inline-flex;
         align-items: center;
         letter-spacing: 0.15px;
@@ -362,22 +375,21 @@
         min-width: 180px;
         padding: 0.55rem 0.75rem 0.35rem;
         position: relative;
-        box-shadow: 0 1px 2px rgba(11, 20, 26, 0.1);
         word-wrap: break-word;
     }
 
     .wa-bubble-incoming {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #dbe3ed;
         border-radius: 16px 16px 16px 4px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.03);
     }
 
     .wa-bubble-outgoing {
-        background: #eff6ff;
+        background: #e0edfe;
         border: 1px solid #bfdbfe;
         border-radius: 16px 16px 4px 16px;
-        box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08), 0 1px 2px rgba(37, 99, 235, 0.04);
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08), 0 1px 2px rgba(37, 99, 235, 0.04);
         margin-left: auto;
     }
 
