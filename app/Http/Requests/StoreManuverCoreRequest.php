@@ -15,8 +15,8 @@ class StoreManuverCoreRequest extends FormRequest
     {
         return [
             'titik' => ['required', 'string', 'max:50'],
-            'core_asal' => ['required', 'string', 'max:50'],
-            'core_tujuan' => ['required', 'string', 'max:50'],
+            'core_asal' => ['required'],
+            'core_tujuan' => ['required'],
             'tipe' => ['required', 'string', 'in:SEBELUM,SESUDAH'],
             'lokasi_tipe' => ['nullable', 'string', 'in:POP,OTB,CLOSURE_LAPANGAN,FAT_FDT,ODC'],
             'core_dialihkan' => ['nullable', 'string', 'max:100'],

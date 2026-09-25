@@ -1871,14 +1871,58 @@
         flex-wrap: wrap;
         gap: 0.5rem;
     }
+    .fiber-preset-btn {
+        background: rgba(30, 41, 59, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        color: #e2e8f0;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.32rem 0.75rem;
+        border-radius: 50rem;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .fiber-preset-btn:hover {
+        background: rgba(59, 130, 246, 0.25);
+        border-color: #60a5fa;
+        color: #ffffff;
+        transform: translateY(-1px);
+    }
+    .fiber-preset-btn-warning:hover {
+        background: rgba(245, 158, 11, 0.25);
+        border-color: #fbbf24;
+        color: #ffffff;
+    }
+    .fiber-preset-btn-danger:hover {
+        background: rgba(239, 68, 68, 0.25);
+        border-color: #f87171;
+        color: #ffffff;
+    }
+    .fiber-cap-select {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        color: #38bdf8;
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        outline: none;
+    }
+    .fiber-cap-select option {
+        background: #0f172a;
+        color: #f8fafc;
+    }
     .fiber-patcher-grid {
         display: grid;
-        grid-template-columns: 1fr 130px 1fr;
+        grid-template-columns: 1fr 140px 1fr;
         gap: 0.85rem;
         align-items: stretch;
         position: relative;
     }
-    @media (max-width: 767.98px) {
+    @media (max-width: 991.98px) {
         .fiber-patcher-grid {
             grid-template-columns: 1fr;
             gap: 1rem;
@@ -1892,7 +1936,7 @@
         backdrop-filter: blur(8px);
     }
     .fiber-panel-title {
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -1900,13 +1944,16 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.4rem;
     }
     .fiber-tube-tabs {
         display: flex;
         gap: 0.35rem;
         margin-bottom: 0.75rem;
         overflow-x: auto;
-        padding-bottom: 3px;
+        padding-bottom: 4px;
+        scrollbar-width: thin;
     }
     .fiber-tube-tab-btn {
         padding: 0.25rem 0.65rem;
@@ -1915,7 +1962,7 @@
         border-radius: 6px;
         border: 1px solid rgba(255, 255, 255, 0.15);
         background: rgba(15, 23, 42, 0.6);
-        color: #94a3b8;
+        color: #cbd5e1;
         cursor: pointer;
         transition: all 0.15s ease;
         white-space: nowrap;
@@ -1934,52 +1981,80 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 0.4rem;
-        max-height: 250px;
+        max-height: 270px;
         overflow-y: auto;
         padding-right: 2px;
     }
     @media (max-width: 575.98px) {
         .fiber-core-list {
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.35rem;
         }
     }
     .fiber-port-btn {
         display: flex;
         align-items: center;
         gap: 0.45rem;
-        padding: 0.35rem 0.55rem;
+        padding: 0.38rem 0.55rem;
         border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        background: rgba(15, 23, 42, 0.85);
-        color: #cbd5e1;
-        font-size: 0.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(15, 23, 42, 0.9);
+        color: #f1f5f9;
+        font-size: 0.76rem;
         cursor: pointer;
         transition: all 0.15s ease;
         text-align: left;
         user-select: none;
+        position: relative;
     }
     .fiber-port-btn:hover {
-        background: rgba(51, 65, 85, 0.9);
-        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(51, 65, 85, 0.95);
+        border-color: rgba(255, 255, 255, 0.35);
         transform: translateY(-1px);
     }
     .fiber-port-btn.selected {
-        background: rgba(37, 99, 235, 0.35) !important;
+        background: rgba(37, 99, 235, 0.45) !important;
         border-color: #60a5fa !important;
         color: #ffffff !important;
-        box-shadow: 0 0 12px rgba(96, 165, 250, 0.6);
+        box-shadow: 0 0 10px rgba(96, 165, 250, 0.7);
     }
     .fiber-port-btn.connected {
         border-color: #10b981 !important;
-        background: rgba(16, 185, 129, 0.2) !important;
+        background: rgba(16, 185, 129, 0.22) !important;
+    }
+    .fiber-port-btn.connected::after {
+        content: '✓';
+        position: absolute;
+        right: 6px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #34d399;
+    }
+    .fiber-port-label-num {
+        font-weight: 700;
+        color: #ffffff;
+        font-family: monospace;
+        font-size: 0.75rem;
+    }
+    .fiber-port-label-name {
+        color: #cbd5e1;
+        font-size: 0.7rem;
+        font-weight: 500;
     }
     .fiber-dot {
-        width: 14px;
-        height: 14px;
+        width: 13px;
+        height: 13px;
         border-radius: 50%;
         display: inline-block;
         flex-shrink: 0;
-        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+        box-shadow: 0 0 5px rgba(0,0,0,0.6);
+    }
+    .fiber-dot-sm {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
     }
     .fiber-canvas-center {
         display: flex;
@@ -1987,18 +2062,25 @@
         align-items: center;
         justify-content: center;
         position: relative;
-        min-height: 180px;
+        min-height: 200px;
         padding: 0.5rem;
     }
     .fiber-svg-wire {
         width: 100%;
         height: 100%;
+        min-height: 180px;
         overflow: visible;
     }
     .fiber-wire-path {
         stroke-dasharray: 6, 6;
         animation: fiberLaserFlow 1.2s linear infinite;
-        filter: drop-shadow(0 0 6px currentColor);
+        filter: drop-shadow(0 0 4px currentColor);
+        cursor: pointer;
+        transition: stroke-width 0.2s ease;
+    }
+    .fiber-wire-path:hover {
+        stroke-width: 5.5 !important;
+        filter: drop-shadow(0 0 8px currentColor) !important;
     }
     @keyframes fiberLaserFlow {
         from { stroke-dashoffset: 24; }
@@ -2016,6 +2098,8 @@
         align-items: center;
         gap: 0.4rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        max-width: 100%;
+        overflow-x: auto;
     }
     .fiber-pulse-laser {
         animation: laserPulseAnim 1.5s infinite ease-in-out;
@@ -2023,6 +2107,52 @@
     @keyframes laserPulseAnim {
         0%, 100% { transform: scale(1); opacity: 0.9; }
         50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 10px #38bdf8); }
+    }
+    .fiber-chips-tray {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.65rem 0.85rem;
+        margin-top: 0.85rem;
+    }
+    .fiber-connections-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        max-height: 110px;
+        overflow-y: auto;
+    }
+    .fiber-conn-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.22rem 0.6rem;
+        border-radius: 50rem;
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #f1f5f9;
+        font-size: 0.72rem;
+        font-family: monospace;
+        transition: all 0.15s ease;
+    }
+    .fiber-conn-chip:hover {
+        border-color: rgba(255, 255, 255, 0.35);
+        background: rgba(51, 65, 85, 0.9);
+    }
+    .fiber-conn-chip-del {
+        background: transparent;
+        border: none;
+        color: #f87171;
+        cursor: pointer;
+        padding: 0 2px;
+        margin-left: 2px;
+        font-size: 0.85rem;
+        line-height: 1;
+        transition: color 0.15s ease;
+    }
+    .fiber-conn-chip-del:hover {
+        color: #ef4444;
+        transform: scale(1.2);
     }
 </style>
 @endpush
@@ -5166,27 +5296,32 @@
                         <div class="col-12">
                             <div class="fiber-patcher-box">
                                 <div class="fiber-patcher-header">
-                                    <div class="d-flex align-items-center gap-2">
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
                                         <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill">
                                             <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher
                                         </span>
-                                        <span class="small text-light" style="font-size:0.75rem;">Klik port Asal lalu klik port Tujuan untuk menyambungkan kabel</span>
+                                        <span class="small text-light d-none d-sm-inline" style="font-size:0.75rem;">
+                                            Klik port Asal lalu port Tujuan untuk menyambung. Bisa menyambung <strong>banyak garis/core</strong> sekaligus.
+                                        </span>
                                     </div>
-                                    <div class="d-flex gap-1.5">
-                                        <button type="button" class="btn btn-xs btn-outline-info rounded-pill px-2.5 py-1 text-white" id="btnManuverStraightPreset">
-                                            <i class="bi bi-arrows-expand me-1"></i> Sambung Lurus (1:1)
+                                    <div class="d-flex gap-1.5 flex-wrap">
+                                        <button type="button" class="fiber-preset-btn" id="btnManuverStraightPreset" title="Sambungkan 1:1 untuk tube yang sedang aktif">
+                                            <i class="bi bi-arrows-expand me-1 text-info"></i> Sambung (1:1)
                                         </button>
-                                        <button type="button" class="btn btn-xs btn-outline-warning rounded-pill px-2.5 py-1 text-white" id="btnManuverSwapPreset">
-                                            <i class="bi bi-shuffle me-1"></i> Swap Tube 1 &rarr; Tube 2
+                                        <button type="button" class="fiber-preset-btn fiber-preset-btn-warning" id="btnManuverSwapPreset" title="Swap sambungan Tube 1 ke Tube 2">
+                                            <i class="bi bi-shuffle me-1 text-warning"></i> Swap T1 &rarr; T2
+                                        </button>
+                                        <button type="button" class="fiber-preset-btn fiber-preset-btn-danger" id="btnManuverClearPreset" title="Hapus semua sambungan kabel">
+                                            <i class="bi bi-trash3 me-1 text-danger"></i> Reset
                                         </button>
                                     </div>
                                 </div>
 
                                 <!-- Connection Real-time Indicator -->
-                                <div class="text-center mb-3">
+                                <div class="text-center mb-2.5">
                                     <div class="fiber-conn-status-badge" id="manuverLiveWireBadge">
                                         <span class="fiber-pulse-laser text-info"><i class="bi bi-lightning-charge-fill"></i></span>
-                                        <span id="manuverLiveWireText">Pilih Port Core Asal dan Port Core Tujuan</span>
+                                        <span id="manuverLiveWireText">Klik port Asal &rarr; klik port Tujuan untuk menambah sambungan</span>
                                     </div>
                                 </div>
 
@@ -5195,29 +5330,38 @@
                                     <div class="fiber-panel-card">
                                         <div class="fiber-panel-title text-info">
                                             <span><i class="bi bi-box-arrow-in-right me-1"></i> Port Asal (Input)</span>
-                                            <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="manuverAsalActiveBadge">Tube 1 Core 1</span>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <label class="small text-muted font-monospace" style="font-size:0.68rem;">Kapasitas:</label>
+                                                <select class="fiber-cap-select" id="manuverAsalCapacity">
+                                                    <option value="2">2 Core</option>
+                                                    <option value="4">4 Core</option>
+                                                    <option value="6">6 Core</option>
+                                                    <option value="8">8 Core</option>
+                                                    <option value="12">12 Core</option>
+                                                    <option value="24" selected>24 Core (2T)</option>
+                                                    <option value="48">48 Core (4T)</option>
+                                                    <option value="96">96 Core (8T)</option>
+                                                    <option value="144">144 Core (12T)</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <!-- Tube Selector -->
-                                        <div class="fiber-tube-tabs" id="manuverAsalTubeTabs">
-                                            <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                        </div>
-                                        <!-- 12 Fiber Core Ports List -->
+                                        <!-- Dynamic Tube Tabs -->
+                                        <div class="fiber-tube-tabs" id="manuverAsalTubeTabs"></div>
+                                        <!-- Dynamic Fiber Core Ports List -->
                                         <div class="fiber-core-list" id="manuverAsalCoreList"></div>
                                     </div>
 
-                                    <!-- Center: Interactive SVG Fiber Laser Cable Canvas -->
+                                    <!-- Center: Interactive Multi-Wire SVG Fiber Laser Canvas -->
                                     <div class="fiber-canvas-center">
-                                        <svg class="fiber-svg-wire" id="manuverSvgCanvas" viewBox="0 0 130 200" preserveAspectRatio="none">
-                                            <path id="manuverWirePath" class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#38bdf8" stroke-width="3.5" fill="none" />
-                                            <circle id="manuverStartDot" cx="0" cy="100" r="5" fill="#38bdf8" />
-                                            <circle id="manuverEndDot" cx="130" cy="100" r="5" fill="#38bdf8" />
+                                        <svg class="fiber-svg-wire" id="manuverSvgCanvas" viewBox="0 0 140 260" preserveAspectRatio="none">
+                                            <g id="manuverSvgWiresGroup">
+                                                <!-- Dynamic SVG Paths rendered via JavaScript -->
+                                            </g>
                                         </svg>
-                                        <div class="text-center mt-2">
-                                            <i class="bi bi-arrow-left-right text-info fs-5 opacity-75"></i>
-                                            <div class="small text-muted font-monospace" style="font-size:0.65rem;">FIBER PATCH</div>
+                                        <div class="text-center mt-1">
+                                            <div class="badge bg-dark bg-opacity-75 border border-secondary text-info font-monospace" style="font-size:0.68rem;" id="manuverWireCountBadge">
+                                                <i class="bi bi-arrow-left-right me-1"></i> 0 Garis Tersambung
+                                            </div>
                                         </div>
                                     </div>
 
@@ -5225,24 +5369,47 @@
                                     <div class="fiber-panel-card">
                                         <div class="fiber-panel-title text-success">
                                             <span><i class="bi bi-box-arrow-right me-1"></i> Port Tujuan (Output)</span>
-                                            <span class="badge bg-success bg-opacity-25 text-success font-monospace" id="manuverTujuanActiveBadge">Tube 2 Core 1</span>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <label class="small text-muted font-monospace" style="font-size:0.68rem;">Kapasitas:</label>
+                                                <select class="fiber-cap-select" id="manuverTujuanCapacity">
+                                                    <option value="2">2 Core</option>
+                                                    <option value="4">4 Core</option>
+                                                    <option value="6">6 Core</option>
+                                                    <option value="8">8 Core</option>
+                                                    <option value="12">12 Core</option>
+                                                    <option value="24" selected>24 Core (2T)</option>
+                                                    <option value="48">48 Core (4T)</option>
+                                                    <option value="96">96 Core (8T)</option>
+                                                    <option value="144">144 Core (12T)</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <!-- Tube Selector -->
-                                        <div class="fiber-tube-tabs" id="manuverTujuanTubeTabs">
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="1">Tube 1</button>
-                                            <button type="button" class="fiber-tube-tab-btn active" data-tube="2">Tube 2</button>
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
-                                            <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
-                                        </div>
-                                        <!-- 12 Fiber Core Ports List -->
+                                        <!-- Dynamic Tube Tabs -->
+                                        <div class="fiber-tube-tabs" id="manuverTujuanTubeTabs"></div>
+                                        <!-- Dynamic Fiber Core Ports List -->
                                         <div class="fiber-core-list" id="manuverTujuanCoreList"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Connected Lines Tray (Chips) -->
+                                <div class="fiber-chips-tray" id="manuverChipsTray">
+                                    <div class="d-flex align-items-center justify-content-between mb-1.5">
+                                        <span class="small fw-bold text-light" style="font-size:0.75rem;">
+                                            <i class="bi bi-diagram-3 me-1 text-info"></i> Daftar Sambungan Aktif:
+                                        </span>
+                                        <span class="small text-muted font-monospace" style="font-size:0.68rem;" id="manuverTotalCoresText">0 Core</span>
+                                    </div>
+                                    <div class="fiber-connections-chips" id="manuverConnectionsChips">
+                                        <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Klik port asal lalu tujuan.</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Synchronized Inputs for Backend Submission -->
-                            <input type="hidden" id="core_asal" name="core_asal" value="Tube 1 Core 1" required>
-                            <input type="hidden" id="core_tujuan" name="core_tujuan" value="Tube 2 Core 1" required>
+                            <!-- Synchronized Inputs for Backend Submission (Handles multiple pairs) -->
+                            <div id="manuverHiddenInputsContainer">
+                                <input type="hidden" id="core_asal" name="core_asal[]" value="Tube 1 Core 1">
+                                <input type="hidden" id="core_tujuan" name="core_tujuan[]" value="Tube 1 Core 1">
+                            </div>
                         </div>
 
                         <!-- Core Dialihkan & Titik Kembali -->
@@ -7238,45 +7405,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ══════════════════════════════════════════════════════════════════════
-    // 12D. VISUAL INTERACTIVE FIBER CABLE PATCHER & SPLICING ENGINE
+    // 12D. VISUAL INTERACTIVE FIBER CABLE PATCHER & MULTI-WIRE ENGINE
     // ══════════════════════════════════════════════════════════════════════
     const FIBER_COLORS = [
-        { num: 1, name: 'Biru', hex: '#2563eb', bg: 'rgba(37, 99, 235, 0.25)', border: '#3b82f6' },
-        { num: 2, name: 'Oranye', hex: '#ea580c', bg: 'rgba(234, 88, 12, 0.25)', border: '#f97316' },
-        { num: 3, name: 'Hijau', hex: '#16a34a', bg: 'rgba(22, 163, 74, 0.25)', border: '#22c55e' },
-        { num: 4, name: 'Cokelat', hex: '#854d0e', bg: 'rgba(133, 77, 14, 0.25)', border: '#a16207' },
+        { num: 1, name: 'Biru', hex: '#2563eb', bg: 'rgba(37, 99, 235, 0.25)', border: '#60a5fa' },
+        { num: 2, name: 'Oranye', hex: '#ea580c', bg: 'rgba(234, 88, 12, 0.25)', border: '#fb923c' },
+        { num: 3, name: 'Hijau', hex: '#16a34a', bg: 'rgba(22, 163, 74, 0.25)', border: '#4ade80' },
+        { num: 4, name: 'Cokelat', hex: '#854d0e', bg: 'rgba(133, 77, 14, 0.25)', border: '#ca8a04' },
         { num: 5, name: 'Abu-abu', hex: '#64748b', bg: 'rgba(100, 116, 139, 0.25)', border: '#94a3b8' },
-        { num: 6, name: 'Putih', hex: '#f8fafc', bg: 'rgba(248, 250, 252, 0.25)', border: '#e2e8f0' },
-        { num: 7, name: 'Merah', hex: '#dc2626', bg: 'rgba(220, 38, 38, 0.25)', border: '#ef4444' },
-        { num: 8, name: 'Hitam', hex: '#1e293b', bg: 'rgba(30, 41, 59, 0.5)', border: '#475569' },
-        { num: 9, name: 'Kuning', hex: '#ca8a04', bg: 'rgba(202, 138, 4, 0.25)', border: '#eab308' },
-        { num: 10, name: 'Ungu', hex: '#9333ea', bg: 'rgba(147, 51, 234, 0.25)', border: '#a855f7' },
-        { num: 11, name: 'Pink', hex: '#db2777', bg: 'rgba(219, 39, 119, 0.25)', border: '#ec4899' },
-        { num: 12, name: 'Toska', hex: '#0891b2', bg: 'rgba(8, 145, 178, 0.25)', border: '#06b6d4' }
+        { num: 6, name: 'Putih', hex: '#f8fafc', bg: 'rgba(248, 250, 252, 0.25)', border: '#cbd5e1' },
+        { num: 7, name: 'Merah', hex: '#dc2626', bg: 'rgba(220, 38, 38, 0.25)', border: '#f87171' },
+        { num: 8, name: 'Hitam', hex: '#0f172a', bg: 'rgba(30, 41, 59, 0.6)', border: '#64748b' },
+        { num: 9, name: 'Kuning', hex: '#ca8a04', bg: 'rgba(202, 138, 4, 0.25)', border: '#fde047' },
+        { num: 10, name: 'Ungu', hex: '#9333ea', bg: 'rgba(147, 51, 234, 0.25)', border: '#c084fc' },
+        { num: 11, name: 'Pink', hex: '#db2777', bg: 'rgba(219, 39, 119, 0.25)', border: '#f472b6' },
+        { num: 12, name: 'Toska', hex: '#0891b2', bg: 'rgba(8, 145, 178, 0.25)', border: '#22d3ee' }
     ];
 
-    function renderFiberPortButtons(containerEl, currentTube, selectedCoreNum, onClickCallback) {
-        if (!containerEl) return;
-        containerEl.innerHTML = '';
-        FIBER_COLORS.forEach(c => {
-            const isSelected = (c.num === selectedCoreNum);
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = `fiber-port-btn ${isSelected ? 'selected' : ''}`;
-            btn.setAttribute('data-core', c.num);
-            btn.innerHTML = `
-                <span class="fiber-dot" style="background-color: ${c.hex}; border: 1.5px solid ${c.border};"></span>
-                <span class="fw-semibold font-monospace" style="font-size:0.75rem;">C${c.num}</span>
-                <span class="text-truncate text-muted" style="font-size:0.7rem;">${c.name}</span>
-            `;
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                containerEl.querySelectorAll('.fiber-port-btn').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                onClickCallback(c.num, c);
-            });
-            containerEl.appendChild(btn);
-        });
+    function getCapacityConfig(capacity) {
+        const cap = parseInt(capacity) || 24;
+        if (cap <= 2) return { tubes: 1, coresPerTube: 2 };
+        if (cap <= 4) return { tubes: 1, coresPerTube: 4 };
+        if (cap <= 6) return { tubes: 1, coresPerTube: 6 };
+        if (cap <= 8) return { tubes: 1, coresPerTube: 8 };
+        if (cap <= 12) return { tubes: 1, coresPerTube: 12 };
+        const tubes = Math.ceil(cap / 12);
+        return { tubes: tubes, coresPerTube: 12 };
     }
 
     function updateLaserCurve(svgPathEl, startDotEl, endDotEl, startCoreNum, endCoreNum, wireColor) {
@@ -7298,99 +7452,426 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ── A. MANUVER CORE PATCHER CONTROLLER ──
-    let manuverAsalTube = 1;
-    let manuverAsalCore = 1;
-    let manuverTujuanTube = 2;
-    let manuverTujuanCore = 1;
+    function renderFiberPortButtons(containerEl, currentTube, totalCoresOrSelected, selectedCoreOrConnected, connectedOrCallback, maybeCallback) {
+        if (!containerEl) return;
+        containerEl.innerHTML = '';
 
-    const manuverAsalCoreList = document.getElementById('manuverAsalCoreList');
-    const manuverTujuanCoreList = document.getElementById('manuverTujuanCoreList');
-    const manuverAsalTubeTabs = document.getElementById('manuverAsalTubeTabs');
-    const manuverTujuanTubeTabs = document.getElementById('manuverTujuanTubeTabs');
-    const manuverWirePath = document.getElementById('manuverWirePath');
-    const manuverStartDot = document.getElementById('manuverStartDot');
-    const manuverEndDot = document.getElementById('manuverEndDot');
-    const manuverAsalActiveBadge = document.getElementById('manuverAsalActiveBadge');
-    const manuverTujuanActiveBadge = document.getElementById('manuverTujuanActiveBadge');
-    const manuverLiveWireText = document.getElementById('manuverLiveWireText');
-    const coreAsalHidden = document.getElementById('core_asal');
-    const coreTujuanHidden = document.getElementById('core_tujuan');
+        let totalCores = 12;
+        let selectedCoreNum = null;
+        let connectedCoreNums = [];
+        let onClickCallback = () => {};
 
-    function syncManuverPatcher() {
-        const asalColor = FIBER_COLORS.find(c => c.num === manuverAsalCore) || FIBER_COLORS[0];
-        const tujuanColor = FIBER_COLORS.find(c => c.num === manuverTujuanCore) || FIBER_COLORS[0];
-
-        const asalStr = `Tube ${manuverAsalTube} Core ${manuverAsalCore} (${asalColor.name})`;
-        const tujuanStr = `Tube ${manuverTujuanTube} Core ${manuverTujuanCore} (${tujuanColor.name})`;
-
-        if (coreAsalHidden) coreAsalHidden.value = `Tube ${manuverAsalTube} Core ${manuverAsalCore}`;
-        if (coreTujuanHidden) coreTujuanHidden.value = `Tube ${manuverTujuanTube} Core ${manuverTujuanCore}`;
-
-        if (manuverAsalActiveBadge) manuverAsalActiveBadge.textContent = `T${manuverAsalTube} C${manuverAsalCore} (${asalColor.name})`;
-        if (manuverTujuanActiveBadge) manuverTujuanActiveBadge.textContent = `T${manuverTujuanTube} C${manuverTujuanCore} (${tujuanColor.name})`;
-
-        if (manuverLiveWireText) {
-            manuverLiveWireText.innerHTML = `<span style="color:${asalColor.hex}; font-weight:700;">${asalStr}</span> &rarr; <span style="color:${tujuanColor.hex}; font-weight:700;">${tujuanStr}</span>`;
+        if (typeof totalCoresOrSelected === 'function') {
+            onClickCallback = totalCoresOrSelected;
+        } else if (typeof selectedCoreOrConnected === 'function') {
+            selectedCoreNum = totalCoresOrSelected;
+            onClickCallback = selectedCoreOrConnected;
+        } else if (typeof connectedOrCallback === 'function') {
+            totalCores = totalCoresOrSelected || 12;
+            selectedCoreNum = selectedCoreOrConnected;
+            onClickCallback = connectedOrCallback;
+        } else {
+            totalCores = totalCoresOrSelected || 12;
+            selectedCoreNum = selectedCoreOrConnected;
+            connectedCoreNums = Array.isArray(connectedOrCallback) ? connectedOrCallback : [];
+            onClickCallback = maybeCallback || (() => {});
         }
 
-        updateLaserCurve(manuverWirePath, manuverStartDot, manuverEndDot, manuverAsalCore, manuverTujuanCore, asalColor.hex);
+        const limit = Math.min(12, totalCores || 12);
+
+        for (let i = 0; i < limit; i++) {
+            const c = FIBER_COLORS[i] || { num: i + 1, name: `Core ${i + 1}`, hex: '#64748b', border: '#94a3b8' };
+            const isSelected = (c.num === selectedCoreNum);
+            const isConnected = Array.isArray(connectedCoreNums) && connectedCoreNums.includes(c.num);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `fiber-port-btn ${isSelected ? 'selected' : ''} ${isConnected ? 'connected' : ''}`;
+            btn.setAttribute('data-core', c.num);
+            btn.setAttribute('data-tube', currentTube);
+            btn.innerHTML = `
+                <span class="fiber-dot" style="background-color: ${c.hex}; border: 1.5px solid ${c.border};"></span>
+                <span class="fiber-port-label-num">C${c.num}</span>
+                <span class="fiber-port-label-name text-truncate">${c.name}</span>
+            `;
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                onClickCallback(c.num, c);
+            });
+            containerEl.appendChild(btn);
+        }
+    }
+
+    // ── A. MANUVER CORE MULTI-WIRE PATCHER CONTROLLER ──
+    let manuverAsalCap = 24;
+    let manuverTujuanCap = 24;
+    let manuverAsalTube = 1;
+    let manuverTujuanTube = 1;
+    let manuverSelectedAsalCore = null; // Port clicked on Asal awaiting destination
+    let manuverConnections = []; // Array of { id, asalTube, asalCore, tujuanTube, tujuanCore, color, asalName, tujuanName }
+
+    const manuverAsalCapSelect = document.getElementById('manuverAsalCapacity');
+    const manuverTujuanCapSelect = document.getElementById('manuverTujuanCapacity');
+    const manuverAsalTubeTabs = document.getElementById('manuverAsalTubeTabs');
+    const manuverTujuanTubeTabs = document.getElementById('manuverTujuanTubeTabs');
+    const manuverAsalCoreList = document.getElementById('manuverAsalCoreList');
+    const manuverTujuanCoreList = document.getElementById('manuverTujuanCoreList');
+    const manuverSvgWiresGroup = document.getElementById('manuverSvgWiresGroup');
+    const manuverLiveWireText = document.getElementById('manuverLiveWireText');
+    const manuverWireCountBadge = document.getElementById('manuverWireCountBadge');
+    const manuverTotalCoresText = document.getElementById('manuverTotalCoresText');
+    const manuverConnectionsChips = document.getElementById('manuverConnectionsChips');
+    const manuverHiddenInputsContainer = document.getElementById('manuverHiddenInputsContainer');
+
+    function renderTubesForPatcher(tabsContainer, config, activeTube, onTubeSelect) {
+        if (!tabsContainer) return;
+        tabsContainer.innerHTML = '';
+        for (let t = 1; t <= config.tubes; t++) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `fiber-tube-tab-btn ${t === activeTube ? 'active' : ''}`;
+            btn.setAttribute('data-tube', t);
+            btn.textContent = `Tube ${t}`;
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                tabsContainer.querySelectorAll('.fiber-tube-tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                onTubeSelect(t);
+            });
+            tabsContainer.appendChild(btn);
+        }
+    }
+
+    function syncManuverMultiWires() {
+        if (!manuverSvgWiresGroup) return;
+        manuverSvgWiresGroup.innerHTML = '';
+
+        const asalConfig = getCapacityConfig(manuverAsalCap);
+        const tujuanConfig = getCapacityConfig(manuverTujuanCap);
+        const maxAsalCores = asalConfig.coresPerTube;
+        const maxTujuanCores = tujuanConfig.coresPerTube;
+
+        // Filter connections that are currently visible on active tubes or all active connections
+        manuverConnections.forEach((conn, index) => {
+            const isVisible = (conn.asalTube === manuverAsalTube && conn.tujuanTube === manuverTujuanTube);
+            const isPartial = (conn.asalTube === manuverAsalTube || conn.tujuanTube === manuverTujuanTube);
+
+            // Compute Y coordinates on 260px SVG canvas
+            const y1 = maxAsalCores > 1 
+                ? Math.round(20 + ((conn.asalCore - 1) / (maxAsalCores - 1)) * 220) 
+                : 130;
+            const y2 = maxTujuanCores > 1 
+                ? Math.round(20 + ((conn.tujuanCore - 1) / (maxTujuanCores - 1)) * 220) 
+                : 130;
+
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d = `M 0 ${y1} C 70 ${y1}, 70 ${y2}, 140 ${y2}`;
+            path.setAttribute('d', d);
+            path.setAttribute('class', 'fiber-wire-path');
+            path.setAttribute('stroke', conn.color || '#38bdf8');
+            path.setAttribute('stroke-width', isVisible ? '3.5' : '1.8');
+            path.setAttribute('stroke-opacity', isVisible ? '1' : (isPartial ? '0.45' : '0.2'));
+            path.setAttribute('fill', 'none');
+            path.setAttribute('data-index', index);
+
+            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+            title.textContent = `T${conn.asalTube} C${conn.asalCore} (${conn.asalName}) ➔ T${conn.tujuanTube} C${conn.tujuanCore} (${conn.tujuanName})`;
+            path.appendChild(title);
+            manuverSvgWiresGroup.appendChild(path);
+
+            if (isVisible) {
+                const dot1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot1.setAttribute('cx', '2');
+                dot1.setAttribute('cy', y1);
+                dot1.setAttribute('r', '5');
+                dot1.setAttribute('fill', conn.color || '#38bdf8');
+                dot1.setAttribute('stroke', '#ffffff');
+                dot1.setAttribute('stroke-width', '1.5');
+                manuverSvgWiresGroup.appendChild(dot1);
+
+                const dot2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot2.setAttribute('cx', '138');
+                dot2.setAttribute('cy', y2);
+                dot2.setAttribute('r', '5');
+                dot2.setAttribute('fill', conn.color || '#38bdf8');
+                dot2.setAttribute('stroke', '#ffffff');
+                dot2.setAttribute('stroke-width', '1.5');
+                manuverSvgWiresGroup.appendChild(dot2);
+            }
+        });
+
+        // Update chips list
+        if (manuverConnectionsChips) {
+            manuverConnectionsChips.innerHTML = '';
+            if (manuverConnections.length === 0) {
+                manuverConnectionsChips.innerHTML = '<span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Klik port asal lalu tujuan.</span>';
+            } else {
+                manuverConnections.forEach((conn, idx) => {
+                    const chip = document.createElement('div');
+                    chip.className = 'fiber-conn-chip';
+                    chip.innerHTML = `
+                        <span class="fiber-dot-sm" style="background-color: ${conn.color};"></span>
+                        <span>T${conn.asalTube}C${conn.asalCore} <span class="text-muted">(${conn.asalName})</span> &rarr; T${conn.tujuanTube}C${conn.tujuanCore} <span class="text-muted">(${conn.tujuanName})</span></span>
+                        <button type="button" class="fiber-conn-chip-del" data-index="${idx}" title="Putuskan sambungan ini">&times;</button>
+                    `;
+                    chip.querySelector('.fiber-conn-chip-del').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeManuverConnection(idx);
+                    });
+                    manuverConnectionsChips.appendChild(chip);
+                });
+            }
+        }
+
+        // Update counts & status
+        const total = manuverConnections.length;
+        if (manuverWireCountBadge) {
+            manuverWireCountBadge.innerHTML = `<i class="bi bi-bezier2 me-1"></i> ${total} Sambungan Aktif`;
+        }
+        if (manuverTotalCoresText) {
+            manuverTotalCoresText.textContent = `${total} Core Terhubung`;
+        }
+
+        // Synchronize hidden inputs for backend submission
+        if (manuverHiddenInputsContainer) {
+            manuverHiddenInputsContainer.innerHTML = '';
+            if (total === 0) {
+                // Default fallback
+                manuverHiddenInputsContainer.innerHTML = `
+                    <input type="hidden" id="core_asal" name="core_asal[]" value="Tube ${manuverAsalTube} Core 1">
+                    <input type="hidden" id="core_tujuan" name="core_tujuan[]" value="Tube ${manuverTujuanTube} Core 1">
+                `;
+            } else {
+                manuverConnections.forEach((conn, i) => {
+                    const asalVal = `Tube ${conn.asalTube} Core ${conn.asalCore}`;
+                    const tujuanVal = `Tube ${conn.tujuanTube} Core ${conn.tujuanCore}`;
+                    manuverHiddenInputsContainer.insertAdjacentHTML('beforeend', `
+                        <input type="hidden" ${i === 0 ? 'id="core_asal"' : ''} name="core_asal[]" value="${asalVal}">
+                        <input type="hidden" ${i === 0 ? 'id="core_tujuan"' : ''} name="core_tujuan[]" value="${tujuanVal}">
+                    `);
+                });
+            }
+        }
+
+        // Re-render ports to show active connected checkmarks
+        renderAsalPorts();
+        renderTujuanPorts();
+    }
+
+    function removeManuverConnection(index) {
+        manuverConnections.splice(index, 1);
+        syncManuverMultiWires();
+    }
+
+    function renderAsalPorts() {
+        const asalConfig = getCapacityConfig(manuverAsalCap);
+        const connectedCoresInActiveTube = manuverConnections
+            .filter(c => c.asalTube === manuverAsalTube)
+            .map(c => c.asalCore);
+
+        renderFiberPortButtons(
+            manuverAsalCoreList,
+            manuverAsalTube,
+            asalConfig.coresPerTube,
+            manuverSelectedAsalCore?.tube === manuverAsalTube ? manuverSelectedAsalCore.core : null,
+            connectedCoresInActiveTube,
+            (coreNum, colorObj) => {
+                manuverSelectedAsalCore = { tube: manuverAsalTube, core: coreNum, color: colorObj };
+                if (manuverLiveWireText) {
+                    manuverLiveWireText.innerHTML = `Asal: <strong style="color:${colorObj.hex};">Tube ${manuverAsalTube} Core ${coreNum} (${colorObj.name})</strong> &rarr; <span class="text-warning">Pilih Port Tujuan di sebelah kanan...</span>`;
+                }
+                renderAsalPorts();
+            }
+        );
+    }
+
+    function renderTujuanPorts() {
+        const tujuanConfig = getCapacityConfig(manuverTujuanCap);
+        const connectedCoresInActiveTube = manuverConnections
+            .filter(c => c.tujuanTube === manuverTujuanTube)
+            .map(c => c.tujuanCore);
+
+        renderFiberPortButtons(
+            manuverTujuanCoreList,
+            manuverTujuanTube,
+            tujuanConfig.coresPerTube,
+            null,
+            connectedCoresInActiveTube,
+            (coreNum, colorObj) => {
+                if (!manuverSelectedAsalCore) {
+                    if (manuverLiveWireText) {
+                        manuverLiveWireText.innerHTML = `<span class="text-warning">Silakan klik port Asal (kiri) terlebih dahulu!</span>`;
+                    }
+                    return;
+                }
+
+                // Check if connection for this specific asal port already exists; if so, replace it
+                const existingIdx = manuverConnections.findIndex(
+                    c => c.asalTube === manuverSelectedAsalCore.tube && c.asalCore === manuverSelectedAsalCore.core
+                );
+
+                const newConn = {
+                    id: Date.now() + Math.random(),
+                    asalTube: manuverSelectedAsalCore.tube,
+                    asalCore: manuverSelectedAsalCore.core,
+                    asalName: manuverSelectedAsalCore.color.name,
+                    tujuanTube: manuverTujuanTube,
+                    tujuanCore: coreNum,
+                    tujuanName: colorObj.name,
+                    color: manuverSelectedAsalCore.color.hex
+                };
+
+                if (existingIdx >= 0) {
+                    manuverConnections[existingIdx] = newConn;
+                } else {
+                    manuverConnections.push(newConn);
+                }
+
+                if (manuverLiveWireText) {
+                    manuverLiveWireText.innerHTML = `Tersambung: <strong style="color:${newConn.color};">T${newConn.asalTube} C${newConn.asalCore}</strong> &rarr; <strong style="color:${colorObj.hex};">T${newConn.tujuanTube} C${newConn.tujuanCore}</strong>`;
+                }
+
+                // Auto advance to next core for quick patching
+                const asalConfig = getCapacityConfig(manuverAsalCap);
+                if (manuverSelectedAsalCore.core < asalConfig.coresPerTube) {
+                    const nextCoreNum = manuverSelectedAsalCore.core + 1;
+                    const nextColor = FIBER_COLORS[nextCoreNum - 1] || FIBER_COLORS[0];
+                    manuverSelectedAsalCore = { tube: manuverAsalTube, core: nextCoreNum, color: nextColor };
+                } else {
+                    manuverSelectedAsalCore = null;
+                }
+
+                syncManuverMultiWires();
+            }
+        );
     }
 
     function initManuverPatcher() {
         if (!manuverAsalCoreList || !manuverTujuanCoreList) return;
 
-        renderFiberPortButtons(manuverAsalCoreList, manuverAsalTube, manuverAsalCore, (num) => {
-            manuverAsalCore = num;
-            syncManuverPatcher();
-        });
-
-        renderFiberPortButtons(manuverTujuanCoreList, manuverTujuanTube, manuverTujuanCore, (num) => {
-            manuverTujuanCore = num;
-            syncManuverPatcher();
-        });
-
-        manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                manuverAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                manuverAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncManuverPatcher();
-            });
-        });
-
-        manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
-            tab.addEventListener('click', function() {
-                manuverTujuanTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                manuverTujuanTube = parseInt(this.getAttribute('data-tube')) || 1;
-                syncManuverPatcher();
-            });
-        });
-
-        document.getElementById('btnManuverStraightPreset')?.addEventListener('click', function() {
+        // Capacity Change Listeners
+        manuverAsalCapSelect?.addEventListener('change', function() {
+            manuverAsalCap = parseInt(this.value) || 24;
             manuverAsalTube = 1;
-            manuverTujuanTube = 1;
-            manuverAsalCore = 1;
-            manuverTujuanCore = 1;
-            manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
-            manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
-            initManuverPatcher();
-            syncManuverPatcher();
+            manuverSelectedAsalCore = null;
+            const config = getCapacityConfig(manuverAsalCap);
+            renderTubesForPatcher(manuverAsalTubeTabs, config, manuverAsalTube, (t) => {
+                manuverAsalTube = t;
+                renderAsalPorts();
+                syncManuverMultiWires();
+            });
+            renderAsalPorts();
+            syncManuverMultiWires();
         });
 
+        manuverTujuanCapSelect?.addEventListener('change', function() {
+            manuverTujuanCap = parseInt(this.value) || 24;
+            manuverTujuanTube = 1;
+            const config = getCapacityConfig(manuverTujuanCap);
+            renderTubesForPatcher(manuverTujuanTubeTabs, config, manuverTujuanTube, (t) => {
+                manuverTujuanTube = t;
+                renderTujuanPorts();
+                syncManuverMultiWires();
+            });
+            renderTujuanPorts();
+            syncManuverMultiWires();
+        });
+
+        // Initialize default tube tabs
+        const asalConfig = getCapacityConfig(manuverAsalCap);
+        renderTubesForPatcher(manuverAsalTubeTabs, asalConfig, manuverAsalTube, (t) => {
+            manuverAsalTube = t;
+            renderAsalPorts();
+            syncManuverMultiWires();
+        });
+
+        const tujuanConfig = getCapacityConfig(manuverTujuanCap);
+        renderTubesForPatcher(manuverTujuanTubeTabs, tujuanConfig, manuverTujuanTube, (t) => {
+            manuverTujuanTube = t;
+            renderTujuanPorts();
+            syncManuverMultiWires();
+        });
+
+        // Presets: Sambung Lurus 1:1 on active tube
+        document.getElementById('btnManuverStraightPreset')?.addEventListener('click', function() {
+            const count = Math.min(asalConfig.coresPerTube, tujuanConfig.coresPerTube);
+            for (let i = 1; i <= count; i++) {
+                const color = FIBER_COLORS[i - 1] || FIBER_COLORS[0];
+                const existingIdx = manuverConnections.findIndex(c => c.asalTube === manuverAsalTube && c.asalCore === i);
+                const item = {
+                    id: Date.now() + i,
+                    asalTube: manuverAsalTube,
+                    asalCore: i,
+                    asalName: color.name,
+                    tujuanTube: manuverTujuanTube,
+                    tujuanCore: i,
+                    tujuanName: color.name,
+                    color: color.hex
+                };
+                if (existingIdx >= 0) {
+                    manuverConnections[existingIdx] = item;
+                } else {
+                    manuverConnections.push(item);
+                }
+            }
+            manuverSelectedAsalCore = null;
+            syncManuverMultiWires();
+        });
+
+        // Presets: Swap Tube 1 -> Tube 2
         document.getElementById('btnManuverSwapPreset')?.addEventListener('click', function() {
             manuverAsalTube = 1;
-            manuverTujuanTube = 2;
-            manuverAsalCore = 1;
-            manuverTujuanCore = 1;
-            manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
-            manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '2'));
-            initManuverPatcher();
-            syncManuverPatcher();
+            manuverTujuanTube = Math.min(2, tujuanConfig.tubes);
+            const count = Math.min(asalConfig.coresPerTube, tujuanConfig.coresPerTube);
+            for (let i = 1; i <= count; i++) {
+                const color = FIBER_COLORS[i - 1] || FIBER_COLORS[0];
+                const existingIdx = manuverConnections.findIndex(c => c.asalTube === 1 && c.asalCore === i);
+                const item = {
+                    id: Date.now() + i,
+                    asalTube: 1,
+                    asalCore: i,
+                    asalName: color.name,
+                    tujuanTube: manuverTujuanTube,
+                    tujuanCore: i,
+                    tujuanName: color.name,
+                    color: color.hex
+                };
+                if (existingIdx >= 0) {
+                    manuverConnections[existingIdx] = item;
+                } else {
+                    manuverConnections.push(item);
+                }
+            }
+            renderTubesForPatcher(manuverAsalTubeTabs, asalConfig, 1, (t) => { manuverAsalTube = t; renderAsalPorts(); syncManuverMultiWires(); });
+            renderTubesForPatcher(manuverTujuanTubeTabs, tujuanConfig, manuverTujuanTube, (t) => { manuverTujuanTube = t; renderTujuanPorts(); syncManuverMultiWires(); });
+            manuverSelectedAsalCore = null;
+            syncManuverMultiWires();
         });
 
-        syncManuverPatcher();
+        // Presets: Clear All
+        document.getElementById('btnManuverClearPreset')?.addEventListener('click', function() {
+            manuverConnections = [];
+            manuverSelectedAsalCore = null;
+            if (manuverLiveWireText) {
+                manuverLiveWireText.innerHTML = `Klik port Asal &rarr; klik port Tujuan untuk menambah sambungan`;
+            }
+            syncManuverMultiWires();
+        });
+
+        // Initial default connection (T1 C1 -> T1 C1) so form starts with a ready pair
+        manuverConnections.push({
+            id: Date.now(),
+            asalTube: 1,
+            asalCore: 1,
+            asalName: 'Biru',
+            tujuanTube: 1,
+            tujuanCore: 1,
+            tujuanName: 'Biru',
+            color: FIBER_COLORS[0].hex
+        });
+
+        syncManuverMultiWires();
     }
 
     initManuverPatcher();

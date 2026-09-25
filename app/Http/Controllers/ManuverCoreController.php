@@ -20,29 +20,55 @@ class ManuverCoreController extends Controller
      */
     public function store(StoreManuverCoreRequest $request, Tiket $tiket): RedirectResponse|JsonResponse
     {
-        $manuver = $this->manuverCoreService->addManuver($tiket, $request->validated());
+        $validated = $request->validated();
+        $coreAsalList = is_array($validated['core_asal']) ? $validated['core_asal'] : [$validated['core_asal']];
+        $coreTujuanList = is_array($validated['core_tujuan']) ? $validated['core_tujuan'] : [$validated['core_tujuan']];
+
+        $createdManuvers = [];
+        $count = max(count($coreAsalList), count($coreTujuanList));
+
+        for ($i = 0; $i < $count; $i++) {
+            $asal = $coreAsalList[$i] ?? $coreAsalList[0];
+            $tujuan = $coreTujuanList[$i] ?? $coreTujuanList[0];
+            if (empty($asal) || empty($tujuan)) continue;
+
+            $data = $validated;
+            $data['core_asal'] = $asal;
+            $data['core_tujuan'] = $tujuan;
+            $createdManuvers[] = $this->manuverCoreService->addManuver($tiket, $data);
+        }
+
+        $lastManuver = !empty($createdManuvers) ? $createdManuvers[0] : null;
 
         try {
-            app(\App\Services\NotificationService::class)->notifyProgresPekerjaan(
-                $tiket,
-                "Update Manuver Core: {$manuver->segment_tujuan} (Tube {$manuver->tube} / Core {$manuver->core})",
-                $request->user()
-            );
+            if ($lastManuver) {
+                $totalStr = count($createdManuvers) > 1 ? count($createdManuvers) . ' Core' : "{$lastManuver->core_asal} ➔ {$lastManuver->core_tujuan}";
+                app(\App\Services\NotificationService::class)->notifyProgresPekerjaan(
+                    $tiket,
+                    "Update Manuver Core: {$lastManuver->titik} ({$totalStr})",
+                    $request->user()
+                );
+            }
         } catch (\Throwable $e) {
             // Fail silently
         }
 
+        $msg = count($createdManuvers) > 1
+            ? count($createdManuvers) . ' sambungan manuver core berhasil ditambahkan.'
+            : 'Manuver core berhasil ditambahkan.';
+
         if ($request->wantsJson()) {
             return response()->json([
                 'status' => 'success',
-                'message' => 'Manuver core berhasil ditambahkan.',
-                'data' => $manuver,
+                'message' => $msg,
+                'data' => $lastManuver,
+                'items' => $createdManuvers,
             ]);
         }
 
         return redirect()
             ->route('tiket.show', ['tiket' => $tiket->id, 'tab' => 'penanganan'])
-            ->with('success', 'Manuver core berhasil ditambahkan.');
+            ->with('success', $msg);
     }
 
     /**
