@@ -567,6 +567,13 @@
             }, 380);
         };
 
+        // Seamless transition text from login
+        if (sessionStorage.getItem('from_login') === '1') {
+            const txt = document.getElementById('msnLoaderMsg');
+            if (txt) txt.textContent = 'Membuka Dashboard...';
+            sessionStorage.removeItem('from_login');
+        }
+
         // Otomatis hilangkan loader saat halaman & asset selesai dimuat secara mulus
         if (document.readyState === 'complete') {
             setTimeout(window.hideMsnLoader, 100);

@@ -33,12 +33,18 @@ class AuthController extends Controller
     /**
      * Proses autentikasi user.
      */
-    public function login(LoginRequest $request): RedirectResponse
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
         $remember = $request->has('remember') ? $request->boolean('remember') : true;
 
         if (!Auth::attempt($credentials, $remember)) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kombinasi email dan password tidak sesuai.',
+                ], 422);
+            }
             return back()->withErrors([
                 'email' => 'Kombinasi email dan password tidak sesuai.',
             ])->onlyInput('email');
@@ -52,6 +58,13 @@ class AuthController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun Anda berstatus nonaktif. Silakan hubungi Administrator.',
+                ], 403);
+            }
+
             return redirect()->route('login')->withErrors([
                 'email' => 'Akun Anda berstatus nonaktif. Silakan hubungi Administrator.',
             ]);
@@ -60,6 +73,15 @@ class AuthController extends Controller
         $targetRedirect = $request->input('redirect_url') ?: session('url.intended');
 
         $request->session()->regenerate();
+        $redirectUrl = $targetRedirect ?: route('dashboard');
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil, mengalihkan...',
+                'redirect_url' => $redirectUrl,
+            ]);
+        }
 
         if ($targetRedirect) {
             return redirect()->to($targetRedirect);

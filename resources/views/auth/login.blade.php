@@ -890,6 +890,9 @@
             <div class="form-title">Masuk ke Akun</div>
             <div class="form-subtitle">Silakan masukkan kredensial akun Anda untuk login.</div>
 
+            <!-- Dynamic Error Container -->
+            <div id="loginErrorContainer"></div>
+
             <!-- Flash Alert Messages -->
             @if($errors->any())
                 <div class="toast-banner toast-error">
@@ -1052,6 +1055,18 @@ if (toggleBtn && pwdInput && eyeIcon) {
     });
 }
 
+// Error Toast Helper
+function showLoginToast(msg) {
+    const container = document.getElementById('loginErrorContainer');
+    if (!container) return;
+    container.innerHTML = `
+        <div class="toast-banner toast-error">
+            <i class="bi bi-exclamation-triangle-fill fs-6 flex-shrink-0"></i>
+            <div>${msg}</div>
+        </div>
+    `;
+}
+
 // PT MSN Signature Loader (Smooth 60fps)
 let msnLoaderHidden = false;
 window.showMsnLoader = function(text) {
@@ -1089,13 +1104,17 @@ if (document.readyState === 'complete') {
 }
 setTimeout(window.hideMsnLoader, 1200);
 
-// Submit loading state
+// Seamless AJAX Login Submission
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
-    loginForm.addEventListener('submit', () => {
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
         const btnText = document.getElementById('loginBtnText');
         const btnLoad = document.getElementById('loginBtnLoading');
         const submitBtn = document.getElementById('loginSubmitBtn');
+        const errorContainer = document.getElementById('loginErrorContainer');
+        if (errorContainer) errorContainer.innerHTML = '';
 
         if (btnText && btnLoad && submitBtn) {
             btnText.classList.add('d-none');
@@ -1103,7 +1122,45 @@ if (loginForm) {
             submitBtn.disabled = true;
         }
 
-        window.showMsnLoader('Memverifikasi Akun & Masuk...');
+        window.showMsnLoader('Memverifikasi Akun...');
+
+        const formData = new FormData(loginForm);
+
+        try {
+            const response = await fetch(loginForm.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                // Seamless state transition
+                const txt = document.getElementById('msnLoaderMsg');
+                if (txt) txt.textContent = 'Membuka Dashboard...';
+                sessionStorage.setItem('from_login', '1');
+
+                // Redirect cleanly
+                window.location.replace(data.redirect_url || '/dashboard');
+            } else {
+                window.hideMsnLoader();
+                if (btnText && btnLoad && submitBtn) {
+                    btnText.classList.remove('d-none');
+                    btnLoad.classList.add('d-none');
+                    submitBtn.disabled = false;
+                }
+
+                const msg = data.message || (data.errors ? Object.values(data.errors)[0][0] : 'Kombinasi email dan password tidak sesuai.');
+                showLoginToast(msg);
+            }
+        } catch (err) {
+            // If fetch errors out unexpectedly, fallback to native submission
+            loginForm.submit();
+        }
     });
 }
 
