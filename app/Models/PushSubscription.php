@@ -16,6 +16,15 @@ class PushSubscription extends Model
         'public_key',
         'auth_token',
         'content_encoding',
+        'device_type',
+        'is_mobile',
+        'user_agent',
+        'last_active_at',
+    ];
+
+    protected $casts = [
+        'is_mobile' => 'boolean',
+        'last_active_at' => 'datetime',
     ];
 
     /**

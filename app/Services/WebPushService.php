@@ -48,7 +48,18 @@ class WebPushService
     }
 
     /**
-     * Kirim notifikasi Web Push ke beberapa user
+     * Kirim notifikasi Web Push ke single user
+     */
+    public function sendToUser(User $user, string $title, string $message, string $url = '/', ?string $icon = null): int
+    {
+        return $this->sendToUsers([$user], $title, $message, $url, $icon);
+    }
+
+    /**
+     * Kirim notifikasi Web Push ke beberapa user.
+     * Aturan prioritas pengiriman:
+     * - Jika user memiliki aplikasi mobile / HP yang terdaftar, notifikasi HANYA dikirimkan ke HP (mobile).
+     * - Jika user TIDAK memiliki perangkat mobile, notifikasi dikirimkan ke browser web/desktop.
      *
      * @param Collection|array|User $users
      * @param string $title
@@ -77,7 +88,32 @@ class WebPushService
             return 0;
         }
 
-        $subscriptions = PushSubscription::whereIn('user_id', $userIds)->get();
+        $allSubscriptions = PushSubscription::whereIn('user_id', $userIds)->get();
+
+        if ($allSubscriptions->isEmpty()) {
+            return 0;
+        }
+
+        // Filter prioritas: Kelompokkan per user_id
+        $subscriptions = collect();
+        $subsByUser = $allSubscriptions->groupBy('user_id');
+
+        foreach ($subsByUser as $uid => $userSubs) {
+            $mobileSubs = $userSubs->filter(function ($sub) {
+                if (!empty($sub->is_mobile)) return true;
+                if (!empty($sub->device_type) && in_array($sub->device_type, ['mobile', 'pwa', 'app', 'android', 'ios'], true)) return true;
+                if (!empty($sub->user_agent) && preg_match('/(android|iphone|ipad|ipod|mobile|phone|blackberry)/i', $sub->user_agent)) return true;
+                return false;
+            });
+
+            if ($mobileSubs->isNotEmpty()) {
+                // User memiliki aplikasi / perangkat mobile: Kirim ke mobile SAJA (jangan kirim ke website desktop)
+                $subscriptions = $subscriptions->merge($mobileSubs);
+            } else {
+                // User belum punya mobile: Kirim ke website desktop
+                $subscriptions = $subscriptions->merge($userSubs);
+            }
+        }
 
         if ($subscriptions->isEmpty()) {
             return 0;

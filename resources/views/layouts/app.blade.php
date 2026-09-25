@@ -560,6 +560,14 @@
                         applicationServerKey: convertedKey
                     });
 
+                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+                    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (navigator.userAgentData && navigator.userAgentData.mobile);
+                    const deviceType = isStandalone ? 'pwa' : (isMobileDevice ? 'mobile' : 'desktop');
+
+                    const subPayload = sub.toJSON();
+                    subPayload.device_type = deviceType;
+                    subPayload.is_mobile = isMobileDevice || isStandalone;
+
                     await fetch('{{ route('push.subscribe') }}', {
                         method: 'POST',
                         headers: {
@@ -567,7 +575,7 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify(sub.toJSON())
+                        body: JSON.stringify(subPayload)
                     });
                 } catch (err) {
                     console.warn('Subscription error:', err);

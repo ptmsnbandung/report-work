@@ -35,25 +35,40 @@ class PushSubscriptionController extends Controller
             'keys.p256dh' => ['nullable', 'string'],
             'keys.auth' => ['nullable', 'string'],
             'content_encoding' => ['nullable', 'string'],
+            'device_type' => ['nullable', 'string', 'in:mobile,desktop,pwa,app'],
+            'is_mobile' => ['nullable', 'boolean'],
         ]);
 
         $user = $request->user();
+        $userAgent = $request->userAgent() ?: '';
+
+        // Deteksi apakah subscription berasal dari perangkat HP / Mobile
+        $isMobile = $request->boolean('is_mobile');
+        if (!$request->has('is_mobile')) {
+            $isMobile = (bool) preg_match('/(android|iphone|ipad|ipod|mobile|phone|blackberry|opera mini)/i', $userAgent);
+        }
+
+        $deviceType = $validated['device_type'] ?? ($isMobile ? 'mobile' : 'desktop');
 
         PushSubscription::updateOrCreate(
             [
                 'endpoint' => $validated['endpoint'],
             ],
             [
-                'user_id' => $user->id,
-                'public_key' => $validated['keys']['p256dh'] ?? null,
-                'auth_token' => $validated['keys']['auth'] ?? null,
+                'user_id'          => $user->id,
+                'public_key'       => $validated['keys']['p256dh'] ?? null,
+                'auth_token'       => $validated['keys']['auth'] ?? null,
                 'content_encoding' => $validated['content_encoding'] ?? 'aesgcm',
+                'device_type'      => $deviceType,
+                'is_mobile'        => $isMobile,
+                'user_agent'       => substr($userAgent, 0, 500),
+                'last_active_at'   => now(),
             ]
         );
 
         return response()->json([
             'success' => true,
-            'message' => 'Notifikasi HP berhasil diaktifkan.',
+            'message' => 'Notifikasi perangkat berhasil diaktifkan.',
         ]);
     }
 
