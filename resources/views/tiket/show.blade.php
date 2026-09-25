@@ -3302,6 +3302,8 @@
                                         $renderedCount = $tiket->kronologis->count();
                                         $hasOlderKrono = $totalKronoCount > $renderedCount;
                                         $oldestRenderedId = $tiket->kronologis->first()?->id ?? 0;
+                                        $lastOtherKronoTime = $tiket->kronologis->where('user_id', '!=', $currentUserId)->max('timestamp');
+                                        $isTiketClosedOrVerified = in_array($tiket->status, ['CLOSE', 'MENUNGGU_VERIFIKASI', 'RESOLVED']);
                                     @endphp
 
                                     @if($hasOlderKrono)
@@ -3319,6 +3321,7 @@
                                             $senderColor = $nameColors[$colorIndex];
                                             $initials = strtoupper(substr($krono->user?->name ?? 'U', 0, 2));
                                             $userAvatar = $krono->user?->avatar_url;
+                                            $isReadByOthers = $isTiketClosedOrVerified || ($lastOtherKronoTime && $krono->timestamp <= $lastOtherKronoTime);
                                         @endphp
 
                                         @if($currentDate !== $lastDate)
@@ -3441,10 +3444,12 @@
                                                 </div>
                                                 @endif
 
-                                                <!-- Bubble Footer: Time & Double Checkmark -->
+                                                <!-- Bubble Footer: Time & Double Checkmark (Abu jika belum ada tanggapan orang lain, Biru jika sudah) -->
                                                 <div class="wa-bubble-footer">
                                                     <span class="wa-time">{{ $krono->timestamp->format('H:i') }} WIB</span>
-                                                    <i class="bi bi-check2-all wa-double-check"></i>
+                                                    @if($isMe)
+                                                        <i class="bi bi-check2-all wa-status-icon {{ $isReadByOthers ? 'wa-status-read' : 'wa-status-sent' }}" title="{{ $isReadByOthers ? 'Dilihat oleh tim' : 'Terkirim (Belum dilihat)' }}"></i>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
@@ -7465,7 +7470,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <div class="wa-bubble-footer">
                             <span class="wa-time">${k.formatted_time}</span>
-                            <i class="bi bi-check2-all wa-double-check"></i>
+                            ${isMe ? `<i class="bi bi-check2-all wa-status-icon wa-status-sent" title="Terkirim (Belum dilihat)"></i>` : ''}
                         </div>
                     </div>
                 </div>`;
@@ -7490,6 +7495,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!stream) return;
+
+        // Jika ada pesan baru masuk dari anggota tim lain, ubah semua status pesan outgoing sebelumnya menjadi ceklis biru (Read)
+        if (k.user_id !== currentUserId) {
+            document.querySelectorAll('.wa-bubble-outgoing .wa-status-sent').forEach(el => {
+                el.className = 'bi bi-check2-all wa-status-icon wa-status-read';
+                el.title = 'Dilihat oleh tim';
+            });
+        }
 
         // Cek apakah posisi scroll stream saat ini sedang berada di dekat bawah
         const isNearBottom = (stream.scrollHeight - stream.scrollTop - stream.clientHeight) < 200;
@@ -10213,16 +10226,10 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                         tempEl.id = 'krono-item-' + res.data.id;
                         const statusIcon = document.getElementById('status-icon-' + tempId);
                         if (statusIcon) {
-                            // TAHAP 1: CEKLIS 2 ABU-ABU (SENT / TERKIRIM)
+                            // TAHAP: CEKLIS 2 ABU-ABU (SENT / TERKIRIM - MENUNGGU DILIHAT)
                             statusIcon.id = 'status-icon-' + res.data.id;
                             statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
-                            statusIcon.title = 'Terkirim';
-
-                            // TAHAP 2: CEKLIS 2 BIRU (READ / DILIHAT) SETELAH 1.4 DETIK
-                            setTimeout(() => {
-                                statusIcon.className = 'bi bi-check2-all wa-double-check wa-status-read';
-                                statusIcon.title = 'Dilihat';
-                            }, 1400);
+                            statusIcon.title = 'Terkirim (Belum dilihat)';
                         }
 
                         // Update foto url asli jika upload foto
