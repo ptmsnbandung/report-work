@@ -303,38 +303,28 @@
     </div>
 
     {{-- ── PWA DOWNLOAD / INSTALL BANNER (BELOW STATS) ── --}}
-    <div class="card border-0 mb-4 pwa-download-dash-card" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); border-radius: var(--neu-radius, 16px); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28) !important; box-shadow: 0 10px 28px rgba(7, 21, 43, 0.22); overflow: hidden; position: relative;">
-        <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 70%); pointer-events: none;"></div>
-        <div class="card-body p-3.5 p-md-4">
+    <div class="card border-0 mb-4 pwa-download-dash-card" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); border-radius: var(--neu-radius, 16px); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28) !important; box-shadow: 0 8px 24px rgba(7, 21, 43, 0.18); overflow: hidden;">
+        <div class="card-body py-2.5 px-3 px-md-4">
             <div class="row align-items-center g-3">
-                <div class="col-12 col-md-auto text-center text-md-start d-flex justify-content-center">
-                    <div class="phone-mockup-frame lg">
-                        <div class="phone-notch"></div>
-                        <div class="phone-screen-inner">
-                            <img src="{{ asset('assets/work-report.png') }}" alt="Aplikasi Mobile PT MSN" class="phone-app-img">
+                <div class="col-auto d-flex align-items-center">
+                    <div class="phone-mockup-frame" style="width: 44px; height: 82px;">
+                        <div class="phone-notch" style="width: 14px; height: 3px;"></div>
+                        <div class="phone-screen-inner" style="border-radius: 8px; padding: 2px;">
+                            <img src="{{ asset('assets/work-report.png') }}" alt="Aplikasi PT MSN" class="phone-app-img">
                         </div>
-                        <div class="phone-bar"></div>
+                        <div class="phone-bar" style="width: 12px; height: 1.5px; bottom: 3px;"></div>
                     </div>
                 </div>
-                <div class="col-12 col-md text-center text-md-start">
-                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1 flex-wrap">
-                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.02rem; letter-spacing: -0.2px;">Aplikasi Mobile PT MSN (Work Report)</h5>
-                        <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.65rem; padding: 3px 8px; font-weight: 700;">PWA Ready</span>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle d-none d-sm-inline-flex" style="font-size: 0.65rem; padding: 3px 8px;"><i class="bi bi-shield-check me-1"></i> 100% Legal &amp; Bebas Peringatan APK</span>
-                    </div>
-                    <p class="text-white-50 mb-2 small" style="line-height: 1.45; font-size: 0.8rem; max-width: 680px;">
-                        Pasang aplikasi di Smartphone (Android / iOS) atau Laptop Anda. Akses instan layar penuh, ringan tanpa unduh file berbahaya, hemat kuota, &amp; mendukung notifikasi tiket langsung.
+                <div class="col text-start">
+                    <h6 class="fw-bold mb-0.5 text-white" style="font-size: 0.95rem; letter-spacing: -0.2px;">Aplikasi Mobile PT MSN</h6>
+                    <p class="text-white-50 mb-0 small" style="font-size: 0.78rem; line-height: 1.35;">
+                        Pasang aplikasi untuk akses cepat, praktis, dan notifikasi langsung di HP.
                     </p>
-                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 text-white-50 small flex-wrap" style="font-size: 0.73rem;">
-                        <span><i class="bi bi-check2-circle text-info me-1"></i> Tanpa Install APK</span>
-                        <span><i class="bi bi-bell-fill text-warning me-1"></i> Notifikasi Instan HP</span>
-                        <span><i class="bi bi-phone-fill text-primary-light me-1"></i> Kompatibel Android &amp; iOS</span>
-                    </div>
                 </div>
-                <div class="col-12 col-md-auto text-center text-md-end">
-                    <button type="button" class="btn btn-primary rounded-pill px-4 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center gap-2 btn-trigger-pwa-install w-100 w-md-auto justify-content-center" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none; font-size: 0.85rem; box-shadow: 0 4px 18px rgba(44, 127, 255, 0.45); cursor: pointer;">
-                        <i class="bi bi-download fs-6"></i>
-                        <span>Download / Pasang Aplikasi</span>
+                <div class="col-12 col-md-auto text-end">
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3.5 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2 btn-trigger-pwa-install w-100 w-md-auto justify-content-center" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none; font-size: 0.8rem; box-shadow: 0 4px 14px rgba(44, 127, 255, 0.4); cursor: pointer;">
+                        <i class="bi bi-download"></i>
+                        <span>Pasang Aplikasi</span>
                     </button>
                 </div>
             </div>
