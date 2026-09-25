@@ -3502,6 +3502,11 @@
                                                         $rawInfo = substr($rawInfo, strlen($quoteMatches[0]));
                                                     }
                                                     $cleanedInfo = preg_replace('/(\r?\n\s*){2,}/', "\n", trim($rawInfo));
+                                                    // Otomatis ubah angka menit menjadi format jam dan menit yang rapi (misal: 751 menit -> 12 jam 31 menit)
+                                                    $cleanedInfo = preg_replace_callback('/(Durasi Jeda|Total Jeda SLA Tiket|Total Stop Clock):\s*(\d+)\s*menit/i', function($m) {
+                                                        $mins = (int) $m[2];
+                                                        return $m[1] . ': ' . \App\Models\Tiket::formatDuration($mins);
+                                                    }, $cleanedInfo);
                                                 @endphp
                                                 @if($quoteSender)
                                                 <div class="wa-quote-box">
@@ -7475,6 +7480,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         str = str.trim().replace(/(\r?\n\s*){2,}/g, '\n');
+
+        // Otomatis ubah format menit mentah (misal: 751 menit) menjadi jam dan menit yang rapi
+        str = str.replace(/(Durasi Jeda|Total Jeda SLA Tiket|Total Stop Clock):\s*(\d+)\s*menit/gi, function(match, label, mins) {
+            const m = parseInt(mins, 10) || 0;
+            if (m <= 0) return `${label}: 0 menit`;
+            const jam = Math.floor(m / 60);
+            const sisa = m % 60;
+            if (jam > 0 && sisa > 0) return `${label}: ${jam} jam ${sisa} menit`;
+            if (jam > 0) return `${label}: ${jam} jam`;
+            return `${label}: ${sisa} menit`;
+        });
 
         let safe = rawEscape(str).replace(/\n/g, '<br>');
         let formatted = safe.replace(/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/g, function(match) {

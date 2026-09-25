@@ -303,11 +303,9 @@ class TiketService
 
             // Catat log kronologis
             $slaLabel = $slaStatus === 'TEPAT' ? 'TEPAT SLA' : 'MELEBIHI SLA';
-            $jam = floor($mttrMinutes / 60);
-            $menit = $mttrMinutes % 60;
-            $mttrStr = $jam > 0 ? "{$jam} jam {$menit} menit" : "{$menit} menit";
-
-            $stopClockInfo = $totalStopClock > 0 ? " (Total Stop Clock: {$totalStopClock} menit)" : "";
+            $mttrStr = Tiket::formatDuration($mttrMinutes);
+            $totalStopClockStr = Tiket::formatDuration($totalStopClock);
+            $stopClockInfo = $totalStopClock > 0 ? " (Total Stop Clock: {$totalStopClockStr})" : "";
 
             Kronologis::create([
                 'id_tiket' => $tiket->id,
@@ -438,10 +436,13 @@ class TiketService
                 'total_stop_clock_minutes' => $totalStopClock,
             ]);
 
+            $durasiJedaStr = Tiket::formatDuration($durationMinutes);
+            $totalJedaStr = Tiket::formatDuration($totalStopClock);
+
             Kronologis::create([
                 'id_tiket' => $tiket->id,
                 'user_id' => $user->id,
-                'informasi' => "▶️ [RESUME CLOCK - SLA DILANJUTKAN]\nUser ({$user->name}) mengakhiri Stop Clock.\n• Durasi Jeda: {$durationMinutes} menit\n• Total Jeda SLA Tiket: {$totalStopClock} menit",
+                'informasi' => "▶️ [RESUME CLOCK - SLA DILANJUTKAN]\nUser ({$user->name}) mengakhiri Stop Clock.\n• Durasi Jeda: {$durasiJedaStr}\n• Total Jeda SLA Tiket: {$totalJedaStr}",
                 'kategori' => 'LAIN',
                 'timestamp' => $endTime,
             ]);
