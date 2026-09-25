@@ -53,12 +53,10 @@
     }
 
     .wa-chat-container {
-        background-color: #e5ebf3;
-        background-image: 
-            radial-gradient(circle at 15% 15%, rgba(44, 127, 255, 0.05) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(13, 148, 136, 0.05) 0%, transparent 45%),
-            url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2364748b' fill-opacity='0.085' fill-rule='evenodd'%3E%3Cpath d='M28 0l3.5 3.5L28 7l-3.5-3.5L28 0zm0 28l3.5 3.5L28 35l-3.5-3.5L28 28zM0 28l3.5 3.5L0 35l-3.5-3.5L0 28zm56 0l3.5 3.5L56 35l-3.5-3.5L56 28zm-28 28l3.5 3.5L28 63l-3.5-3.5L28 56zM0 0l3.5 3.5L0 7l-3.5-3.5L0 0zm56 0l3.5 3.5L56 7l-3.5-3.5L56 0zm-56 56l3.5 3.5L0 63l-3.5-3.5L0 56zm56 56l3.5 3.5L56 63l-3.5-3.5L56 56z'/%3E%3Ccircle cx='28' cy='28' r='1.8'/%3E%3Ccircle cx='0' cy='28' r='1.8'/%3E%3Ccircle cx='56' cy='28' r='1.8'/%3E%3Ccircle cx='28' cy='0' r='1.8'/%3E%3Ccircle cx='28' cy='56' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
-        background-size: 100% 100%, 100% 100%, 56px 56px;
+        background-color: #f0f2f5;
+        background-image: url("{{ asset('assets/chat-bg-whatsapp.png') }}");
+        background-size: 400px auto;
+        background-repeat: repeat;
         background-attachment: local;
         border-radius: var(--neu-radius, 18px);
         border: 1px solid #cbd5e1;
@@ -92,12 +90,10 @@
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
-        background-color: #e5ebf3 !important;
-        background-image: 
-            radial-gradient(circle at 15% 15%, rgba(44, 127, 255, 0.05) 0%, transparent 45%),
-            radial-gradient(circle at 85% 85%, rgba(13, 148, 136, 0.05) 0%, transparent 45%),
-            url("data:image/svg+xml,%3Csvg width='56' height='56' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2364748b' fill-opacity='0.085' fill-rule='evenodd'%3E%3Cpath d='M28 0l3.5 3.5L28 7l-3.5-3.5L28 0zm0 28l3.5 3.5L28 35l-3.5-3.5L28 28zM0 28l3.5 3.5L0 35l-3.5-3.5L0 28zm56 0l3.5 3.5L56 35l-3.5-3.5L56 28zm-28 28l3.5 3.5L28 63l-3.5-3.5L28 56zM0 0l3.5 3.5L0 7l-3.5-3.5L0 0zm56 0l3.5 3.5L56 7l-3.5-3.5L56 0zm-56 56l3.5 3.5L0 63l-3.5-3.5L0 56zm56 56l3.5 3.5L56 63l-3.5-3.5L56 56z'/%3E%3Ccircle cx='28' cy='28' r='1.8'/%3E%3Ccircle cx='0' cy='28' r='1.8'/%3E%3Ccircle cx='56' cy='28' r='1.8'/%3E%3Ccircle cx='28' cy='0' r='1.8'/%3E%3Ccircle cx='28' cy='56' r='1.8'/%3E%3C/g%3E%3C/svg%3E") !important;
-        background-size: 100% 100%, 100% 100%, 56px 56px !important;
+        background-color: #f0f2f5 !important;
+        background-image: url("{{ asset('assets/chat-bg-whatsapp.png') }}") !important;
+        background-size: 400px auto !important;
+        background-repeat: repeat !important;
         background-attachment: local !important;
         margin: 0 !important;
         animation: waFullscreenIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
