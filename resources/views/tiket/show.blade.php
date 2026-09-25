@@ -7,6 +7,51 @@
     /* ═══════════════════════════════════════════════════════════════════
        WHATSAPP CHAT-STYLE TIMELINE KRONOLOGIS
        ═══════════════════════════════════════════════════════════════════ */
+    /* ── FULLSCREEN & MINI ANIMATIONS ── */
+    @keyframes waFullscreenIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.92) translateY(18px);
+            border-radius: 20px;
+        }
+        60% {
+            opacity: 1;
+            transform: scale(1.008) translateY(-2px);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            border-radius: 0;
+        }
+    }
+
+    @keyframes waFullscreenOut {
+        0% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            border-radius: 0;
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.92) translateY(18px);
+            border-radius: 18px;
+        }
+    }
+
+    @keyframes waMiniIn {
+        0% {
+            opacity: 0.5;
+            transform: scale(0.96) translateY(-6px);
+        }
+        70% {
+            transform: scale(1.01) translateY(1px);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
     .wa-chat-container {
         background-color: #f8fafc;
         background-image: 
@@ -19,10 +64,14 @@
         box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
         display: flex;
         flex-direction: column;
-        transition: border-radius 0.25s ease;
+        transition: border-radius 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
     }
 
-    /* ── FULLSCREEN MODE (TRUE 100% FULLSCREEN FIX) ── */
+    .wa-chat-container.wa-mini-returning {
+        animation: waMiniIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* ── FULLSCREEN MODE (TRUE 100% FULLSCREEN FIX WITH ANIMATION) ── */
     .wa-chat-container.wa-fullscreen {
         position: fixed !important;
         top: 0 !important;
@@ -43,7 +92,13 @@
         overflow: hidden !important;
         background: #ffffff !important;
         margin: 0 !important;
-        transform: none !important;
+        animation: waFullscreenIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        will-change: transform, opacity;
+    }
+
+    .wa-chat-container.wa-fullscreen.wa-fullscreen-closing {
+        animation: waFullscreenOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+        pointer-events: none;
     }
 
     .wa-chat-container.wa-fullscreen .wa-chat-header {
@@ -9469,12 +9524,15 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     const icoWaFullscreen = document.getElementById('icoWaFullscreen');
     const waContainer    = document.querySelector('.wa-chat-container');
     let savedWindowScrollY = 0;
+    let isWaTransitioning = false;
 
     function enterWaFullscreen() {
-        if (!waContainer) return;
+        if (!waContainer || isWaTransitioning) return;
+        isWaTransitioning = true;
         // Simpan posisi scroll halaman saat ini sebelum masuk mode fixed fullscreen
         savedWindowScrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
 
+        waContainer.classList.remove('wa-mini-returning', 'wa-fullscreen-closing');
         waContainer.classList.add('wa-fullscreen');
         document.body.classList.add('wa-chat-fullscreen-active');
         if (icoWaFullscreen) {
@@ -9484,7 +9542,11 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         if (btnWaFullscreen) btnWaFullscreen.title = 'Perkecil chat';
         document.body.style.overflow = 'hidden';
 
-        // Scroll stream ke bawah setelah resize selesai
+        setTimeout(() => {
+            isWaTransitioning = false;
+        }, 320);
+
+        // Scroll stream ke bawah setelah animasi berjalan
         requestAnimationFrame(() => {
             const stream = document.getElementById('timelineList');
             if (stream) stream.scrollTop = stream.scrollHeight;
@@ -9492,18 +9554,29 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     }
 
     function exitWaFullscreen() {
-        if (!waContainer) return;
-        waContainer.classList.remove('wa-fullscreen');
-        document.body.classList.remove('wa-chat-fullscreen-active');
+        if (!waContainer || isWaTransitioning) return;
+        isWaTransitioning = true;
+
+        waContainer.classList.add('wa-fullscreen-closing');
         if (icoWaFullscreen) {
             icoWaFullscreen.classList.remove('bi-fullscreen-exit');
             icoWaFullscreen.classList.add('bi-arrows-fullscreen');
         }
         if (btnWaFullscreen) btnWaFullscreen.title = 'Perbesar chat';
-        document.body.style.overflow = '';
 
-        // Pertahankan posisi scroll halaman tepat di elemen chat, tidak melompat ke paling atas halaman
-        requestAnimationFrame(() => {
+        setTimeout(() => {
+            waContainer.classList.remove('wa-fullscreen', 'wa-fullscreen-closing');
+            document.body.classList.remove('wa-chat-fullscreen-active');
+            document.body.style.overflow = '';
+
+            // Animasi transisi saat kembali ke ukuran mini (card)
+            waContainer.classList.add('wa-mini-returning');
+            setTimeout(() => {
+                waContainer.classList.remove('wa-mini-returning');
+                isWaTransitioning = false;
+            }, 300);
+
+            // Pertahankan posisi scroll halaman tepat di elemen chat, tidak melompat ke paling atas halaman
             if (savedWindowScrollY > 0) {
                 window.scrollTo({
                     top: savedWindowScrollY,
@@ -9515,7 +9588,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
             const stream = document.getElementById('timelineList');
             if (stream) stream.scrollTop = stream.scrollHeight;
-        });
+        }, 190);
     }
 
     btnWaFullscreen?.addEventListener('click', function() {
