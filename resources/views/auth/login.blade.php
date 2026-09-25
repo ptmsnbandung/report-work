@@ -471,42 +471,42 @@
             }
 
             .mobile-brand-header {
-                padding: 1rem 1.25rem 0.2rem;
+                padding: 1.85rem 1.25rem 0.6rem;
                 width: 100%;
             }
 
             .mobile-brand-top .brand-welcome-title {
-                font-size: 0.82rem;
+                font-size: 0.95rem;
                 font-weight: 600;
-                margin-bottom: 0.1rem;
+                margin-bottom: 0.2rem;
                 opacity: 0.95;
             }
 
             .mobile-brand-top .brand-logo-circle {
-                width: 54px;
-                height: 54px;
-                margin: 0.2rem auto 0.35rem;
-                padding: 6px;
-                box-shadow: 0 6px 16px rgba(7, 21, 43, 0.4), 0 0 0 2px rgba(44, 127, 255, 0.3);
+                width: 72px;
+                height: 72px;
+                margin: 0.45rem auto 0.55rem;
+                padding: 8px;
+                box-shadow: 0 8px 20px rgba(7, 21, 43, 0.45), 0 0 0 2.5px rgba(44, 127, 255, 0.35);
             }
 
             .mobile-brand-top .brand-app-name {
-                font-size: 1.12rem;
+                font-size: 1.3rem;
                 font-weight: 800;
-                margin-bottom: 0.1rem;
+                margin-bottom: 0.2rem;
                 letter-spacing: -0.2px;
             }
 
             .mobile-brand-top .mobile-brand-sub {
-                font-size: 0.68rem;
+                font-size: 0.74rem;
                 color: rgba(255, 255, 255, 0.88);
-                margin-bottom: 0.45rem;
+                margin-bottom: 0.6rem;
             }
 
             /* Mobile Wave Transition SVG (Full-Width Edge to Edge) */
             .mobile-wave-wrapper {
                 width: 100%;
-                height: 32px;
+                height: 48px;
                 margin-bottom: -1px;
                 display: block;
                 overflow: hidden;
@@ -851,13 +851,13 @@
 
         <!-- Layered Cloud / Wave SVG Divider (Mobile Edge to Edge 100% Full Width) -->
         <div class="mobile-wave-wrapper">
-            <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <!-- Layer 1: Sky Blue Shadow Layer -->
-                <path d="M0,0 C240,60 480,15 720,55 C960,95 1200,30 1440,60 L1440,140 L0,140 Z" fill="rgba(44, 127, 255, 0.35)"/>
+                <path d="M0,0 C260,85 520,20 780,75 C1040,130 1260,40 1440,80 L1440,180 L0,180 Z" fill="rgba(44, 127, 255, 0.35)"/>
                 <!-- Layer 2: Light Blue Layer -->
-                <path d="M0,25 C260,80 520,30 760,75 C1000,120 1220,50 1440,85 L1440,140 L0,140 Z" fill="rgba(219, 234, 254, 0.85)"/>
+                <path d="M0,35 C280,110 560,40 820,100 C1080,155 1280,65 1440,110 L1440,180 L0,180 Z" fill="rgba(219, 234, 254, 0.85)"/>
                 <!-- Layer 3: Solid White Flowing Wave -->
-                <path d="M0,50 C280,105 540,55 800,95 C1060,135 1260,75 1440,110 L1440,140 L0,140 Z" fill="#ffffff"/>
+                <path d="M0,70 C320,140 600,70 880,125 C1140,175 1320,95 1440,140 L1440,180 L0,180 Z" fill="#ffffff"/>
             </svg>
         </div>
     </div>
