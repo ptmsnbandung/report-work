@@ -8,13 +8,13 @@
 
     <!-- Favicon & PWA Primary Tags -->
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <meta name="theme-color" content="#060e18">
+    <meta name="theme-color" content="#0b63e5">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="MSN Backbone">
     <meta name="application-name" content="MSN Backbone">
-    <meta name="msapplication-TileColor" content="#060e18">
+    <meta name="msapplication-TileColor" content="#0b63e5">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/icon-512.png') }}">
@@ -22,7 +22,7 @@
     <!-- Google Fonts: Plus Jakarta Sans / Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 CSS & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,18 +30,14 @@
 
     <style>
         :root {
-            --bg-deep: #050b14;
-            --bg-card: rgba(10, 22, 38, 0.82);
-            --navy-primary: #0a192f;
-            --navy-surface: #0e2442;
-            --teal-accent: #0d9488;
-            --teal-light: #14b8a6;
-            --cyan-glow: #38bdf8;
-            --indigo-accent: #6366f1;
-            --border-glass: rgba(56, 189, 248, 0.16);
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --primary-blue: #0b63e5;
+            --primary-dark: #0052cc;
+            --primary-light: #2684ff;
+            --bg-page: #e8f1fc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --input-bg: #f1f5fb;
+            --input-border: #e2e8f0;
         }
 
         *, *::before, *::after {
@@ -53,11 +49,9 @@
         html, body {
             min-height: 100vh;
             min-height: 100dvh;
-            margin: 0;
-            padding: 0;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
+            background-color: var(--bg-page);
+            color: var(--text-dark);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -67,308 +61,185 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: clamp(1rem, 2.5vh, 2rem) clamp(0.75rem, 2vw, 1.5rem);
-            box-sizing: border-box;
+            padding: clamp(1rem, 3vh, 2.5rem) clamp(0.75rem, 2vw, 1.5rem);
             overflow-x: hidden;
+            background: radial-gradient(circle at 15% 15%, #dbeafe 0%, #eef4fc 40%, #e2edfb 100%);
         }
 
-        /* ── CANVAS & BACKGROUND GLOW ── */
-        #networkCanvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .ambient-glow {
+        /* ── BACKGROUND AMBIENT GLOW ── */
+        .ambient-shape {
             position: fixed;
             border-radius: 50%;
             pointer-events: none;
-            filter: blur(100px);
+            filter: blur(80px);
             z-index: 0;
-            opacity: 0.6;
-            transition: all 1s ease;
+            opacity: 0.5;
         }
-        .glow-1 {
-            width: 480px; height: 480px;
-            background: radial-gradient(circle, rgba(13, 148, 136, 0.22) 0%, rgba(13, 148, 136, 0) 70%);
-            top: -100px;
-            left: -80px;
+        .shape-1 {
+            width: 450px;
+            height: 450px;
+            background: rgba(38, 132, 255, 0.25);
+            top: -120px;
+            left: -100px;
         }
-        .glow-2 {
-            width: 450px; height: 450px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 70%);
-            bottom: -80px;
-            right: -60px;
-        }
-        .glow-3 {
-            width: 350px; height: 350px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, rgba(99, 102, 241, 0) 70%);
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(11, 99, 229, 0.18);
+            bottom: -100px;
+            right: -80px;
         }
 
-        /* ── MAIN LOGIN CONTAINER ── */
-        .login-wrapper {
+        /* ── MAIN LOGIN CONTAINER (DESKTOP) ── */
+        .login-card-wrapper {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 1020px;
+            max-width: 980px;
             min-height: 560px;
-            margin: auto;
-            border-radius: 24px;
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
+            background: #ffffff;
+            border-radius: 32px;
             box-shadow:
-                0 0 0 1px rgba(255, 255, 255, 0.05),
-                0 30px 70px -15px rgba(0, 0, 0, 0.8),
-                0 0 45px rgba(13, 148, 136, 0.15);
+                0 25px 60px -15px rgba(11, 99, 229, 0.18),
+                0 10px 30px -5px rgba(0, 0, 0, 0.05),
+                0 0 0 1px rgba(11, 99, 229, 0.06);
             overflow: hidden;
             display: flex;
             flex-direction: row;
-        }
-
-        @media (max-width: 991px) {
-            body {
-                padding: 1.25rem 0.85rem;
-            }
-            .login-wrapper {
-                max-width: 440px;
-                min-height: auto;
-                border-radius: 20px;
-                flex-direction: column;
-                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(13, 148, 136, 0.15);
-            }
-            .brand-panel {
-                display: none !important;
-            }
-            .form-panel {
-                padding: 2rem 1.6rem !important;
-            }
-            .form-header {
-                text-align: center;
-                margin-bottom: 1.15rem;
-            }
-            .form-header h2 {
-                font-size: 1.4rem;
-            }
-            .quick-roles-grid {
-                gap: 0.4rem !important;
-            }
-            .role-chip-btn {
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                text-align: center !important;
-                padding: 0.55rem 0.25rem !important;
-                border-radius: 10px !important;
-                gap: 0.3rem !important;
-            }
-            .role-chip-icon {
-                width: 28px !important;
-                height: 28px !important;
-                margin: 0 auto !important;
-            }
-            .role-chip-name {
-                font-size: 0.74rem !important;
-                width: 100% !important;
-                text-align: center !important;
-                white-space: normal !important;
-            }
-            .role-chip-sub {
-                font-size: 0.62rem !important;
-                width: 100% !important;
-                text-align: center !important;
-                white-space: normal !important;
-            }
         }
 
         /* ── LEFT BRAND PANEL (DESKTOP) ── */
         .brand-panel {
             width: 46%;
             flex-shrink: 0;
-            background: linear-gradient(155deg, rgba(14, 36, 66, 0.95) 0%, rgba(7, 18, 34, 0.98) 60%, rgba(4, 11, 20, 1) 100%);
-            padding: 2.85rem 2.4rem;
+            background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 45%, #0548b8 100%);
+            padding: 3rem 2.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: center;
+            text-align: center;
             position: relative;
             overflow: hidden;
-            border-right: 1px solid var(--border-subtle);
-        }
-
-        /* Subtle grid & circuit accents */
-        .brand-panel::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
-            background-size: 28px 28px;
-            pointer-events: none;
-        }
-
-        .brand-header {
-            position: relative;
-            z-index: 2;
-        }
-
-        .brand-logo-img {
-            height: 42px;
-            width: auto;
-            max-width: 190px;
-            object-fit: contain;
-            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
-        }
-
-        /* Live status badge */
-        .portal-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            padding: 0.28rem 0.8rem;
-            border-radius: 999px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--cyan-glow);
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            margin-top: 1.25rem;
-            backdrop-filter: blur(8px);
-        }
-
-        .pulse-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 8px #10b981;
-            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        @keyframes pulse-ring {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
-        }
-
-        .brand-headline {
-            font-size: 1.65rem;
-            font-weight: 800;
-            line-height: 1.25;
-            letter-spacing: -0.5px;
-            margin-top: 1.15rem;
-            margin-bottom: 0.6rem;
             color: #ffffff;
         }
 
-        .brand-headline .gradient-text {
-            background: linear-gradient(120deg, #38bdf8 0%, #14b8a6 50%, #818cf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .brand-welcome-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
         }
 
-        .brand-subtitle {
-            font-size: 0.86rem;
-            line-height: 1.6;
-            color: rgba(226, 232, 240, 0.78);
-            margin-bottom: 1.75rem;
-        }
-
-        /* Minimalist Brand Highlights */
-        .brand-highlights {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .highlight-item {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .highlight-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        /* Centered White Circle Badge with Logo */
+        .brand-logo-circle {
+            width: 105px;
+            height: 105px;
+            background: #ffffff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-        .icon-cyan { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
-        .icon-teal { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.25); }
-        .icon-indigo { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
-
-        .brand-footer {
-            margin-top: 1.5rem;
-            padding-top: 0.85rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: rgba(148, 163, 184, 0.65);
+            margin: 1.6rem auto 1.1rem;
+            box-shadow: 0 12px 28px rgba(0, 40, 120, 0.25);
+            padding: 14px;
             position: relative;
             z-index: 2;
+            transition: transform 0.3s ease;
+        }
+        .brand-logo-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-app-name {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+            text-shadow: 0 2px 8px rgba(0, 30, 90, 0.2);
+        }
+
+        .brand-desc {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .brand-footer-links {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            color: rgba(255, 255, 255, 0.75);
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── DESKTOP VERTICAL CLOUD/WAVE TRANSITION ── */
+        .desktop-cloud-divider {
+            position: absolute;
+            top: 0;
+            right: -1px;
+            bottom: 0;
+            width: 85px;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .desktop-cloud-divider svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
         /* ── RIGHT FORM PANEL ── */
         .form-panel {
             flex-grow: 1;
             background: #ffffff;
-            padding: 3rem 2.85rem;
+            padding: 3.2rem 3rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             position: relative;
+            z-index: 6;
         }
 
-        .form-header {
-            margin-bottom: 1.35rem;
-        }
-
-        .form-header h2 {
-            font-size: 1.6rem;
+        .form-title {
+            font-size: 1.65rem;
             font-weight: 800;
-            color: #0f172a;
+            color: var(--text-dark);
             letter-spacing: -0.5px;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.35rem;
         }
 
-        .form-header p {
+        .form-subtitle {
             font-size: 0.86rem;
-            color: #64748b;
-            margin: 0;
+            color: var(--text-muted);
+            margin-bottom: 1.45rem;
         }
 
-        /* Form Labels & Controls */
+        /* Form Controls */
         .form-group-custom {
-            margin-bottom: 1.1rem;
+            margin-bottom: 1.15rem;
         }
 
         .custom-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: #334155;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.45rem;
+            display: block;
         }
 
         .input-box {
@@ -379,7 +250,7 @@
 
         .input-box .input-icon-left {
             position: absolute;
-            left: 14px;
+            left: 16px;
             color: #94a3b8;
             font-size: 1.05rem;
             pointer-events: none;
@@ -389,38 +260,43 @@
 
         .custom-input {
             width: 100%;
-            height: 48px;
-            padding: 0.6rem 1rem 0.6rem 44px;
-            border-radius: 12px;
-            border: 1.5px solid #e2e8f0;
-            background: #f8fafc;
-            color: #0f172a;
-            font-size: 0.9rem;
+            height: 50px;
+            padding: 0.65rem 1rem 0.65rem 48px;
+            border-radius: 14px;
+            border: 1.5px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-dark);
+            font-size: 0.92rem;
             font-weight: 500;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .custom-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
         .custom-input:focus {
             background: #ffffff;
-            border-color: #0d9488;
-            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3.5px rgba(11, 99, 229, 0.14);
             outline: none;
         }
 
         .input-box:focus-within .input-icon-left {
-            color: #0d9488;
+            color: var(--primary-blue);
         }
 
         .btn-toggle-pwd {
             position: absolute;
-            right: 8px;
+            right: 10px;
             background: transparent;
             border: none;
             color: #94a3b8;
             padding: 6px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -428,22 +304,14 @@
             z-index: 5;
         }
         .btn-toggle-pwd:hover {
-            color: #475569;
-            background: #f1f5f9;
+            color: var(--text-dark);
+            background: #e2e8f0;
         }
 
         /* Checkbox */
-        .custom-checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            user-select: none;
-            cursor: pointer;
-        }
-
         .form-check-input {
-            width: 1.1rem;
-            height: 1.1rem;
+            width: 1.15rem;
+            height: 1.15rem;
             border-radius: 5px;
             border: 1.5px solid #cbd5e1;
             cursor: pointer;
@@ -451,27 +319,26 @@
         }
 
         .form-check-input:checked {
-            background-color: #0d9488;
-            border-color: #0d9488;
-            box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.18);
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(11, 99, 229, 0.2);
         }
 
-        /* Main Submit Button */
+        /* Submit Action Button */
         .btn-submit-login {
             width: 100%;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #0a2540 0%, #0d9488 100%);
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #0b63e5 0%, #0052cc 100%);
             border: none;
             color: #ffffff;
-            font-size: 0.94rem;
+            font-size: 0.96rem;
             font-weight: 700;
             letter-spacing: 0.2px;
-            box-shadow: 0 8px 20px -4px rgba(13, 148, 136, 0.45);
+            box-shadow: 0 10px 24px -5px rgba(11, 99, 229, 0.45);
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -480,7 +347,7 @@
 
         .btn-submit-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 24px -4px rgba(13, 148, 136, 0.6);
+            box-shadow: 0 14px 28px -5px rgba(11, 99, 229, 0.6);
             color: #ffffff;
         }
         .btn-submit-login:active {
@@ -505,7 +372,7 @@
         .divider-box span {
             position: relative;
             background: #ffffff;
-            padding: 0 10px;
+            padding: 0 12px;
             font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.6px;
@@ -532,57 +399,53 @@
             gap: 0.55rem;
         }
         .role-chip-btn:hover {
-            border-color: #0d9488;
-            background: #f0fdfa;
+            border-color: var(--primary-blue);
+            background: #eff6ff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.12);
+            box-shadow: 0 4px 12px rgba(11, 99, 229, 0.12);
         }
         .role-chip-btn:active {
             transform: scale(0.98);
         }
 
         .role-chip-icon {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             flex-shrink: 0;
         }
 
-        .role-chip-info {
-            overflow: hidden;
-        }
         .role-chip-name {
             font-size: 0.78rem;
             font-weight: 700;
             color: #1e293b;
             line-height: 1.15;
             white-space: nowrap;
-            text-overflow: ellipsis;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
         .role-chip-sub {
             font-size: 0.65rem;
             color: #64748b;
             white-space: nowrap;
-            text-overflow: ellipsis;
             overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Alert styling */
         .toast-banner {
-            border-radius: 10px;
-            padding: 0.65rem 0.85rem;
-            font-size: 0.82rem;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.84rem;
             font-weight: 500;
             display: flex;
             align-items: flex-start;
-            gap: 0.6rem;
-            margin-bottom: 1rem;
-            animation: fadeInDown 0.3s ease;
+            gap: 0.65rem;
+            margin-bottom: 1.15rem;
         }
         .toast-error {
             background: #fef2f2;
@@ -590,21 +453,132 @@
             color: #b91c1c;
         }
         .toast-info {
-            background: #f0fdfa;
-            border: 1px solid #ccfbf1;
-            color: #0f766e;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
         }
 
-        /* ═══════════════════════════════════════════════════════════════════
-           PT MSN SIGNATURE LOGO SPINNER LOADER
-           ═══════════════════════════════════════════════════════════════════ */
+        /* ── MOBILE RESPONSIVE LAYOUT (MATCHING REFERENCE PHONE SCREEN) ── */
+        .mobile-brand-top {
+            display: none;
+        }
+
+        @media (max-width: 991px) {
+            body {
+                padding: 1rem 0.75rem;
+                background: #eef4fc;
+            }
+
+            .login-card-wrapper {
+                max-width: 440px;
+                min-height: auto;
+                border-radius: 28px;
+                flex-direction: column;
+                box-shadow: 0 15px 40px rgba(11, 99, 229, 0.15), 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .brand-panel {
+                display: none !important;
+            }
+
+            /* Mobile Top Vibrant Blue Banner */
+            .mobile-brand-top {
+                display: block;
+                background: linear-gradient(165deg, #1b73f8 0%, #0b63e5 55%, #0548b8 100%);
+                padding: 2.2rem 1.5rem 0;
+                text-align: center;
+                position: relative;
+                color: #ffffff;
+            }
+
+            .mobile-brand-top .brand-logo-circle {
+                width: 86px;
+                height: 86px;
+                margin: 0 auto 0.75rem;
+                padding: 10px;
+                box-shadow: 0 8px 20px rgba(0, 30, 90, 0.25);
+            }
+
+            .mobile-brand-top .brand-app-name {
+                font-size: 1.35rem;
+                font-weight: 800;
+                margin-bottom: 0.2rem;
+            }
+
+            .mobile-brand-top .mobile-brand-sub {
+                font-size: 0.78rem;
+                color: rgba(255, 255, 255, 0.85);
+                margin-bottom: 1.25rem;
+            }
+
+            /* Mobile Cloud Transition SVG */
+            .mobile-cloud-divider {
+                width: 100%;
+                height: 48px;
+                margin-bottom: -2px;
+                display: block;
+            }
+            .mobile-cloud-divider svg {
+                width: 100%;
+                height: 100%;
+                display: block;
+            }
+
+            .form-panel {
+                padding: 1.6rem 1.5rem 1.85rem !important;
+            }
+
+            .form-title {
+                font-size: 1.4rem;
+                text-align: center;
+            }
+
+            .form-subtitle {
+                text-align: center;
+                margin-bottom: 1.15rem;
+            }
+
+            .quick-roles-grid {
+                gap: 0.45rem !important;
+            }
+
+            .role-chip-btn {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.55rem 0.25rem !important;
+                border-radius: 10px !important;
+                gap: 0.3rem !important;
+            }
+
+            .role-chip-icon {
+                width: 28px !important;
+                height: 28px !important;
+                margin: 0 auto !important;
+            }
+
+            .role-chip-name {
+                font-size: 0.72rem !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+
+            .role-chip-sub {
+                font-size: 0.62rem !important;
+                width: 100% !important;
+                text-align: center !important;
+            }
+        }
+
+        /* ── PT MSN SIGNATURE LOADER BACKDROP ── */
         .msn-loader-backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(5, 11, 20, 0.86);
+            background: rgba(11, 99, 229, 0.88);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 99999;
@@ -625,8 +599,8 @@
 
         .msn-logo-loader-container {
             position: relative;
-            width: 92px;
-            height: 92px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -639,199 +613,124 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 3.5px solid rgba(255, 255, 255, 0.08);
-            border-top-color: #0080ff;
-            border-right-color: #00d2ff;
-            border-bottom-color: #38bdf8;
+            border: 3.5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #ffffff;
             animation: msnRingSpin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
-            box-shadow: 0 0 22px rgba(0, 210, 255, 0.55);
-        }
-
-        .msn-loader-ring-pulse {
-            position: absolute;
-            top: -6px;
-            left: -6px;
-            width: calc(100% + 12px);
-            height: calc(100% + 12px);
-            border-radius: 50%;
-            border: 2px dashed rgba(56, 189, 248, 0.45);
-            animation: msnRingSpinReverse 4s linear infinite;
         }
 
         .msn-loader-logo-wrap {
-            width: 64px;
-            height: 64px;
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             background: #ffffff;
-            padding: 5px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(0, 128, 255, 0.25);
+            padding: 6px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            animation: msnLogoBreathing 1.8s ease-in-out infinite alternate;
         }
 
         .msn-loader-logo-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 50%;
         }
 
         .msn-loader-text {
-            margin-top: 1.25rem;
+            margin-top: 1.2rem;
             font-size: 0.9rem;
             font-weight: 600;
             color: #ffffff;
-            letter-spacing: 0.4px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            letter-spacing: 0.3px;
         }
-
-        .msn-loader-dots span {
-            animation: msnDots 1.4s infinite;
-            opacity: 0;
-        }
-        .msn-loader-dots span:nth-child(1) { animation-delay: 0s; }
-        .msn-loader-dots span:nth-child(2) { animation-delay: 0.2s; }
-        .msn-loader-dots span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes msnRingSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        @keyframes msnRingSpinReverse {
-            0% { transform: rotate(360deg); }
-            100% { transform: rotate(0deg); }
-        }
-
-        @keyframes msnLogoBreathing {
-            0% { transform: scale(0.95); box-shadow: 0 4px 14px rgba(0, 128, 255, 0.2); }
-            100% { transform: scale(1.05); box-shadow: 0 6px 26px rgba(0, 210, 255, 0.65); }
-        }
-
-        @keyframes msnDots {
-            0%, 20% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
 
-<!-- ════ PT MSN SIGNATURE LOGO PRELOADER ════ -->
+<!-- PT MSN Signature Preloader -->
 <div id="msnGlobalPreloader" class="msn-loader-backdrop">
     <div class="msn-logo-loader-container">
-        <div class="msn-loader-ring-pulse"></div>
         <div class="msn-loader-ring"></div>
         <div class="msn-loader-logo-wrap">
             <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" class="msn-loader-logo-img">
         </div>
     </div>
-    <div class="msn-loader-text" id="msnGlobalLoaderText">
-        <span id="msnLoaderMsg">Memuat Aplikasi</span>
-        <span class="msn-loader-dots"><span>.</span><span>.</span><span>.</span></span>
+    <div class="msn-loader-text">
+        <span id="msnLoaderMsg">Memuat Aplikasi...</span>
     </div>
 </div>
 
-<!-- Network Canvas Ambient Animation -->
-<canvas id="networkCanvas"></canvas>
+<!-- Ambient Glow Shapes -->
+<div class="ambient-shape shape-1"></div>
+<div class="ambient-shape shape-2"></div>
 
-<!-- Ambient Glow Elements -->
-<div class="ambient-glow glow-1"></div>
-<div class="ambient-glow glow-2"></div>
-<div class="ambient-glow glow-3"></div>
+<!-- ════ MAIN CARD CONTAINER ════ -->
+<div class="login-card-wrapper">
 
-<!-- Main Container Card -->
-<div class="login-wrapper">
-
-    <!-- ── LEFT: BRAND & CAPABILITIES PANEL ── -->
+    <!-- ── 1. DESKTOP LEFT BRAND PANEL (Vibrant Blue with Cloud Divider) ── -->
     <div class="brand-panel">
-        <div class="brand-header">
-            <!-- Brand Logo -->
-            <div>
-                <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
-                     alt="Logo PT MSN"
-                     class="brand-logo-img">
+        <div>
+            <div class="brand-welcome-title">Selamat Datang di</div>
+            
+            <!-- Large White Circle Badge with PT MSN Logo -->
+            <div class="brand-logo-circle">
+                <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
             </div>
 
-            <div class="portal-badge">
-                <span class="pulse-dot"></span>
-                <span>NOC BACKBONE</span>
-            </div>
-
-            <h1 class="brand-headline">
-                Sistem Tiketing<br>
-                <span class="gradient-text">Gangguan Backbone</span>
-            </h1>
-
-            <p class="brand-subtitle">
-                Portal operasional insiden &amp; manajemen jaringan fiber optik PT Media Solusi Network.
+            <div class="brand-app-name">MSN Backbone</div>
+            <p class="brand-desc">
+                Portal operasional insiden &amp; manajemen jaringan fiber optik terpadu PT Media Solusi Network.
             </p>
-
-            <!-- Minimalist Highlights -->
-            <div class="brand-highlights">
-                <div class="highlight-item">
-                    <div class="highlight-icon icon-cyan">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <span>Tracking SLA &amp; Stop Clock MTTR</span>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon icon-teal">
-                        <i class="bi bi-diagram-3-fill"></i>
-                    </div>
-                    <span>Peta Joint Closure &amp; Manuver Core</span>
-                </div>
-                <div class="highlight-item">
-                    <div class="highlight-icon icon-indigo">
-                        <i class="bi bi-broadcast"></i>
-                    </div>
-                    <span>Koordinasi Lapangan Multi-Role</span>
-                </div>
-            </div>
         </div>
 
-        <!-- Footer Info -->
-        <div class="brand-footer">
-            <div class="d-flex align-items-center gap-1.5">
-                <i class="bi bi-shield-lock-fill text-info"></i>
-                <span>Enterprise Security</span>
-            </div>
-            <span>&copy; {{ date('Y') }} PT MSN</span>
+        <div class="brand-footer-links">
+            PORTAL NOC &bull; PT MEDIA SOLUSI NETWORK
+        </div>
+
+        <!-- Layered Cloud / Wave SVG Divider (Desktop) -->
+        <div class="desktop-cloud-divider">
+            <svg viewBox="0 0 100 700" preserveAspectRatio="none">
+                <!-- Layer 1: Sky Blue Shadow Contour -->
+                <path d="M0,0 C45,60 15,140 50,210 C85,280 35,360 65,430 C95,500 45,590 75,650 C90,680 95,700 100,700 L100,0 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <!-- Layer 2: Light Blue Contour -->
+                <path d="M20,0 C65,70 35,150 70,220 C105,290 55,370 85,440 C110,510 65,600 95,660 L100,700 L100,0 Z" fill="rgba(219, 234, 254, 0.75)"/>
+                <!-- Layer 3: Solid White Flowing Cloud Curve -->
+                <path d="M45,0 C85,80 55,160 90,230 C120,300 75,380 100,450 C120,520 85,610 100,670 L100,700 L100,0 Z" fill="#ffffff"/>
+            </svg>
         </div>
     </div>
 
-    <!-- ── RIGHT: LOGIN FORM PANEL ── -->
+    <!-- ── 2. MOBILE TOP BANNER (Vibrant Blue with Cloud Divider) ── -->
+    <div class="mobile-brand-top">
+        <div class="brand-welcome-title" style="font-size: 1.15rem; font-weight: 600;">Selamat Datang di</div>
+        <div class="brand-logo-circle">
+            <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
+        </div>
+        <div class="brand-app-name">MSN Backbone</div>
+        <div class="mobile-brand-sub">Sistem Tiketing &amp; Manajemen Jaringan</div>
+
+        <!-- Layered Cloud / Wave SVG Divider (Mobile) -->
+        <div class="mobile-cloud-divider">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,0 C320,65 520,10 820,55 C1120,100 1280,30 1440,65 L1440,120 L0,120 Z" fill="rgba(147, 197, 253, 0.45)"/>
+                <path d="M0,25 C360,85 580,30 880,75 C1160,115 1320,50 1440,85 L1440,120 L0,120 Z" fill="rgba(219, 234, 254, 0.75)"/>
+                <path d="M0,50 C400,105 640,50 940,95 C1200,130 1360,70 1440,105 L1440,120 L0,120 Z" fill="#ffffff"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- ── 3. FORM PANEL (Clean Pure White) ── -->
     <div class="form-panel">
-        <!-- Mobile Brand Header (only on small screens) -->
-        <div class="d-lg-none text-center mb-3">
-            <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
-                 alt="Logo PT MSN"
-                 style="height: 38px; max-width: 170px; object-fit: contain;">
-            <div class="d-block mt-1">
-                <span class="portal-badge" style="margin-top: 0.35rem; font-size: 0.65rem; padding: 0.2rem 0.65rem;">
-                    <span class="pulse-dot"></span>
-                    <span>NOC BACKBONE</span>
-                </span>
-            </div>
-        </div>
+        <div class="form-title">Masuk ke Akun</div>
+        <div class="form-subtitle">Silakan masukkan kredensial akun Anda untuk login.</div>
 
-        <div class="form-header">
-            <h2>Masuk ke Akun</h2>
-            <p>Silakan masukkan kredensial akun Anda untuk login.</p>
-        </div>
-
-        <!-- Flash Alert Error -->
+        <!-- Flash Alert Messages -->
         @if($errors->any())
             <div class="toast-banner toast-error">
                 <i class="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0"></i>
@@ -846,7 +745,7 @@
             </div>
         @endif
 
-        <!-- Login Form -->
+        <!-- Form Login -->
         <form method="POST" action="{{ route('login.post') }}" id="loginForm">
             @csrf
             @if(request()->has('redirect'))
@@ -857,9 +756,7 @@
 
             <!-- Email Address Input -->
             <div class="form-group-custom">
-                <label for="email" class="custom-label">
-                    <span>Email Perusahaan</span>
-                </label>
+                <label for="email" class="custom-label">Email Perusahaan</label>
                 <div class="input-box">
                     <i class="bi bi-envelope input-icon-left"></i>
                     <input type="email"
@@ -876,9 +773,7 @@
 
             <!-- Password Input -->
             <div class="form-group-custom">
-                <div class="custom-label">
-                    <span>Kata Sandi (Password)</span>
-                </div>
+                <label for="password" class="custom-label">Kata Sandi (Password)</label>
                 <div class="input-box">
                     <i class="bi bi-lock input-icon-left"></i>
                     <input type="password"
@@ -894,9 +789,9 @@
                 </div>
             </div>
 
-            <!-- Remember Me Session (Default Active 30 Days) -->
+            <!-- Remember Me Session Checkbox -->
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <label class="custom-checkbox-container" for="remember">
+                <label class="d-flex align-items-center gap-2" for="remember" style="cursor: pointer; user-select: none;">
                     <input class="form-check-input" type="checkbox" name="remember" id="remember" value="1" checked>
                     <span class="small text-secondary fw-semibold" style="font-size: 0.82rem;">
                         Ingat saya di perangkat ini (30 Hari)
@@ -904,7 +799,7 @@
                 </label>
             </div>
 
-            <!-- Action Button -->
+            <!-- Submit Button -->
             <button type="submit" class="btn-submit-login" id="loginSubmitBtn">
                 <span id="loginBtnText" class="d-flex align-items-center gap-2">
                     <i class="bi bi-box-arrow-in-right fs-5"></i>
@@ -923,7 +818,7 @@
         </div>
 
         <div class="quick-roles-grid">
-            <!-- Admin -->
+            <!-- Admin NOC -->
             <button type="button" class="role-chip-btn" onclick="fillLogin('admin@connecti.id', 'password')">
                 <div class="role-chip-icon" style="background:#eff6ff; color:#2563eb;">
                     <i class="bi bi-shield-lock-fill"></i>
@@ -941,123 +836,27 @@
                 </div>
                 <div class="role-chip-info">
                     <div class="role-chip-name">HelpDesk NOC</div>
-                    <div class="role-chip-sub">Tiket & Dispatch</div>
+                    <div class="role-chip-sub">Tiket &amp; Dispatch</div>
                 </div>
             </button>
 
-            <!-- Teknis -->
+            <!-- Tim Teknis -->
             <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
                 <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
                     <i class="bi bi-tools"></i>
                 </div>
                 <div class="role-chip-info">
                     <div class="role-chip-name">Tim Teknis</div>
-                    <div class="role-chip-sub">Lapangan & JC</div>
+                    <div class="role-chip-sub">Lapangan &amp; JC</div>
                 </div>
             </button>
         </div>
     </div>
 </div>
 
-<!-- Scripts -->
+<!-- JavaScript Logic -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-/* ── SMOOTH HIGH-PERFORMANCE NETWORK CANVAS ── */
-(function () {
-    const canvas = document.getElementById('networkCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-
-    let W, H, nodes = [], raf;
-    const NODE_COUNT = window.innerWidth < 768 ? 32 : 55;
-    const MAX_DIST   = window.innerWidth < 768 ? 110 : 150;
-    const COLOR_TEAL = 'rgba(20, 184, 166, ';
-    const COLOR_CYAN = 'rgba(56, 189, 248, ';
-
-    function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
-
-    function createNodes() {
-        nodes = [];
-        for (let i = 0; i < NODE_COUNT; i++) {
-            nodes.push({
-                x:  Math.random() * W,
-                y:  Math.random() * H,
-                vx: (Math.random() - 0.5) * 0.35,
-                vy: (Math.random() - 0.5) * 0.35,
-                r:  Math.random() * 2 + 1.2,
-                type: Math.random() > 0.5 ? 'cyan' : 'teal',
-                pulse: Math.random() * Math.PI * 2
-            });
-        }
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, W, H);
-
-        // Update positions
-        for (let i = 0; i < nodes.length; i++) {
-            const n = nodes[i];
-            n.x += n.vx;
-            n.y += n.vy;
-            n.pulse += 0.02;
-
-            if (n.x < 0 || n.x > W) n.vx *= -1;
-            if (n.y < 0 || n.y > H) n.vy *= -1;
-        }
-
-        // Connect nodes
-        for (let i = 0; i < nodes.length; i++) {
-            for (let j = i + 1; j < nodes.length; j++) {
-                const dx = nodes[i].x - nodes[j].x;
-                const dy = nodes[i].y - nodes[j].y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < MAX_DIST) {
-                    const alpha = (1 - dist / MAX_DIST) * 0.16;
-                    const color = nodes[i].type === 'cyan' ? COLOR_CYAN : COLOR_TEAL;
-                    ctx.beginPath();
-                    ctx.moveTo(nodes[i].x, nodes[i].y);
-                    ctx.lineTo(nodes[j].x, nodes[j].y);
-                    ctx.strokeStyle = color + alpha + ')';
-                    ctx.lineWidth   = 0.75;
-                    ctx.stroke();
-                }
-            }
-        }
-
-        // Draw particle dots
-        for (let i = 0; i < nodes.length; i++) {
-            const n = nodes[i];
-            const pulse = 0.6 + 0.4 * Math.sin(n.pulse);
-            const alpha = 0.4 + 0.4 * pulse;
-            const color = n.type === 'cyan' ? COLOR_CYAN : COLOR_TEAL;
-
-            // Outer subtle halo
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r * 2.8, 0, Math.PI * 2);
-            ctx.fillStyle = color + (alpha * 0.15) + ')';
-            ctx.fill();
-
-            // Core dot
-            ctx.beginPath();
-            ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-            ctx.fillStyle = color + alpha + ')';
-            ctx.fill();
-        }
-
-        raf = requestAnimationFrame(draw);
-    }
-
-    window.addEventListener('resize', () => { resize(); createNodes(); });
-    resize();
-    createNodes();
-    draw();
-})();
-
-/* ── FORM INTERACTIONS ── */
 function fillLogin(email, password) {
     const emailInput = document.getElementById('email');
     const pwdInput   = document.getElementById('password');
@@ -1067,10 +866,9 @@ function fillLogin(email, password) {
     emailInput.value = email;
     pwdInput.value   = password;
 
-    // Visual feedback highlight
     [emailInput, pwdInput].forEach(el => {
-        el.style.borderColor = '#0d9488';
-        el.style.backgroundColor = '#f0fdfa';
+        el.style.borderColor = '#0b63e5';
+        el.style.backgroundColor = '#eff6ff';
         setTimeout(() => {
             el.style.borderColor = '';
             el.style.backgroundColor = '';
@@ -1120,7 +918,7 @@ window.addEventListener('load', () => setTimeout(window.hideMsnLoader, 150));
 document.addEventListener('DOMContentLoaded', () => setTimeout(window.hideMsnLoader, 300));
 setTimeout(window.hideMsnLoader, 1200);
 
-// Loading state on form submit
+// Submit loading state
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', () => {
@@ -1142,7 +940,7 @@ if (loginForm) {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.debug('SW Registration info:', err);
+            console.debug('SW Registration note:', err);
         });
     });
 }
