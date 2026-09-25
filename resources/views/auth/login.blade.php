@@ -216,12 +216,12 @@
         }
 
         .brand-headline {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 800;
-            line-height: 1.22;
+            line-height: 1.25;
             letter-spacing: -0.4px;
-            margin-top: 0.65rem;
-            margin-bottom: 0.35rem;
+            margin-top: 0.85rem;
+            margin-bottom: 0.4rem;
             color: #ffffff;
         }
 
@@ -233,71 +233,42 @@
         }
 
         .brand-subtitle {
-            font-size: 0.74rem;
-            line-height: 1.4;
+            font-size: 0.8rem;
+            line-height: 1.5;
             color: rgba(226, 232, 240, 0.75);
-            margin-bottom: 0.75rem;
+            margin-bottom: 1.25rem;
         }
 
-        /* Feature Cards Grid */
-        .feature-cards {
+        /* Minimalist Brand Highlights */
+        .brand-highlights {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
+            gap: 0.75rem;
             position: relative;
             z-index: 2;
         }
 
-        .feature-card {
+        .highlight-item {
             display: flex;
             align-items: center;
             gap: 0.65rem;
-            padding: 0.4rem 0.65rem;
-            border-radius: 9px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.2s ease;
-        }
-        .feature-card:hover {
-            background: rgba(56, 189, 248, 0.06);
-            border-color: rgba(56, 189, 248, 0.2);
-            transform: translateX(3px);
+            font-size: 0.8rem;
+            color: #e2e8f0;
+            font-weight: 500;
         }
 
-        .feature-card-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-        .icon-teal { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.25); }
-        .icon-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
-        .icon-indigo { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
-
-        .feature-card-title {
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin-bottom: 0.05rem;
-        }
-        .feature-card-desc {
-            font-size: 0.66rem;
-            color: rgba(148, 163, 184, 0.8);
-            line-height: 1.25;
+        .highlight-item i {
+            font-size: 1.05rem;
         }
 
         .brand-footer {
-            margin-top: 0.65rem;
-            padding-top: 0.45rem;
+            margin-top: 1rem;
+            padding-top: 0.6rem;
             border-top: 1px solid rgba(255, 255, 255, 0.07);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             color: rgba(148, 163, 184, 0.6);
             position: relative;
             z-index: 2;
@@ -307,7 +278,7 @@
         .form-panel {
             flex-grow: 1;
             background: #ffffff;
-            padding: clamp(1rem, 2vh, 1.5rem) clamp(1.2rem, 2.2vw, 1.85rem);
+            padding: clamp(1.25rem, 2.8vh, 2.25rem) clamp(1.35rem, 2.8vw, 2.5rem);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -315,36 +286,36 @@
         }
 
         .form-header {
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
         }
 
         .form-header h2 {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #0f172a;
             letter-spacing: -0.4px;
-            margin-bottom: 0.15rem;
+            margin-bottom: 0.2rem;
         }
 
         .form-header p {
-            font-size: 0.76rem;
+            font-size: 0.8rem;
             color: #64748b;
             margin: 0;
         }
 
         /* Form Labels & Controls */
         .form-group-custom {
-            margin-bottom: 0.65rem;
+            margin-bottom: 0.75rem;
         }
 
         .custom-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: #334155;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
         }
 
         .input-box {
@@ -365,13 +336,13 @@
 
         .custom-input {
             width: 100%;
-            height: 39px;
-            padding: 0.45rem 0.85rem 0.45rem 36px;
+            height: 42px;
+            padding: 0.5rem 0.85rem 0.5rem 38px;
             border-radius: 10px;
             border: 1.5px solid #e2e8f0;
             background: #f8fafc;
             color: #0f172a;
-            font-size: 0.84rem;
+            font-size: 0.86rem;
             font-weight: 500;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -418,8 +389,8 @@
         }
 
         .form-check-input {
-            width: 1rem;
-            height: 1rem;
+            width: 1.05rem;
+            height: 1.05rem;
             border-radius: 5px;
             border: 1.5px solid #cbd5e1;
             cursor: pointer;
@@ -435,12 +406,12 @@
         /* Main Submit Button */
         .btn-submit-login {
             width: 100%;
-            height: 41px;
+            height: 44px;
             border-radius: 10px;
             background: linear-gradient(135deg, #0a2540 0%, #0d9488 100%);
             border: none;
             color: #ffffff;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 0.2px;
             box-shadow: 0 6px 16px -4px rgba(13, 148, 136, 0.4);
@@ -467,7 +438,7 @@
         .divider-box {
             position: relative;
             text-align: center;
-            margin: 0.75rem 0 0.55rem;
+            margin: 0.85rem 0 0.65rem;
         }
         .divider-box::before {
             content: '';
@@ -482,7 +453,7 @@
             position: relative;
             background: #ffffff;
             padding: 0 8px;
-            font-size: 0.66rem;
+            font-size: 0.68rem;
             font-weight: 700;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -492,20 +463,20 @@
         .quick-roles-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.45rem;
+            gap: 0.5rem;
         }
 
         .role-chip-btn {
             border: 1.5px solid #e2e8f0;
-            border-radius: 9px;
+            border-radius: 10px;
             background: #f8fafc;
-            padding: 0.4rem 0.5rem;
+            padding: 0.45rem 0.55rem;
             cursor: pointer;
             transition: all 0.18s ease;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.5rem;
         }
         .role-chip-btn:hover {
             border-color: #0d9488;
@@ -518,13 +489,13 @@
         }
 
         .role-chip-icon {
-            width: 25px;
-            height: 25px;
+            width: 26px;
+            height: 26px;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             flex-shrink: 0;
         }
 
@@ -532,7 +503,7 @@
             overflow: hidden;
         }
         .role-chip-name {
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 700;
             color: #1e293b;
             line-height: 1.15;
@@ -541,7 +512,7 @@
             overflow: hidden;
         }
         .role-chip-sub {
-            font-size: 0.6rem;
+            font-size: 0.62rem;
             color: #64748b;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -552,12 +523,12 @@
         .toast-banner {
             border-radius: 9px;
             padding: 0.45rem 0.75rem;
-            font-size: 0.76rem;
+            font-size: 0.78rem;
             font-weight: 500;
             display: flex;
             align-items: flex-start;
             gap: 0.5rem;
-            margin-bottom: 0.65rem;
+            margin-bottom: 0.75rem;
             animation: fadeInDown 0.3s ease;
         }
         .toast-error {
@@ -734,7 +705,7 @@
     <div class="brand-panel">
         <div class="brand-header">
             <!-- Brand Logo -->
-            <div class="d-flex align-items-center justify-content-between">
+            <div>
                 <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
                      alt="Logo PT MSN"
                      class="brand-logo-img">
@@ -742,78 +713,53 @@
 
             <div class="portal-badge">
                 <span class="pulse-dot"></span>
-                <span>BACKBONE NOC PORTAL</span>
+                <span>NOC BACKBONE</span>
             </div>
 
             <h1 class="brand-headline">
-                Sistem Tiketing Gangguan Backbone<br>
-                <span class="gradient-text">Network Operations Center</span>
+                Sistem Tiketing<br>
+                <span class="gradient-text">Gangguan Backbone</span>
             </h1>
 
             <p class="brand-subtitle">
-                Platform terpadu Sistem Tiketing Gangguan Backbone untuk pengelolaan insiden fiber optik, tracking SLA, pemetaan joint closure, dan koordinasi cepat antar divisi.
+                Portal operasional insiden &amp; manajemen jaringan fiber optik PT Media Solusi Network.
             </p>
 
-            <!-- Feature Value Cards -->
-            <div class="feature-cards">
-                <div class="feature-card">
-                    <div class="feature-card-icon icon-teal">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <div>
-                        <div class="feature-card-title">Realtime MTTR & SLA Alert</div>
-                        <div class="feature-card-desc">Kalkulasi presisi durasi penanganan & stop clock otomatis.</div>
-                    </div>
+            <!-- Minimalist Highlights -->
+            <div class="brand-highlights">
+                <div class="highlight-item">
+                    <i class="bi bi-shield-check" style="color: #38bdf8;"></i>
+                    <span>Tracking SLA &amp; Stop Clock MTTR</span>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-card-icon icon-blue">
-                        <i class="bi bi-diagram-3-fill"></i>
-                    </div>
-                    <div>
-                        <div class="feature-card-title">Joint Closure & Manuver Core</div>
-                        <div class="feature-card-desc">Visualisasi alur tube/core kabel FO & pencatatan titik sambung.</div>
-                    </div>
+                <div class="highlight-item">
+                    <i class="bi bi-diagram-3" style="color: #2dd4bf;"></i>
+                    <span>Peta Joint Closure &amp; Manuver Core</span>
                 </div>
-
-                <div class="feature-card">
-                    <div class="feature-card-icon icon-indigo">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div>
-                        <div class="feature-card-title">Kolaborasi Multi-Role</div>
-                        <div class="feature-card-desc">Sinkronisasi tugas terpadu antara Admin, Helpdesk, dan Teknis.</div>
-                    </div>
+                <div class="highlight-item">
+                    <i class="bi bi-broadcast" style="color: #a5b4fc;"></i>
+                    <span>Koordinasi Lapangan Multi-Role</span>
                 </div>
             </div>
         </div>
 
         <!-- Footer Info -->
         <div class="brand-footer">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-shield-check text-info"></i>
-                <span>Enterprise Grade Security</span>
-            </div>
-            <span>&copy; {{ date('Y') }} PT MSN</span>
+            <span>&copy; {{ date('Y') }} PT Media Solusi Network</span>
         </div>
     </div>
 
     <!-- ── RIGHT: LOGIN FORM PANEL ── -->
     <div class="form-panel">
         <!-- Mobile Brand Header (only on small screens) -->
-        <div class="d-lg-none text-center mb-2.5">
+        <div class="d-lg-none text-center mb-2">
             <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
                  alt="Logo PT MSN"
-                 style="height: 30px; max-width: 150px; object-fit: contain;">
-            <div class="portal-badge mt-1">
-                <span class="pulse-dot"></span>
-                <span>BACKBONE NOC PORTAL</span>
-            </div>
+                 style="height: 28px; max-width: 140px; object-fit: contain;">
         </div>
 
         <div class="form-header">
-            <h2>Masuk ke Akun Anda</h2>
-            <p>Silakan masukkan kredensial akun terdaftar untuk melanjutkan.</p>
+            <h2>Masuk ke Akun</h2>
+            <p>Silakan masukkan kredensial akun Anda untuk login.</p>
         </div>
 
         <!-- Flash Alert Error -->
