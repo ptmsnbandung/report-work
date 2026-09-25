@@ -17,11 +17,6 @@ class NotificationController extends Controller
         $user = $request->user();
         $filter = $request->input('filter', 'all');
 
-        // Otomatis tandai seluruh notifikasi yang belum dibaca sebagai sudah dibaca saat membuka halaman ini
-        if ($user->unreadNotifications()->exists()) {
-            $user->unreadNotifications()->update(['read_at' => now()]);
-        }
-
         $query = $user->notifications();
 
         if ($filter === 'unread') {
@@ -99,6 +94,23 @@ class NotificationController extends Controller
         }
 
         return back()->with('success', 'Notifikasi berhasil dihapus.');
+    }
+
+    /**
+     * Hapus semua notifikasi pengguna
+     */
+    public function destroyAll(Request $request): RedirectResponse|JsonResponse
+    {
+        $request->user()->notifications()->delete();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'unread_count' => 0,
+            ]);
+        }
+
+        return back()->with('success', 'Semua riwayat notifikasi berhasil dibersihkan.');
     }
 
     /**

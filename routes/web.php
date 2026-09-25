@@ -162,6 +162,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/notifications/unread-json', [\App\Http\Controllers\NotificationController::class, 'unreadJson'])->name('notifications.unread_json');
     Route::match(['get', 'post'], '/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::match(['get', 'post'], '/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.read_all');
+    Route::delete('/notifications/destroy-all', [\App\Http\Controllers\NotificationController::class, 'destroyAll'])->name('notifications.destroy_all');
     Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
 
     // Modul Master Data - Admin Only (Fase 7)
