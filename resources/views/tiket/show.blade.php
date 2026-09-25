@@ -3463,6 +3463,7 @@
                                                             <li>
                                                                 <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
                                                                         data-id="{{ $krono->id }}"
+                                                                        data-user-id="{{ $krono->user_id }}"
                                                                         data-sender="{{ $isMe ? 'Anda' : ($krono->user?->name ?? 'User') }}"
                                                                         data-sender-role="{{ $krono->user?->role_short ?? '-' }}"
                                                                         data-time="{{ $krono->timestamp->format('d/m/Y H:i') }} WIB"
@@ -7654,6 +7655,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <li>
                                         <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
                                                 data-id="${k.id}"
+                                                data-user-id="${k.user_id || ''}"
                                                 data-sender="${rawEscape(senderDisplayName)}"
                                                 data-sender-role="${k.user_role || '-'}"
                                                 data-time="${k.formatted_time}"
@@ -9822,6 +9824,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         const infoBtn = e.target.closest('.btn-action-msg-info');
         if (infoBtn) {
             e.preventDefault();
+            const senderUserId = parseInt(infoBtn.getAttribute('data-user-id') || '0', 10);
             const sender = infoBtn.getAttribute('data-sender') || 'Pengirim';
             const senderRole = infoBtn.getAttribute('data-sender-role') || '-';
             const time = infoBtn.getAttribute('data-time') || '-';
@@ -9865,12 +9868,17 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 }
             }
 
-            // Render list pembaca
+            // Render list pembaca (Hanya anggota tim lain, bukan diri sendiri)
             if (readListEl && readCountBadge) {
                 readListEl.innerHTML = '';
                 const viewsObj = window.TICKET_USER_VIEWS || {};
                 const viewers = Object.values(viewsObj).filter(v => {
                     if (!v || !v.user_id) return false;
+                    const vId = parseInt(v.user_id, 10);
+                    // Filter: Jangan cantumkan akun yang sedang login dan jangan cantumkan si pembuat pesan
+                    if (vId === currentUserId) return false;
+                    if (senderUserId && vId === senderUserId) return false;
+
                     const viewedAt = parseInt(v.viewed_at || '0', 10);
                     return isTiketClosed || (viewedAt >= msgTimestamp);
                 });
@@ -10704,6 +10712,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                         <li>
                                             <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
                                                     data-id="${res.data.id}"
+                                                    data-user-id="${currentUserId}"
                                                     data-sender="Anda"
                                                     data-sender-role="${res.data.user_role || '-'}"
                                                     data-time="${res.data.formatted_time || ''}"
