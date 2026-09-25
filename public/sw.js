@@ -2,10 +2,12 @@
    PT MEDIA SOLUSI NETWORK (MSN) - PWA & WEB PUSH SERVICE WORKER
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'ptmsn-report-v1.1';
+const CACHE_NAME = 'ptmsn-report-v1.2';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
+    '/assets/icon-192.png',
+    '/assets/icon-512.png',
     '/assets/work-report.png',
     '/assets/logo-msn BG Trans - Copy2.png',
     '/assets/logo-msn BG Trans.png',

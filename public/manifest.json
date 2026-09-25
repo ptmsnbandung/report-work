@@ -13,25 +13,25 @@
   "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/assets/work-report.png",
+      "src": "/assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/work-report.png",
+      "src": "/assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/work-report.png",
+      "src": "/assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/assets/work-report.png",
+      "src": "/assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -43,14 +43,14 @@
       "short_name": "Tiket",
       "description": "Lihat daftar tiket gangguan aktif",
       "url": "/tiket?source=pwa",
-      "icons": [{ "src": "/assets/work-report.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Buat Tiket Baru",
       "short_name": "Tiket Baru",
       "description": "Input laporan tiket gangguan baru",
       "url": "/tiket/create?source=pwa",
-      "icons": [{ "src": "/assets/work-report.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
