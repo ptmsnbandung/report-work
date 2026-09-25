@@ -6,7 +6,15 @@
     <title>Login | Sistem Tiketing Gangguan PT MSN</title>
     <meta name="description" content="Login ke Sistem Tiketing Gangguan Backbone PT MSN">
 
-    <!-- Favicon / Logo Tab PT MSN -->
+    <!-- Favicon & PWA Primary Tags -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#071525">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSN Report">
+    <meta name="application-name" content="MSN Report">
+    <meta name="msapplication-TileColor" content="#071525">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
@@ -823,6 +831,15 @@ if (loginForm) {
         document.getElementById('loginBtnText').classList.add('d-none');
         document.getElementById('loginBtnLoading').classList.remove('d-none');
         document.getElementById('loginSubmitBtn').disabled = true;
+    });
+}
+
+// Register PWA Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.debug('SW Registration failed:', err);
+        });
     });
 }
 </script>

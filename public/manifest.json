@@ -1,0 +1,56 @@
+{
+  "name": "PT MSN Work Report",
+  "short_name": "MSN Report",
+  "description": "Sistem Pelaporan & Penanganan Gangguan PT Media Solusi Network",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07152b",
+  "theme_color": "#07152b",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/assets/logo-msn BG Trans - Copy2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo-msn BG Trans - Copy2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo-msn BG Trans - Copy2.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/logo-msn BG Trans - Copy2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Daftar Tiket Gangguan",
+      "short_name": "Tiket",
+      "description": "Lihat daftar tiket gangguan aktif",
+      "url": "/tiket?source=pwa",
+      "icons": [{ "src": "/assets/logo-msn BG Trans - Copy2.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Buat Tiket Baru",
+      "short_name": "Tiket Baru",
+      "description": "Input laporan tiket gangguan baru",
+      "url": "/tiket/create?source=pwa",
+      "icons": [{ "src": "/assets/logo-msn BG Trans - Copy2.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -6,7 +6,15 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') | PT MSN</title>
 
-    <!-- Favicon / Logo Tab PT MSN -->
+    <!-- Favicon & PWA Primary Tags -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#07152b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MSN Report">
+    <meta name="application-name" content="MSN Report">
+    <meta name="msapplication-TileColor" content="#07152b">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
@@ -205,19 +213,23 @@
             }
 
             async function registerServiceWorkerAndPush() {
-                if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+                if (!('serviceWorker' in navigator)) return;
 
                 try {
                     const reg = await navigator.serviceWorker.register('/sw.js');
                     
-                    if (Notification.permission === 'granted') {
-                        subscribeDeviceToPush(reg);
-                    } else if (Notification.permission === 'default') {
-                        const promptBanner = document.getElementById('webPushPromptBanner');
-                        if (promptBanner && !sessionStorage.getItem('dismiss_push_prompt')) {
-                            promptBanner.classList.remove('d-none');
+                    @auth
+                    if ('PushManager' in window) {
+                        if (Notification.permission === 'granted') {
+                            subscribeDeviceToPush(reg);
+                        } else if (Notification.permission === 'default') {
+                            const pushBanner = document.getElementById('webPushPromptBanner');
+                            if (pushBanner && !sessionStorage.getItem('dismiss_push_prompt')) {
+                                pushBanner.classList.remove('d-none');
+                            }
                         }
                     }
+                    @endauth
                 } catch (e) {
                     console.debug('ServiceWorker registration note:', e);
                 }
@@ -274,9 +286,60 @@
                 sessionStorage.setItem('dismiss_push_prompt', '1');
             });
 
-            @auth
+            // Always register Service Worker for PWA caching & offline support
             registerServiceWorkerAndPush();
-            @endauth
+
+            // ── PWA INSTALLATION PROMPT HANDLER (100% Native & Legal) ──
+            let deferredPwaPrompt = null;
+            const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+            const btnPwaInstallAction = document.getElementById('btnPwaInstallAction');
+            const btnDismissPwa = document.getElementById('btnDismissPwa');
+
+            // Check if app is already running in standalone PWA mode
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+            if (!isStandalone) {
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    // Prevent default mini-infobar
+                    e.preventDefault();
+                    deferredPwaPrompt = e;
+
+                    // Show custom beautiful PWA install banner if not dismissed this session
+                    if (pwaInstallBanner && !sessionStorage.getItem('dismiss_pwa_banner')) {
+                        pwaInstallBanner.classList.remove('d-none');
+                    }
+                });
+
+                if (btnPwaInstallAction) {
+                    btnPwaInstallAction.addEventListener('click', async () => {
+                        if (!deferredPwaPrompt) {
+                            // Fallback instruction for browsers where prompt isn't directly triggerable
+                            alert('Untuk memasang di HP:\n1. Tekan tombol menu browser (titik tiga ⋮ atau Bagikan/Share)\n2. Pilih "Tambahkan ke Layar Utama" / "Install App"');
+                            return;
+                        }
+                        deferredPwaPrompt.prompt();
+                        const choiceResult = await deferredPwaPrompt.userChoice;
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User installed the PWA');
+                            if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                        }
+                        deferredPwaPrompt = null;
+                    });
+                }
+
+                if (btnDismissPwa) {
+                    btnDismissPwa.addEventListener('click', () => {
+                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                        sessionStorage.setItem('dismiss_pwa_banner', '1');
+                    });
+                }
+            }
+
+            window.addEventListener('appinstalled', () => {
+                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                deferredPwaPrompt = null;
+                console.log('PT MSN PWA successfully installed!');
+            });
 
             // Smooth transition feedback on Report navigation tabs
             const reportNavItems = document.querySelectorAll('.report-nav-item');
@@ -297,6 +360,36 @@
             });
         });
     </script>
+
+    <!-- PWA Install Floating Banner (100% Safe, Legal & No Security Warnings) -->
+    <div id="pwaInstallBanner" class="d-none position-fixed bottom-0 start-0 p-3" style="z-index: 1095; max-width: 380px;">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28); box-shadow: 0 12px 32px rgba(0,0,0,0.45) !important;">
+            <div class="card-body p-3.5">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 p-1.5" style="width: 46px; height: 46px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                        <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="MSN Icon" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-1.5 mb-0.5">
+                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem;">Install Aplikasi PT MSN</h6>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.6rem; padding: 2px 5px;">PWA App</span>
+                        </div>
+                        <p class="small text-white-50 mb-2.5" style="font-size: 0.74rem; line-height: 1.35;">
+                            Pasang di HP / Desktop untuk akses instan full-screen, cepat, &amp; tanpa bar browser.
+                        </p>
+                        <div class="d-flex align-items-center gap-2">
+                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm" id="btnPwaInstallAction" style="font-size: 0.75rem; background: linear-gradient(135deg, #2C7FFF 0%, #0052cc 100%); border: none;">
+                                <i class="bi bi-download me-1"></i> Pasang Aplikasi
+                            </button>
+                            <button type="button" class="btn btn-link text-white-50 btn-sm text-decoration-none p-0" id="btnDismissPwa" style="font-size: 0.74rem;">
+                                Nanti
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Web Push Permission Floating Prompt -->
     @auth
