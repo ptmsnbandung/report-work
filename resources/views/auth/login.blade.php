@@ -51,8 +51,8 @@
         }
 
         html, body {
-            height: 100%;
-            height: 100dvh;
+            min-height: 100vh;
+            min-height: 100dvh;
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -60,7 +60,6 @@
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow: hidden; /* Mencegah scrollbar atau overlay di seluruh device */
         }
 
         body {
@@ -68,8 +67,9 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            padding: clamp(0.35rem, 1vh, 0.85rem) clamp(0.4rem, 1.2vw, 1rem);
+            padding: clamp(1rem, 2.5vh, 2rem) clamp(0.75rem, 2vw, 1.5rem);
             box-sizing: border-box;
+            overflow-x: hidden;
         }
 
         /* ── CANVAS & BACKGROUND GLOW ── */
@@ -86,26 +86,26 @@
             position: fixed;
             border-radius: 50%;
             pointer-events: none;
-            filter: blur(90px);
+            filter: blur(100px);
             z-index: 0;
-            opacity: 0.55;
+            opacity: 0.6;
             transition: all 1s ease;
         }
         .glow-1 {
-            width: 440px; height: 440px;
-            background: radial-gradient(circle, rgba(13, 148, 136, 0.2) 0%, rgba(13, 148, 136, 0) 70%);
+            width: 480px; height: 480px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.22) 0%, rgba(13, 148, 136, 0) 70%);
             top: -100px;
             left: -80px;
         }
         .glow-2 {
-            width: 420px; height: 420px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(56, 189, 248, 0) 70%);
+            width: 450px; height: 450px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.18) 0%, rgba(56, 189, 248, 0) 70%);
             bottom: -80px;
             right: -60px;
         }
         .glow-3 {
-            width: 320px; height: 320px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0) 70%);
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.14) 0%, rgba(99, 102, 241, 0) 70%);
             top: 45%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -116,41 +116,84 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 960px;
-            max-height: min(96vh, 96dvh, 600px);
+            max-width: 1020px;
+            min-height: 560px;
             margin: auto;
-            border-radius: 20px;
+            border-radius: 24px;
             background: var(--bg-card);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-glass);
             box-shadow:
                 0 0 0 1px rgba(255, 255, 255, 0.05),
-                0 25px 60px -15px rgba(0, 0, 0, 0.75),
-                0 0 35px rgba(13, 148, 136, 0.12);
+                0 30px 70px -15px rgba(0, 0, 0, 0.8),
+                0 0 45px rgba(13, 148, 136, 0.15);
             overflow: hidden;
             display: flex;
             flex-direction: row;
         }
 
         @media (max-width: 991px) {
+            body {
+                padding: 1.25rem 0.85rem;
+            }
             .login-wrapper {
                 max-width: 440px;
-                max-height: min(97vh, 97dvh, 560px);
-                border-radius: 16px;
+                min-height: auto;
+                border-radius: 20px;
                 flex-direction: column;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(13, 148, 136, 0.15);
             }
             .brand-panel {
                 display: none !important;
+            }
+            .form-panel {
+                padding: 2rem 1.6rem !important;
+            }
+            .form-header {
+                text-align: center;
+                margin-bottom: 1.15rem;
+            }
+            .form-header h2 {
+                font-size: 1.4rem;
+            }
+            .quick-roles-grid {
+                gap: 0.4rem !important;
+            }
+            .role-chip-btn {
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                text-align: center !important;
+                padding: 0.55rem 0.25rem !important;
+                border-radius: 10px !important;
+                gap: 0.3rem !important;
+            }
+            .role-chip-icon {
+                width: 28px !important;
+                height: 28px !important;
+                margin: 0 auto !important;
+            }
+            .role-chip-name {
+                font-size: 0.74rem !important;
+                width: 100% !important;
+                text-align: center !important;
+                white-space: normal !important;
+            }
+            .role-chip-sub {
+                font-size: 0.62rem !important;
+                width: 100% !important;
+                text-align: center !important;
+                white-space: normal !important;
             }
         }
 
         /* ── LEFT BRAND PANEL (DESKTOP) ── */
         .brand-panel {
-            width: 44%;
+            width: 46%;
             flex-shrink: 0;
-            background: linear-gradient(155deg, rgba(14, 36, 66, 0.92) 0%, rgba(7, 18, 34, 0.96) 60%, rgba(4, 11, 20, 0.98) 100%);
-            padding: 1.35rem 1.65rem;
+            background: linear-gradient(155deg, rgba(14, 36, 66, 0.95) 0%, rgba(7, 18, 34, 0.98) 60%, rgba(4, 11, 20, 1) 100%);
+            padding: 2.85rem 2.4rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -177,27 +220,27 @@
         }
 
         .brand-logo-img {
-            height: 36px;
+            height: 42px;
             width: auto;
-            max-width: 170px;
+            max-width: 190px;
             object-fit: contain;
-            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
         }
 
         /* Live status badge */
         .portal-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            padding: 0.2rem 0.65rem;
+            gap: 0.45rem;
+            padding: 0.28rem 0.8rem;
             border-radius: 999px;
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             color: var(--cyan-glow);
-            background: rgba(56, 189, 248, 0.08);
+            background: rgba(56, 189, 248, 0.1);
             border: 1px solid rgba(56, 189, 248, 0.25);
-            margin-top: 0.6rem;
+            margin-top: 1.25rem;
             backdrop-filter: blur(8px);
         }
 
@@ -216,12 +259,12 @@
         }
 
         .brand-headline {
-            font-size: 1.35rem;
+            font-size: 1.65rem;
             font-weight: 800;
             line-height: 1.25;
-            letter-spacing: -0.4px;
-            margin-top: 0.85rem;
-            margin-bottom: 0.4rem;
+            letter-spacing: -0.5px;
+            margin-top: 1.15rem;
+            margin-bottom: 0.6rem;
             color: #ffffff;
         }
 
@@ -233,17 +276,17 @@
         }
 
         .brand-subtitle {
-            font-size: 0.8rem;
-            line-height: 1.5;
-            color: rgba(226, 232, 240, 0.75);
-            margin-bottom: 1.25rem;
+            font-size: 0.86rem;
+            line-height: 1.6;
+            color: rgba(226, 232, 240, 0.78);
+            margin-bottom: 1.75rem;
         }
 
         /* Minimalist Brand Highlights */
         .brand-highlights {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.9rem;
             position: relative;
             z-index: 2;
         }
@@ -251,25 +294,35 @@
         .highlight-item {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
-            font-size: 0.8rem;
+            gap: 0.85rem;
+            font-size: 0.85rem;
             color: #e2e8f0;
             font-weight: 500;
         }
 
-        .highlight-item i {
-            font-size: 1.05rem;
+        .highlight-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
         }
+        .icon-cyan { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
+        .icon-teal { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.25); }
+        .icon-indigo { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.25); }
 
         .brand-footer {
-            margin-top: 1rem;
-            padding-top: 0.6rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            margin-top: 1.5rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.72rem;
-            color: rgba(148, 163, 184, 0.6);
+            font-size: 0.75rem;
+            color: rgba(148, 163, 184, 0.65);
             position: relative;
             z-index: 2;
         }
@@ -278,7 +331,7 @@
         .form-panel {
             flex-grow: 1;
             background: #ffffff;
-            padding: clamp(1.25rem, 2.8vh, 2.25rem) clamp(1.35rem, 2.8vw, 2.5rem);
+            padding: 3rem 2.85rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -286,36 +339,36 @@
         }
 
         .form-header {
-            margin-bottom: 0.85rem;
+            margin-bottom: 1.35rem;
         }
 
         .form-header h2 {
-            font-size: 1.35rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: #0f172a;
-            letter-spacing: -0.4px;
-            margin-bottom: 0.2rem;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.3rem;
         }
 
         .form-header p {
-            font-size: 0.8rem;
+            font-size: 0.86rem;
             color: #64748b;
             margin: 0;
         }
 
         /* Form Labels & Controls */
         .form-group-custom {
-            margin-bottom: 0.75rem;
+            margin-bottom: 1.1rem;
         }
 
         .custom-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #334155;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.4rem;
         }
 
         .input-box {
@@ -326,9 +379,9 @@
 
         .input-box .input-icon-left {
             position: absolute;
-            left: 12px;
+            left: 14px;
             color: #94a3b8;
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             pointer-events: none;
             transition: color 0.2s ease;
             z-index: 5;
@@ -336,13 +389,13 @@
 
         .custom-input {
             width: 100%;
-            height: 42px;
-            padding: 0.5rem 0.85rem 0.5rem 38px;
-            border-radius: 10px;
+            height: 48px;
+            padding: 0.6rem 1rem 0.6rem 44px;
+            border-radius: 12px;
             border: 1.5px solid #e2e8f0;
             background: #f8fafc;
             color: #0f172a;
-            font-size: 0.86rem;
+            font-size: 0.9rem;
             font-weight: 500;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -360,14 +413,14 @@
 
         .btn-toggle-pwd {
             position: absolute;
-            right: 6px;
+            right: 8px;
             background: transparent;
             border: none;
             color: #94a3b8;
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -383,14 +436,14 @@
         .custom-checkbox-container {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
             user-select: none;
             cursor: pointer;
         }
 
         .form-check-input {
-            width: 1.05rem;
-            height: 1.05rem;
+            width: 1.1rem;
+            height: 1.1rem;
             border-radius: 5px;
             border: 1.5px solid #cbd5e1;
             cursor: pointer;
@@ -406,15 +459,15 @@
         /* Main Submit Button */
         .btn-submit-login {
             width: 100%;
-            height: 44px;
-            border-radius: 10px;
+            height: 48px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #0a2540 0%, #0d9488 100%);
             border: none;
             color: #ffffff;
-            font-size: 0.9rem;
+            font-size: 0.94rem;
             font-weight: 700;
             letter-spacing: 0.2px;
-            box-shadow: 0 6px 16px -4px rgba(13, 148, 136, 0.4);
+            box-shadow: 0 8px 20px -4px rgba(13, 148, 136, 0.45);
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -426,8 +479,8 @@
         }
 
         .btn-submit-login:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px -4px rgba(13, 148, 136, 0.55);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -4px rgba(13, 148, 136, 0.6);
             color: #ffffff;
         }
         .btn-submit-login:active {
@@ -438,7 +491,7 @@
         .divider-box {
             position: relative;
             text-align: center;
-            margin: 0.85rem 0 0.65rem;
+            margin: 1.35rem 0 1rem;
         }
         .divider-box::before {
             content: '';
@@ -452,8 +505,8 @@
         .divider-box span {
             position: relative;
             background: #ffffff;
-            padding: 0 8px;
-            font-size: 0.68rem;
+            padding: 0 10px;
+            font-size: 0.72rem;
             font-weight: 700;
             letter-spacing: 0.6px;
             text-transform: uppercase;
@@ -463,39 +516,39 @@
         .quick-roles-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
+            gap: 0.55rem;
         }
 
         .role-chip-btn {
             border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 12px;
             background: #f8fafc;
-            padding: 0.45rem 0.55rem;
+            padding: 0.55rem 0.65rem;
             cursor: pointer;
             transition: all 0.18s ease;
             text-align: left;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.55rem;
         }
         .role-chip-btn:hover {
             border-color: #0d9488;
             background: #f0fdfa;
-            transform: translateY(-1px);
-            box-shadow: 0 3px 8px rgba(13, 148, 136, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(13, 148, 136, 0.12);
         }
         .role-chip-btn:active {
             transform: scale(0.98);
         }
 
         .role-chip-icon {
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             flex-shrink: 0;
         }
 
@@ -503,7 +556,7 @@
             overflow: hidden;
         }
         .role-chip-name {
-            font-size: 0.74rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: #1e293b;
             line-height: 1.15;
@@ -512,7 +565,7 @@
             overflow: hidden;
         }
         .role-chip-sub {
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             color: #64748b;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -521,14 +574,14 @@
 
         /* Alert styling */
         .toast-banner {
-            border-radius: 9px;
-            padding: 0.45rem 0.75rem;
-            font-size: 0.78rem;
+            border-radius: 10px;
+            padding: 0.65rem 0.85rem;
+            font-size: 0.82rem;
             font-weight: 500;
             display: flex;
             align-items: flex-start;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
+            gap: 0.6rem;
+            margin-bottom: 1rem;
             animation: fadeInDown 0.3s ease;
         }
         .toast-error {
@@ -728,15 +781,21 @@
             <!-- Minimalist Highlights -->
             <div class="brand-highlights">
                 <div class="highlight-item">
-                    <i class="bi bi-shield-check" style="color: #38bdf8;"></i>
+                    <div class="highlight-icon icon-cyan">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
                     <span>Tracking SLA &amp; Stop Clock MTTR</span>
                 </div>
                 <div class="highlight-item">
-                    <i class="bi bi-diagram-3" style="color: #2dd4bf;"></i>
+                    <div class="highlight-icon icon-teal">
+                        <i class="bi bi-diagram-3-fill"></i>
+                    </div>
                     <span>Peta Joint Closure &amp; Manuver Core</span>
                 </div>
                 <div class="highlight-item">
-                    <i class="bi bi-broadcast" style="color: #a5b4fc;"></i>
+                    <div class="highlight-icon icon-indigo">
+                        <i class="bi bi-broadcast"></i>
+                    </div>
                     <span>Koordinasi Lapangan Multi-Role</span>
                 </div>
             </div>
@@ -744,17 +803,27 @@
 
         <!-- Footer Info -->
         <div class="brand-footer">
-            <span>&copy; {{ date('Y') }} PT Media Solusi Network</span>
+            <div class="d-flex align-items-center gap-1.5">
+                <i class="bi bi-shield-lock-fill text-info"></i>
+                <span>Enterprise Security</span>
+            </div>
+            <span>&copy; {{ date('Y') }} PT MSN</span>
         </div>
     </div>
 
     <!-- ── RIGHT: LOGIN FORM PANEL ── -->
     <div class="form-panel">
         <!-- Mobile Brand Header (only on small screens) -->
-        <div class="d-lg-none text-center mb-2">
+        <div class="d-lg-none text-center mb-3">
             <img src="{{ asset('assets/logo-msn BG Trans.png') }}"
                  alt="Logo PT MSN"
-                 style="height: 28px; max-width: 140px; object-fit: contain;">
+                 style="height: 38px; max-width: 170px; object-fit: contain;">
+            <div class="d-block mt-1">
+                <span class="portal-badge" style="margin-top: 0.35rem; font-size: 0.65rem; padding: 0.2rem 0.65rem;">
+                    <span class="pulse-dot"></span>
+                    <span>NOC BACKBONE</span>
+                </span>
+            </div>
         </div>
 
         <div class="form-header">
