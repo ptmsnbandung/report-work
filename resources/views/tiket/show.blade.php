@@ -113,9 +113,9 @@
         position: relative !important;
         top: 0 !important;
         z-index: 10 !important;
-        background: #ffffff !important;
-        border-bottom: 1px solid #d8e2ec !important;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+        background: linear-gradient(135deg, #07152b 0%, #0d2552 50%, #163688 100%) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 4px 18px rgba(7, 21, 43, 0.25) !important;
         flex-shrink: 0 !important;
         padding-top: max(0.65rem, env(safe-area-inset-top, 0px)) !important;
     }
@@ -183,26 +183,30 @@
 
     /* Tombol fullscreen */
     .wa-fullscreen-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        border: 1px solid rgba(203, 213, 225, 0.6);
-        background: rgba(255,255,255,0.6);
-        color: #475569;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 0.95rem;
         cursor: pointer;
         flex-shrink: 0;
-        transition: background 0.18s, color 0.18s, transform 0.15s;
-        backdrop-filter: blur(4px);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        position: relative;
+        z-index: 2;
     }
 
     .wa-fullscreen-btn:hover {
-        background: rgba(44, 127, 255, 0.12);
-        color: #2C7FFF;
-        border-color: rgba(44, 127, 255, 0.35);
+        background: rgba(44, 127, 255, 0.4);
+        color: #ffffff;
+        border-color: rgba(44, 127, 255, 0.7);
+        box-shadow: 0 0 14px rgba(44, 127, 255, 0.5);
         transform: scale(1.08);
     }
 
@@ -212,63 +216,88 @@
 
 
     .wa-chat-header {
-        background: #ffffff;
-        padding: 0.85rem 1.15rem;
-        border-bottom: 1px solid #d8e2ec;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        background: linear-gradient(135deg, #07152b 0%, #0d2552 50%, #163688 100%);
+        padding: 0.9rem 1.15rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 4px 18px rgba(7, 21, 43, 0.18);
         position: relative;
         z-index: 6;
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 0.75rem;
+        overflow: hidden;
+    }
+
+    .wa-chat-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        background-size: 16px 16px;
+        pointer-events: none;
+        opacity: 0.55;
     }
 
     .wa-header-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        box-shadow: 0 4px 14px rgba(44, 127, 255, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.15);
+        position: relative;
+        z-index: 2;
     }
 
     .wa-header-title {
-        font-size: 0.88rem;
-        font-weight: 700;
-        color: #0f172a;
+        font-size: 0.92rem;
+        font-weight: 800;
+        color: #ffffff;
         line-height: 1.25;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        letter-spacing: -0.2px;
+        position: relative;
+        z-index: 2;
     }
 
     .wa-header-meta {
-        font-size: 0.72rem;
-        color: #64748b;
-        margin-top: 1px;
+        font-size: 0.73rem;
+        color: rgba(219, 234, 254, 0.85);
+        margin-top: 2px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        position: relative;
+        z-index: 2;
+    }
+
+    .wa-header-meta strong {
+        color: #38bdf8;
+        font-weight: 700;
+        letter-spacing: 0.3px;
     }
 
     .wa-pulse-dot {
-        width: 6px;
-        height: 6px;
+        width: 6.5px;
+        height: 6.5px;
         border-radius: 50%;
         background-color: #22c55e;
         display: inline-block;
-        margin-right: 3px;
+        margin-right: 4px;
+        box-shadow: 0 0 8px #22c55e;
         animation: waPulse 1.8s infinite;
     }
 
     @keyframes waPulse {
-        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-        70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.8); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
@@ -3369,12 +3398,12 @@
                                 <div class="overflow-hidden flex-grow-1">
                                     <div class="wa-header-title d-flex align-items-center gap-1.5">
                                         <span class="text-truncate"><span class="d-none d-sm-inline">Koordinasi </span>Update Lapangan</span>
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-1.5 py-0.5 rounded-pill d-none d-sm-inline-flex align-items-center" style="font-size:0.65rem; font-weight:600;">
+                                        <span class="badge rounded-pill d-none d-sm-inline-flex align-items-center" style="font-size:0.65rem; font-weight:700; background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.4); padding: 3px 8px;">
                                             <span class="wa-pulse-dot"></span> Live Sync (5s)
                                         </span>
                                     </div>
                                     <div class="wa-header-meta text-truncate">
-                                        <span class="d-inline d-sm-none text-success fw-semibold"><span class="wa-pulse-dot"></span>Live &bull; </span>
+                                        <span class="d-inline d-sm-none fw-semibold" style="color: #4ade80;"><span class="wa-pulse-dot"></span>Live &bull; </span>
                                         <span class="d-none d-sm-inline">Catatan teknis tiket </span><strong>{{ $tiket->no_tiket }}</strong>
                                     </div>
                                 </div>
