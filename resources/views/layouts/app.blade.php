@@ -422,6 +422,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
 
+    <!-- Offline-First & Background Auto-Sync Engine -->
+    <script src="{{ asset('js/offline-sync.js') }}?v={{ file_exists(public_path('js/offline-sync.js')) ? filemtime(public_path('js/offline-sync.js')) : time() }}"></script>
+
     <!-- App Common Scripts -->
     <script>
         // ── PT MSN SIGNATURE LOGO LOADER CONTROLLER ──

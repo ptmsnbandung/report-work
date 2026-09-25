@@ -10660,136 +10660,219 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 stream.scrollTop = stream.scrollHeight;
             }
 
-            // 3. KIRIM DATA KE SERVER VIA FETCH
-            fetch(waDirectChatForm.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.success && res.data) {
-                    const tempEl = document.getElementById(tempId);
-                    if (tempEl) {
-                        tempEl.id = 'krono-item-' + res.data.id;
-                        tempEl.setAttribute('data-id', res.data.id);
-                        const parsedTs = res.data.timestamp ? Math.floor(new Date(res.data.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000);
-                        tempEl.setAttribute('data-timestamp', parsedTs);
-                        const statusIcon = document.getElementById('status-icon-' + tempId);
-                        if (statusIcon) {
-                            // TAHAP: CEKLIS 2 ABU-ABU (SENT / TERKIRIM - MENUNGGU DILIHAT)
-                            statusIcon.id = 'status-icon-' + res.data.id;
-                            statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
-                            statusIcon.title = 'Terkirim (Belum dilihat)';
+            // 3. KIRIM DATA KE SERVER VIA FETCH DENGAN DUKUNGAN OFFLINE-FIRST
+            const sendDirectMessage = () => {
+                if (!navigator.onLine && window.OfflineSync) {
+                    window.OfflineSync.enqueueRequest({
+                        url: waDirectChatForm.action,
+                        method: 'POST',
+                        formData: formData,
+                        meta: {
+                            label: 'Pesan Tiket #{{ $tiket->id }}',
+                            tiket_id: {{ $tiket->id }},
+                            temp_element_id: tempId,
+                            text: textVal || (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan'),
+                            has_photo: hasPhoto,
+                            has_location: hasLoc
                         }
-
-                        // Update foto url asli jika upload foto
-                        if (res.data.foto_url) {
-                            const mediaCard = tempEl.querySelector('.wa-media-card');
-                            if (mediaCard) {
-                                mediaCard.style.opacity = '1';
-                                mediaCard.onclick = () => zoomPhoto(res.data.foto_url, `${res.data.kategori} - ${res.data.formatted_time}`);
-                                const img = mediaCard.querySelector('.wa-media-img');
-                                if (img) {
-                                    img.src = res.data.foto_url;
-                                    img.style.filter = 'none';
-                                }
-                                const badge = mediaCard.querySelector('.wa-media-badge');
-                                if (badge) {
-                                    badge.innerHTML = '<i class="bi bi-arrows-fullscreen me-1"></i><span>Klik untuk memperbesar</span>';
-                                }
-                            }
-                        }
-
-                        // Pasang action menu 3-dots
-                        const header = tempEl.querySelector('.wa-bubble-header');
-                        if (header && !header.querySelector('.wa-bubble-menu-wrapper')) {
-                            const safeInfoAttr = rawEscape(res.data.informasi || '');
-                            header.insertAdjacentHTML('beforeend', `
-                                <div class="dropdown wa-bubble-menu-wrapper">
-                                    <button type="button" class="wa-msg-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan pesan">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end wa-msg-dropdown-menu shadow border-0">
-                                        <li>
-                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-copy" data-id="${res.data.id}" data-text="${safeInfoAttr}">
-                                                <i class="bi bi-clipboard text-primary"></i> Salin
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
-                                                    data-id="${res.data.id}"
-                                                    data-user-id="${currentUserId}"
-                                                    data-sender="Anda"
-                                                    data-sender-role="${res.data.user_role || '-'}"
-                                                    data-time="${res.data.formatted_time || ''}"
-                                                    data-text="${safeInfoAttr}"
-                                                    data-photo="${res.data.foto_url || ''}"
-                                                    data-timestamp="${Math.floor(Date.now()/1000)}">
-                                                <i class="bi bi-info-circle-fill text-info"></i> Info Pesan
-                                            </button>
-                                        </li>
-                                        ${res.data.foto_url && !isTiketClosed && canChat ? `
-                                        <li>
-                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-forward-doc text-success"
-                                                    onclick="forwardPhotoToDoc('${res.data.foto_url}', '${res.data.latitude || ''}', '${res.data.longitude || ''}', '${res.data.timestamp ? res.data.timestamp.substring(0,16) : ''}', '${res.data.kategori || ''}')">
-                                                <i class="bi bi-folder-plus text-success"></i> Simpan ke Dokumentasi
-                                            </button>
-                                        </li>` : ''}
-                                        <li>
-                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${res.data.id}" data-sender="Anda" data-text="${safeInfoAttr}">
-                                                <i class="bi bi-reply-fill text-info"></i> Balas
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            `);
-                        }
-                    } else {
-                        appendSingleKronoToTimeline(res.data);
-                    }
-
-                    // Hilangkan banner peringatan 30 menit secara real-time karena update sudah dikirim
-                    const intervalRow = document.getElementById('fieldIntervalStatusRow');
-                    const intervalBanner = document.getElementById('fieldReportIntervalBanner');
-                    if (intervalRow) {
-                        intervalRow.style.transition = 'all 0.4s ease';
-                        intervalRow.style.opacity = '0';
-                        intervalRow.style.transform = 'translateY(-10px)';
-                        setTimeout(() => {
-                            intervalRow.remove();
-                            if (intervalBanner && !intervalBanner.querySelector('.border-top')) {
-                                intervalBanner.remove();
-                            }
-                        }, 400);
-                    } else if (intervalBanner) {
-                        intervalBanner.style.transition = 'all 0.4s ease';
-                        intervalBanner.style.opacity = '0';
-                        intervalBanner.style.transform = 'translateY(-10px)';
-                        setTimeout(() => intervalBanner.remove(), 400);
-                    }
-                } else {
+                    });
                     const statusIcon = document.getElementById('status-icon-' + tempId);
                     if (statusIcon) {
-                        statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
-                        statusIcon.title = 'Gagal terkirim: ' + (res.message || 'Error');
+                        statusIcon.className = 'bi bi-cloud-slash text-warning';
+                        statusIcon.title = 'Tersimpan offline di perangkat (Akan otomatis dikirim saat ada sinyal)';
                     }
-                    alert('Gagal mengirim pesan: ' + (res.message || 'Terjadi kesalahan.'));
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'info',
+                            title: 'Tersimpan Offline',
+                            text: 'Pesan & foto tersimpan di HP dan akan otomatis terkirim saat sinyal kembali.',
+                            showConfirmButton: false,
+                            timer: 3500
+                        });
+                    }
+                    return;
                 }
-            })
-            .catch(err => {
-                const statusIcon = document.getElementById('status-icon-' + tempId);
-                if (statusIcon) {
-                    statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
-                    statusIcon.title = 'Gagal terkirim: ' + err.message;
-                }
-                alert('Gagal mengirim pesan: ' + err.message);
-            });
+
+                fetch(waDirectChatForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success && res.data) {
+                        const tempEl = document.getElementById(tempId);
+                        if (tempEl) {
+                            tempEl.id = 'krono-item-' + res.data.id;
+                            tempEl.setAttribute('data-id', res.data.id);
+                            const parsedTs = res.data.timestamp ? Math.floor(new Date(res.data.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000);
+                            tempEl.setAttribute('data-timestamp', parsedTs);
+                            const statusIcon = document.getElementById('status-icon-' + tempId);
+                            if (statusIcon) {
+                                // TAHAP: CEKLIS 2 ABU-ABU (SENT / TERKIRIM - MENUNGGU DILIHAT)
+                                statusIcon.id = 'status-icon-' + res.data.id;
+                                statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
+                                statusIcon.title = 'Terkirim (Belum dilihat)';
+                            }
+
+                            // Update foto url asli jika upload foto
+                            if (res.data.foto_url) {
+                                const mediaCard = tempEl.querySelector('.wa-media-card');
+                                if (mediaCard) {
+                                    mediaCard.style.opacity = '1';
+                                    mediaCard.onclick = () => zoomPhoto(res.data.foto_url, `${res.data.kategori} - ${res.data.formatted_time}`);
+                                    const img = mediaCard.querySelector('.wa-media-img');
+                                    if (img) {
+                                        img.src = res.data.foto_url;
+                                        img.style.filter = 'none';
+                                    }
+                                    const badge = mediaCard.querySelector('.wa-media-badge');
+                                    if (badge) {
+                                        badge.innerHTML = '<i class="bi bi-arrows-fullscreen me-1"></i><span>Klik untuk memperbesar</span>';
+                                    }
+                                }
+                            }
+
+                            // Pasang action menu 3-dots
+                            const header = tempEl.querySelector('.wa-bubble-header');
+                            if (header && !header.querySelector('.wa-bubble-menu-wrapper')) {
+                                const safeInfoAttr = rawEscape(res.data.informasi || '');
+                                header.insertAdjacentHTML('beforeend', `
+                                    <div class="dropdown wa-bubble-menu-wrapper">
+                                        <button type="button" class="wa-msg-menu-btn" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan pesan">
+                                            <i class="bi bi-three-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end wa-msg-dropdown-menu shadow border-0">
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-copy" data-id="${res.data.id}" data-text="${safeInfoAttr}">
+                                                    <i class="bi bi-clipboard text-primary"></i> Salin
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
+                                                        data-id="${res.data.id}"
+                                                        data-user-id="${currentUserId}"
+                                                        data-sender="Anda"
+                                                        data-sender-role="${res.data.user_role || '-'}"
+                                                        data-time="${res.data.formatted_time || ''}"
+                                                        data-text="${safeInfoAttr}"
+                                                        data-photo="${res.data.foto_url || ''}"
+                                                        data-timestamp="${Math.floor(Date.now()/1000)}">
+                                                    <i class="bi bi-info-circle-fill text-info"></i> Info Pesan
+                                                </button>
+                                            </li>
+                                            ${res.data.foto_url && !isTiketClosed && canChat ? `
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-forward-doc text-success"
+                                                        onclick="forwardPhotoToDoc('${res.data.foto_url}', '${res.data.latitude || ''}', '${res.data.longitude || ''}', '${res.data.timestamp ? res.data.timestamp.substring(0,16) : ''}', '${res.data.kategori || ''}')">
+                                                    <i class="bi bi-folder-plus text-success"></i> Simpan ke Dokumentasi
+                                                </button>
+                                            </li>` : ''}
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${res.data.id}" data-sender="Anda" data-text="${safeInfoAttr}">
+                                                    <i class="bi bi-reply-fill text-info"></i> Balas
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                `);
+                            }
+                        } else {
+                            appendSingleKronoToTimeline(res.data);
+                        }
+
+                        // Hilangkan banner peringatan 30 menit secara real-time karena update sudah dikirim
+                        const intervalRow = document.getElementById('fieldIntervalStatusRow');
+                        const intervalBanner = document.getElementById('fieldReportIntervalBanner');
+                        if (intervalRow) {
+                            intervalRow.style.transition = 'all 0.4s ease';
+                            intervalRow.style.opacity = '0';
+                            intervalRow.style.transform = 'translateY(-10px)';
+                            setTimeout(() => {
+                                intervalRow.remove();
+                                if (intervalBanner && !intervalBanner.querySelector('.border-top')) {
+                                    intervalBanner.remove();
+                                }
+                            }, 400);
+                        } else if (intervalBanner) {
+                            intervalBanner.style.transition = 'all 0.4s ease';
+                            intervalBanner.style.opacity = '0';
+                            intervalBanner.style.transform = 'translateY(-10px)';
+                            setTimeout(() => intervalBanner.remove(), 400);
+                        }
+                    } else {
+                        const statusIcon = document.getElementById('status-icon-' + tempId);
+                        if (statusIcon) {
+                            statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
+                            statusIcon.title = 'Gagal terkirim: ' + (res.message || 'Error');
+                        }
+                        alert('Gagal mengirim pesan: ' + (res.message || 'Terjadi kesalahan.'));
+                    }
+                })
+                .catch(err => {
+                    // Jika terputus koneksi saat mengirim, alihkan ke antrean offline lokal
+                    if (window.OfflineSync) {
+                        window.OfflineSync.enqueueRequest({
+                            url: waDirectChatForm.action,
+                            method: 'POST',
+                            formData: formData,
+                            meta: {
+                                label: 'Pesan Tiket #{{ $tiket->id }}',
+                                tiket_id: {{ $tiket->id }},
+                                temp_element_id: tempId,
+                                text: textVal || (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan'),
+                                has_photo: hasPhoto,
+                                has_location: hasLoc
+                            }
+                        });
+                        const statusIcon = document.getElementById('status-icon-' + tempId);
+                        if (statusIcon) {
+                            statusIcon.className = 'bi bi-cloud-slash text-warning';
+                            statusIcon.title = 'Tersimpan offline di perangkat (Akan otomatis dikirim saat ada sinyal)';
+                        }
+                    } else {
+                        const statusIcon = document.getElementById('status-icon-' + tempId);
+                        if (statusIcon) {
+                            statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
+                            statusIcon.title = 'Gagal terkirim: ' + err.message;
+                        }
+                        alert('Gagal mengirim pesan: ' + err.message);
+                    }
+                });
+            };
+
+            sendDirectMessage();
         });
     }
+
+    // ── 15.B OFFLINE AUTO-SYNC REAL-TIME EVENT LISTENER ──
+    window.addEventListener('offline-sync:item-synced', function(e) {
+        const item = e.detail?.item;
+        const resData = e.detail?.result?.data;
+        if (!item || !resData) return;
+
+        const tempId = item.meta?.temp_element_id;
+        if (!tempId) return;
+
+        const tempEl = document.getElementById(tempId);
+        if (tempEl) {
+            tempEl.id = 'krono-item-' + resData.id;
+            tempEl.setAttribute('data-id', resData.id);
+            const parsedTs = resData.timestamp ? Math.floor(new Date(resData.timestamp).getTime() / 1000) : Math.floor(Date.now() / 1000);
+            tempEl.setAttribute('data-timestamp', parsedTs);
+            const statusIcon = document.getElementById('status-icon-' + tempId);
+            if (statusIcon) {
+                statusIcon.id = 'status-icon-' + resData.id;
+                statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
+                statusIcon.title = 'Terkirim (Belum dilihat)';
+            }
+        }
+    });
 
     // ── 16. SCROLL TO BOTTOM FLOATING BUTTON & TIMELINE SCROLL LISTENER ──
     const btnWaScrollBottom = document.getElementById('btnWaScrollBottom');
