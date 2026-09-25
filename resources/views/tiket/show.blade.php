@@ -53,13 +53,13 @@
     }
 
     .wa-chat-container {
-        background-color: #f0f2f5;
+        background-color: #efeae2;
         background-image: url("{{ asset('assets/chat-bg-whatsapp.png') }}?v={{ @filemtime(public_path('assets/chat-bg-whatsapp.png')) ?: time() }}");
         background-size: 380px auto;
         background-repeat: repeat;
         background-attachment: local;
         border-radius: var(--neu-radius, 18px);
-        border: 1px solid #cbd5e1;
+        border: 1px solid #dcdfd8;
         overflow: hidden;
         box-shadow: 0 4px 24px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
         display: flex;
@@ -90,7 +90,7 @@
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
-        background-color: #f0f2f5 !important;
+        background-color: #efeae2 !important;
         background-image: url("{{ asset('assets/chat-bg-whatsapp.png') }}?v={{ @filemtime(public_path('assets/chat-bg-whatsapp.png')) ?: time() }}") !important;
         background-size: 380px auto !important;
         background-repeat: repeat !important;
