@@ -29,16 +29,27 @@
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
-        z-index: 99999;
+        z-index: 999999 !important;
         border-radius: 0 !important;
         border: none !important;
         box-shadow: none !important;
-        width: 100% !important;
-        height: 100% !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
         max-height: none !important;
         display: flex !important;
         flex-direction: column !important;
         overflow: hidden !important;
+        background: #ffffff !important;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-chat-header {
+        position: relative !important;
+        top: 0 !important;
+        z-index: 10 !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        flex-shrink: 0 !important;
     }
 
     .wa-chat-container.wa-fullscreen #timelineWrapper {
@@ -62,7 +73,9 @@
         flex-grow: 0 !important;
     }
 
-    /* Sembunyikan bottom nav, sidebar, footer saat fullscreen */
+    /* Sembunyikan topbar header, navbar, bottom nav, sidebar, footer saat fullscreen */
+    body.wa-chat-fullscreen-active .app-topbar,
+    body.wa-chat-fullscreen-active header,
     body.wa-chat-fullscreen-active .mobile-bottom-nav,
     body.wa-chat-fullscreen-active .app-sidebar,
     body.wa-chat-fullscreen-active .app-footer,
@@ -72,7 +85,8 @@
 
     /* Hapus padding-bottom bawaan mobile agar input menempel di paling bawah */
     body.wa-chat-fullscreen-active {
-        padding-bottom: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
         overflow: hidden !important;
     }
 
