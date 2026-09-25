@@ -308,7 +308,8 @@
     }
 
     /* Message Row & Bubble */
-    .wa-msg-row {
+    .wa-msg-row,
+    .wa-message-row {
         display: flex;
         gap: 0.45rem;
         align-items: flex-end;
@@ -317,12 +318,14 @@
         scroll-margin-top: 90px;
     }
 
-    .wa-msg-incoming {
-        justify-content: flex-start;
+    .wa-msg-incoming,
+    .wa-row-incoming {
+        justify-content: flex-start !important;
     }
 
-    .wa-msg-outgoing {
-        justify-content: flex-end;
+    .wa-msg-outgoing,
+    .wa-row-outgoing {
+        justify-content: flex-end !important;
     }
 
     .wa-avatar {
@@ -375,6 +378,7 @@
         border: 1px solid #bfdbfe;
         border-radius: 16px 16px 4px 16px;
         box-shadow: 0 1px 3px rgba(37, 99, 235, 0.08), 0 1px 2px rgba(37, 99, 235, 0.04);
+        margin-left: auto;
     }
 
     .wa-bubble-header {
@@ -10130,7 +10134,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
             if (stream) {
                 const optimisticHtml = `
-                    <div class="wa-message-row wa-row-outgoing" id="${tempId}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
+                    <div class="wa-msg-row wa-msg-outgoing" id="${tempId}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
                         <div class="wa-bubble wa-bubble-outgoing">
                             <div class="wa-bubble-header">
                                 <div class="wa-sender-info">
