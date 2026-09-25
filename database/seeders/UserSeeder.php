@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Rian Suryana (Teknis)',
                 'email' => 'teknis@connecti.id',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('katasandi'),
                 'role' => 'teknis',
                 'phone' => '081344556677',
                 'is_active' => true,
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Budi Santoso (Teknis)',
                 'email' => 'teknis2@connecti.id',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('katasandi'),
                 'role' => 'teknis',
                 'phone' => '081388990011',
                 'is_active' => true,
