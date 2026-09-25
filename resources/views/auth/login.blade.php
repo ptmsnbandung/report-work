@@ -460,13 +460,19 @@
             .mobile-brand-top {
                 display: flex !important;
                 flex-direction: column;
-                width: 100%;
+                width: 100vw;
                 background: linear-gradient(155deg, #07152b 0%, #0d2757 50%, #1b39da 100%);
-                padding: 1rem 1rem 0;
+                padding: 0 !important;
+                margin: 0 !important;
                 text-align: center;
                 position: relative;
                 color: #ffffff;
                 flex-shrink: 0;
+            }
+
+            .mobile-brand-header {
+                padding: 1rem 1.25rem 0.2rem;
+                width: 100%;
             }
 
             .mobile-brand-top .brand-welcome-title {
@@ -834,14 +840,16 @@
 
     <!-- ── 2. MOBILE TOP BANNER (FULL-WIDTH WITH WAVE) ── -->
     <div class="mobile-brand-top">
-        <div class="brand-welcome-title">Selamat Datang di</div>
-        <div class="brand-logo-circle">
-            <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
+        <div class="mobile-brand-header">
+            <div class="brand-welcome-title">Selamat Datang di</div>
+            <div class="brand-logo-circle">
+                <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="Logo PT MSN">
+            </div>
+            <div class="brand-app-name">MSN Work Report</div>
+            <div class="mobile-brand-sub">Sistem Tiketing &amp; Manajemen Jaringan</div>
         </div>
-        <div class="brand-app-name">MSN Work Report</div>
-        <div class="mobile-brand-sub">Sistem Tiketing &amp; Manajemen Jaringan</div>
 
-        <!-- Layered Cloud / Wave SVG Divider (Mobile Edge to Edge) -->
+        <!-- Layered Cloud / Wave SVG Divider (Mobile Edge to Edge 100% Full Width) -->
         <div class="mobile-wave-wrapper">
             <svg viewBox="0 0 1440 140" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                 <!-- Layer 1: Sky Blue Shadow Layer -->
