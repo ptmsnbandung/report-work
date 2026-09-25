@@ -118,10 +118,16 @@
             border-radius: 12px;
             padding: 5px;
         }
-        .phone-mockup-frame.lg .phone-bar {
-            width: 20px;
-            height: 2.5px;
-            bottom: 6px;
+        /* Mobile bottom offset for floating prompts to avoid overlapping bottom navigation bar */
+        @media (max-width: 991.98px) {
+            #webPushPromptBanner,
+            #pwaInstallBanner {
+                bottom: 80px !important;
+                left: 12px !important;
+                right: 12px !important;
+                max-width: calc(100% - 24px) !important;
+                width: calc(100% - 24px) !important;
+            }
         }
     </style>
 
@@ -366,29 +372,51 @@
                 }
             };
 
-            document.getElementById('btnEnableWebPush')?.addEventListener('click', window.enableWebPush);
-            document.getElementById('btnDismissWebPush')?.addEventListener('click', function() {
+            const closePushPrompt = function() {
                 document.getElementById('webPushPromptBanner')?.classList.add('d-none');
                 sessionStorage.setItem('dismiss_push_prompt', '1');
-            });
+            };
+
+            document.getElementById('btnEnableWebPush')?.addEventListener('click', window.enableWebPush);
+            document.getElementById('btnDismissWebPush')?.addEventListener('click', closePushPrompt);
+            document.getElementById('btnCloseWebPush')?.addEventListener('click', closePushPrompt);
 
             // Always register Service Worker for PWA caching & offline support
             registerServiceWorkerAndPush();
 
-            // ── PWA INSTALLATION PROMPT HANDLER (100% Native & Legal) ──
+            // ── PWA INSTALLATION STATE & PROMPT HANDLER (100% Native & Legal) ──
             let deferredPwaPrompt = null;
             const pwaInstallBanner = document.getElementById('pwaInstallBanner');
             const btnPwaInstallAction = document.getElementById('btnPwaInstallAction');
             const btnDismissPwa = document.getElementById('btnDismissPwa');
             const btnClosePwaBanner = document.getElementById('btnClosePwaBanner');
 
+            // Function to check if app is already installed and hide all install triggers
+            window.applyPwaInstalledState = function() {
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                    || window.navigator.standalone === true 
+                    || document.referrer.includes('android-app://')
+                    || localStorage.getItem('pwa_installed') === '1';
+
+                if (isStandalone) {
+                    document.querySelectorAll('.pwa-download-dash-card, #pwaInstallBanner, .btn-trigger-pwa-install').forEach(el => {
+                        el.classList.add('d-none');
+                        el.style.display = 'none';
+                    });
+                }
+                return isStandalone;
+            };
+
+            const isAlreadyPwa = window.applyPwaInstalledState();
+
             window.triggerPwaInstall = async function() {
                 if (deferredPwaPrompt) {
                     deferredPwaPrompt.prompt();
                     const choiceResult = await deferredPwaPrompt.userChoice;
                     if (choiceResult.outcome === 'accepted') {
+                        localStorage.setItem('pwa_installed', '1');
+                        window.applyPwaInstalledState();
                         console.log('User accepted PWA installation');
-                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
                     }
                     deferredPwaPrompt = null;
                 } else {
@@ -401,15 +429,12 @@
                 }
             };
 
-            // Check if app is already running in standalone PWA mode
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-            if (!isStandalone) {
+            if (!isAlreadyPwa) {
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPwaPrompt = e;
 
-                    if (pwaInstallBanner && !sessionStorage.getItem('dismiss_pwa_banner')) {
+                    if (pwaInstallBanner && !sessionStorage.getItem('dismiss_pwa_banner') && !window.applyPwaInstalledState()) {
                         pwaInstallBanner.classList.remove('d-none');
                     }
                 });
@@ -432,7 +457,8 @@
             }
 
             window.addEventListener('appinstalled', () => {
-                if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                localStorage.setItem('pwa_installed', '1');
+                window.applyPwaInstalledState();
                 deferredPwaPrompt = null;
                 console.log('PT MSN PWA successfully installed!');
             });
@@ -497,23 +523,26 @@
 
     <!-- Web Push Permission Floating Prompt -->
     @auth
-    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 360px;">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 100%); color: #fff; border: 1px solid rgba(255,255,255,0.15);">
+    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 380px;">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.35) !important; box-shadow: 0 16px 36px rgba(0,0,0,0.55) !important;">
+            <!-- Close Button -->
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2.5 p-1" id="btnCloseWebPush" aria-label="Tutup" style="font-size: 0.65rem; opacity: 0.75; z-index: 5;"></button>
+            
             <div class="card-body p-3.5">
-                <div class="d-flex align-items-start gap-2.5">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; background: rgba(44, 127, 255, 0.25); color: #38bdf8; font-size: 1.2rem;">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background: rgba(44, 127, 255, 0.25); color: #38bdf8; font-size: 1.25rem; border: 1px solid rgba(56, 189, 248, 0.3);">
                         <i class="bi bi-bell-fill"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">Aktifkan Notifikasi HP</h6>
-                        <p class="small text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.4;">
+                    <div class="flex-grow-1 pe-2">
+                        <h6 class="fw-bold mb-1 text-white" style="font-size: 0.92rem; color: #ffffff !important; letter-spacing: -0.2px;">Aktifkan Notifikasi HP</h6>
+                        <p class="text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.7rem !important;">
                             Dapatkan pemberitahuan tiket baru &amp; pesan koordinasi langsung ke HP Anda secara instan.
                         </p>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold shadow-xs" id="btnEnableWebPush" style="font-size: 0.74rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
-                                <i class="bi bi-check-circle-fill me-1"></i> Izinkan
+                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3.5 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnEnableWebPush" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
+                                <i class="bi bi-check-circle-fill"></i> Izinkan
                             </button>
-                            <button type="button" class="btn btn-link text-white-50 btn-sm text-decoration-none p-0" id="btnDismissWebPush" style="font-size: 0.74rem;">
+                            <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 text-white-50 text-nowrap" id="btnDismissWebPush" style="font-size: 0.76rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
                                 Nanti Saja
                             </button>
                         </div>
