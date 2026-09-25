@@ -18,6 +18,7 @@ class StoreDokumentasiRequest extends FormRequest
             'timestamp' => ['nullable', 'date'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'source_photo_url' => ['nullable', 'string'],
             'foto' => ['nullable', 'file', 'image', 'mimes:jpeg,jpg,png,webp', 'max:25600'],
             'photos' => ['nullable', 'array'],
             'photos.*' => ['file', 'image', 'mimes:jpeg,jpg,png,webp', 'max:25600'],

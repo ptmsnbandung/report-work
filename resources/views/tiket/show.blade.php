@@ -3460,6 +3460,26 @@
                                                                     <i class="bi bi-clipboard text-primary"></i> Salin
                                                                 </button>
                                                             </li>
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
+                                                                        data-id="{{ $krono->id }}"
+                                                                        data-sender="{{ $isMe ? 'Anda' : ($krono->user?->name ?? 'User') }}"
+                                                                        data-sender-role="{{ $krono->user?->role_short ?? '-' }}"
+                                                                        data-time="{{ $krono->timestamp->format('d/m/Y H:i') }} WIB"
+                                                                        data-text="{{ e($krono->informasi) }}"
+                                                                        data-photo="{{ $krono->foto_url ? asset($krono->foto_url) : '' }}"
+                                                                        data-timestamp="{{ $krono->timestamp->timestamp }}">
+                                                                    <i class="bi bi-info-circle-fill text-info"></i> Info Pesan
+                                                                </button>
+                                                            </li>
+                                                            @if($krono->foto_url && $tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                                                            <li>
+                                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-forward-doc text-success"
+                                                                        onclick="forwardPhotoToDoc('{{ asset($krono->foto_url) }}', '{{ $krono->latitude ?? '' }}', '{{ $krono->longitude ?? '' }}', '{{ $krono->timestamp->format('Y-m-d\TH:i') }}', '{{ $krono->kategori }}')">
+                                                                    <i class="bi bi-folder-plus text-success"></i> Simpan ke Dokumentasi
+                                                                </button>
+                                                            </li>
+                                                            @endif
                                                             @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
                                                             <li>
                                                                 <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="{{ $krono->id }}" data-sender="{{ $isMe ? 'Anda' : ($krono->user?->name ?? 'User') }}" data-text="{{ e($krono->informasi) }}">
@@ -5647,14 +5667,30 @@
         <div class="modal-content border-0 shadow-lg">
             <form action="{{ route('tiket.dokumentasi.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="formUploadDokumentasi">
                 @csrf
+                <input type="hidden" name="source_photo_url" id="docSourcePhotoUrl" value="">
                 <div class="modal-header bg-navy text-white">
-                    <h6 class="modal-title fw-bold text-white">
+                    <h6 class="modal-title fw-bold text-white" id="uploadDokModalTitle">
                         <i class="bi bi-camera-fill text-info me-2"></i>Upload Foto Dokumentasi Lapangan
                     </h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
                     <div class="row g-3">
+                        <!-- Forwarded Photo Preview Box (Shows when saving from chat) -->
+                        <div id="docSourcePhotoPreviewBox" class="col-12 d-none">
+                            <div class="card border-primary border-opacity-50 bg-primary-subtle bg-opacity-10 p-3 rounded-3 shadow-xs">
+                                <div class="d-flex align-items-center gap-3">
+                                    <img id="docSourcePhotoImg" src="#" alt="Foto Chat" class="rounded-3 border shadow-xs" style="width: 72px; height: 72px; object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <div class="badge bg-primary text-white mb-1"><i class="bi bi-chat-left-text me-1"></i> Foto dari Chat Lapangan</div>
+                                        <div class="small fw-bold text-navy">Foto ini akan disimpan ke Dokumentasi Wajib Pekerjaan</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">Silakan pilih kategori dokumentasi dan verifikasi koordinat/catatan di bawah ini.</div>
+                                    </div>
+                                    <button type="button" class="btn-close" style="font-size: 0.65rem;" id="btnCancelForwardDoc" title="Batal simpan dari chat"></button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Kategori Dokumentasi -->
                         <div class="col-12 col-md-6">
                             <label for="doc_kategori" class="form-label small fw-bold text-navy">
@@ -5691,8 +5727,8 @@
                                    required>
                         </div>
 
-                        <!-- Multi-File Image Upload Zone -->
-                        <div class="col-12">
+                        <!-- Multi-File Image Upload Zone (Hidden if saving from chat) -->
+                        <div class="col-12" id="docMultiUploadWrapper">
                             <label class="form-label small fw-bold text-navy">
                                 Pilih File Foto (Bisa Multiple) <span class="text-danger">*</span>
                             </label>
@@ -5739,10 +5775,72 @@
                 <div class="modal-footer bg-light py-2">
                     <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary btn-sm px-4 fw-semibold shadow-xs" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; color: #ffffff !important;">
-                        <i class="bi bi-cloud-arrow-up-fill me-1 text-white"></i> Upload Foto
+                        <i class="bi bi-cloud-arrow-up-fill me-1 text-white"></i> Simpan Dokumentasi
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- ════ WHATSAPP-STYLE MESSAGE INFO MODAL (READ BY / SEEN BY) ════ -->
+<div class="modal fade" id="msgInfoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header bg-navy text-white py-2.5 px-3.5">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:34px; height:34px; background:rgba(56,189,248,0.2); color:#38bdf8;">
+                        <i class="bi bi-info-circle-fill fs-6"></i>
+                    </div>
+                    <div>
+                        <h6 class="modal-title fw-bold text-white mb-0" style="font-size:0.95rem;">Info Pesan</h6>
+                        <span class="text-white-50" style="font-size:0.72rem;">Detail pembacaan & pengiriman pesan</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-3.5 bg-light">
+                <!-- Message Preview Snippet Card -->
+                <div class="card border-0 shadow-xs rounded-3 mb-3 bg-white p-3">
+                    <div class="d-flex align-items-center justify-content-between mb-1.5">
+                        <span class="fw-bold small text-navy" id="msgInfoSender">Pengirim</span>
+                        <span class="text-muted small" style="font-size:0.74rem;" id="msgInfoTime">Waktu</span>
+                    </div>
+                    <div class="small text-secondary text-break p-2 rounded bg-light border" id="msgInfoContent" style="max-height:110px; overflow-y:auto; font-size:0.82rem;">
+                        Isi pesan...
+                    </div>
+                    <div id="msgInfoPhotoContainer" class="d-none mt-2 text-center">
+                        <img id="msgInfoPhotoThumb" src="#" alt="Foto Lampiran" class="rounded border shadow-xs" style="max-height: 100px; max-width: 100%; object-fit: contain;">
+                    </div>
+                </div>
+
+                <!-- Read Status Section (Dibaca Oleh) -->
+                <div class="card border-0 shadow-xs rounded-3 bg-white p-3 mb-2.5">
+                    <div class="d-flex align-items-center gap-1.5 mb-2 pb-1.5 border-bottom">
+                        <i class="bi bi-check2-all text-info fw-bold fs-5"></i>
+                        <h6 class="fw-bold mb-0 text-dark" style="font-size:0.86rem;">Dibaca Oleh</h6>
+                        <span class="badge bg-info-subtle text-info ms-auto" id="msgInfoReadCountBadge">0 Anggota</span>
+                    </div>
+                    <div id="msgInfoReadList" class="d-flex flex-column gap-2" style="max-height: 190px; overflow-y: auto;">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Delivered Status Section (Terkirim) -->
+                <div class="card border-0 shadow-xs rounded-3 bg-white p-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-check2 text-secondary fw-bold fs-5"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold small text-dark" style="font-size:0.84rem;">Terkirim ke Server</div>
+                            <div class="text-muted small" style="font-size:0.72rem;" id="msgInfoDeliveredTime">Terkirim</div>
+                        </div>
+                        <span class="badge bg-secondary-subtle text-secondary" style="font-size:0.7rem;">Tersimpan</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2 px-3">
+                <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3.5" data-bs-dismiss="modal">Tutup</button>
+            </div>
         </div>
     </div>
 </div>
@@ -7332,6 +7430,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     const badgeEl = document.getElementById('kronologisCountBadge');
                     if (badgeEl) badgeEl.textContent = knownCount;
                 }
+                if (res.views) {
+                    window.TICKET_USER_VIEWS = res.views;
+                }
                 if (res.data && res.data.length > 0) {
                     updateTimelineFromData(res.data);
                 }
@@ -7377,6 +7478,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await res.json();
 
             if (data.success && data.data && data.data.length > 0) {
+                if (data.views) {
+                    window.TICKET_USER_VIEWS = data.views;
+                }
                 const stream = document.getElementById('timelineList');
                 if (stream) {
                     // Simpan posisi scroll sebelum prepend
@@ -7445,6 +7549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return nameColors[Math.abs(hash) % nameColors.length];
     }
 
+    window.TICKET_USER_VIEWS = @json($ticketViews ?? []);
     const MENTIONABLE_USERS = @json($mentionableUsers ?? []);
     const isTiketClosed = {{ $tiket->status === 'CLOSE' ? 'true' : 'false' }};
     const canChat = {{ auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']) ? 'true' : 'false' }};
@@ -7546,6 +7651,25 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <i class="bi bi-clipboard text-primary"></i> Salin
                                         </button>
                                     </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
+                                                data-id="${k.id}"
+                                                data-sender="${rawEscape(senderDisplayName)}"
+                                                data-sender-role="${k.user_role || '-'}"
+                                                data-time="${k.formatted_time}"
+                                                data-text="${safeInfoAttr}"
+                                                data-photo="${k.foto_url || ''}"
+                                                data-timestamp="${kTimestampUnix}">
+                                            <i class="bi bi-info-circle-fill text-info"></i> Info Pesan
+                                        </button>
+                                    </li>
+                                    ${k.foto_url && !isTiketClosed && canChat ? `
+                                    <li>
+                                        <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-forward-doc text-success"
+                                                onclick="forwardPhotoToDoc('${k.foto_url}', '${k.latitude || ''}', '${k.longitude || ''}', '${k.timestamp ? k.timestamp.substring(0,16) : ''}', '${k.kategori || ''}')">
+                                            <i class="bi bi-folder-plus text-success"></i> Simpan ke Dokumentasi
+                                        </button>
+                                    </li>` : ''}
                                     ${canReply ? `
                                     <li>
                                         <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${k.id}" data-sender="${rawEscape(senderDisplayName)}" data-text="${safeInfoAttr}">
@@ -9693,6 +9817,191 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             }
             return;
         }
+
+        // 5. INFO PESAN (READ RECEIPTS / SEEN BY)
+        const infoBtn = e.target.closest('.btn-action-msg-info');
+        if (infoBtn) {
+            e.preventDefault();
+            const sender = infoBtn.getAttribute('data-sender') || 'Pengirim';
+            const senderRole = infoBtn.getAttribute('data-sender-role') || '-';
+            const time = infoBtn.getAttribute('data-time') || '-';
+            const rawText = infoBtn.getAttribute('data-text') || '';
+            const photoUrl = infoBtn.getAttribute('data-photo') || '';
+            const msgTimestamp = parseInt(infoBtn.getAttribute('data-timestamp') || '0', 10);
+
+            const senderEl = document.getElementById('msgInfoSender');
+            const timeEl = document.getElementById('msgInfoTime');
+            const contentEl = document.getElementById('msgInfoContent');
+            const photoContainer = document.getElementById('msgInfoPhotoContainer');
+            const photoThumb = document.getElementById('msgInfoPhotoThumb');
+            const readListEl = document.getElementById('msgInfoReadList');
+            const readCountBadge = document.getElementById('msgInfoReadCountBadge');
+            const deliveredTimeEl = document.getElementById('msgInfoDeliveredTime');
+
+            if (senderEl) {
+                senderEl.innerHTML = `${sender} <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal" style="font-size:0.7rem;">${senderRole}</span>`;
+            }
+            if (timeEl) timeEl.textContent = time;
+            if (deliveredTimeEl) deliveredTimeEl.textContent = time + ' (Tersimpan)';
+
+            if (contentEl) {
+                if (rawText.trim()) {
+                    contentEl.innerHTML = formatMessageWithMentions(rawText);
+                    contentEl.classList.remove('d-none');
+                } else if (photoUrl) {
+                    contentEl.innerHTML = '<span class="fst-italic text-muted"><i class="bi bi-image me-1"></i> [Foto Lampiran]</span>';
+                    contentEl.classList.remove('d-none');
+                } else {
+                    contentEl.classList.add('d-none');
+                }
+            }
+
+            if (photoContainer && photoThumb) {
+                if (photoUrl) {
+                    photoThumb.src = photoUrl;
+                    photoContainer.classList.remove('d-none');
+                } else {
+                    photoContainer.classList.add('d-none');
+                }
+            }
+
+            // Render list pembaca
+            if (readListEl && readCountBadge) {
+                readListEl.innerHTML = '';
+                const viewsObj = window.TICKET_USER_VIEWS || {};
+                const viewers = Object.values(viewsObj).filter(v => {
+                    if (!v || !v.user_id) return false;
+                    const viewedAt = parseInt(v.viewed_at || '0', 10);
+                    return isTiketClosed || (viewedAt >= msgTimestamp);
+                });
+
+                readCountBadge.textContent = `${viewers.length} Anggota`;
+
+                if (viewers.length === 0) {
+                    readListEl.innerHTML = `
+                        <div class="text-center py-3 text-muted" style="font-size:0.8rem;">
+                            <i class="bi bi-clock-history d-block fs-4 text-secondary mb-1 opacity-50"></i>
+                            Belum ada anggota tim lain yang membuka tiket ini setelah pesan terkirim.
+                        </div>
+                    `;
+                } else {
+                    viewers.forEach(v => {
+                        const vName = v.name || 'User #' + v.user_id;
+                        const vRole = (v.role || 'teknis').toUpperCase();
+                        const vInitials = vName.substring(0, 2).toUpperCase();
+                        const vColor = getSenderColor(vName);
+
+                        let readTimeFormatted = 'Telah membaca tiket';
+                        if (v.viewed_at) {
+                            const dateObj = new Date(v.viewed_at * 1000);
+                            const hours = String(dateObj.getHours()).padStart(2, '0');
+                            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                            readTimeFormatted = `Dibaca pukul ${hours}:${minutes} WIB`;
+                        }
+
+                        const itemHtml = `
+                            <div class="d-flex align-items-center justify-content-between p-2 rounded-3 bg-light border border-light-subtle">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-2xs" style="width:34px; height:34px; background-color:${vColor}; font-size:0.75rem;">
+                                        ${v.avatar ? `<img src="${v.avatar}" class="w-100 h-100 rounded-circle" style="object-fit:cover;">` : vInitials}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold small text-dark d-flex align-items-center gap-1.5" style="font-size:0.82rem;">
+                                            <span>${vName}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary" style="font-size:0.65rem;">${vRole}</span>
+                                        </div>
+                                        <div class="text-muted" style="font-size:0.72rem;">${readTimeFormatted}</div>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <i class="bi bi-check2-all text-info fs-5" title="Dibaca"></i>
+                                </div>
+                            </div>
+                        `;
+                        readListEl.insertAdjacentHTML('beforeend', itemHtml);
+                    });
+                }
+            }
+
+            const modalEl = document.getElementById('msgInfoModal');
+            if (modalEl) {
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            }
+            return;
+        }
+    });
+
+    // ── 5B. FORWARD PHOTO TO MANDATORY DOCUMENTATION HELPER ──
+    window.forwardPhotoToDoc = function(photoUrl, lat, lng, timeStr, kategoriDefault) {
+        const modalEl = document.getElementById('uploadDokumentasiModal');
+        if (!modalEl) return;
+
+        const photoInput = document.getElementById('photosInput');
+        const sourcePhotoUrlInput = document.getElementById('docSourcePhotoUrl');
+        const previewBox = document.getElementById('docSourcePhotoPreviewBox');
+        const previewImg = document.getElementById('docSourcePhotoImg');
+        const multiUploadWrapper = document.getElementById('docMultiUploadWrapper');
+        const modalTitle = document.getElementById('uploadDokModalTitle');
+        const latInput = document.getElementById('latitude_doc');
+        const lngInput = document.getElementById('longitude_doc');
+        const kategoriSelect = document.getElementById('doc_kategori');
+        const timestampInput = document.getElementById('doc_timestamp');
+
+        if (sourcePhotoUrlInput) sourcePhotoUrlInput.value = photoUrl;
+        if (previewImg) previewImg.src = photoUrl;
+        if (previewBox) previewBox.classList.remove('d-none');
+        if (multiUploadWrapper) multiUploadWrapper.classList.add('d-none');
+        if (photoInput) photoInput.removeAttribute('required');
+
+        if (modalTitle) {
+            modalTitle.innerHTML = '<i class="bi bi-folder-plus text-success me-2"></i>Simpan Foto Chat ke Dokumentasi Wajib';
+        }
+
+        if (lat && lng && latInput && lngInput) {
+            latInput.value = parseFloat(lat).toFixed(6);
+            lngInput.value = parseFloat(lng).toFixed(6);
+        }
+
+        if (kategoriDefault && kategoriSelect) {
+            for (let i = 0; i < kategoriSelect.options.length; i++) {
+                if (kategoriSelect.options[i].value === kategoriDefault) {
+                    kategoriSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        if (timeStr && timestampInput) {
+            timestampInput.value = timeStr;
+        }
+
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    };
+
+    // Reset Dokumentasi Modal state when modal is closed or cancelled
+    function resetDocModalState() {
+        const photoInput = document.getElementById('photosInput');
+        const sourcePhotoUrlInput = document.getElementById('docSourcePhotoUrl');
+        const previewBox = document.getElementById('docSourcePhotoPreviewBox');
+        const multiUploadWrapper = document.getElementById('docMultiUploadWrapper');
+        const modalTitle = document.getElementById('uploadDokModalTitle');
+
+        if (sourcePhotoUrlInput) sourcePhotoUrlInput.value = '';
+        if (previewBox) previewBox.classList.add('d-none');
+        if (multiUploadWrapper) multiUploadWrapper.classList.remove('d-none');
+        if (photoInput) photoInput.setAttribute('required', 'required');
+        if (modalTitle) {
+            modalTitle.innerHTML = '<i class="bi bi-camera-fill text-info me-2"></i>Upload Foto Dokumentasi Lapangan';
+        }
+    }
+
+    document.getElementById('btnCancelForwardDoc')?.addEventListener('click', function(e) {
+        e.preventDefault();
+        resetDocModalState();
+    });
+
+    document.getElementById('uploadDokumentasiModal')?.addEventListener('hidden.bs.modal', function() {
+        resetDocModalState();
     });
 
     // Form Edit Message Modal Submit Handler
@@ -10392,6 +10701,25 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                                 <i class="bi bi-clipboard text-primary"></i> Salin
                                             </button>
                                         </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-msg-info"
+                                                    data-id="${res.data.id}"
+                                                    data-sender="Anda"
+                                                    data-sender-role="${res.data.user_role || '-'}"
+                                                    data-time="${res.data.formatted_time || ''}"
+                                                    data-text="${safeInfoAttr}"
+                                                    data-photo="${res.data.foto_url || ''}"
+                                                    data-timestamp="${Math.floor(Date.now()/1000)}">
+                                                <i class="bi bi-info-circle-fill text-info"></i> Info Pesan
+                                            </button>
+                                        </li>
+                                        ${res.data.foto_url && !isTiketClosed && canChat ? `
+                                        <li>
+                                            <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-forward-doc text-success"
+                                                    onclick="forwardPhotoToDoc('${res.data.foto_url}', '${res.data.latitude || ''}', '${res.data.longitude || ''}', '${res.data.timestamp ? res.data.timestamp.substring(0,16) : ''}', '${res.data.kategori || ''}')">
+                                                <i class="bi bi-folder-plus text-success"></i> Simpan ke Dokumentasi
+                                            </button>
+                                        </li>` : ''}
                                         <li>
                                             <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${res.data.id}" data-sender="Anda" data-text="${safeInfoAttr}">
                                                 <i class="bi bi-reply-fill text-info"></i> Balas

@@ -38,7 +38,9 @@ class KronologisController extends Controller
             if ($currentUserId) {
                 $views[$currentUserId] = [
                     'user_id'   => $currentUserId,
+                    'name'      => auth()->user()->name ?? 'User',
                     'role'      => auth()->user()->role ?? null,
+                    'avatar'    => auth()->user()->avatar_url ?? null,
                     'viewed_at' => now()->timestamp,
                 ];
                 \Illuminate\Support\Facades\Cache::put($viewsKey, $views, now()->addDays(7));
@@ -90,6 +92,7 @@ class KronologisController extends Controller
                 'oldest_id'             => $oldestInBatch,
                 'max_read_timestamp'    => $maxReadTimestamp,
                 'is_closed_or_verified' => $isTiketClosedOrVerified,
+                'views'                 => $views,
                 'data'                  => $formatted,
             ]);
         }

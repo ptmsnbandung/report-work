@@ -74,6 +74,45 @@ class DokumentasiService
                 }
             }
 
+            // Jika ada foto yang diteruskan dari chat kronologis (source_photo_url)
+            if (empty($fileList) && !empty($data['source_photo_url'])) {
+                $srcUrl = $data['source_photo_url'];
+                $srcRel = parse_url($srcUrl, PHP_URL_PATH);
+                $srcRel = ltrim($srcRel, '/');
+                $fullSrc = public_path($srcRel);
+
+                if (!file_exists($fullSrc) && str_starts_with($srcRel, 'storage/')) {
+                    $alt = storage_path('app/public/' . substr($srcRel, 8));
+                    if (file_exists($alt)) {
+                        $fullSrc = $alt;
+                    }
+                }
+
+                if (file_exists($fullSrc)) {
+                    $ext = strtolower(pathinfo($fullSrc, PATHINFO_EXTENSION) ?: 'jpg');
+                    $filename = 'doc_' . $tiket->id . '_' . now()->format('Ymd_His') . '_' . Str::random(6) . '.' . $ext;
+                    $destRel = 'dokumentasi/' . $tiket->id . '/' . $filename;
+                    $destDir = storage_path('app/public/dokumentasi/' . $tiket->id);
+
+                    if (!file_exists($destDir)) {
+                        mkdir($destDir, 0755, true);
+                    }
+
+                    copy($fullSrc, $destDir . DIRECTORY_SEPARATOR . $filename);
+
+                    $doc = Dokumentasi::create([
+                        'id_tiket' => $tiket->id,
+                        'kategori' => $kategori,
+                        'file_path' => $destRel,
+                        'timestamp' => $timestamp,
+                        'latitude' => $latitude,
+                        'longitude' => $longitude,
+                    ]);
+
+                    $createdDocs->push($doc);
+                }
+            }
+
             // Jika ada path manual/string yang dikirim (misal via test atau seeder)
             if (empty($fileList) && !empty($data['file_path'])) {
                 $doc = Dokumentasi::create([
