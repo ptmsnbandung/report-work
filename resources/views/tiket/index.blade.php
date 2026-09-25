@@ -47,6 +47,84 @@
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+
+    /* ── ENHANCED COMFORTABLE ACTION BUTTONS ── */
+    .btn-action-pro {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        border-radius: 10px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.1rem !important;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        cursor: pointer;
+        text-decoration: none !important;
+        padding: 0 !important;
+        flex-shrink: 0;
+    }
+
+    .btn-action-pro:hover {
+        transform: translateY(-2px) scale(1.05) !important;
+        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12) !important;
+    }
+
+    .btn-action-pro:active {
+        transform: translateY(0) scale(0.98) !important;
+    }
+
+    .btn-action-pro.btn-action-detail {
+        color: #0284c7 !important;
+        background: #f0f9ff !important;
+        border-color: #bae6fd !important;
+    }
+    .btn-action-pro.btn-action-detail:hover {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+        color: #ffffff !important;
+        border-color: #0284c7 !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4) !important;
+    }
+
+    .btn-action-pro.btn-action-edit {
+        color: #d97706 !important;
+        background: #fffbeb !important;
+        border-color: #fde68a !important;
+    }
+    .btn-action-pro.btn-action-edit:hover {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #ffffff !important;
+        border-color: #d97706 !important;
+        box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4) !important;
+    }
+
+    .btn-action-pro.btn-action-close {
+        color: #059669 !important;
+        background: #ecfdf5 !important;
+        border-color: #a7f3d0 !important;
+    }
+    .btn-action-pro.btn-action-close:hover {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border-color: #059669 !important;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4) !important;
+    }
+
+    .btn-action-pro.btn-action-delete {
+        color: #e11d48 !important;
+        background: #fff1f2 !important;
+        border-color: #fecdd3 !important;
+    }
+    .btn-action-pro.btn-action-delete:hover {
+        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%) !important;
+        color: #ffffff !important;
+        border-color: #e11d48 !important;
+        box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4) !important;
+    }
 </style>
 @endpush
 
@@ -691,19 +769,19 @@
                         </td>
 
                         <!-- Action Buttons -->
-                        <td class="text-center px-1">
-                            <div class="d-inline-flex gap-1 align-items-center justify-content-center">
+                        <td class="text-center px-2">
+                            <div class="d-inline-flex gap-1.5 align-items-center justify-content-center">
                                 <!-- Detail Button -->
                                 <a href="{{ route('tiket.show', $tiket->id) }}" class="btn-action-pro btn-action-detail"
                                    title="Lihat Detail Tiket">
-                                    <i class="bi bi-eye"></i>
+                                    <i class="bi bi-eye-fill"></i>
                                 </a>
 
                                 <!-- Edit Button (Open Tiket only) -->
                                 @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status === 'OPEN')
                                 <a href="{{ route('tiket.edit', $tiket->id) }}" class="btn-action-pro btn-action-edit"
                                    title="Edit Data Tiket">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="bi bi-pencil-fill"></i>
                                 </a>
                                 @endif
 
@@ -722,7 +800,7 @@
                                 <button type="button" class="btn-action-pro btn-action-delete"
                                         title="Hapus Tiket"
                                         onclick="confirmDelete('{{ route('tiket.destroy', $tiket->id) }}', 'Hapus Tiket {{ $tiket->no_tiket }}?', 'Data tiket ini beserta seluruh relasi data (kronologis, resume, foto) akan dihapus permanen.')">
-                                    <i class="bi bi-trash3"></i>
+                                    <i class="bi bi-trash3-fill"></i>
                                 </button>
                                 @endif
                             </div>

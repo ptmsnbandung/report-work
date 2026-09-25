@@ -962,19 +962,21 @@ h6 { font-size: 0.95rem; }
     color: var(--neu-text-muted);
 }
 
-/* Action Buttons Pro */
+/* Action Buttons Pro (Enhanced Size & Tap Target) */
 .btn-action-pro {
-    width: 27px;
-    height: 27px;
-    border-radius: 7px;
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    border-radius: 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.76rem;
-    border: 1px solid var(--neu-border);
+    font-size: 1.05rem;
+    border: 1.5px solid var(--neu-border);
     background: var(--neu-surface);
-    box-shadow: var(--neu-flat-xs);
-    transition: all var(--transition-fast);
+    box-shadow: 0 2px 5px rgba(15, 23, 42, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     cursor: pointer;
     text-decoration: none;
     padding: 0;
@@ -982,45 +984,61 @@ h6 { font-size: 0.95rem; }
 }
 
 .btn-action-pro:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--neu-flat-sm);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(15, 23, 42, 0.1);
 }
 
 .btn-action-pro:active {
-    box-shadow: var(--neu-inset-sm);
-    transform: translateY(1px);
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
 }
 
 .btn-action-pro.btn-action-detail {
     color: #0284c7;
+    background: #f0f9ff;
+    border-color: #bae6fd;
 }
 .btn-action-pro.btn-action-detail:hover {
-    background: #0284c7;
-    color: #ffffff;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff !important;
+    border-color: #0284c7;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
 }
 
 .btn-action-pro.btn-action-edit {
     color: #d97706;
+    background: #fffbeb;
+    border-color: #fde68a;
 }
 .btn-action-pro.btn-action-edit:hover {
-    background: #d97706;
-    color: #ffffff;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #ffffff !important;
+    border-color: #d97706;
+    box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
 }
 
 .btn-action-pro.btn-action-close {
-    color: #16a34a;
+    color: #059669;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
 }
 .btn-action-pro.btn-action-close:hover {
-    background: #16a34a;
-    color: #ffffff;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff !important;
+    border-color: #059669;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
 }
 
 .btn-action-pro.btn-action-delete {
     color: #e11d48;
+    background: #fff1f2;
+    border-color: #fecdd3;
 }
 .btn-action-pro.btn-action-delete:hover {
-    background: #e11d48;
-    color: #ffffff;
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+    color: #ffffff !important;
+    border-color: #e11d48;
+    box-shadow: 0 4px 14px rgba(225, 29, 72, 0.35);
 }
 
 /* ─── BUTTONS (SOFT UI TACTILE) ─────────────────────────────────────────── */
