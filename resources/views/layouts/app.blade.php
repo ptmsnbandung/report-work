@@ -39,6 +39,92 @@
     <!-- Custom Corporate CSS -->
     <link rel="stylesheet" href="{{ asset('css/connecti-custom.css') }}?v={{ file_exists(public_path('css/connecti-custom.css')) ? filemtime(public_path('css/connecti-custom.css')) : time() }}">
 
+    <style>
+        /* ── PHONE MOCKUP FRAME (APP PREVIEW) ── */
+        .phone-mockup-frame {
+            width: 52px;
+            height: 98px;
+            background: #0b1329;
+            border: 2.5px solid #475569;
+            border-radius: 13px;
+            position: relative;
+            padding: 2.5px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        .phone-mockup-frame .phone-notch {
+            width: 18px;
+            height: 3.5px;
+            background: #0b1329;
+            border-radius: 0 0 3px 3px;
+            position: absolute;
+            top: 2.5px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+        }
+        .phone-mockup-frame .phone-screen-inner {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 3px;
+            box-sizing: border-box;
+        }
+        .phone-mockup-frame .phone-app-img {
+            width: 100%;
+            height: auto;
+            max-height: 82%;
+            object-fit: contain;
+            display: block;
+        }
+        .phone-mockup-frame .phone-bar {
+            width: 14px;
+            height: 2px;
+            background: #0b1329;
+            border-radius: 2px;
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            opacity: 0.5;
+        }
+
+        /* Large Phone Mockup (for Dashboard Banner) */
+        .phone-mockup-frame.lg {
+            width: 64px;
+            height: 120px;
+            border: 3px solid #64748b;
+            border-radius: 16px;
+            padding: 3px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+        .phone-mockup-frame.lg .phone-notch {
+            width: 24px;
+            height: 4.5px;
+            border-radius: 0 0 4px 4px;
+            top: 3px;
+        }
+        .phone-mockup-frame.lg .phone-screen-inner {
+            border-radius: 12px;
+            padding: 5px;
+        }
+        .phone-mockup-frame.lg .phone-bar {
+            width: 20px;
+            height: 2.5px;
+            bottom: 6px;
+        }
+    </style>
+
     @stack('styles')
 @php
     $isAdminView = auth()->check() && auth()->user()->hasRole('admin');
@@ -379,8 +465,13 @@
             
             <div class="card-body p-3.5">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 p-1.5" style="width: 50px; height: 50px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
-                        <img src="{{ asset('assets/work-report.png') }}" alt="MSN Work Report" style="width: 100%; height: 100%; object-fit: contain;">
+                    <!-- Phone Mockup Frame with Logo -->
+                    <div class="phone-mockup-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen-inner">
+                            <img src="{{ asset('assets/work-report.png') }}" alt="MSN Work Report" class="phone-app-img">
+                        </div>
+                        <div class="phone-bar"></div>
                     </div>
                     <div class="flex-grow-1 pe-2">
                         <div class="d-flex align-items-center gap-2 mb-1">

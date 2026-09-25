@@ -307,9 +307,13 @@
         <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 70%); pointer-events: none;"></div>
         <div class="card-body p-3.5 p-md-4">
             <div class="row align-items-center g-3">
-                <div class="col-12 col-md-auto text-center text-md-start">
-                    <div class="d-inline-flex align-items-center justify-content-center p-2 rounded-4" style="width: 58px; height: 58px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
-                        <img src="{{ asset('assets/work-report.png') }}" alt="Aplikasi Mobile PT MSN" style="width: 100%; height: 100%; object-fit: contain;">
+                <div class="col-12 col-md-auto text-center text-md-start d-flex justify-content-center">
+                    <div class="phone-mockup-frame lg">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen-inner">
+                            <img src="{{ asset('assets/work-report.png') }}" alt="Aplikasi Mobile PT MSN" class="phone-app-img">
+                        </div>
+                        <div class="phone-bar"></div>
                     </div>
                 </div>
                 <div class="col-12 col-md text-center text-md-start">
