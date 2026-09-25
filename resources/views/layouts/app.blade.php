@@ -17,7 +17,7 @@
     <meta name="msapplication-TileColor" content="#07152b">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/work-report.png') }}">
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -367,7 +367,7 @@
             <div class="card-body p-3.5">
                 <div class="d-flex align-items-center gap-3">
                     <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 p-1.5" style="width: 46px; height: 46px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
-                        <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="MSN Icon" style="width: 100%; height: 100%; object-fit: contain;">
+                        <img src="{{ asset('assets/work-report.png') }}" alt="MSN Work Report" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center gap-1.5 mb-0.5">

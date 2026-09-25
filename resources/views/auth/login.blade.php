@@ -17,7 +17,7 @@
     <meta name="msapplication-TileColor" content="#071525">
     <link rel="icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('assets/work-report.png') }}">
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
