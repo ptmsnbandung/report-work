@@ -177,6 +177,133 @@
                 max-width: calc(100% - 20px) !important;
                 width: calc(100% - 20px) !important;
             }
+        /* ═══════════════════════════════════════════════════════════════════
+           PT MSN SIGNATURE LOGO SPINNER LOADER
+           ═══════════════════════════════════════════════════════════════════ */
+        .msn-loader-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 21, 43, 0.82);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+        }
+
+        .msn-loader-backdrop.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .msn-logo-loader-container {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Outer spinning neon glow ring */
+        .msn-loader-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3.5px solid rgba(255, 255, 255, 0.08);
+            border-top-color: #0080ff;
+            border-right-color: #00d2ff;
+            border-bottom-color: #38bdf8;
+            animation: msnRingSpin 1s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.5);
+        }
+
+        /* Secondary outer counter-spinning dash ring */
+        .msn-loader-ring-pulse {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            width: calc(100% + 12px);
+            height: calc(100% + 12px);
+            border-radius: 50%;
+            border: 2px dashed rgba(56, 189, 248, 0.4);
+            animation: msnRingSpinReverse 4s linear infinite;
+        }
+
+        /* Inner logo circle container */
+        .msn-loader-logo-wrap {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 5px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), 0 0 0 2px rgba(0, 128, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            animation: msnLogoBreathing 1.8s ease-in-out infinite alternate;
+        }
+
+        .msn-loader-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .msn-loader-text {
+            margin-top: 1.25rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .msn-loader-dots span {
+            animation: msnDots 1.4s infinite;
+            opacity: 0;
+        }
+        .msn-loader-dots span:nth-child(1) { animation-delay: 0s; }
+        .msn-loader-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .msn-loader-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes msnRingSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes msnRingSpinReverse {
+            0% { transform: rotate(360deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @keyframes msnLogoBreathing {
+            0% { transform: scale(0.95); box-shadow: 0 4px 12px rgba(0, 128, 255, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 6px 24px rgba(0, 210, 255, 0.6); }
+        }
+
+        @keyframes msnDots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
         }
         @media (max-width: 380px) {
             #webPushPromptBanner,
@@ -195,6 +322,21 @@
     $isAdminView = auth()->check() && auth()->user()->hasRole('admin');
 @endphp
 <body class="{{ $isAdminView ? 'is-admin-view' : '' }}">
+    <!-- ════ PT MSN SIGNATURE LOGO PRELOADER ════ -->
+    <div id="msnGlobalPreloader" class="msn-loader-backdrop">
+        <div class="msn-logo-loader-container">
+            <div class="msn-loader-ring-pulse"></div>
+            <div class="msn-loader-ring"></div>
+            <div class="msn-loader-logo-wrap">
+                <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" class="msn-loader-logo-img">
+            </div>
+        </div>
+        <div class="msn-loader-text" id="msnGlobalLoaderText">
+            <span id="msnLoaderMsg">Memuat Halaman</span>
+            <span class="msn-loader-dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+    </div>
+
     <!-- Sidebar Overlay for Mobile Drawer -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -271,6 +413,39 @@
 
     <!-- App Common Scripts -->
     <script>
+        // ── PT MSN SIGNATURE LOGO LOADER CONTROLLER ──
+        window.showMsnLoader = function(text) {
+            const el = document.getElementById('msnGlobalPreloader');
+            const txt = document.getElementById('msnLoaderMsg');
+            if (txt && text) txt.textContent = text;
+            if (el) {
+                el.classList.remove('fade-out');
+                el.style.display = 'flex';
+            }
+        };
+
+        window.hideMsnLoader = function() {
+            const el = document.getElementById('msnGlobalPreloader');
+            if (el) {
+                el.classList.add('fade-out');
+                setTimeout(() => {
+                    if (el.classList.contains('fade-out')) {
+                        el.style.display = 'none';
+                    }
+                }, 350);
+            }
+        };
+
+        // Otomatis hilangkan loader saat halaman selesai dimuat
+        window.addEventListener('load', function() {
+            setTimeout(window.hideMsnLoader, 150);
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(window.hideMsnLoader, 300);
+        });
+        // Batas waktu pengaman (maksimal 1.2 detik)
+        setTimeout(window.hideMsnLoader, 1200);
+
         // ── GLOBAL ENTERPRISE CONFIRMATION DIALOG (SWEETALERT2) ──
         document.addEventListener('submit', function (e) {
             const form = e.target;
