@@ -24,13 +24,18 @@ class WebPushService
 
         if ($this->publicKey && $this->privateKey) {
             try {
+                $defaultOptions = [
+                    'TTL' => 86400,
+                    'urgency' => 'high', // Prioritas HIGH memaksa FCM/APNs mengirim seketika tanpa ditahan mode hemat baterai (Doze mode)
+                    'batchSize' => 200,
+                ];
                 $this->webPush = new WebPush([
                     'VAPID' => [
                         'subject' => $this->subject,
                         'publicKey' => $this->publicKey,
                         'privateKey' => $this->privateKey,
                     ],
-                ]);
+                ], $defaultOptions);
                 $this->webPush->setReuseVAPIDHeaders(true);
             } catch (\Throwable $e) {
                 Log::warning('Failed to initialize WebPush service: ' . $e->getMessage());
@@ -143,7 +148,7 @@ class WebPushService
                     'contentEncoding' => $sub->content_encoding ?: 'aesgcm',
                 ]);
 
-                $this->webPush->queueNotification($webPushSub, $payload);
+                $this->webPush->queueNotification($webPushSub, $payload, ['urgency' => 'high', 'TTL' => 86400]);
             } catch (\Throwable $e) {
                 Log::warning("[WebPush Queue Error] Sub ID {$sub->id}: " . $e->getMessage());
             }
