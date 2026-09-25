@@ -302,6 +302,41 @@
         </div>
     </div>
 
+    {{-- ── PWA DOWNLOAD / INSTALL BANNER (BELOW STATS) ── --}}
+    <div class="card border-0 mb-4 pwa-download-dash-card" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); border-radius: var(--neu-radius, 16px); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28) !important; box-shadow: 0 10px 28px rgba(7, 21, 43, 0.22); overflow: hidden; position: relative;">
+        <div style="position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0) 70%); pointer-events: none;"></div>
+        <div class="card-body p-3.5 p-md-4">
+            <div class="row align-items-center g-3">
+                <div class="col-12 col-md-auto text-center text-md-start">
+                    <div class="d-inline-flex align-items-center justify-content-center p-2 rounded-4" style="width: 58px; height: 58px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+                        <img src="{{ asset('assets/work-report.png') }}" alt="Aplikasi Mobile PT MSN" style="width: 100%; height: 100%; object-fit: contain;">
+                    </div>
+                </div>
+                <div class="col-12 col-md text-center text-md-start">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1 flex-wrap">
+                        <h5 class="fw-bold mb-0 text-white" style="font-size: 1.02rem; letter-spacing: -0.2px;">Aplikasi Mobile PT MSN (Work Report)</h5>
+                        <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.65rem; padding: 3px 8px; font-weight: 700;">PWA Ready</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle d-none d-sm-inline-flex" style="font-size: 0.65rem; padding: 3px 8px;"><i class="bi bi-shield-check me-1"></i> 100% Legal &amp; Bebas Peringatan APK</span>
+                    </div>
+                    <p class="text-white-50 mb-2 small" style="line-height: 1.45; font-size: 0.8rem; max-width: 680px;">
+                        Pasang aplikasi di Smartphone (Android / iOS) atau Laptop Anda. Akses instan layar penuh, ringan tanpa unduh file berbahaya, hemat kuota, &amp; mendukung notifikasi tiket langsung.
+                    </p>
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 text-white-50 small flex-wrap" style="font-size: 0.73rem;">
+                        <span><i class="bi bi-check2-circle text-info me-1"></i> Tanpa Install APK</span>
+                        <span><i class="bi bi-bell-fill text-warning me-1"></i> Notifikasi Instan HP</span>
+                        <span><i class="bi bi-phone-fill text-primary-light me-1"></i> Kompatibel Android &amp; iOS</span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-auto text-center text-md-end">
+                    <button type="button" class="btn btn-primary rounded-pill px-4 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center gap-2 btn-trigger-pwa-install w-100 w-md-auto justify-content-center" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none; font-size: 0.85rem; box-shadow: 0 4px 18px rgba(44, 127, 255, 0.45); cursor: pointer;">
+                        <i class="bi bi-download fs-6"></i>
+                        <span>Download / Pasang Aplikasi</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- ── ROLE SPECIFIC WIDGETS & CHARTS ROW ── --}}
     <div class="row g-4 mb-4">
         {{-- Left: Daily Incidents Chart (7 Days) --}}

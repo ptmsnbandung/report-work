@@ -294,45 +294,55 @@
             const pwaInstallBanner = document.getElementById('pwaInstallBanner');
             const btnPwaInstallAction = document.getElementById('btnPwaInstallAction');
             const btnDismissPwa = document.getElementById('btnDismissPwa');
+            const btnClosePwaBanner = document.getElementById('btnClosePwaBanner');
+
+            window.triggerPwaInstall = async function() {
+                if (deferredPwaPrompt) {
+                    deferredPwaPrompt.prompt();
+                    const choiceResult = await deferredPwaPrompt.userChoice;
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted PWA installation');
+                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                    }
+                    deferredPwaPrompt = null;
+                } else {
+                    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    if (isIos) {
+                        alert('📲 CARA PASANG DI IPHONE / IPAD:\n1. Buka halaman ini di browser Safari.\n2. Tekan tombol Share / Bagikan (ikon kotak dengan panah ke atas).\n3. Pilih "Tambahkan ke Layar Utama" (Add to Home Screen).\n4. Tekan "Tambah".');
+                    } else {
+                        alert('📲 CARA PASANG DI ANDROID / PC:\n1. Tekan menu browser (titik tiga ⋮ di pojok kanan atas).\n2. Pilih "Instal Aplikasi" atau "Tambahkan ke Layar Utama".\n3. Konfirmasi pemasangan.');
+                    }
+                }
+            };
 
             // Check if app is already running in standalone PWA mode
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
             if (!isStandalone) {
                 window.addEventListener('beforeinstallprompt', (e) => {
-                    // Prevent default mini-infobar
                     e.preventDefault();
                     deferredPwaPrompt = e;
 
-                    // Show custom beautiful PWA install banner if not dismissed this session
                     if (pwaInstallBanner && !sessionStorage.getItem('dismiss_pwa_banner')) {
                         pwaInstallBanner.classList.remove('d-none');
                     }
                 });
 
                 if (btnPwaInstallAction) {
-                    btnPwaInstallAction.addEventListener('click', async () => {
-                        if (!deferredPwaPrompt) {
-                            // Fallback instruction for browsers where prompt isn't directly triggerable
-                            alert('Untuk memasang di HP:\n1. Tekan tombol menu browser (titik tiga ⋮ atau Bagikan/Share)\n2. Pilih "Tambahkan ke Layar Utama" / "Install App"');
-                            return;
-                        }
-                        deferredPwaPrompt.prompt();
-                        const choiceResult = await deferredPwaPrompt.userChoice;
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User installed the PWA');
-                            if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                        }
-                        deferredPwaPrompt = null;
-                    });
+                    btnPwaInstallAction.addEventListener('click', window.triggerPwaInstall);
                 }
 
-                if (btnDismissPwa) {
-                    btnDismissPwa.addEventListener('click', () => {
-                        if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
-                        sessionStorage.setItem('dismiss_pwa_banner', '1');
-                    });
-                }
+                const closeOrDismiss = () => {
+                    if (pwaInstallBanner) pwaInstallBanner.classList.add('d-none');
+                    sessionStorage.setItem('dismiss_pwa_banner', '1');
+                };
+
+                if (btnDismissPwa) btnDismissPwa.addEventListener('click', closeOrDismiss);
+                if (btnClosePwaBanner) btnClosePwaBanner.addEventListener('click', closeOrDismiss);
+
+                document.querySelectorAll('.btn-trigger-pwa-install').forEach(btn => {
+                    btn.addEventListener('click', window.triggerPwaInstall);
+                });
             }
 
             window.addEventListener('appinstalled', () => {
@@ -362,26 +372,29 @@
     </script>
 
     <!-- PWA Install Floating Banner (100% Safe, Legal & No Security Warnings) -->
-    <div id="pwaInstallBanner" class="d-none position-fixed bottom-0 start-0 p-3" style="z-index: 1095; max-width: 380px;">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.28); box-shadow: 0 12px 32px rgba(0,0,0,0.45) !important;">
+    <div id="pwaInstallBanner" class="d-none position-fixed bottom-0 start-0 p-3" style="z-index: 1095; max-width: 410px; width: calc(100% - 24px);">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.35) !important; box-shadow: 0 16px 36px rgba(0,0,0,0.55) !important;">
+            <!-- Close Button -->
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2.5 p-1" id="btnClosePwaBanner" aria-label="Tutup" style="font-size: 0.65rem; opacity: 0.7; z-index: 5;"></button>
+            
             <div class="card-body p-3.5">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 p-1.5" style="width: 46px; height: 46px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 p-1.5" style="width: 50px; height: 50px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18); box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
                         <img src="{{ asset('assets/work-report.png') }}" alt="MSN Work Report" style="width: 100%; height: 100%; object-fit: contain;">
                     </div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center gap-1.5 mb-0.5">
-                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem;">Install Aplikasi PT MSN</h6>
-                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.6rem; padding: 2px 5px;">PWA App</span>
+                    <div class="flex-grow-1 pe-2">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem; letter-spacing: -0.2px;">Install Aplikasi PT MSN</h6>
+                            <span class="badge" style="background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); font-size: 0.62rem; padding: 2px 6px; font-weight: 700;">PWA App</span>
                         </div>
-                        <p class="small text-white-50 mb-2.5" style="font-size: 0.74rem; line-height: 1.35;">
+                        <p class="text-white-50 mb-2.5" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.7rem !important;">
                             Pasang di HP / Desktop untuk akses instan full-screen, cepat, &amp; tanpa bar browser.
                         </p>
                         <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm" id="btnPwaInstallAction" style="font-size: 0.75rem; background: linear-gradient(135deg, #2C7FFF 0%, #0052cc 100%); border: none;">
-                                <i class="bi bi-download me-1"></i> Pasang Aplikasi
+                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnPwaInstallAction" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #0052cc 100%); border: none; letter-spacing: 0.2px;">
+                                <i class="bi bi-download"></i> Pasang Aplikasi
                             </button>
-                            <button type="button" class="btn btn-link text-white-50 btn-sm text-decoration-none p-0" id="btnDismissPwa" style="font-size: 0.74rem;">
+                            <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 text-white-50 text-nowrap" id="btnDismissPwa" style="font-size: 0.76rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
                                 Nanti
                             </button>
                         </div>
