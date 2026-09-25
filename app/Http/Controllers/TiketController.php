@@ -140,6 +140,19 @@ class TiketController extends Controller
 
         $prerequisites = $tiket->checkClosingPrerequisites();
 
+        // Catat timestamp kehadiran/pembacaan tiket oleh user saat ini untuk fitur Read Receipts (Ceklis Biru)
+        if (auth()->check()) {
+            $currentUserId = auth()->id();
+            $viewsKey = "tiket_{$tiket->id}_user_views";
+            $views = \Illuminate\Support\Facades\Cache::get($viewsKey, []);
+            $views[$currentUserId] = [
+                'user_id'   => $currentUserId,
+                'role'      => auth()->user()->role ?? null,
+                'viewed_at' => now()->timestamp,
+            ];
+            \Illuminate\Support\Facades\Cache::put($viewsKey, $views, now()->addDays(7));
+        }
+
         return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites'));
     }
 

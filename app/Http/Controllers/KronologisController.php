@@ -30,6 +30,28 @@ class KronologisController extends Controller
         $totalCount = $tiket->kronologis()->count();
 
         if ($request->wantsJson() || $request->ajax()) {
+            $currentUserId = auth()->id();
+            $viewsKey = "tiket_{$tiket->id}_user_views";
+            $views = \Illuminate\Support\Facades\Cache::get($viewsKey, []);
+
+            // Catat kehadiran viewer jika user terautentikasi
+            if ($currentUserId) {
+                $views[$currentUserId] = [
+                    'user_id'   => $currentUserId,
+                    'role'      => auth()->user()->role ?? null,
+                    'viewed_at' => now()->timestamp,
+                ];
+                \Illuminate\Support\Facades\Cache::put($viewsKey, $views, now()->addDays(7));
+            }
+
+            // Hitung timestamp terakhir kali pengguna lain melihat tiket ini
+            $otherViews = collect($views)->where('user_id', '!=', $currentUserId);
+            $maxOtherViewTime = $otherViews->pluck('viewed_at')->max() ?? 0;
+            $lastOtherKronoTime = $tiket->kronologis()->where('user_id', '!=', $currentUserId)->max('timestamp');
+            $lastOtherKronoTimestamp = $lastOtherKronoTime ? \Carbon\Carbon::parse($lastOtherKronoTime)->timestamp : 0;
+            $maxReadTimestamp = max((int)$maxOtherViewTime, (int)$lastOtherKronoTimestamp);
+            $isTiketClosedOrVerified = in_array($tiket->status, ['CLOSE', 'MENUNGGU_VERIFIKASI', 'RESOLVED']);
+
             $formatted = $timeline->map(function ($krono) {
                 return [
                     'id'               => $krono->id,
@@ -61,12 +83,14 @@ class KronologisController extends Controller
                 : ($totalCount > $timeline->count());
 
             return response()->json([
-                'success'      => true,
-                'total_count'  => $totalCount,
-                'count'        => $formatted->count(),
-                'has_more'     => $hasMoreOlder,
-                'oldest_id'    => $oldestInBatch,
-                'data'         => $formatted,
+                'success'               => true,
+                'total_count'           => $totalCount,
+                'count'                 => $formatted->count(),
+                'has_more'              => $hasMoreOlder,
+                'oldest_id'             => $oldestInBatch,
+                'max_read_timestamp'    => $maxReadTimestamp,
+                'is_closed_or_verified' => $isTiketClosedOrVerified,
+                'data'                  => $formatted,
             ]);
         }
 

@@ -3387,7 +3387,16 @@
                                         $renderedCount = $tiket->kronologis->count();
                                         $hasOlderKrono = $totalKronoCount > $renderedCount;
                                         $oldestRenderedId = $tiket->kronologis->first()?->id ?? 0;
+                                        
+                                        // Baca timestamp kehadiran/view pengguna lain dari cache
+                                        $viewsKey = "tiket_{$tiket->id}_user_views";
+                                        $ticketViews = \Illuminate\Support\Facades\Cache::get($viewsKey, []);
+                                        $otherViewTimes = collect($ticketViews)->where('user_id', '!=', $currentUserId)->pluck('viewed_at');
+                                        $maxOtherViewTime = $otherViewTimes->max() ?? 0;
+                                        
                                         $lastOtherKronoTime = $tiket->kronologis->where('user_id', '!=', $currentUserId)->max('timestamp');
+                                        $lastOtherKronoTimestamp = $lastOtherKronoTime ? $lastOtherKronoTime->timestamp : 0;
+                                        $maxReadTimestampByOthers = max((int)$maxOtherViewTime, (int)$lastOtherKronoTimestamp);
                                         $isTiketClosedOrVerified = in_array($tiket->status, ['CLOSE', 'MENUNGGU_VERIFIKASI', 'RESOLVED']);
                                     @endphp
 
@@ -3406,7 +3415,8 @@
                                             $senderColor = $nameColors[$colorIndex];
                                             $initials = strtoupper(substr($krono->user?->name ?? 'U', 0, 2));
                                             $userAvatar = $krono->user?->avatar_url;
-                                            $isReadByOthers = $isTiketClosedOrVerified || ($lastOtherKronoTime && $krono->timestamp <= $lastOtherKronoTime);
+                                            $kronoTimeUnix = $krono->timestamp->timestamp;
+                                            $isReadByOthers = $isTiketClosedOrVerified || ($maxReadTimestampByOthers > 0 && $kronoTimeUnix <= $maxReadTimestampByOthers);
                                         @endphp
 
                                         @if($currentDate !== $lastDate)
@@ -3418,7 +3428,7 @@
                                             @php $lastDate = $currentDate; @endphp
                                         @endif
 
-                                        <div class="wa-msg-row {{ $isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming' }}" id="krono-item-{{ $krono->id }}">
+                                        <div class="wa-msg-row {{ $isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming' }}" id="krono-item-{{ $krono->id }}" data-id="{{ $krono->id }}" data-timestamp="{{ $krono->timestamp->timestamp }}">
                                             @if(!$isMe)
                                             <div class="wa-avatar" style="background-color: {{ $userAvatar ? 'transparent' : $senderColor }};" title="{{ $krono->user?->name }}">
                                                 @if($userAvatar)
@@ -7320,6 +7330,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (res.data && res.data.length > 0) {
                     updateTimelineFromData(res.data);
                 }
+
+                // Perbarui status centang 2 biru secara realtime jika sudah dibuka/dibaca oleh pengguna lain
+                if (res.is_closed_or_verified || (res.max_read_timestamp && res.max_read_timestamp > 0)) {
+                    document.querySelectorAll('.wa-msg-outgoing').forEach(row => {
+                        const checkIcon = row.querySelector('.wa-status-sent');
+                        if (checkIcon) {
+                            const msgTimestamp = parseInt(row.getAttribute('data-timestamp') || '0', 10);
+                            if (res.is_closed_or_verified || (res.max_read_timestamp && msgTimestamp <= res.max_read_timestamp)) {
+                                checkIcon.className = 'bi bi-check2-all wa-status-icon wa-status-read';
+                                checkIcon.title = 'Dilihat oleh tim';
+                            }
+                        }
+                    });
+                }
             }
         })
         .catch(err => console.debug('Timeline polling error:', err));
@@ -7476,8 +7500,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const canReply = !isTiketClosed && canChat;
             const safeInfoAttr = rawEscape(k.informasi || '');
 
+            const kTimestampUnix = k.timestamp ? Math.floor(new Date(k.timestamp).getTime() / 1000) : Math.floor(sentMoment.getTime() / 1000);
+
             return `
-                <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" id="krono-item-${k.id}">
+                <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" id="krono-item-${k.id}" data-id="${k.id}" data-timestamp="${kTimestampUnix}">
                     ${!isMe ? `
                     <div class="wa-avatar" style="background-color: ${userAvatar ? 'transparent' : senderColor};" title="${k.user_name}">
                         ${userAvatar ? `<img src="${userAvatar}" alt="${k.user_name}" class="wa-avatar-img">` : initials}
