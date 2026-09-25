@@ -167,9 +167,8 @@
             border-radius: 12px;
             padding: 5px;
         }
-        /* Mobile bottom offset for floating prompts to avoid overlapping bottom navigation bar */
+        /* Mobile bottom offset for PWA install banner */
         @media (max-width: 991.98px) {
-            #webPushPromptBanner,
             #pwaInstallBanner {
                 bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
                 left: 10px !important;
@@ -177,6 +176,111 @@
                 max-width: calc(100% - 20px) !important;
                 width: calc(100% - 20px) !important;
             }
+        }
+
+        /* ── CENTERED APP PERMISSIONS MODAL DIALOG ── */
+        .msn-permission-backdrop {
+            position: fixed;
+            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 11, 20, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1080;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            animation: fadeInModal 0.25s ease-out;
+        }
+        .msn-permission-card {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(150deg, #07152b 0%, #0d2757 60%, #081a38 100%);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 20px;
+            padding: 1.6rem 1.5rem;
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(13, 148, 136, 0.25);
+            animation: popInCard 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .perm-icon-bubble {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            background: rgba(13, 148, 136, 0.18);
+            border: 1.5px solid rgba(20, 184, 166, 0.35);
+            color: #2dd4bf;
+            font-size: 1.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
+        }
+        .perm-items-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .perm-item-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+        }
+        .perm-item-row.is-granted {
+            background: rgba(16, 185, 129, 0.14) !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+        }
+        .perm-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+        }
+        .icon-notif { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+        .icon-geo   { background: rgba(20, 184, 166, 0.15); color: #2dd4bf; }
+        .icon-cam   { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+        .perm-item-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        .perm-item-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+        .perm-item-desc {
+            font-size: 0.68rem;
+            color: rgba(226, 232, 240, 0.65);
+            line-height: 1.2;
+        }
+        .perm-item-status {
+            font-size: 0.72rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes popInCard {
+            from { opacity: 0; transform: scale(0.92) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         /* ═══════════════════════════════════════════════════════════════════
@@ -317,7 +421,6 @@
         }
 
         @media (max-width: 380px) {
-            #webPushPromptBanner,
             #pwaInstallBanner {
                 bottom: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
                 left: 6px !important;
@@ -685,20 +788,15 @@
             function updatePermBadge(badgeId, status) {
                 const el = document.getElementById(badgeId);
                 if (!el) return;
+                const dot = el.querySelector('.perm-dot');
                 if (status === 'granted') {
-                    el.style.background = 'rgba(34, 197, 94, 0.2)';
-                    el.style.borderColor = 'rgba(34, 197, 94, 0.45)';
-                    el.style.color = '#86efac';
-                    const dot = el.querySelector('.perm-dot');
+                    el.classList.add('is-granted');
                     if (dot) {
-                        dot.className = 'perm-dot text-success';
-                        dot.innerHTML = '✓';
+                        dot.className = 'perm-dot text-success fw-bold';
+                        dot.innerHTML = '<i class="bi bi-check-lg"></i>';
                     }
                 } else {
-                    el.style.background = 'rgba(255, 255, 255, 0.08)';
-                    el.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                    el.style.color = '#ffffff';
-                    const dot = el.querySelector('.perm-dot');
+                    el.classList.remove('is-granted');
                     if (dot) {
                         dot.className = 'perm-dot text-warning';
                         dot.innerHTML = '•';
@@ -947,49 +1045,68 @@
         });
     </script>
 
-    <!-- Device Permissions & Web Push Floating Prompt (Notifikasi, Maps GPS, & Kamera) -->
+    <!-- Device Permissions & Web Push Centered Modal Dialog (Notifikasi, Maps GPS, & Kamera) -->
     @auth
-    <div id="webPushPromptBanner" class="d-none position-fixed bottom-0 end-0 p-3" style="z-index: 1090; max-width: 410px; width: calc(100% - 24px);">
-        <div class="card border-0 shadow-lg rounded-4 overflow-hidden position-relative" style="background: linear-gradient(135deg, #07152b 0%, #0d2757 100%); color: #fff; border: 1px solid rgba(56, 189, 248, 0.35) !important; box-shadow: 0 16px 36px rgba(0,0,0,0.55) !important;">
+    <div id="webPushPromptBanner" class="d-none msn-permission-backdrop">
+        <div class="msn-permission-card">
             <!-- Close Button -->
-            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-2.5 p-1" id="btnCloseWebPush" aria-label="Tutup" style="font-size: 0.65rem; opacity: 0.75; z-index: 5;"></button>
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" id="btnCloseWebPush" aria-label="Tutup" style="font-size: 0.75rem; opacity: 0.75; z-index: 10;"></button>
             
-            <div class="card-body p-3.5">
-                <div class="d-flex align-items-start gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 42px; height: 42px; background: rgba(44, 127, 255, 0.25); color: #38bdf8; font-size: 1.25rem; border: 1px solid rgba(56, 189, 248, 0.3);">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <div class="flex-grow-1 pe-2">
-                        <div class="d-flex align-items-center gap-2 mb-1">
-                            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem; color: #ffffff !important; letter-spacing: -0.2px;">Izin Akses Aplikasi</h6>
-                            <span class="badge" id="permStatusBadge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.6rem; padding: 2px 6px; font-weight: 700;">Diperlukan</span>
-                        </div>
-                        <p class="text-white-50 mb-2" style="font-size: 0.75rem; line-height: 1.35; margin-bottom: 0.55rem !important;">
-                            Aktifkan izin untuk notifikasi tiket, penandaan lokasi GPS lapangan, dan foto dokumentasi:
-                        </p>
+            <div class="text-center pt-2 pb-1">
+                <!-- Icon Bubble -->
+                <div class="perm-icon-bubble mx-auto mb-3">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                
+                <div class="d-inline-flex align-items-center gap-1.5 px-2.5 py-0.5 rounded-pill mb-2" style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); color: #38bdf8; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4px;">
+                    <span class="pulse-dot" style="width: 5px; height: 5px; background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>
+                    <span>SISTEM OPERASIONAL NOC</span>
+                </div>
 
-                        <!-- Chips status izin per fitur -->
-                        <div class="d-flex flex-wrap gap-1.5 mb-2.5" id="permChipsContainer">
-                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermNotif" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
-                                <i class="bi bi-bell"></i> Notifikasi <span class="perm-dot text-warning">•</span>
-                            </span>
-                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermGeo" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
-                                <i class="bi bi-geo-alt"></i> Lokasi GPS <span class="perm-dot text-warning">•</span>
-                            </span>
-                            <span class="badge d-inline-flex align-items-center gap-1 py-1 px-2 rounded-pill" id="badgePermCam" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); font-size: 0.69rem; font-weight: 500;">
-                                <i class="bi bi-camera"></i> Kamera <span class="perm-dot text-warning">•</span>
-                            </span>
-                        </div>
+                <h5 class="fw-bold text-white mb-1" style="font-size: 1.15rem; letter-spacing: -0.3px;">Izin Akses Aplikasi</h5>
+                <p class="text-white-50 px-2" style="font-size: 0.82rem; line-height: 1.45; margin-bottom: 1.15rem;">
+                    Aktifkan izin perangkat agar Anda dapat menerima notifikasi tiket, penandaan lokasi GPS lapangan, dan dokumentasi foto.
+                </p>
 
-                        <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 py-1.5 fw-bold shadow-sm d-inline-flex align-items-center gap-1.5" id="btnEnableWebPush" style="font-size: 0.76rem; background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none;">
-                                <i class="bi bi-check-circle-fill"></i> Izinkan Semua
-                            </button>
-                            <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 text-white-50 text-nowrap" id="btnDismissWebPush" style="font-size: 0.76rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);">
-                                Nanti Saja
-                            </button>
+                <!-- Permission Items List -->
+                <div class="perm-items-grid mb-3 text-start">
+                    <div class="perm-item-row" id="badgePermNotif">
+                        <div class="perm-item-icon icon-notif"><i class="bi bi-bell-fill"></i></div>
+                        <div class="perm-item-info">
+                            <div class="perm-item-title">Notifikasi Insiden &amp; Tiket</div>
+                            <div class="perm-item-desc">Peringatan langsung saat gangguan backbone terjadi</div>
                         </div>
+                        <div class="perm-item-status"><span class="perm-dot text-warning">•</span></div>
                     </div>
+
+                    <div class="perm-item-row" id="badgePermGeo">
+                        <div class="perm-item-icon icon-geo"><i class="bi bi-geo-alt-fill"></i></div>
+                        <div class="perm-item-info">
+                            <div class="perm-item-title">Lokasi GPS Presisi</div>
+                            <div class="perm-item-desc">Deteksi posisi &amp; koordinat Joint Closure terdekat</div>
+                        </div>
+                        <div class="perm-item-status"><span class="perm-dot text-warning">•</span></div>
+                    </div>
+
+                    <div class="perm-item-row" id="badgePermCam">
+                        <div class="perm-item-icon icon-cam"><i class="bi bi-camera-fill"></i></div>
+                        <div class="perm-item-info">
+                            <div class="perm-item-title">Akses Kamera Lapangan</div>
+                            <div class="perm-item-desc">Dokumentasi foto penyambungan core di lokasi</div>
+                        </div>
+                        <div class="perm-item-status"><span class="perm-dot text-warning">•</span></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row gap-2 pt-1">
+                    <button type="button" class="btn btn-primary rounded-pill py-2.5 px-3 fw-bold flex-grow-1 shadow-sm d-inline-flex align-items-center justify-content-center gap-2" id="btnEnableWebPush" style="background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%); border: none; font-size: 0.86rem; box-shadow: 0 4px 14px rgba(13, 148, 136, 0.4) !important;">
+                        <i class="bi bi-check2-circle fs-6"></i>
+                        <span>Izinkan Semua Akses</span>
+                    </button>
+                    <button type="button" class="btn btn-outline-light rounded-pill py-2.5 px-3 fw-semibold text-white-50" id="btnDismissWebPush" style="font-size: 0.84rem; border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.04);">
+                        Nanti Saja
+                    </button>
                 </div>
             </div>
         </div>
