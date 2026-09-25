@@ -454,7 +454,7 @@
                 width: 100vw;
                 height: 100dvh;
                 min-height: 100dvh;
-                justify-content: space-between;
+                justify-content: flex-start;
                 overflow: hidden;
             }
 
@@ -529,7 +529,7 @@
                 width: 100% !important;
                 min-height: auto !important;
                 flex-grow: 1;
-                padding: 0.75rem 1.25rem 1rem !important;
+                padding: 0.25rem 1.25rem 1.5rem !important;
                 background-color: #fcfdfe;
                 background-image:
                     radial-gradient(circle at 90% 10%, rgba(44, 127, 255, 0.04) 0%, transparent 40%),
@@ -537,13 +537,15 @@
                     linear-gradient(180deg, #ffffff 0%, #f4f8fd 100%);
                 background-size: 100% 100%, 20px 20px, 100% 100%;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
-                justify-content: center;
+                justify-content: flex-start;
             }
 
             .form-inner-box {
                 width: 100%;
                 max-width: 380px;
+                margin-top: 0.15rem;
             }
 
             .form-title {
