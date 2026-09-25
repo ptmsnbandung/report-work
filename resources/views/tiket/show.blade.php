@@ -1847,6 +1847,183 @@
         background-color: #10b981;
         animation: waPulse 1.8s infinite;
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       VISUAL INTERACTIVE FIBER CABLE PATCHER & SPLICING BOARD
+       ═══════════════════════════════════════════════════════════════════ */
+    .fiber-patcher-box {
+        background: radial-gradient(circle at 50% 0%, #1e293b 0%, #0b1329 100%);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        border-radius: 16px;
+        padding: 1.15rem;
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.35);
+        color: #f8fafc;
+        position: relative;
+        overflow: hidden;
+    }
+    .fiber-patcher-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 0.75rem;
+        margin-bottom: 0.85rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .fiber-patcher-grid {
+        display: grid;
+        grid-template-columns: 1fr 130px 1fr;
+        gap: 0.85rem;
+        align-items: stretch;
+        position: relative;
+    }
+    @media (max-width: 767.98px) {
+        .fiber-patcher-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+    }
+    .fiber-panel-card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 0.85rem;
+        backdrop-filter: blur(8px);
+    }
+    .fiber-panel-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .fiber-tube-tabs {
+        display: flex;
+        gap: 0.35rem;
+        margin-bottom: 0.75rem;
+        overflow-x: auto;
+        padding-bottom: 3px;
+    }
+    .fiber-tube-tab-btn {
+        padding: 0.25rem 0.65rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(15, 23, 42, 0.6);
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+    }
+    .fiber-tube-tab-btn:hover {
+        color: #f8fafc;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+    .fiber-tube-tab-btn.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #60a5fa;
+        box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+    }
+    .fiber-core-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.4rem;
+        max-height: 250px;
+        overflow-y: auto;
+        padding-right: 2px;
+    }
+    @media (max-width: 575.98px) {
+        .fiber-core-list {
+            grid-template-columns: 1fr;
+        }
+    }
+    .fiber-port-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.35rem 0.55rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(15, 23, 42, 0.85);
+        color: #cbd5e1;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-align: left;
+        user-select: none;
+    }
+    .fiber-port-btn:hover {
+        background: rgba(51, 65, 85, 0.9);
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+    }
+    .fiber-port-btn.selected {
+        background: rgba(37, 99, 235, 0.35) !important;
+        border-color: #60a5fa !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(96, 165, 250, 0.6);
+    }
+    .fiber-port-btn.connected {
+        border-color: #10b981 !important;
+        background: rgba(16, 185, 129, 0.2) !important;
+    }
+    .fiber-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+        box-shadow: 0 0 6px rgba(0,0,0,0.5);
+    }
+    .fiber-canvas-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        min-height: 180px;
+        padding: 0.5rem;
+    }
+    .fiber-svg-wire {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+    }
+    .fiber-wire-path {
+        stroke-dasharray: 6, 6;
+        animation: fiberLaserFlow 1.2s linear infinite;
+        filter: drop-shadow(0 0 6px currentColor);
+    }
+    @keyframes fiberLaserFlow {
+        from { stroke-dashoffset: 24; }
+        to { stroke-dashoffset: 0; }
+    }
+    .fiber-conn-status-badge {
+        padding: 0.4rem 0.85rem;
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        border-radius: 50rem;
+        font-size: 0.78rem;
+        font-family: monospace;
+        color: #93c5fd;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .fiber-pulse-laser {
+        animation: laserPulseAnim 1.5s infinite ease-in-out;
+    }
+    @keyframes laserPulseAnim {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 10px #38bdf8); }
+    }
 </style>
 @endpush
 
@@ -4431,19 +4608,79 @@
                         </div>
                     </div>
 
-                    <!-- Section 3: Dynamic Core Splicing Matrix Input -->
+                    <!-- Section 3: Visual Interactive Splicing Tray & Dynamic Core Splicing Matrix -->
                     <div class="p-3 bg-light rounded-3 border">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                             <h6 class="fw-bold text-navy mb-0 small text-uppercase letter-spacing-1">
-                                <i class="bi bi-table text-success me-1"></i> 3. Input Sambungan Tube / Core (Opsional &amp; Fleksibel)
+                                <i class="bi bi-bezier2 text-primary me-1"></i> 3. Visual Splicing Tray (Animasi Sambung Kabel)
                             </h6>
-                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3" id="btnAddCoreRow">
-                                <i class="bi bi-plus-lg me-1"></i> Tambah Baris Core
+                            <div class="d-flex gap-1.5">
+                                <button type="button" class="btn btn-xs btn-primary rounded-pill px-3 py-1 text-white shadow-xs" id="btnJcAutoSpliceAll">
+                                    <i class="bi bi-magic me-1"></i> Auto-Splice 1-to-1 Semua Core
+                                </button>
+                                <button type="button" class="btn btn-xs btn-outline-danger rounded-pill px-2.5 py-1" id="btnJcClearAllSplice">
+                                    <i class="bi bi-trash3 me-1"></i> Reset Tray
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-2" style="font-size: 0.75rem;">
+                            Klik core pada kabel asal dan kabel jumper, lalu tekan tombol <strong>Sambungkan</strong> atau gunakan <strong>Auto-Splice</strong> untuk menyambung otomatis.
+                        </p>
+
+                        <!-- Visual Interactive Splicing Tray Component -->
+                        <div class="fiber-patcher-box mb-3">
+                            <div class="fiber-patcher-grid">
+                                <!-- Left: Kabel Asal / Eksisting -->
+                                <div class="fiber-panel-card">
+                                    <div class="fiber-panel-title text-info">
+                                        <span><i class="bi bi-arrow-right-circle me-1"></i> Kabel Asal (Input)</span>
+                                        <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="jcAsalActiveBadge">Tube 1 Core 1</span>
+                                    </div>
+                                    <div class="fiber-tube-tabs" id="jcAsalTubeTabs">
+                                        <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                    </div>
+                                    <div class="fiber-core-list" id="jcAsalCoreList"></div>
+                                </div>
+
+                                <!-- Center: Laser Wire Canvas -->
+                                <div class="fiber-canvas-center">
+                                    <svg class="fiber-svg-wire" id="jcSvgCanvas" viewBox="0 0 130 200" preserveAspectRatio="none">
+                                        <path id="jcWirePath" class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#10b981" stroke-width="3.5" fill="none" />
+                                        <circle id="jcStartDot" cx="0" cy="100" r="5" fill="#10b981" />
+                                        <circle id="jcEndDot" cx="130" cy="100" r="5" fill="#10b981" />
+                                    </svg>
+                                    <button type="button" class="btn btn-xs btn-success rounded-pill px-3 py-1 shadow-sm mt-2 text-white fw-semibold" id="btnJcConnectSelected">
+                                        <i class="bi bi-plug-fill me-1"></i> Sambungkan
+                                    </button>
+                                </div>
+
+                                <!-- Right: Kabel Jumper / Distribusi -->
+                                <div class="fiber-panel-card">
+                                    <div class="fiber-panel-title text-teal">
+                                        <span><i class="bi bi-arrow-left-circle me-1"></i> Kabel Jumper (Output)</span>
+                                        <span class="badge bg-teal bg-opacity-25 text-teal font-monospace" id="jcJumperActiveBadge">Tube 1 Core 1</span>
+                                    </div>
+                                    <div class="fiber-tube-tabs" id="jcJumperTubeTabs">
+                                        <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                        <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                    </div>
+                                    <div class="fiber-core-list" id="jcJumperCoreList"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Synchronized Splicing Table -->
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="small fw-bold text-navy"><i class="bi bi-table me-1"></i> Daftar Core yang Disambung / Matrix:</span>
+                            <button type="button" class="btn btn-xs btn-outline-success rounded-pill px-2.5" id="btnAddCoreRow">
+                                <i class="bi bi-plus-lg me-1"></i> Tambah Baris Manual
                             </button>
                         </div>
-                        <p class="text-muted small mb-3" style="font-size: 0.75rem;">
-                            Hubungan sambungan cukup input teks sederhana (misal Tube 1 Core 1 &rarr; Tube 1 Core 1). Core sisa/spare tetap bisa dicatat statusnya.
-                        </p>
 
                         <div id="jcCoreRowsContainer" class="d-flex flex-column gap-2">
                             <!-- Template Row 1 (Default) -->
@@ -4476,7 +4713,7 @@
                                     </div>
                                     <div class="col-5 col-md-1">
                                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
-                                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02">
+                                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02" value="0.02">
                                     </div>
                                     <div class="col-1 text-end pt-3">
                                         <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
@@ -4501,7 +4738,7 @@
 
 <!-- ── MODAL TAMBAH SINGLE CORE JOINT CLOSURE ── -->
 <div class="modal fade" id="addJointClosureCoreModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg">
             <form action="" method="POST" id="formAddSingleCore">
                 @csrf
@@ -4512,25 +4749,72 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
+                    <!-- Visual Port Selector for Single Core -->
+                    <div class="fiber-patcher-box mb-3">
+                        <div class="fiber-patcher-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-teal text-white px-2 py-0.5 rounded-pill font-monospace" style="font-size:0.75rem;">Single Core Splicer</span>
+                                <span class="small text-light" style="font-size:0.75rem;">Pilih port asal dan port jumper di bawah</span>
+                            </div>
+                        </div>
+                        <div class="fiber-patcher-grid">
+                            <!-- Left: Asal -->
+                            <div class="fiber-panel-card">
+                                <div class="fiber-panel-title text-info">
+                                    <span>Port Asal</span>
+                                    <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="singleAsalActiveBadge">Tube 1 Core 1</span>
+                                </div>
+                                <div class="fiber-tube-tabs" id="singleAsalTubeTabs">
+                                    <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                </div>
+                                <div class="fiber-core-list" id="singleAsalCoreList"></div>
+                            </div>
+                            <!-- Center -->
+                            <div class="fiber-canvas-center">
+                                <svg class="fiber-svg-wire" viewBox="0 0 130 200" preserveAspectRatio="none">
+                                    <path class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#06b6d4" stroke-width="3" fill="none" />
+                                </svg>
+                                <i class="bi bi-plug text-info fs-4"></i>
+                            </div>
+                            <!-- Right: Jumper -->
+                            <div class="fiber-panel-card">
+                                <div class="fiber-panel-title text-teal">
+                                    <span>Port Jumper</span>
+                                    <span class="badge bg-teal bg-opacity-25 text-teal font-monospace" id="singleJumperActiveBadge">Tube 1 Core 1</span>
+                                </div>
+                                <div class="fiber-tube-tabs" id="singleJumperTubeTabs">
+                                    <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                    <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                </div>
+                                <div class="fiber-core-list" id="singleJumperCoreList"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-bold text-navy">Tube Asal <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal" placeholder="Contoh: Tube 1" required>
+                            <input type="text" class="form-control form-control-sm font-monospace" id="single_tube_asal" name="tube_asal" placeholder="Contoh: Tube 1" value="Tube 1" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-bold text-navy">Core Asal <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-sm font-monospace" name="core_asal" placeholder="Contoh: Core 1" required>
+                            <input type="text" class="form-control form-control-sm font-monospace" id="single_core_asal" name="core_asal" placeholder="Contoh: Core 1" value="Core 1" required>
                         </div>
                     </div>
 
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label small fw-semibold text-navy">Tube Jumper</label>
-                            <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper" placeholder="Contoh: Tube 1 (opsional jika spare)">
+                            <input type="text" class="form-control form-control-sm font-monospace" id="single_tube_jumper" name="tube_jumper" placeholder="Contoh: Tube 1 (opsional jika spare)" value="Tube 1">
                         </div>
                         <div class="col-6">
                             <label class="form-label small fw-semibold text-navy">Core Jumper</label>
-                            <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper" placeholder="Contoh: Core 1 (opsional jika spare)">
+                            <input type="text" class="form-control form-control-sm font-monospace" id="single_core_jumper" name="core_jumper" placeholder="Contoh: Core 1 (opsional jika spare)" value="Core 1">
                         </div>
                     </div>
 
@@ -4546,7 +4830,7 @@
                         </div>
                         <div class="col-5">
                             <label class="form-label small fw-semibold text-navy">Loss Sambungan (dB)</label>
-                            <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db" placeholder="0.02">
+                            <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db" placeholder="0.02" value="0.02">
                         </div>
                     </div>
 
@@ -4878,44 +5162,87 @@
                             </div>
                         </div>
 
-                        <!-- Core Asal -->
-                        <div class="col-12 col-md-6">
-                            <label for="core_asal" class="form-label small fw-bold text-navy">
-                                Core Asal / Input <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   class="form-control form-control-sm font-monospace"
-                                   id="core_asal"
-                                   name="core_asal"
-                                   placeholder="Contoh: Tube 1 Core 1"
-                                   required>
-                            <!-- Preset Helper Chips -->
-                            <div class="d-flex flex-wrap gap-1 mt-1">
-                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 1">T1 C1</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 1 Core 2">T1 C2</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 1">T2 C1</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-asal-preset" data-val="Tube 2 Core 2">T2 C2</span>
-                            </div>
-                        </div>
+                        <!-- VISUAL INTERACTIVE CABLE PATCHER FOR MANUVER CORE -->
+                        <div class="col-12">
+                            <div class="fiber-patcher-box">
+                                <div class="fiber-patcher-header">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill">
+                                            <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher
+                                        </span>
+                                        <span class="small text-light" style="font-size:0.75rem;">Klik port Asal lalu klik port Tujuan untuk menyambungkan kabel</span>
+                                    </div>
+                                    <div class="d-flex gap-1.5">
+                                        <button type="button" class="btn btn-xs btn-outline-info rounded-pill px-2.5 py-1 text-white" id="btnManuverStraightPreset">
+                                            <i class="bi bi-arrows-expand me-1"></i> Sambung Lurus (1:1)
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-outline-warning rounded-pill px-2.5 py-1 text-white" id="btnManuverSwapPreset">
+                                            <i class="bi bi-shuffle me-1"></i> Swap Tube 1 &rarr; Tube 2
+                                        </button>
+                                    </div>
+                                </div>
 
-                        <!-- Core Tujuan -->
-                        <div class="col-12 col-md-6">
-                            <label for="core_tujuan" class="form-label small fw-bold text-navy">
-                                Core Tujuan / Output Sambungan <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   class="form-control form-control-sm font-monospace"
-                                   id="core_tujuan"
-                                   name="core_tujuan"
-                                   placeholder="Contoh: Tube 2 Core 1"
-                                   required>
-                            <!-- Preset Helper Chips -->
-                            <div class="d-flex flex-wrap gap-1 mt-1">
-                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 1">T1 C1</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 1 Core 2">T1 C2</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 1">T2 C1</span>
-                                <span class="badge bg-light text-navy border cursor-pointer core-tujuan-preset" data-val="Tube 2 Core 2">T2 C2</span>
+                                <!-- Connection Real-time Indicator -->
+                                <div class="text-center mb-3">
+                                    <div class="fiber-conn-status-badge" id="manuverLiveWireBadge">
+                                        <span class="fiber-pulse-laser text-info"><i class="bi bi-lightning-charge-fill"></i></span>
+                                        <span id="manuverLiveWireText">Pilih Port Core Asal dan Port Core Tujuan</span>
+                                    </div>
+                                </div>
+
+                                <div class="fiber-patcher-grid">
+                                    <!-- Panel Kiri: Port Asal / Input Cable -->
+                                    <div class="fiber-panel-card">
+                                        <div class="fiber-panel-title text-info">
+                                            <span><i class="bi bi-box-arrow-in-right me-1"></i> Port Asal (Input)</span>
+                                            <span class="badge bg-info bg-opacity-25 text-info font-monospace" id="manuverAsalActiveBadge">Tube 1 Core 1</span>
+                                        </div>
+                                        <!-- Tube Selector -->
+                                        <div class="fiber-tube-tabs" id="manuverAsalTubeTabs">
+                                            <button type="button" class="fiber-tube-tab-btn active" data-tube="1">Tube 1</button>
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="2">Tube 2</button>
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                        </div>
+                                        <!-- 12 Fiber Core Ports List -->
+                                        <div class="fiber-core-list" id="manuverAsalCoreList"></div>
+                                    </div>
+
+                                    <!-- Center: Interactive SVG Fiber Laser Cable Canvas -->
+                                    <div class="fiber-canvas-center">
+                                        <svg class="fiber-svg-wire" id="manuverSvgCanvas" viewBox="0 0 130 200" preserveAspectRatio="none">
+                                            <path id="manuverWirePath" class="fiber-wire-path" d="M 0 100 C 65 100, 65 100, 130 100" stroke="#38bdf8" stroke-width="3.5" fill="none" />
+                                            <circle id="manuverStartDot" cx="0" cy="100" r="5" fill="#38bdf8" />
+                                            <circle id="manuverEndDot" cx="130" cy="100" r="5" fill="#38bdf8" />
+                                        </svg>
+                                        <div class="text-center mt-2">
+                                            <i class="bi bi-arrow-left-right text-info fs-5 opacity-75"></i>
+                                            <div class="small text-muted font-monospace" style="font-size:0.65rem;">FIBER PATCH</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Panel Kanan: Port Tujuan / Output Cable -->
+                                    <div class="fiber-panel-card">
+                                        <div class="fiber-panel-title text-success">
+                                            <span><i class="bi bi-box-arrow-right me-1"></i> Port Tujuan (Output)</span>
+                                            <span class="badge bg-success bg-opacity-25 text-success font-monospace" id="manuverTujuanActiveBadge">Tube 2 Core 1</span>
+                                        </div>
+                                        <!-- Tube Selector -->
+                                        <div class="fiber-tube-tabs" id="manuverTujuanTubeTabs">
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="1">Tube 1</button>
+                                            <button type="button" class="fiber-tube-tab-btn active" data-tube="2">Tube 2</button>
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="3">Tube 3</button>
+                                            <button type="button" class="fiber-tube-tab-btn" data-tube="4">Tube 4</button>
+                                        </div>
+                                        <!-- 12 Fiber Core Ports List -->
+                                        <div class="fiber-core-list" id="manuverTujuanCoreList"></div>
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Synchronized Inputs for Backend Submission -->
+                            <input type="hidden" id="core_asal" name="core_asal" value="Tube 1 Core 1" required>
+                            <input type="hidden" id="core_tujuan" name="core_tujuan" value="Tube 2 Core 1" required>
                         </div>
 
                         <!-- Core Dialihkan & Titik Kembali -->
@@ -6910,32 +7237,328 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Dynamic Splicing Row Builder in tambahJointClosureModal
-    const btnAddCoreRow = document.getElementById('btnAddCoreRow');
-    const jcCoreRowsContainer = document.getElementById('jcCoreRowsContainer');
+    // ══════════════════════════════════════════════════════════════════════
+    // 12D. VISUAL INTERACTIVE FIBER CABLE PATCHER & SPLICING ENGINE
+    // ══════════════════════════════════════════════════════════════════════
+    const FIBER_COLORS = [
+        { num: 1, name: 'Biru', hex: '#2563eb', bg: 'rgba(37, 99, 235, 0.25)', border: '#3b82f6' },
+        { num: 2, name: 'Oranye', hex: '#ea580c', bg: 'rgba(234, 88, 12, 0.25)', border: '#f97316' },
+        { num: 3, name: 'Hijau', hex: '#16a34a', bg: 'rgba(22, 163, 74, 0.25)', border: '#22c55e' },
+        { num: 4, name: 'Cokelat', hex: '#854d0e', bg: 'rgba(133, 77, 14, 0.25)', border: '#a16207' },
+        { num: 5, name: 'Abu-abu', hex: '#64748b', bg: 'rgba(100, 116, 139, 0.25)', border: '#94a3b8' },
+        { num: 6, name: 'Putih', hex: '#f8fafc', bg: 'rgba(248, 250, 252, 0.25)', border: '#e2e8f0' },
+        { num: 7, name: 'Merah', hex: '#dc2626', bg: 'rgba(220, 38, 38, 0.25)', border: '#ef4444' },
+        { num: 8, name: 'Hitam', hex: '#1e293b', bg: 'rgba(30, 41, 59, 0.5)', border: '#475569' },
+        { num: 9, name: 'Kuning', hex: '#ca8a04', bg: 'rgba(202, 138, 4, 0.25)', border: '#eab308' },
+        { num: 10, name: 'Ungu', hex: '#9333ea', bg: 'rgba(147, 51, 234, 0.25)', border: '#a855f7' },
+        { num: 11, name: 'Pink', hex: '#db2777', bg: 'rgba(219, 39, 119, 0.25)', border: '#ec4899' },
+        { num: 12, name: 'Toska', hex: '#0891b2', bg: 'rgba(8, 145, 178, 0.25)', border: '#06b6d4' }
+    ];
 
-    if (btnAddCoreRow && jcCoreRowsContainer) {
-        btnAddCoreRow.addEventListener('click', function() {
-            const rowCount = jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length + 1;
-            const newRow = document.createElement('div');
-            newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
-            newRow.innerHTML = `
+    function renderFiberPortButtons(containerEl, currentTube, selectedCoreNum, onClickCallback) {
+        if (!containerEl) return;
+        containerEl.innerHTML = '';
+        FIBER_COLORS.forEach(c => {
+            const isSelected = (c.num === selectedCoreNum);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `fiber-port-btn ${isSelected ? 'selected' : ''}`;
+            btn.setAttribute('data-core', c.num);
+            btn.innerHTML = `
+                <span class="fiber-dot" style="background-color: ${c.hex}; border: 1.5px solid ${c.border};"></span>
+                <span class="fw-semibold font-monospace" style="font-size:0.75rem;">C${c.num}</span>
+                <span class="text-truncate text-muted" style="font-size:0.7rem;">${c.name}</span>
+            `;
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                containerEl.querySelectorAll('.fiber-port-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                onClickCallback(c.num, c);
+            });
+            containerEl.appendChild(btn);
+        });
+    }
+
+    function updateLaserCurve(svgPathEl, startDotEl, endDotEl, startCoreNum, endCoreNum, wireColor) {
+        if (!svgPathEl) return;
+        const total = 12;
+        const y1 = Math.round(20 + ((startCoreNum - 1) / (total - 1)) * 160);
+        const y2 = Math.round(20 + ((endCoreNum - 1) / (total - 1)) * 160);
+        const d = `M 0 ${y1} C 65 ${y1}, 65 ${y2}, 130 ${y2}`;
+
+        svgPathEl.setAttribute('d', d);
+        svgPathEl.setAttribute('stroke', wireColor || '#38bdf8');
+        if (startDotEl) {
+            startDotEl.setAttribute('cy', y1);
+            startDotEl.setAttribute('fill', wireColor || '#38bdf8');
+        }
+        if (endDotEl) {
+            endDotEl.setAttribute('cy', y2);
+            endDotEl.setAttribute('fill', wireColor || '#38bdf8');
+        }
+    }
+
+    // ── A. MANUVER CORE PATCHER CONTROLLER ──
+    let manuverAsalTube = 1;
+    let manuverAsalCore = 1;
+    let manuverTujuanTube = 2;
+    let manuverTujuanCore = 1;
+
+    const manuverAsalCoreList = document.getElementById('manuverAsalCoreList');
+    const manuverTujuanCoreList = document.getElementById('manuverTujuanCoreList');
+    const manuverAsalTubeTabs = document.getElementById('manuverAsalTubeTabs');
+    const manuverTujuanTubeTabs = document.getElementById('manuverTujuanTubeTabs');
+    const manuverWirePath = document.getElementById('manuverWirePath');
+    const manuverStartDot = document.getElementById('manuverStartDot');
+    const manuverEndDot = document.getElementById('manuverEndDot');
+    const manuverAsalActiveBadge = document.getElementById('manuverAsalActiveBadge');
+    const manuverTujuanActiveBadge = document.getElementById('manuverTujuanActiveBadge');
+    const manuverLiveWireText = document.getElementById('manuverLiveWireText');
+    const coreAsalHidden = document.getElementById('core_asal');
+    const coreTujuanHidden = document.getElementById('core_tujuan');
+
+    function syncManuverPatcher() {
+        const asalColor = FIBER_COLORS.find(c => c.num === manuverAsalCore) || FIBER_COLORS[0];
+        const tujuanColor = FIBER_COLORS.find(c => c.num === manuverTujuanCore) || FIBER_COLORS[0];
+
+        const asalStr = `Tube ${manuverAsalTube} Core ${manuverAsalCore} (${asalColor.name})`;
+        const tujuanStr = `Tube ${manuverTujuanTube} Core ${manuverTujuanCore} (${tujuanColor.name})`;
+
+        if (coreAsalHidden) coreAsalHidden.value = `Tube ${manuverAsalTube} Core ${manuverAsalCore}`;
+        if (coreTujuanHidden) coreTujuanHidden.value = `Tube ${manuverTujuanTube} Core ${manuverTujuanCore}`;
+
+        if (manuverAsalActiveBadge) manuverAsalActiveBadge.textContent = `T${manuverAsalTube} C${manuverAsalCore} (${asalColor.name})`;
+        if (manuverTujuanActiveBadge) manuverTujuanActiveBadge.textContent = `T${manuverTujuanTube} C${manuverTujuanCore} (${tujuanColor.name})`;
+
+        if (manuverLiveWireText) {
+            manuverLiveWireText.innerHTML = `<span style="color:${asalColor.hex}; font-weight:700;">${asalStr}</span> &rarr; <span style="color:${tujuanColor.hex}; font-weight:700;">${tujuanStr}</span>`;
+        }
+
+        updateLaserCurve(manuverWirePath, manuverStartDot, manuverEndDot, manuverAsalCore, manuverTujuanCore, asalColor.hex);
+    }
+
+    function initManuverPatcher() {
+        if (!manuverAsalCoreList || !manuverTujuanCoreList) return;
+
+        renderFiberPortButtons(manuverAsalCoreList, manuverAsalTube, manuverAsalCore, (num) => {
+            manuverAsalCore = num;
+            syncManuverPatcher();
+        });
+
+        renderFiberPortButtons(manuverTujuanCoreList, manuverTujuanTube, manuverTujuanCore, (num) => {
+            manuverTujuanCore = num;
+            syncManuverPatcher();
+        });
+
+        manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                manuverAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                manuverAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncManuverPatcher();
+            });
+        });
+
+        manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                manuverTujuanTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                manuverTujuanTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncManuverPatcher();
+            });
+        });
+
+        document.getElementById('btnManuverStraightPreset')?.addEventListener('click', function() {
+            manuverAsalTube = 1;
+            manuverTujuanTube = 1;
+            manuverAsalCore = 1;
+            manuverTujuanCore = 1;
+            manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
+            manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
+            initManuverPatcher();
+            syncManuverPatcher();
+        });
+
+        document.getElementById('btnManuverSwapPreset')?.addEventListener('click', function() {
+            manuverAsalTube = 1;
+            manuverTujuanTube = 2;
+            manuverAsalCore = 1;
+            manuverTujuanCore = 1;
+            manuverAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '1'));
+            manuverTujuanTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.toggle('active', t.getAttribute('data-tube') === '2'));
+            initManuverPatcher();
+            syncManuverPatcher();
+        });
+
+        syncManuverPatcher();
+    }
+
+    initManuverPatcher();
+
+    // ── B. JOINT CLOSURE SPLICING TRAY CONTROLLER ──
+    let jcAsalTube = 1;
+    let jcAsalCore = 1;
+    let jcJumperTube = 1;
+    let jcJumperCore = 1;
+
+    const jcAsalCoreList = document.getElementById('jcAsalCoreList');
+    const jcJumperCoreList = document.getElementById('jcJumperCoreList');
+    const jcAsalTubeTabs = document.getElementById('jcAsalTubeTabs');
+    const jcJumperTubeTabs = document.getElementById('jcJumperTubeTabs');
+    const jcWirePath = document.getElementById('jcWirePath');
+    const jcStartDot = document.getElementById('jcStartDot');
+    const jcEndDot = document.getElementById('jcEndDot');
+    const jcAsalActiveBadge = document.getElementById('jcAsalActiveBadge');
+    const jcJumperActiveBadge = document.getElementById('jcJumperActiveBadge');
+    const btnJcConnectSelected = document.getElementById('btnJcConnectSelected');
+    const btnJcAutoSpliceAll = document.getElementById('btnJcAutoSpliceAll');
+    const btnJcClearAllSplice = document.getElementById('btnJcClearAllSplice');
+
+    function syncJcPatcher() {
+        const asalColor = FIBER_COLORS.find(c => c.num === jcAsalCore) || FIBER_COLORS[0];
+        const jumperColor = FIBER_COLORS.find(c => c.num === jcJumperCore) || FIBER_COLORS[0];
+
+        if (jcAsalActiveBadge) jcAsalActiveBadge.textContent = `T${jcAsalTube} C${jcAsalCore} (${asalColor.name})`;
+        if (jcJumperActiveBadge) jcJumperActiveBadge.textContent = `T${jcJumperTube} C${jcJumperCore} (${jumperColor.name})`;
+
+        updateLaserCurve(jcWirePath, jcStartDot, jcEndDot, jcAsalCore, jcJumperCore, asalColor.hex);
+    }
+
+    function initJcPatcher() {
+        if (!jcAsalCoreList || !jcJumperCoreList) return;
+
+        renderFiberPortButtons(jcAsalCoreList, jcAsalTube, jcAsalCore, (num) => {
+            jcAsalCore = num;
+            syncJcPatcher();
+        });
+
+        renderFiberPortButtons(jcJumperCoreList, jcJumperTube, jcJumperCore, (num) => {
+            jcJumperCore = num;
+            syncJcPatcher();
+        });
+
+        jcAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                jcAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                jcAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncJcPatcher();
+            });
+        });
+
+        jcJumperTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                jcJumperTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                jcJumperTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncJcPatcher();
+            });
+        });
+
+        syncJcPatcher();
+    }
+
+    initJcPatcher();
+
+    // Connect Selected Button Handler
+    btnJcConnectSelected?.addEventListener('click', function() {
+        if (!jcCoreRowsContainer) return;
+
+        const asalColor = FIBER_COLORS.find(c => c.num === jcAsalCore) || FIBER_COLORS[0];
+        const jumperColor = FIBER_COLORS.find(c => c.num === jcJumperCore) || FIBER_COLORS[0];
+
+        const tAsal = `Tube ${jcAsalTube}`;
+        const cAsal = `Core ${jcAsalCore} (${asalColor.name})`;
+        const tJumper = `Tube ${jcJumperTube}`;
+        const cJumper = `Core ${jcJumperCore} (${jumperColor.name})`;
+
+        const firstRow = jcCoreRowsContainer.querySelector('.jc-core-input-row');
+        const firstAsalInput = firstRow?.querySelector('input[name="core_asal[]"]');
+
+        const newRow = document.createElement('div');
+        newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+        newRow.innerHTML = `
+            <div class="row g-2 align-items-center">
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                    <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="${tAsal}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                    <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="${cAsal}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                    <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="${tJumper}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                    <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="${cJumper}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                    <select class="form-select form-select-sm" name="core_status[]">
+                        <option value="TERHUBUNG" selected>TERHUBUNG</option>
+                        <option value="SPARE">SPARE (Sisa)</option>
+                        <option value="LOSS_PUTUS">LOSS / PUTUS</option>
+                        <option value="MANUVER">MANUVER</option>
+                    </select>
+                </div>
+                <div class="col-5 col-md-1">
+                    <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                    <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
+                </div>
+                <div class="col-1 text-end pt-3">
+                    <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
+                        <i class="bi bi-x-circle fs-5"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        if (firstRow && firstAsalInput && (!firstAsalInput.value || firstAsalInput.value === 'Core 1')) {
+            firstRow.replaceWith(newRow);
+        } else {
+            jcCoreRowsContainer.appendChild(newRow);
+        }
+
+        if (jcAsalCore < 12) jcAsalCore++;
+        if (jcJumperCore < 12) jcJumperCore++;
+        initJcPatcher();
+    });
+
+    // Auto-Splice All Cores Button Handler
+    btnJcAutoSpliceAll?.addEventListener('click', function() {
+        if (!jcCoreRowsContainer) return;
+        jcCoreRowsContainer.innerHTML = '';
+
+        const capAsal = parseInt(document.getElementById('jc_kapasitas_asal')?.value) || 24;
+        const totalCores = Math.min(24, capAsal);
+
+        for (let i = 1; i <= totalCores; i++) {
+            const tubeNum = Math.ceil(i / 12);
+            const coreIndex = ((i - 1) % 12) + 1;
+            const color = FIBER_COLORS[coreIndex - 1] || FIBER_COLORS[0];
+
+            const row = document.createElement('div');
+            row.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+            row.innerHTML = `
                 <div class="row g-2 align-items-center">
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="Tube ${tubeNum}">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core ${rowCount}" value="Core ${rowCount}">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="Core ${coreIndex} (${color.name})">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="Tube ${tubeNum}">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
-                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core ${rowCount}" value="Core ${rowCount}">
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="Core ${coreIndex} (${color.name})">
                     </div>
                     <div class="col-6 col-md-2">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
@@ -6948,7 +7571,72 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     <div class="col-5 col-md-1">
                         <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
-                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02">
+                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
+                    </div>
+                    <div class="col-1 text-end pt-3">
+                        <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
+                            <i class="bi bi-x-circle fs-5"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            jcCoreRowsContainer.appendChild(row);
+        }
+
+        if (typeof showCopyToast === 'function') {
+            showCopyToast(`Auto-Splice ${totalCores} core berhasil dibuat!`);
+        }
+    });
+
+    btnJcClearAllSplice?.addEventListener('click', function() {
+        if (!jcCoreRowsContainer) return;
+        jcCoreRowsContainer.innerHTML = '';
+        btnAddCoreRow?.click();
+    });
+
+    // Dynamic Splicing Row Builder in tambahJointClosureModal
+    const btnAddCoreRow = document.getElementById('btnAddCoreRow');
+    const jcCoreRowsContainer = document.getElementById('jcCoreRowsContainer');
+
+    if (btnAddCoreRow && jcCoreRowsContainer) {
+        btnAddCoreRow.addEventListener('click', function() {
+            const rowCount = jcCoreRowsContainer.querySelectorAll('.jc-core-input-row').length + 1;
+            const coreIndex = ((rowCount - 1) % 12) + 1;
+            const color = FIBER_COLORS[coreIndex - 1] || FIBER_COLORS[0];
+            const tubeNum = Math.ceil(rowCount / 12);
+
+            const newRow = document.createElement('div');
+            newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+            newRow.innerHTML = `
+                <div class="row g-2 align-items-center">
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube ${tubeNum}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core ${coreIndex}" value="Core ${coreIndex} (${color.name})">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube ${tubeNum}">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                        <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core ${coreIndex}" value="Core ${coreIndex} (${color.name})">
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                        <select class="form-select form-select-sm" name="core_status[]">
+                            <option value="TERHUBUNG" selected>TERHUBUNG</option>
+                            <option value="SPARE">SPARE (Sisa)</option>
+                            <option value="LOSS_PUTUS">LOSS / PUTUS</option>
+                            <option value="MANUVER">MANUVER</option>
+                        </select>
+                    </div>
+                    <div class="col-5 col-md-1">
+                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                        <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="0.02">
                     </div>
                     <div class="col-1 text-end pt-3">
                         <button type="button" class="btn btn-link text-danger p-0 btn-remove-core-row" title="Hapus baris ini">
@@ -6975,6 +7663,72 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ── C. SINGLE CORE SPLICER CONTROLLER ──
+    let singleAsalTube = 1;
+    let singleAsalCore = 1;
+    let singleJumperTube = 1;
+    let singleJumperCore = 1;
+
+    const singleAsalCoreList = document.getElementById('singleAsalCoreList');
+    const singleJumperCoreList = document.getElementById('singleJumperCoreList');
+    const singleAsalTubeTabs = document.getElementById('singleAsalTubeTabs');
+    const singleJumperTubeTabs = document.getElementById('singleJumperTubeTabs');
+    const single_tube_asal = document.getElementById('single_tube_asal');
+    const single_core_asal = document.getElementById('single_core_asal');
+    const single_tube_jumper = document.getElementById('single_tube_jumper');
+    const single_core_jumper = document.getElementById('single_core_jumper');
+
+    function syncSingleCorePatcher() {
+        const asalColor = FIBER_COLORS.find(c => c.num === singleAsalCore) || FIBER_COLORS[0];
+        const jumperColor = FIBER_COLORS.find(c => c.num === singleJumperCore) || FIBER_COLORS[0];
+
+        if (single_tube_asal) single_tube_asal.value = `Tube ${singleAsalTube}`;
+        if (single_core_asal) single_core_asal.value = `Core ${singleAsalCore} (${asalColor.name})`;
+        if (single_tube_jumper) single_tube_jumper.value = `Tube ${singleJumperTube}`;
+        if (single_core_jumper) single_core_jumper.value = `Core ${singleJumperCore} (${jumperColor.name})`;
+
+        const singleAsalActiveBadge = document.getElementById('singleAsalActiveBadge');
+        const singleJumperActiveBadge = document.getElementById('singleJumperActiveBadge');
+        if (singleAsalActiveBadge) singleAsalActiveBadge.textContent = `T${singleAsalTube} C${singleAsalCore} (${asalColor.name})`;
+        if (singleJumperActiveBadge) singleJumperActiveBadge.textContent = `T${singleJumperTube} C${singleJumperCore} (${jumperColor.name})`;
+    }
+
+    function initSingleCorePatcher() {
+        if (!singleAsalCoreList || !singleJumperCoreList) return;
+
+        renderFiberPortButtons(singleAsalCoreList, singleAsalTube, singleAsalCore, (num) => {
+            singleAsalCore = num;
+            syncSingleCorePatcher();
+        });
+
+        renderFiberPortButtons(singleJumperCoreList, singleJumperTube, singleJumperCore, (num) => {
+            singleJumperCore = num;
+            syncSingleCorePatcher();
+        });
+
+        singleAsalTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                singleAsalTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                singleAsalTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncSingleCorePatcher();
+            });
+        });
+
+        singleJumperTubeTabs?.querySelectorAll('.fiber-tube-tab-btn').forEach(tab => {
+            tab.addEventListener('click', function() {
+                singleJumperTubeTabs.querySelectorAll('.fiber-tube-tab-btn').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                singleJumperTube = parseInt(this.getAttribute('data-tube')) || 1;
+                syncSingleCorePatcher();
+            });
+        });
+
+        syncSingleCorePatcher();
+    }
+
+    initSingleCorePatcher();
+
     // Modal Add Single Core Trigger
     const formAddSingleCore = document.getElementById('formAddSingleCore');
     const modalCoreJcTitle = document.getElementById('modalCoreJcTitle');
@@ -6988,6 +7742,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (modalCoreJcTitle) {
                 modalCoreJcTitle.textContent = jcName || 'JC';
             }
+            initSingleCorePatcher();
         });
     });
 
