@@ -127,8 +127,6 @@ class WebPushService
         $payload = json_encode([
             'title' => $title,
             'body' => $message,
-            'icon' => $icon ?: asset('assets/logo-msn BG Trans - Copy2.png'),
-            'badge' => asset('assets/logo-msn BG Trans - Copy2.png'),
             'url' => $url,
             'data' => [
                 'url' => $url,
