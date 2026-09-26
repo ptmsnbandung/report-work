@@ -168,6 +168,15 @@
         <div class="dropdown">
             <button class="topbar-user-chip" type="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="text-end d-flex flex-column justify-content-center pe-1">
+                    <div class="topbar-user-name text-truncate" style="font-size:0.82rem;font-weight:700;color:#0f172a;line-height:1.2;max-width:140px;">
+                        {{ $currentUser->name }}
+                    </div>
+                    <div class="topbar-user-role text-truncate" style="font-size:0.68rem;font-weight:600;color:#2563eb;line-height:1.1;max-width:140px;">
+                        <span class="d-none d-sm-inline">{{ $currentUser->role_label }}</span>
+                        <span class="d-inline d-sm-none">{{ $currentUser->role_short }}</span>
+                    </div>
+                </div>
                 <div class="topbar-avatar overflow-hidden">
                     @if($currentUser->avatar_url)
                         <img src="{{ $currentUser->avatar_url }}" alt="{{ $currentUser->name }}" style="width:100%;height:100%;object-fit:cover;">
@@ -175,16 +184,6 @@
                         {{ strtoupper(substr($currentUser->name, 0, 1)) }}
                     @endif
                 </div>
-                <div class="text-start d-none d-md-block pe-1">
-                    <div style="font-size:0.82rem;font-weight:700;color:#0f172a;line-height:1.2;">
-                        {{ $currentUser->name }}
-                    </div>
-                    <div style="font-size:0.68rem;font-weight:600;color:#2563eb;">
-                        {{ $currentUser->role_label }}
-                    </div>
-                </div>
-                <i class="bi bi-chevron-down d-none d-md-block"
-                   style="font-size:0.7rem;color:#94a3b8;margin-left:2px;"></i>
             </button>
 
             <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-xl" style="width:230px;padding:0;overflow:hidden;">

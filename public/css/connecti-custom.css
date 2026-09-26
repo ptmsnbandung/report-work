@@ -327,8 +327,8 @@ h6 { font-size: 0.95rem; }
 .topbar-user-chip {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 3.5px 12px 3.5px 4.5px;
+    gap: 8px;
+    padding: 3.5px 4.5px 3.5px 12px;
     border-radius: 9999px;
     border: 1px solid #e2e8f0;
     background: #ffffff;
@@ -345,13 +345,24 @@ h6 { font-size: 0.95rem; }
     transform: translateY(-1px);
 }
 
-.topbar-user-chip:hover .bi-chevron-down {
-    color: #2563eb;
-    transform: translateY(1px);
-}
-
 .topbar-user-chip:active {
     transform: translateY(0);
+}
+
+.topbar-user-name {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    max-width: 140px;
+}
+
+.topbar-user-role {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #2563eb;
+    line-height: 1.1;
+    max-width: 140px;
 }
 
 .topbar-avatar {
@@ -1939,10 +1950,30 @@ h6 { font-size: 0.95rem; }
     }
 
     .topbar-user-chip {
-        padding: 2px !important;
-        border-radius: 50% !important;
-        background: transparent !important;
+        padding: 2.5px 3.5px 2.5px 10px !important;
+        border-radius: 9999px !important;
+        background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
+        gap: 6px !important;
+    }
+
+    .topbar-user-name {
+        font-size: 0.74rem !important;
+        max-width: 105px !important;
+    }
+
+    .topbar-user-role {
+        font-size: 0.62rem !important;
+        max-width: 105px !important;
+    }
+
+    @media (max-width: 375px) {
+        .topbar-user-name {
+            max-width: 75px !important;
+        }
+        .topbar-user-role {
+            max-width: 75px !important;
+        }
     }
 
     .topbar-avatar {
