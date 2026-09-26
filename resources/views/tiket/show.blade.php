@@ -478,27 +478,62 @@
     }
 
     .wa-msg-menu-btn {
-        background: transparent;
-        border: none;
-        color: #94a3b8;
-        padding: 2px 4px;
-        border-radius: 6px;
-        font-size: 0.85rem;
+        background: #f1f5f9;
+        border: 1.5px solid #cbd5e1;
+        color: #0f172a !important;
+        width: 26px;
+        height: 26px;
+        min-width: 26px;
+        padding: 0;
+        border-radius: 50%;
         cursor: pointer;
         line-height: 1;
-        transition: all 0.15s ease;
-        opacity: 0.6;
+        transition: all 0.18s ease;
+        opacity: 1 !important;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .wa-bubble:hover .wa-msg-menu-btn,
+    .wa-msg-menu-btn i {
+        font-size: 1.15rem;
+        font-weight: 900;
+        -webkit-text-stroke: 0.6px currentColor;
+        display: inline-block;
+        line-height: 1;
+    }
+
+    .wa-bubble-outgoing .wa-msg-menu-btn {
+        background: #e0e7ff;
+        border-color: #93c5fd;
+        color: #1e3a8a !important;
+    }
+
+    .wa-bubble-incoming .wa-msg-menu-btn {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #0f172a !important;
+    }
+
+    .wa-msg-menu-btn:hover,
     .wa-msg-menu-btn:focus,
     .wa-msg-menu-btn[aria-expanded="true"] {
-        opacity: 1;
-        color: #1e293b;
-        background: rgba(0, 0, 0, 0.06);
+        opacity: 1 !important;
+        color: #ffffff !important;
+        background: #1e293b !important;
+        border-color: #0f172a !important;
+        transform: scale(1.12);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .wa-bubble-outgoing .wa-msg-menu-btn:hover,
+    .wa-bubble-outgoing .wa-msg-menu-btn:focus,
+    .wa-bubble-outgoing .wa-msg-menu-btn[aria-expanded="true"] {
+        background: #1d4ed8 !important;
+        border-color: #1e40af !important;
+        color: #ffffff !important;
     }
 
     .wa-msg-dropdown-menu {
