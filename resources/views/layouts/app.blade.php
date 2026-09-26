@@ -1230,7 +1230,8 @@
                 if (state === 'installed') {
                     const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
                         || window.navigator.standalone === true 
-                        || document.referrer.includes('android-app://');
+                        || document.referrer.includes('android-app://')
+                        || window.location.search.includes('source=pwa');
 
                     if (isStandalone) {
                         if (typeof Swal !== 'undefined') {
@@ -1238,7 +1239,7 @@
                                 icon: 'success',
                                 title: 'Aplikasi Sedang Aktif',
                                 text: 'Anda saat ini sudah berada di dalam Aplikasi MSN Report versi Layar Penuh.',
-                                timer: 2500,
+                                timer: 2000,
                                 showConfirmButton: false,
                                 customClass: { popup: 'msn-swal-popup' }
                             });
@@ -1246,39 +1247,31 @@
                             alert('Anda saat ini sudah berada di dalam Aplikasi MSN Report.');
                         }
                     } else {
-                        // User in standard browser but card shows 'installed'
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                icon: 'question',
-                                title: 'Aplikasi Mobile PT MSN',
-                                html: `
-                                    <div class="text-start" style="font-size: 0.88rem; line-height: 1.5; color: #475569;">
-                                        <p class="mb-2">Jika aplikasi sudah ada di HP, silakan buka ikon <strong>MSN Report</strong> di Layar Utama (Home Screen).</p>
-                                        <div class="p-2.5 rounded-3 bg-light border text-muted" style="font-size: 0.8rem;">
-                                            <i class="bi bi-info-circle-fill text-primary me-1"></i> Jika Anda baru saja <strong>menghapus/uninstall</strong> aplikasinya, tekan tombol <strong>Pasang Ulang</strong> di bawah ini.
-                                        </div>
-                                    </div>
-                                `,
-                                showCancelButton: true,
-                                confirmButtonText: '<i class="bi bi-download me-1"></i> Pasang Ulang Aplikasi',
-                                cancelButtonText: 'Tutup',
-                                customClass: { 
-                                    popup: 'msn-swal-popup', 
-                                    confirmButton: 'btn btn-primary rounded-pill px-4',
-                                    cancelButton: 'btn btn-light rounded-pill px-3'
-                                },
-                                buttonsStyling: false
-                            }).then((res) => {
-                                if (res.isConfirmed) {
-                                    localStorage.removeItem('pwa_installed');
-                                    window.applyPwaInstalledState(false);
-                                    window.triggerPwaInstall();
-                                }
-                            });
+                        // Directly launch the installed PWA application on mobile / desktop
+                        if (window.showMsnLoader) {
+                            window.showMsnLoader('Membuka Aplikasi PT MSN...');
+                        }
+
+                        const isAndroid = /Android/i.test(navigator.userAgent);
+                        const host = window.location.host;
+                        const currentPath = window.location.pathname.replace(/^\//, '');
+                        const query = window.location.search ? window.location.search + '&source=pwa' : '?source=pwa';
+
+                        if (isAndroid) {
+                            // Launch via Android Intent to open installed WebAPK directly
+                            const intentUrl = `intent://${host}/${currentPath}${query}#Intent;scheme=https;action=android.intent.action.VIEW;end;`;
+                            window.location.href = intentUrl;
+
+                            setTimeout(() => {
+                                window.location.href = `${window.location.origin}/${currentPath}${query}`;
+                                if (window.hideMsnLoader) window.hideMsnLoader();
+                            }, 700);
                         } else {
-                            localStorage.removeItem('pwa_installed');
-                            window.applyPwaInstalledState(false);
-                            window.triggerPwaInstall();
+                            // iOS or Desktop PWA redirect
+                            window.location.href = `${window.location.origin}/${currentPath}${query}`;
+                            setTimeout(() => {
+                                if (window.hideMsnLoader) window.hideMsnLoader();
+                            }, 1000);
                         }
                     }
                 } else {
