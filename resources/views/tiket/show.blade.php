@@ -6496,8 +6496,8 @@
                     <span class="text-white fw-semibold small text-truncate" id="photoZoomTitle">Foto Dokumentasi</span>
                 </div>
                 <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                    <a href="#" id="photoZoomDownloadBtn" target="_blank" download="foto-lapangan.jpg" class="btn-lightbox-action" title="Buka / Unduh Foto Asli">
-                        <i class="bi bi-box-arrow-up-right"></i>
+                    <a href="#" id="photoZoomDownloadBtn" target="_blank" download="foto-lapangan.jpg" class="btn-lightbox-action" title="Download Foto">
+                        <i class="bi bi-download"></i>
                     </a>
                     <button type="button" class="btn-lightbox-close" data-bs-dismiss="modal" title="Tutup">
                         <i class="bi bi-x-lg"></i>
@@ -6939,7 +6939,51 @@ window.zoomPhoto = function(url, title) {
         }
         if (zoomImg) zoomImg.src = url;
         if (zoomTitle) zoomTitle.textContent = title || 'Foto Dokumentasi Kronologis';
-        if (zoomDownloadBtn) zoomDownloadBtn.href = url;
+        if (zoomDownloadBtn) {
+            zoomDownloadBtn.href = url;
+            zoomDownloadBtn.setAttribute('data-download-url', url);
+
+            if (!zoomDownloadBtn._downloadAttached) {
+                zoomDownloadBtn._downloadAttached = true;
+                zoomDownloadBtn.addEventListener('click', async function(e) {
+                    const downloadUrl = this.getAttribute('data-download-url') || this.href;
+                    if (!downloadUrl || downloadUrl === '#' || downloadUrl.startsWith('javascript:')) return;
+                    e.preventDefault();
+
+                    const icon = this.querySelector('i');
+                    const prevClass = icon ? icon.className : 'bi bi-download';
+                    if (icon) icon.className = 'spinner-border spinner-border-sm';
+
+                    try {
+                        const response = await fetch(downloadUrl);
+                        const blob = await response.blob();
+                        const blobUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = blobUrl;
+                        const cleanName = (zoomTitle?.textContent || 'foto-lapangan')
+                            .replace(/[^a-zA-Z0-9_\-\.]/g, '_') + '.jpg';
+                        a.download = cleanName;
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            window.URL.revokeObjectURL(blobUrl);
+                        }, 1000);
+                    } catch (err) {
+                        const a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = 'foto-lapangan.jpg';
+                        a.target = '_blank';
+                        document.body.appendChild(a);
+                        a.click();
+                        setTimeout(() => document.body.removeChild(a), 500);
+                    } finally {
+                        if (icon) icon.className = prevClass;
+                    }
+                });
+            }
+        }
         const bsModal = bootstrap.Modal.getOrCreateInstance(modalEl);
         bsModal.show();
     }
