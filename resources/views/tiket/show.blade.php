@@ -11472,7 +11472,16 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                         'Accept': 'application/json'
                     }
                 })
-                .then(res => res.json())
+                .then(res => {
+                    const ct = res.headers.get('content-type') || '';
+                    if (!ct.includes('application/json')) {
+                        // Server returned non-JSON (e.g. redirect/HTML error page)
+                        return res.text().then(text => {
+                            throw new Error('Server returned non-JSON response (HTTP ' + res.status + ')');
+                        });
+                    }
+                    return res.json();
+                })
                 .then(res => {
                     if (res.success && res.data) {
                         const tempEl = document.getElementById(tempId);
@@ -11583,15 +11592,17 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                             setTimeout(() => intervalBanner.remove(), 400);
                         }
                     } else {
+                        // Server returned success:false - show error icon on optimistic message
                         const statusIcon = document.getElementById('status-icon-' + tempId);
                         if (statusIcon) {
                             statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
                             statusIcon.title = 'Gagal terkirim: ' + (res.message || 'Error');
                         }
-                        alert('Gagal mengirim pesan: ' + (res.message || 'Terjadi kesalahan.'));
+                        console.error('Chat send failed:', res.message);
                     }
                 })
                 .catch(err => {
+                    console.error('Chat send error:', err);
                     // Jika terputus koneksi saat mengirim, alihkan ke antrean offline lokal
                     if (window.OfflineSync) {
                         window.OfflineSync.enqueueRequest({
@@ -11619,7 +11630,8 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                             statusIcon.className = 'bi bi-exclamation-circle-fill text-danger';
                             statusIcon.title = 'Gagal terkirim: ' + err.message;
                         }
-                        alert('Gagal mengirim pesan: ' + err.message);
+                        // Jangan tampilkan alert() agar tidak menginterupsi UX
+                        console.error('Gagal mengirim pesan:', err.message);
                     }
                 });
             };
@@ -11806,5 +11818,24 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         }
     });
 });
+
+// ── FAILSAFE: Pastikan waDirectChatForm tidak pernah submit secara tradisional ──
+// Script ini berjalan terpisah dari DOMContentLoaded utama sebagai perlindungan ganda.
+// Memanggil preventDefault() dua kali aman dan tidak bermasalah.
+(function() {
+    function guardWaChatForm() {
+        const form = document.getElementById('waDirectChatForm');
+        if (!form || form._failsafeGuarded) return;
+        form._failsafeGuarded = true;
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Selalu cegah submit tradisional
+        }, true); // capture phase — dijalankan sebelum listener bubble phase
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', guardWaChatForm);
+    } else {
+        guardWaChatForm();
+    }
+})();
 </script>
 @endpush
