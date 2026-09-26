@@ -1075,10 +1075,10 @@
                 }
             };
 
-            // ── GLOBAL PT MSN NOTIFICATION CHIME HELPER ──
+            // ── GLOBAL PT MSN NOTIFICATION CHIME HELPER (Samsung On Time) ──
             window.playNotificationSound = function() {
                 try {
-                    const audio = new Audio('/assets/sounds/msn-notification.mp3');
+                    const audio = new Audio('/assets/sounds/on-time.mp3');
                     audio.volume = 0.85;
                     audio.play().catch(() => {});
                 } catch (e) {}

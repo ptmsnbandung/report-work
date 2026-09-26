@@ -2,11 +2,13 @@
    PT MEDIA SOLUSI NETWORK (MSN) - PWA & WEB PUSH SERVICE WORKER
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'ptmsn-report-v1.7';
+const CACHE_NAME = 'ptmsn-report-v1.8';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
     '/js/offline-sync.js',
+    '/assets/sounds/on-time.mp3',
+    '/assets/sounds/on-time.wav',
     '/assets/sounds/msn-notification.mp3',
     '/assets/sounds/msn-notification.wav',
     '/assets/icon-192.png',
@@ -95,7 +97,7 @@ self.addEventListener('push', function (event) {
         body: payload.body || 'Pemberitahuan baru dari sistem tiketing gangguan.',
         icon: payload.icon || '/assets/icon-192.png',
         badge: '/assets/icon-192.png',
-        sound: '/assets/sounds/msn-notification.mp3',
+        sound: '/assets/sounds/on-time.mp3',
         vibrate: [150, 80, 150, 80, 250],
         renotify: true,
         tag: 'ptmsn-ticket-notif-' + (payload.data?.id_tiket || Date.now()),
