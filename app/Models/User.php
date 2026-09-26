@@ -137,4 +137,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(PushSubscription::class, 'user_id');
     }
+
+    /**
+     * Dapatkan mapping jumlah notifikasi belum dibaca per ID tiket / No Tiket
+     * @return array<string|int, int>
+     */
+    public function getUnreadNotifCountsPerTiket(): array
+    {
+        $counts = [];
+        foreach ($this->unreadNotifications as $notif) {
+            $tId = $notif->data['id_tiket'] ?? null;
+            $noT = $notif->data['no_tiket'] ?? null;
+            if ($tId) {
+                $counts[$tId] = ($counts[$tId] ?? 0) + 1;
+            }
+            if ($noT) {
+                $counts[$noT] = ($counts[$noT] ?? 0) + 1;
+            }
+        }
+        return $counts;
+    }
 }

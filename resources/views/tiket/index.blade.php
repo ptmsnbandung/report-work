@@ -533,11 +533,24 @@
                 <div class="tiket-mobile-card-body">
                     <!-- Row 1: No Tiket & Status Badges -->
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
-                            <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
-                                <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
-                            </span>
-                        </a>
+                        <div class="d-flex align-items-center gap-1.5">
+                            <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
+                                <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
+                                    <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
+                                </span>
+                            </a>
+                            @php
+                                $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
+                            @endphp
+                            @if($notifCount > 0)
+                                <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1"
+                                      title="{{ $notifCount }} notifikasi baru pada tiket ini"
+                                      style="font-size:0.65rem; padding: 2.5px 6px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                    <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                    <span>{{ $notifCount }} Baru</span>
+                                </span>
+                            @endif
+                        </div>
                         <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
                             @if($tiket->status === 'OPEN')
                                 <span class="badge-status badge-open" style="font-size:0.68rem;"><i class="bi bi-exclamation-circle"></i> OPEN</span>
@@ -641,12 +654,25 @@
                     <tr>
                         <!-- No Tiket -->
                         <td>
-                            <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none d-inline-block">
-                                <span class="tiket-code-chip">
-                                    <i class="bi bi-ticket-perforated"></i>
-                                    {{ $tiket->no_tiket }}
-                                </span>
-                            </a>
+                            <div class="d-inline-flex align-items-center gap-1.5 flex-wrap">
+                                <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none d-inline-block">
+                                    <span class="tiket-code-chip">
+                                        <i class="bi bi-ticket-perforated"></i>
+                                        {{ $tiket->no_tiket }}
+                                    </span>
+                                </a>
+                                @php
+                                    $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
+                                @endphp
+                                @if($notifCount > 0)
+                                    <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1 shadow-xs"
+                                          title="{{ $notifCount }} notifikasi baru pada tiket ini"
+                                          style="font-size:0.65rem; padding: 2.5px 6.5px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                        <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                        <span>{{ $notifCount }} Baru</span>
+                                    </span>
+                                @endif
+                            </div>
                         </td>
 
                         <!-- Segment & Link Impact -->

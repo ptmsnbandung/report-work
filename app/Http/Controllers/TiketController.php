@@ -52,7 +52,10 @@ class TiketController extends Controller
         // Ambil daftar segment yang tersedia
         $masterSegments = MasterSla::orderBy('backbone_segment')->get();
 
-        return view('tiket.index', compact('tikets', 'summary', 'masterSegments', 'filters'));
+        // Ambil mapping notifikasi belum dibaca per tiket untuk pengguna aktif
+        $unreadTicketNotifs = $user ? $user->getUnreadNotifCountsPerTiket() : [];
+
+        return view('tiket.index', compact('tikets', 'summary', 'masterSegments', 'filters', 'unreadTicketNotifs'));
     }
 
     /**
@@ -143,18 +146,26 @@ class TiketController extends Controller
         // Catat timestamp kehadiran/pembacaan tiket oleh user saat ini untuk fitur Read Receipts (Ceklis Biru)
         $ticketViews = [];
         if (auth()->check()) {
-            $currentUserId = auth()->id();
+            $currentUser = auth()->user();
+            $currentUserId = $currentUser->id;
             $viewsKey = "tiket_{$tiket->id}_user_views";
             $views = \Illuminate\Support\Facades\Cache::get($viewsKey, []);
             $views[$currentUserId] = [
                 'user_id'   => $currentUserId,
-                'name'      => auth()->user()->name ?? 'User',
-                'role'      => auth()->user()->role ?? null,
-                'avatar'    => auth()->user()->avatar_url ?? null,
+                'name'      => $currentUser->name ?? 'User',
+                'role'      => $currentUser->role ?? null,
+                'avatar'    => $currentUser->avatar_url ?? null,
                 'viewed_at' => now()->timestamp,
             ];
             \Illuminate\Support\Facades\Cache::put($viewsKey, $views, now()->addDays(7));
             $ticketViews = $views;
+
+            // Otomatis tandai notifikasi yang terkait dengan tiket ini sebagai telah dibaca
+            $currentUser->unreadNotifications->filter(function ($notif) use ($tiket) {
+                $tId = $notif->data['id_tiket'] ?? null;
+                $noT = $notif->data['no_tiket'] ?? null;
+                return ($tId && $tId == $tiket->id) || ($noT && $noT === $tiket->no_tiket);
+            })->markAsRead();
         }
 
         return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews'));

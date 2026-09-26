@@ -499,11 +499,24 @@
                     <div class="tiket-mobile-card-body p-3">
                         <!-- Row 1: No Tiket & Durasi Berjalan / Over SLA -->
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <a href="{{ route('tiket.show', $act->id) }}" class="text-decoration-none">
-                                <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
-                                    <i class="bi bi-ticket-perforated me-1"></i>{{ $act->no_tiket }}
-                                </span>
-                            </a>
+                            <div class="d-flex align-items-center gap-1.5">
+                                <a href="{{ route('tiket.show', $act->id) }}" class="text-decoration-none">
+                                    <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
+                                        <i class="bi bi-ticket-perforated me-1"></i>{{ $act->no_tiket }}
+                                    </span>
+                                </a>
+                                @php
+                                    $notifCount = ($unreadTicketNotifs[$act->id] ?? $unreadTicketNotifs[$act->no_tiket] ?? 0);
+                                @endphp
+                                @if($notifCount > 0)
+                                    <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1"
+                                          title="{{ $notifCount }} notifikasi baru"
+                                          style="font-size:0.65rem; padding: 2.5px 6px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                        <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                        <span>{{ $notifCount }} Baru</span>
+                                    </span>
+                                @endif
+                            </div>
                             <div class="d-flex align-items-center gap-1">
                                 <span class="badge {{ $isOverSla ? 'bg-danger-subtle text-danger border border-danger-subtle' : 'bg-secondary-subtle text-dark border' }}" style="font-size:0.72rem;">
                                     <i class="bi bi-clock-history me-1"></i>{{ $hours }}j {{ $mins }}m
@@ -562,9 +575,22 @@
                         @endphp
                         <tr>
                             <td>
-                                <a href="{{ route('tiket.show', $act->id) }}" class="fw-bold font-monospace text-decoration-none text-navy">
-                                    {{ $act->no_tiket }}
-                                </a>
+                                <div class="d-inline-flex align-items-center gap-1.5 flex-wrap">
+                                    <a href="{{ route('tiket.show', $act->id) }}" class="fw-bold font-monospace text-decoration-none text-navy">
+                                        {{ $act->no_tiket }}
+                                    </a>
+                                    @php
+                                        $notifCount = ($unreadTicketNotifs[$act->id] ?? $unreadTicketNotifs[$act->no_tiket] ?? 0);
+                                    @endphp
+                                    @if($notifCount > 0)
+                                        <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1 shadow-xs"
+                                              title="{{ $notifCount }} notifikasi baru"
+                                              style="font-size:0.65rem; padding: 2.5px 6.5px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                            <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                            <span>{{ $notifCount }} Baru</span>
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="fw-semibold text-navy">{{ $act->status_link_impact }}</td>
                             <td><span class="badge bg-light text-muted border">{{ $act->backbone_segment }}</span></td>
@@ -609,11 +635,24 @@
                 <div class="tiket-mobile-card-body">
                     <!-- Row 1: No Tiket & Status / SLA Badges -->
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
-                            <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
-                                <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
-                            </span>
-                        </a>
+                        <div class="d-flex align-items-center gap-1.5">
+                            <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
+                                <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
+                                    <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
+                                </span>
+                            </a>
+                            @php
+                                $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
+                            @endphp
+                            @if($notifCount > 0)
+                                <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1"
+                                      title="{{ $notifCount }} notifikasi baru"
+                                      style="font-size:0.65rem; padding: 2.5px 6px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                    <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                    <span>{{ $notifCount }} Baru</span>
+                                </span>
+                            @endif
+                        </div>
                         <div class="d-flex align-items-center gap-1">
                             <span class="badge {{ $tiket->status_badge_class }}" style="font-size:0.68rem;">
                                 {{ $tiket->status }}
@@ -690,11 +729,24 @@
                     @forelse($latestTikets as $tiket)
                     <tr>
                         <td>
-                            <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
-                                <span style="font-family:monospace;font-weight:700;font-size:0.82rem;color:#0f3d63;background:#eff6ff;padding:3px 8px;border-radius:6px;white-space:nowrap;">
-                                    {{ $tiket->no_tiket }}
-                                </span>
-                            </a>
+                            <div class="d-inline-flex align-items-center gap-1.5 flex-wrap">
+                                <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
+                                    <span style="font-family:monospace;font-weight:700;font-size:0.82rem;color:#0f3d63;background:#eff6ff;padding:3px 8px;border-radius:6px;white-space:nowrap;">
+                                        {{ $tiket->no_tiket }}
+                                    </span>
+                                </a>
+                                @php
+                                    $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
+                                @endphp
+                                @if($notifCount > 0)
+                                    <span class="badge bg-danger rounded-pill d-inline-flex align-items-center gap-1 shadow-xs"
+                                          title="{{ $notifCount }} notifikasi baru"
+                                          style="font-size:0.65rem; padding: 2.5px 6.5px; font-weight: 700; box-shadow: 0 0 0 1.5px #fff, 0 2px 4px rgba(225, 29, 72, 0.35);">
+                                        <i class="bi bi-bell-fill" style="font-size:0.58rem;"></i>
+                                        <span>{{ $notifCount }} Baru</span>
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td>
                             <div style="font-weight:600;font-size:0.85rem;color:#0f172a;">{{ $tiket->status_link_impact }}</div>

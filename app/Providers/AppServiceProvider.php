@@ -30,5 +30,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Pagination\Paginator::useBootstrapFive();
+
+        \Illuminate\Support\Facades\View::composer(['tiket.index', 'dashboard.index', 'reports.*'], function ($view) {
+            $user = auth()->user();
+            $view->with('unreadTicketNotifs', $user ? $user->getUnreadNotifCountsPerTiket() : []);
+        });
     }
 }
