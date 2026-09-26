@@ -297,15 +297,23 @@
         100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
     }
 
+    /* Matikan smooth scroll bawaan browser agar chat stream instan berada di posisi bawah */
+    html, body {
+        scroll-behavior: auto !important;
+    }
+
     .wa-chat-stream {
-        padding: 1rem 0.85rem 1rem 0.85rem;
+        padding: 1rem 0.85rem 2rem 0.85rem !important;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
         min-height: 450px;
         max-height: 650px;
         overflow-y: auto;
+        overflow-x: hidden;
         scroll-behavior: auto !important;
+        overflow-anchor: auto !important;
+        overscroll-behavior-y: contain;
     }
 
     .wa-chat-stream::-webkit-scrollbar {
@@ -1361,10 +1369,13 @@
             padding-bottom: calc(var(--bottom-nav-height, 86px) + 6px) !important;
         }
         .wa-chat-stream {
-            min-height: clamp(420px, calc(100dvh - 210px), 750px);
-            max-height: clamp(420px, calc(100dvh - 210px), 750px);
-            padding: 0.75rem 0.65rem 0.85rem 0.65rem !important;
+            min-height: clamp(360px, calc(100dvh - 270px), 650px);
+            max-height: clamp(360px, calc(100dvh - 270px), 650px);
+            padding: 0.75rem 0.65rem 2.2rem 0.65rem !important;
             gap: 0.6rem;
+            scroll-behavior: auto !important;
+            overflow-anchor: auto !important;
+            overscroll-behavior-y: contain;
         }
         .wa-scroll-bottom-btn {
             bottom: 66px;
@@ -3301,7 +3312,7 @@
 
                             <!-- Action CTA Button -->
                             @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                                <button type="button" class="btn btn-sm px-3.5 py-2.5 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill text-white flex-shrink-0" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35); border: none;' : 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); border: none;' }}" onclick="const kTab = document.getElementById('kronologis-tab'); if(kTab) kTab.click(); const waInp = document.getElementById('waChatTextInput') || document.getElementById('informasi'); if(waInp) { waInp.focus(); waInp.scrollIntoView({behavior: 'smooth', block: 'center'}); }">
+                                <button type="button" class="btn btn-sm px-3.5 py-2.5 fw-bold rounded-pill shadow-sm d-inline-flex align-items-center justify-content-center gap-1.5 flex-fill text-white flex-shrink-0" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35); border: none;' : 'background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); border: none;' }}" onclick="const kTab = document.getElementById('kronologis-tab'); if(kTab) kTab.click(); const waInp = document.getElementById('waChatTextInput') || document.getElementById('informasi'); if(waInp) { waInp.focus(); waInp.scrollIntoView({behavior: 'instant', block: 'center'}); }">
                                     <i class="bi bi-chat-left-dots-fill"></i>
                                     <span>Kirim Update</span>
                                 </button>
@@ -3776,6 +3787,7 @@
                                             </div>
                                         </div>
                                     @endforeach
+                                    <div id="waStreamBottomAnchor" style="height: 1px; width: 100%; flex-shrink: 0; pointer-events: none;"></div>
                                 </div>
                             @else
                                 <div class="wa-empty-state py-5 text-center" id="emptyTimeline">
@@ -3797,7 +3809,10 @@
                         <script>
                             (function() {
                                 var s = document.getElementById('timelineList');
-                                if (s) s.scrollTop = s.scrollHeight;
+                                if (s) {
+                                    s.style.scrollBehavior = 'auto';
+                                    s.scrollTop = 999999;
+                                }
                             })();
                         </script>
 
@@ -8303,9 +8318,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Hanya auto-scroll stream jika user sedang di bawah atau pengirim adalah diri sendiri
         if (isNearBottom || isSelf) {
-            stream.scrollTop = stream.scrollHeight;
+            scrollChatToBottom(true);
             requestAnimationFrame(() => {
-                stream.scrollTop = stream.scrollHeight;
+                scrollChatToBottom(true);
                 window.scrollTo(0, savedWindowY);
             });
         }
@@ -8395,7 +8410,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const stream = document.getElementById('timelineList');
         if (stream) {
-            stream.scrollTop = stream.scrollHeight;
+            scrollChatToBottom(true);
             attachStreamScrollListener(stream);
             checkStreamScroll(stream);
         }
@@ -10057,6 +10072,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const newKronoId = @json(session('new_krono_id'));
     const hasKronoSuccess = @json((bool) (session('success') && str_contains(session('success'), 'kronologis')));
 
+    function scrollChatToBottom(instant = true) {
+        const stream = document.getElementById('timelineList');
+        if (!stream) return;
+        if (instant) {
+            stream.style.scrollBehavior = 'auto';
+        }
+        stream.scrollTop = stream.scrollHeight + 99999;
+        const anchor = document.getElementById('waStreamBottomAnchor');
+        if (anchor && typeof anchor.scrollIntoView === 'function') {
+            try { anchor.scrollIntoView({ block: 'end', behavior: 'instant' }); } catch(e) {}
+        }
+    }
+    window.scrollChatToBottom = scrollChatToBottom;
+
     function scrollToTargetKrono() {
         let targetEl = null;
 
@@ -10080,31 +10109,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 const relativeTop = targetRect.top - streamRect.top + stream.scrollTop;
                 stream.scrollTop = Math.max(0, relativeTop - (stream.clientHeight / 2) + (targetEl.clientHeight / 2));
             } else {
-                // Selalu pastikan internal scroll chat berada di paling bawah (pesan terbaru)
-                stream.scrollTop = stream.scrollHeight;
+                scrollChatToBottom(true);
             }
         };
 
         // Jalankan scroll internal container secara instan
         performInternalScroll();
-        setTimeout(performInternalScroll, 60);
-        setTimeout(performInternalScroll, 300);
+        requestAnimationFrame(performInternalScroll);
 
-        // Jika ada gambar di dalam chat stream yang masih loading, sesuaikan scroll container
-        const streamImgs = stream.querySelectorAll('img');
-        streamImgs.forEach(img => {
-            if (!img.complete) {
-                img.addEventListener('load', performInternalScroll, { once: true });
+        // Pantau jika ada gambar atau video di dalam stream yang sedang dimuat
+        const streamMedia = stream.querySelectorAll('img, video');
+        streamMedia.forEach(media => {
+            if (!media.complete) {
+                media.addEventListener('load', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
+                media.addEventListener('loadedmetadata', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
             }
         });
-        window.addEventListener('load', performInternalScroll, { once: true });
+        window.addEventListener('load', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
 
-        // CATATAN: Window halaman browser TIDAK di-scroll ke bawah (window.scrollTo ditiadakan).
-        // Halaman browser tetap berada di atas agar informasi detail tiket langsung terlihat.
+        // Gunakan ResizeObserver agar saat rendering selesai, chat stream langsung berada di posisi bawah tanpa delay
+        if (window.ResizeObserver) {
+            const ro = new ResizeObserver(() => {
+                if (!targetEl) {
+                    const distanceFromBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight;
+                    if (distanceFromBottom < 180) {
+                        scrollChatToBottom(true);
+                    }
+                }
+            });
+            ro.observe(stream);
+        }
     }
 
-    // Jalankan agar chat stream selalu siap di paling bawah
+    // Jalankan agar chat stream selalu siap di paling bawah secara instan
     scrollToTargetKrono();
+
+    // Listener saat tab Kronologis dibuka kembali dari tab lain (Bootstrap Tab)
+    const kronologisTabBtn = document.getElementById('kronologis-tab');
+    if (kronologisTabBtn) {
+        kronologisTabBtn.addEventListener('shown.bs.tab', function () {
+            scrollChatToBottom(true);
+            requestAnimationFrame(() => scrollChatToBottom(true));
+        });
+    }
 
     // Indikator loading saat submit form kronologis
     const formAddKronologis = document.getElementById('formAddKronologis');
@@ -11579,18 +11626,12 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     const initStream = document.getElementById('timelineList');
     if (initStream) {
         attachStreamScrollListener(initStream);
-        initStream.scrollTop = initStream.scrollHeight;
+        scrollChatToBottom(true);
         checkStreamScroll(initStream);
     }
 
     btnWaScrollBottom?.addEventListener('click', function() {
-        const stream = document.getElementById('timelineList');
-        if (stream) {
-            stream.scrollTo({
-                top: stream.scrollHeight + 500,
-                behavior: 'smooth'
-            });
-        }
+        scrollChatToBottom(false);
     });
 
     // ── 17. FULLSCREEN CHAT TOGGLE ──
