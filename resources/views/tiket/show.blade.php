@@ -4022,11 +4022,15 @@
                                         </strong>
                                     </span>
                                     <button type="button" 
-                                            class="btn btn-xs rounded-pill px-2.5 py-1 fw-semibold {{ $activePenanganan === 'KEDUA' ? 'btn-primary' : 'btn-outline-primary' }}" 
+                                            class="btn btn-xs rounded-pill px-2.5 py-1 fw-semibold {{ $activePenanganan === 'KEDUA' ? 'btn-primary text-white shadow-xs' : 'btn-outline-primary' }}" 
                                             id="btnToggleKedua"
-                                            onclick="switchPenangananMode($activeCurrentMode === 'KEDUA' ? 'JOINTING_LURUS' : 'KEDUA', true)"
+                                            onclick="toggleKeduaPenanganan()"
                                             title="Pilih dan aktifkan kedua metode sekaligus">
-                                        <i class="bi bi-layers-fill me-1"></i> Pilih Keduanya
+                                        @if($activePenanganan === 'KEDUA')
+                                            <i class="bi bi-check2-all me-1"></i> Keduanya Aktif
+                                        @else
+                                            <i class="bi bi-layers-fill me-1"></i> Pilih Keduanya
+                                        @endif
                                     </button>
                                 </div>
                             </div>
@@ -9455,6 +9459,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ── 12.5. SWITCH & TOGGLE METODE PENANGANAN (JOINTING / MANUVER / KEDUANYA) ──
     window.activeCurrentMode = @json($activePenanganan);
+
+    window.toggleKeduaPenanganan = function() {
+        const current = window.activeCurrentMode || 'JOINTING_LURUS';
+        const nextMode = (current === 'KEDUA' || current === 'KOMBINASI') ? 'JOINTING_LURUS' : 'KEDUA';
+        window.switchPenangananMode(nextMode, true);
+    };
 
     window.togglePenangananCard = function(clickedCard) {
         if (window.activeCurrentMode === 'KEDUA' || window.activeCurrentMode === 'KOMBINASI') {
