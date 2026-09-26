@@ -178,14 +178,7 @@
             }
         }
 
-        /* Hide all PWA install and open-in-app banners when opened inside installed app */
-        @media all and (display-mode: standalone), all and (display-mode: fullscreen), all and (display-mode: minimal-ui) {
-            .pwa-download-dash-card,
-            #pwaInstallBanner,
-            .btn-trigger-pwa-install {
-                display: none !important;
-            }
-        }
+
 
         /* ── CENTERED APP PERMISSIONS MODAL DIALOG ── */
         .msn-permission-backdrop {
@@ -1158,54 +1151,51 @@
                 guideAndroidContent?.classList.add('d-none');
             });
 
-            // Function to dynamically check if app is actually installed and update UI
-            window.applyPwaInstalledState = async function(forcedState) {
-                const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
-                    || window.matchMedia('(display-mode: fullscreen)').matches
-                    || window.matchMedia('(display-mode: minimal-ui)').matches
-                    || window.navigator.standalone === true 
-                    || document.referrer.includes('android-app://')
-                    || window.location.search.includes('source=pwa')
-                    || sessionStorage.getItem('is_pwa_standalone') === '1';
+            // Clean up any legacy session flags
+            sessionStorage.removeItem('is_pwa_standalone');
+            sessionStorage.removeItem('is_pwa_mode');
 
-                // When running inside the installed PWA mobile app, hide the card completely
-                if (isStandalone) {
-                    sessionStorage.setItem('is_pwa_standalone', '1');
-                    localStorage.setItem('pwa_installed', '1');
+            // Function to check if app is running inside installed standalone app vs in browser website
+            window.applyPwaInstalledState = async function(forcedState) {
+                // Check if currently running inside the installed standalone application window
+                const isStandaloneApp = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches)
+                    || window.navigator.standalone === true 
+                    || document.referrer.includes('android-app://');
+
+                if (isStandaloneApp) {
+                    // Running inside the installed mobile app -> hide banner/cards completely
                     document.querySelectorAll('.pwa-download-dash-card, #pwaInstallBanner, .btn-trigger-pwa-install').forEach(card => {
                         card.classList.add('d-none');
-                        card.style.setProperty('display', 'none', 'important');
+                        card.style.display = 'none';
                     });
                     return true;
                 }
 
-                // When accessed from regular browser (not standalone app):
-                let isInstalled = false;
+                // Running in web browser -> ALWAYS keep banner/card visible!
+                let isInstalledOnDevice = false;
 
                 if (typeof forcedState === 'boolean') {
-                    isInstalled = forcedState;
-                    if (!isInstalled) localStorage.removeItem('pwa_installed');
+                    isInstalledOnDevice = forcedState;
+                    if (!isInstalledOnDevice) localStorage.removeItem('pwa_installed');
                 } else if ('getInstalledRelatedApps' in navigator) {
                     try {
                         const relatedApps = await navigator.getInstalledRelatedApps();
                         if (relatedApps && relatedApps.length > 0) {
-                            isInstalled = true;
+                            isInstalledOnDevice = true;
                             localStorage.setItem('pwa_installed', '1');
                         } else {
-                            // Browser confirms 0 apps installed
-                            isInstalled = false;
+                            isInstalledOnDevice = false;
                             localStorage.removeItem('pwa_installed');
                         }
                     } catch (err) {
-                        isInstalled = !deferredPwaPrompt && localStorage.getItem('pwa_installed') === '1';
+                        isInstalledOnDevice = !deferredPwaPrompt && localStorage.getItem('pwa_installed') === '1';
                     }
                 } else {
-                    // If beforeinstallprompt fired, the app is definitely NOT installed
                     if (deferredPwaPrompt) {
-                        isInstalled = false;
+                        isInstalledOnDevice = false;
                         localStorage.removeItem('pwa_installed');
                     } else {
-                        isInstalled = localStorage.getItem('pwa_installed') === '1';
+                        isInstalledOnDevice = localStorage.getItem('pwa_installed') === '1';
                     }
                 }
 
@@ -1217,7 +1207,7 @@
                     const descEl = card.querySelector('.pwa-card-desc') || card.querySelector('p');
                     const btn = card.querySelector('.btn-trigger-pwa-install');
 
-                    if (isInstalled) {
+                    if (isInstalledOnDevice) {
                         if (titleEl) titleEl.innerHTML = '<i class="bi bi-patch-check-fill text-success me-1"></i> Aplikasi Mobile PT MSN';
                         if (descEl) descEl.textContent = 'Aplikasi telah terpasang di perangkat Anda. Buka langsung untuk navigasi cepat & notifikasi instan.';
                         if (btn) {
@@ -1238,7 +1228,7 @@
                     }
                 });
 
-                return isInstalled;
+                return isInstalledOnDevice;
             };
 
             // Initial check
