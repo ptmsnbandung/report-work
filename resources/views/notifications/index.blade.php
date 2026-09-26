@@ -183,30 +183,75 @@
         border-color: #bae6fd;
     }
 
+    .notif-metric-label {
+        font-size: 0.72rem;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+    }
+
+    .notif-metric-number {
+        font-size: 1.65rem;
+        line-height: 1.1;
+        letter-spacing: -0.5px;
+    }
+
+    .notif-metric-sub {
+        font-size: 0.7rem;
+        line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+    }
+
     /* Mobile Responsive Customizations */
     @media (max-width: 767.98px) {
         .notif-hero-banner {
-            padding: 1.25rem 1rem !important;
+            padding: 1.15rem 1rem !important;
             border-radius: 16px;
         }
+        .notif-hero-icon {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1.15rem !important;
+        }
+        .notif-hero-title {
+            font-size: 1.1rem !important;
+        }
+        .notif-hero-desc {
+            font-size: 0.75rem !important;
+            line-height: 1.35 !important;
+        }
         .notif-metric-card {
-            padding: 0.75rem 0.65rem;
+            padding: 0.65rem 0.55rem;
             border-radius: 14px;
+        }
+        .notif-metric-card::before {
+            height: 3px;
+            border-radius: 0 0 14px 14px;
         }
         .notif-metric-number {
             font-size: 1.35rem !important;
+            margin: 0.2rem 0;
         }
         .notif-metric-label {
-            font-size: 0.68rem !important;
+            font-size: 0.62rem !important;
+            letter-spacing: 0.1px !important;
         }
         .notif-icon-pill {
-            width: 30px;
-            height: 30px;
-            font-size: 0.9rem;
-            border-radius: 9px;
+            width: 24px !important;
+            height: 24px !important;
+            font-size: 0.75rem !important;
+            border-radius: 7px !important;
+        }
+        .notif-metric-sub {
+            font-size: 0.62rem !important;
         }
         .notif-card-item {
-            padding: 0.9rem 0.95rem;
+            padding: 0.85rem 0.9rem;
             border-radius: 14px;
             margin-bottom: 0.75rem;
         }
@@ -224,6 +269,33 @@
             display: none;
         }
     }
+
+    @media (max-width: 420px) {
+        .notif-metric-card {
+            padding: 0.55rem 0.45rem;
+            border-radius: 12px;
+        }
+        .notif-metric-card::before {
+            height: 3px;
+            border-radius: 0 0 12px 12px;
+        }
+        .notif-metric-label {
+            font-size: 0.58rem !important;
+        }
+        .notif-icon-pill {
+            width: 22px !important;
+            height: 22px !important;
+            font-size: 0.68rem !important;
+            border-radius: 6px !important;
+        }
+        .notif-metric-number {
+            font-size: 1.25rem !important;
+            margin: 0.15rem 0;
+        }
+        .notif-metric-sub {
+            font-size: 0.58rem !important;
+        }
+    }
 </style>
 @endpush
 
@@ -239,16 +311,16 @@
     <div class="notif-hero-banner p-3.5 p-md-4 mb-3 mb-md-4">
         <div class="row align-items-center g-3">
             <div class="col-12 col-md-7">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                <div class="d-flex align-items-center gap-2.5 gap-md-3">
+                    <div class="notif-hero-icon rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                          style="width: 46px; height: 46px; background: rgba(56, 189, 248, 0.15); border: 1.5px solid rgba(56, 189, 248, 0.4); color: #38bdf8; font-size: 1.3rem;">
                         <i class="bi bi-bell-fill"></i>
                     </div>
                     <div>
-                        <h1 class="fw-bold mb-0 text-white" style="font-size: 1.25rem; letter-spacing: -0.2px;">
+                        <h1 class="notif-hero-title fw-bold mb-0 text-white" style="font-size: 1.25rem; letter-spacing: -0.2px;">
                             Pusat Notifikasi Sistem
                         </h1>
-                        <p class="text-white-50 small mb-0 mt-0.5" style="font-size: 0.8rem;">
+                        <p class="notif-hero-desc text-white-50 small mb-0 mt-0.5" style="font-size: 0.8rem;">
                             Monitoring pembaruan tiket gangguan, chat koordinasi, dokumentasi & SLA real-time
                         </p>
                     </div>
@@ -260,7 +332,7 @@
                     @if($unreadCount > 0)
                     <form method="POST" action="{{ route('notifications.read_all') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; min-height: 34px;">
+                        <button type="submit" class="btn btn-sm btn-info text-white rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; min-height: 34px; font-size: 0.8rem;">
                             <i class="bi bi-check2-all"></i>
                             <span>Tandai Semua Dibaca</span>
                         </button>
@@ -283,52 +355,52 @@
     </div>
 
     <!-- ── KPI METRICS SUMMARY CARDS ── -->
-    <div class="row g-2.5 g-md-3 mb-3 mb-md-4">
+    <div class="row g-2 g-md-3 mb-3 mb-md-4">
         <!-- 1. Total Notifikasi -->
         <div class="col-4">
             <div class="notif-metric-card border-c-total">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="text-muted small text-uppercase fw-bold notif-metric-label" style="font-size: 0.72rem; letter-spacing: 0.3px;">Total</span>
+                <div class="d-flex justify-content-between align-items-center mb-1 gap-1">
+                    <span class="text-muted text-uppercase fw-bold notif-metric-label">Total</span>
                     <div class="notif-icon-pill" style="background: #eff6ff; color: #2563eb;">
                         <i class="bi bi-bell-fill"></i>
                     </div>
                 </div>
-                <div class="notif-metric-number fw-bold text-navy" style="font-size: 1.65rem; line-height: 1.1;">
+                <div class="notif-metric-number fw-bold text-navy">
                     {{ $totalCount }}
                 </div>
-                <span class="text-muted" style="font-size: 0.7rem;">Seluruh aktivitas</span>
+                <span class="text-muted notif-metric-sub">Seluruh aktivitas</span>
             </div>
         </div>
 
         <!-- 2. Belum Dibaca -->
         <div class="col-4">
             <div class="notif-metric-card border-c-unread">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="text-muted small text-uppercase fw-bold notif-metric-label" style="font-size: 0.72rem; letter-spacing: 0.3px;">Belum Dibaca</span>
+                <div class="d-flex justify-content-between align-items-center mb-1 gap-1">
+                    <span class="text-muted text-uppercase fw-bold notif-metric-label">Belum Dibaca</span>
                     <div class="notif-icon-pill" style="background: #fff1f2; color: #e11d48;">
                         <i class="bi bi-envelope-exclamation-fill"></i>
                     </div>
                 </div>
-                <div class="notif-metric-number fw-bold text-danger" style="font-size: 1.65rem; line-height: 1.1;">
+                <div class="notif-metric-number fw-bold text-danger">
                     {{ $unreadCount }}
                 </div>
-                <span class="text-muted" style="font-size: 0.7rem;">Perlu perhatian</span>
+                <span class="text-muted notif-metric-sub">Perlu perhatian</span>
             </div>
         </div>
 
         <!-- 3. Sudah Dibaca -->
         <div class="col-4">
             <div class="notif-metric-card border-c-read">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="text-muted small text-uppercase fw-bold notif-metric-label" style="font-size: 0.72rem; letter-spacing: 0.3px;">Sudah Dibaca</span>
+                <div class="d-flex justify-content-between align-items-center mb-1 gap-1">
+                    <span class="text-muted text-uppercase fw-bold notif-metric-label">Sudah Dibaca</span>
                     <div class="notif-icon-pill" style="background: #ecfdf5; color: #059669;">
                         <i class="bi bi-envelope-check-fill"></i>
                     </div>
                 </div>
-                <div class="notif-metric-number fw-bold text-success" style="font-size: 1.65rem; line-height: 1.1;">
+                <div class="notif-metric-number fw-bold text-success">
                     {{ max(0, $totalCount - $unreadCount) }}
                 </div>
-                <span class="text-muted" style="font-size: 0.7rem;">Telah ditinjau</span>
+                <span class="text-muted notif-metric-sub">Telah ditinjau</span>
             </div>
         </div>
     </div>
