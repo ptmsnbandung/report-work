@@ -107,8 +107,66 @@
     }
     .nav-pills-kpi .nav-link.active {
         background: linear-gradient(135deg, #07152b 0%, #0c2147 100%);
+    /* ── REPORT HERO HEADER (DASHBOARD-STYLE DARK TECH GRADIENT) ── */
+    .report-hero-header {
+        background: linear-gradient(145deg, #071530 0%, #0d2352 55%, #133070 100%);
+        border-radius: var(--neu-radius-lg, 16px);
+        padding: 1.15rem 1.4rem;
+        margin-bottom: 1.15rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.12);
         color: #ffffff;
-        box-shadow: 0 4px 12px rgba(7, 21, 43, 0.25);
+    }
+    .report-hero-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(44, 127, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(44, 127, 255, 0.08) 1px, transparent 1px);
+        background-size: 28px 28px;
+        pointer-events: none;
+    }
+    .report-hero-header > * { position: relative; z-index: 2; }
+
+    .btn-report-export-pdf {
+        background: rgba(239, 68, 68, 0.18);
+        color: #ffffff !important;
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-report-export-pdf:hover {
+        background: rgba(239, 68, 68, 0.35);
+        border-color: rgba(248, 113, 113, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-report-export-excel {
+        background: rgba(34, 197, 94, 0.18);
+        color: #ffffff !important;
+        border: 1px solid rgba(74, 222, 128, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-report-export-excel:hover {
+        background: rgba(34, 197, 94, 0.35);
+        border-color: rgba(74, 222, 128, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    @media (max-width: 575.98px) {
+        .report-hero-header {
+            padding: 1rem 1rem !important;
+            border-radius: 14px !important;
+            margin-bottom: 1rem !important;
+        }
     }
 </style>
 @endpush
@@ -124,18 +182,18 @@
         ]" />
     </div>
 
-    <!-- ── PAGE HEADER & EXPORT ACTIONS ── -->
-    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white p-3 p-md-3.5">
+    <!-- ── PAGE HEADER & EXPORT ACTIONS (DASHBOARD-STYLE DARK TECH GRADIENT) ── -->
+    <div class="report-hero-header">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2.5">
             <div class="d-flex align-items-center gap-2.5">
-                <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;">
+                <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45); border: 1px solid rgba(255, 255, 255, 0.2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;">
                     <i class="bi bi-award-fill"></i>
                 </div>
                 <div>
-                    <h1 class="page-title-text mb-0 fw-bold text-navy" style="font-size: 1.05rem; line-height: 1.3;">
+                    <h1 class="page-title-text mb-0 fw-bold text-white" style="font-size: 1.15rem; line-height: 1.3; letter-spacing: -0.2px;">
                         Key Performance Indicators (KPI) &amp; Evaluasi Kinerja
                     </h1>
-                    <p class="text-muted small mb-0 d-none d-md-block" style="font-size: 0.75rem; margin-top: 2px;">
+                    <p class="small mb-0 d-none d-md-block" style="color: rgba(186, 214, 235, 0.85); font-size: 0.76rem; margin-top: 2px;">
                         Monitoring kepatuhan SLA, kecepatan respon, interval 30 menit, dan durasi verifikasi
                     </p>
                 </div>
@@ -143,12 +201,12 @@
 
             <!-- Export Buttons -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
-                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-report-export-pdf btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
+                    <i class="bi bi-file-earmark-pdf-fill" style="color: #fca5a5;"></i>
                     <span>Export PDF</span>
                 </a>
-                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 py-1 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
-                    <i class="bi bi-file-earmark-excel-fill"></i>
+                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-report-export-excel btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
+                    <i class="bi bi-file-earmark-excel-fill" style="color: #86efac;"></i>
                     <span>Export Excel</span>
                 </a>
             </div>

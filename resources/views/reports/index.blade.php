@@ -63,41 +63,70 @@
         transform: rotate(180deg);
     }
 
+    /* ── REPORT HERO HEADER (DASHBOARD-STYLE DARK TECH GRADIENT) ── */
+    .report-hero-header {
+        background: linear-gradient(145deg, #071530 0%, #0d2352 55%, #133070 100%);
+        border-radius: var(--neu-radius-lg, 16px);
+        padding: 1.15rem 1.4rem;
+        margin-bottom: 1.15rem;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.12);
+        color: #ffffff;
+    }
+
+    .report-hero-header::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+            linear-gradient(rgba(44, 127, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(44, 127, 255, 0.08) 1px, transparent 1px);
+        background-size: 28px 28px;
+        pointer-events: none;
+    }
+
+    .report-hero-header > * {
+        position: relative;
+        z-index: 2;
+    }
+
+    .btn-report-export-pdf {
+        background: rgba(239, 68, 68, 0.18);
+        color: #ffffff !important;
+        border: 1px solid rgba(248, 113, 113, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-report-export-pdf:hover {
+        background: rgba(239, 68, 68, 0.35);
+        border-color: rgba(248, 113, 113, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-report-export-excel {
+        background: rgba(34, 197, 94, 0.18);
+        color: #ffffff !important;
+        border: 1px solid rgba(74, 222, 128, 0.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    }
+    .btn-report-export-excel:hover {
+        background: rgba(34, 197, 94, 0.35);
+        border-color: rgba(74, 222, 128, 0.6);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
     @media (max-width: 575.98px) {
-        .stat-metric-card {
-            padding: 0.65rem 0.5rem;
-            border-radius: 12px;
-            min-height: 80px;
-        }
-        .stat-metric-card .stat-label-text {
-            font-size: 0.58rem !important;
-            letter-spacing: 0.2px !important;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1 !important;
-        }
-        .stat-metric-number {
-            font-size: 1.25rem !important;
-            letter-spacing: -0.3px;
-            line-height: 1 !important;
-            margin-bottom: 2px !important;
-        }
-        .stat-metric-number.number-compact {
-            font-size: 0.95rem !important;
-        }
-        .stat-metric-card .stat-icon-pill {
-            width: 22px;
-            height: 22px;
-            font-size: 0.72rem;
-            border-radius: 6px;
-        }
-        .stat-metric-card .stat-desc-text {
-            font-size: 0.58rem !important;
-            line-height: 1.15;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .report-hero-header {
+            padding: 1rem 1rem !important;
+            border-radius: 14px !important;
+            margin-bottom: 1rem !important;
         }
     }
 </style>
@@ -111,18 +140,18 @@
         <x-breadcrumb :items="['Monitoring' => null]" />
     </div>
 
-    <!-- ── PAGE HEADER & EXPORT ACTIONS ── -->
-    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white p-3 p-md-3.5">
+    <!-- ── PAGE HEADER & EXPORT ACTIONS (DASHBOARD-STYLE DARK TECH GRADIENT) ── -->
+    <div class="report-hero-header">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2.5">
             <div class="d-flex align-items-center gap-2.5">
-                <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2C7FFF, #1b39da); box-shadow: 0 4px 12px rgba(44, 127, 255, 0.35); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;">
+                <div class="page-title-icon-box shadow-xs flex-shrink-0" style="background: linear-gradient(135deg, #2C7FFF, #1b39da); box-shadow: 0 4px 12px rgba(44, 127, 255, 0.45); border: 1px solid rgba(255, 255, 255, 0.2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.15rem;">
                     <i class="bi bi-graph-up-arrow text-white"></i>
                 </div>
                 <div>
-                    <h1 class="page-title-text mb-0 fw-bold text-navy" style="font-size: 1.05rem; line-height: 1.3;">
+                    <h1 class="page-title-text mb-0 fw-bold text-white" style="font-size: 1.15rem; line-height: 1.3; letter-spacing: -0.2px;">
                         Laporan &amp; Analisis MTTR / SLA
                     </h1>
-                    <p class="text-muted small mb-0 d-none d-md-block" style="font-size: 0.75rem; margin-top: 2px;">
+                    <p class="small mb-0 d-none d-md-block" style="color: rgba(186, 214, 235, 0.85); font-size: 0.76rem; margin-top: 2px;">
                         Rekapitulasi performa perbaikan gangguan backbone dan kepatuhan SLA
                     </p>
                 </div>
@@ -130,12 +159,12 @@
 
             <!-- Export Buttons -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ route('reports.export.pdf', request()->query()) }}" class="btn btn-outline-danger btn-sm rounded-pill px-3 py-1 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
-                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                <a href="{{ route('reports.export.pdf', request()->query()) }}" class="btn btn-report-export-pdf btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
+                    <i class="bi bi-file-earmark-pdf-fill" style="color: #fca5a5;"></i>
                     <span>Export PDF</span>
                 </a>
-                <a href="{{ route('reports.export.excel', request()->query()) }}" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
-                    <i class="bi bi-file-earmark-excel-fill"></i>
+                <a href="{{ route('reports.export.excel', request()->query()) }}" class="btn btn-report-export-excel btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
+                    <i class="bi bi-file-earmark-excel-fill" style="color: #86efac;"></i>
                     <span>Export Excel</span>
                 </a>
             </div>
