@@ -72,6 +72,9 @@ class KronologisController extends Controller
                     'kategori_icon'    => $krono->kategori_icon,
                     'informasi'        => $krono->informasi,
                     'foto_url'         => $krono->foto_url ? asset($krono->foto_url) : null,
+                    'video_url'        => $krono->video_url ? asset($krono->video_url) : null,
+                    'is_video'         => (bool) $krono->is_video,
+                    'media_url'        => $krono->media_url ? asset($krono->media_url) : null,
                     'latitude'         => $krono->latitude,
                     'longitude'        => $krono->longitude,
                     'has_coordinates'  => $krono->has_coordinates,
@@ -106,7 +109,7 @@ class KronologisController extends Controller
     public function store(StoreKronologisRequest $request, Tiket $tiket): RedirectResponse|JsonResponse
     {
         try {
-            $foto = $request->file('foto');
+            $foto = $request->file('foto') ?? $request->file('video');
             $kronologis = $this->kronologisService->addKronologis($tiket, $request->validated(), $request->user(), $foto);
 
             if ($request->wantsJson() || $request->ajax()) {
@@ -131,6 +134,9 @@ class KronologisController extends Controller
                         'kategori_icon'    => $kronologis->kategori_icon,
                         'informasi'        => $kronologis->informasi,
                         'foto_url'         => $kronologis->foto_url ? asset($kronologis->foto_url) : null,
+                        'video_url'        => $kronologis->video_url ? asset($kronologis->video_url) : null,
+                        'is_video'         => (bool) $kronologis->is_video,
+                        'media_url'        => $kronologis->media_url ? asset($kronologis->media_url) : null,
                         'latitude'         => $kronologis->latitude,
                         'longitude'        => $kronologis->longitude,
                         'has_coordinates'  => $kronologis->has_coordinates,

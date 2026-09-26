@@ -19,6 +19,7 @@ class Kronologis extends Model
         'kategori',
         'informasi',
         'foto_url',
+        'video_url',
         'latitude',
         'longitude',
     ];
@@ -113,5 +114,27 @@ class Kronologis extends Model
         }
 
         return "https://www.google.com/maps?q={$this->latitude},{$this->longitude}";
+    }
+
+    /**
+     * Cek apakah media yang dilampirkan adalah video
+     */
+    public function getIsVideoAttribute(): bool
+    {
+        if (!empty($this->video_url)) {
+            return true;
+        }
+        if (!empty($this->foto_url) && preg_match('/\.(mp4|webm|mov|m4v|3gp|avi)$/i', $this->foto_url)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * URL media (foto atau video)
+     */
+    public function getMediaUrlAttribute(): ?string
+    {
+        return $this->video_url ?? $this->foto_url;
     }
 }

@@ -48,8 +48,18 @@ class KronologisService
                 : Carbon::now();
 
             $fotoUrl = null;
+            $videoUrl = null;
+
             if ($foto && $foto->isValid()) {
-                $fotoUrl = $this->uploadFoto($foto, $tiket->id);
+                $ext = strtolower($foto->getClientOriginalExtension() ?: '');
+                $isVideo = in_array($ext, ['mp4', 'webm', 'mov', 'm4v', '3gp', 'avi'])
+                    || str_starts_with((string)$foto->getMimeType(), 'video/');
+
+                if ($isVideo) {
+                    $videoUrl = $this->uploadMediaFile($foto, $tiket->id, 'video');
+                } else {
+                    $fotoUrl = $this->uploadMediaFile($foto, $tiket->id, 'foto');
+                }
             }
 
             $kronologis = Kronologis::create([
@@ -59,6 +69,7 @@ class KronologisService
                 'kategori'  => $data['kategori'],
                 'informasi' => $data['informasi'],
                 'foto_url'  => $fotoUrl,
+                'video_url' => $videoUrl,
                 'latitude'  => !empty($data['latitude']) ? (float) $data['latitude'] : null,
                 'longitude' => !empty($data['longitude']) ? (float) $data['longitude'] : null,
             ]);
@@ -91,15 +102,16 @@ class KronologisService
     }
 
     /**
-     * Upload dan simpan foto kronologis
+     * Upload dan simpan media (foto atau video) kronologis
      */
-    protected function uploadFoto(UploadedFile $file, int|string $tiketId): string
+    public function uploadMediaFile(UploadedFile $file, int|string $tiketId, string $type = 'foto'): string
     {
-        $extension = strtolower($file->getClientOriginalExtension() ?: 'jpg');
-        $filename = 'krono_' . $tiketId . '_' . date('Ymd_His') . '_' . uniqid() . '.' . $extension;
+        $extension = strtolower($file->getClientOriginalExtension() ?: ($type === 'video' ? 'mp4' : 'jpg'));
+        $prefix = $type === 'video' ? 'krono_vid_' : 'krono_';
+        $filename = $prefix . $tiketId . '_' . date('Ymd_His') . '_' . uniqid() . '.' . $extension;
 
-        // Simpan ke public/uploads/kronologis
-        $destinationPath = public_path('uploads/kronologis');
+        $subDir = $type === 'video' ? 'uploads/kronologis/videos' : 'uploads/kronologis';
+        $destinationPath = public_path($subDir);
         if (!file_exists($destinationPath)) {
             mkdir($destinationPath, 0755, true);
         }
@@ -107,10 +119,19 @@ class KronologisService
         $file->move($destinationPath, $filename);
         $fullPath = $destinationPath . DIRECTORY_SEPARATOR . $filename;
 
-        // Auto compress/resize on server if file is large (> 1MB or > 1920px)
-        $this->compressImageOnServer($fullPath);
+        if ($type === 'foto') {
+            $this->compressImageOnServer($fullPath);
+        }
 
-        return 'uploads/kronologis/' . $filename;
+        return $subDir . '/' . $filename;
+    }
+
+    /**
+     * Upload dan simpan foto kronologis (backward compatibility)
+     */
+    protected function uploadFoto(UploadedFile $file, int|string $tiketId): string
+    {
+        return $this->uploadMediaFile($file, $tiketId, 'foto');
     }
 
     /**
@@ -192,6 +213,10 @@ class KronologisService
         // Hapus file foto jika ada di public_path
         if ($kronologis->foto_url && file_exists(public_path($kronologis->foto_url))) {
             @unlink(public_path($kronologis->foto_url));
+        }
+        // Hapus file video jika ada di public_path
+        if ($kronologis->video_url && file_exists(public_path($kronologis->video_url))) {
+            @unlink(public_path($kronologis->video_url));
         }
 
         return (bool) $kronologis->delete();

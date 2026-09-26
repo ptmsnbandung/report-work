@@ -770,6 +770,25 @@
         pointer-events: none;
     }
 
+    /* Video Attachment Card */
+    .wa-media-card.wa-video-card {
+        cursor: default;
+        background: #0f172a;
+        max-width: 320px;
+        min-height: 140px;
+        border: 1px solid rgba(15, 23, 42, 0.2);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+    .wa-video-player {
+        width: 100%;
+        max-height: 240px;
+        min-height: 140px;
+        border-radius: 9px;
+        display: block;
+        background: #000000;
+        outline: none;
+    }
+
     /* Shared Location Card */
     .wa-location-card {
         margin-top: 0.45rem;
@@ -3715,8 +3734,12 @@
                                                 @endif
                                                 <div class="wa-msg-text">{!! preg_replace('/(@[a-zA-Z0-9_\.\-]+(?:\s+[a-zA-Z0-9_\.\-]+)?)/u', '<span class="wa-mention-tag-highlight">$1</span>', nl2br(e($cleanedInfo))) !!}</div>
 
-                                                <!-- Attached Photo (WhatsApp Media Card) -->
-                                                @if($krono->foto_url)
+                                                <!-- Attached Media: Video or Photo (WhatsApp Media Card) -->
+                                                @if($krono->is_video || $krono->video_url)
+                                                <div class="wa-media-card wa-video-card">
+                                                    <video src="{{ asset($krono->video_url ?? $krono->foto_url) }}" controls playsinline preload="metadata" class="wa-video-player"></video>
+                                                </div>
+                                                @elseif($krono->foto_url)
                                                 <div class="wa-media-card" onclick="zoomPhoto('{{ asset($krono->foto_url) }}', '{{ $krono->kategori }} - {{ $krono->timestamp->format('d/m/Y H:i') }} WIB')">
                                                     <img src="{{ asset($krono->foto_url) }}" alt="Foto Kronologis" class="wa-media-img" loading="lazy">
                                                     <div class="wa-media-badge">
@@ -3826,24 +3849,36 @@
                             <input type="hidden" name="kategori" value="LAIN">
                             <input type="hidden" name="latitude" id="waChatLatitude" value="">
                             <input type="hidden" name="longitude" id="waChatLongitude" value="">
-                            <input type="file" name="foto" id="waChatFotoInput" accept="image/*" class="d-none">
+                            <input type="file" name="foto" id="waChatFotoInput" accept="image/*,video/*" class="d-none">
+                            <input type="file" id="waChatVideoRecordInput" accept="video/*" capture="environment" class="d-none">
 
                             <!-- Floating White Capsule Pill (Enclosing Paperclip + Textarea + Attachments) -->
                             <div class="wa-floating-input-pill">
                                 <!-- Paperclip Attachment Dropdown Menu -->
                                 <div class="dropup position-relative d-flex align-items-center">
-                                    <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan foto / lokasi">
+                                    <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan media / lokasi">
                                         <i class="bi bi-paperclip"></i>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-start wa-attach-menu shadow-lg border-0" aria-labelledby="waAttachDropdownBtn">
                                         <li>
                                             <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaUploadFoto">
                                                 <div class="wa-attach-icon bg-primary-subtle text-primary">
-                                                    <i class="bi bi-image"></i>
+                                                    <i class="bi bi-images"></i>
                                                 </div>
                                                 <div>
-                                                    <div class="fw-bold small text-dark">Upload Foto</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Pilih foto dari galeri HP / perangkat</div>
+                                                    <div class="fw-bold small text-dark">Upload Media (Foto / Video)</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Pilih foto atau video dari galeri HP / perangkat</div>
+                                                </div>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaRecordVideo">
+                                                <div class="wa-attach-icon bg-danger-subtle text-danger">
+                                                    <i class="bi bi-camera-reels-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold small text-dark">Rekam Video Lapangan</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Rekam langsung kamera HP (Video Ringan &amp; Cepat)</div>
                                                 </div>
                                             </button>
                                         </li>
@@ -3854,7 +3889,7 @@
                                                 </div>
                                                 <div>
                                                     <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp & Alamat</div>
+                                                    <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp &amp; Alamat</div>
                                                 </div>
                                             </button>
                                         </li>
@@ -3904,7 +3939,7 @@
                                     </div>
 
                                     <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
-                                    <!-- Attachment Previews Bar (shows when photo or location is attached) -->
+                                    <!-- Attachment Previews Bar (shows when photo, video or location is attached) -->
                                     <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
                                         <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
                                             <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
@@ -3914,6 +3949,17 @@
                                                 <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
                                             </span>
                                             <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaPhoto" title="Hapus Foto"></button>
+                                        </div>
+                                        <div id="waVideoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
+                                            <div class="position-relative d-flex align-items-center justify-content-center bg-dark text-white rounded-circle" style="width: 22px; height: 22px; overflow: hidden; flex-shrink: 0;">
+                                                <img id="waVideoThumb" src="#" class="d-none w-100 h-100" style="object-fit: cover;" alt="Video">
+                                                <i class="bi bi-camera-reels-fill text-warning" id="waVideoDefaultIcon" style="font-size: 0.65rem;"></i>
+                                            </div>
+                                            <span id="waVideoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">video.mp4</span>
+                                            <span id="waVideoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
+                                                <i class="bi bi-lightning-charge-fill me-0.5 text-warning"></i> <span id="waVideoSizeText">Ringan</span>
+                                            </span>
+                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaVideo" title="Hapus Video"></button>
                                         </div>
                                         <div id="waLocationChip" class="d-none align-items-center gap-1.5 badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2 rounded-pill">
                                             <i class="bi bi-geo-alt-fill"></i>
@@ -7301,6 +7347,235 @@ function compressImageFile(file, customOptions = {}) {
     });
 }
 
+/**
+ * Buat thumbnail frame pertama dari file video untuk preview
+ */
+function getVideoThumbnail(file) {
+    return new Promise((resolve) => {
+        if (!file) return resolve(null);
+        const url = URL.createObjectURL(file);
+        const video = document.createElement('video');
+        video.muted = true;
+        video.playsInline = true;
+        video.src = url;
+        video.onloadeddata = () => {
+            video.currentTime = Math.min(0.5, (video.duration || 1) / 2);
+        };
+        video.onseeked = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.min(160, video.videoWidth || 160);
+                canvas.height = Math.round(canvas.width * ((video.videoHeight || 120) / (video.videoWidth || 160)));
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const thumbData = canvas.toDataURL('image/jpeg', 0.7);
+                URL.revokeObjectURL(url);
+                resolve(thumbData);
+            } catch(e) {
+                URL.revokeObjectURL(url);
+                resolve(null);
+            }
+        };
+        video.onerror = () => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        };
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            resolve(null);
+        }, 3000);
+    });
+}
+
+/**
+ * Kompresi dan optimasi file video agar ringan (< 3MB) dan cepat diunggah dari lapangan.
+ * Menggunakan HTML5 Canvas + MediaRecorder API dengan target bitrate ~1Mbps dan resolusi 720p/480p.
+ */
+function compressVideoFile(file, customOptions = {}) {
+    return new Promise(async (resolve) => {
+        if (!file || (!file.type.startsWith('video/') && !/\.(mp4|webm|mov|m4v|3gp|avi)$/i.test(file.name))) {
+            return resolve(file);
+        }
+
+        const options = {
+            maxDimension: 854, // 480p / 720p scaling for fast mobile bandwidth
+            bitrate: 1000000,   // ~1.0 Mbps target
+            fps: 24,
+            maxDuration: 60,    // max 60 seconds per clip
+            onProgress: null,
+            ...customOptions
+        };
+
+        // Jika ukuran video sudah sangat kecil (< 2.5MB), langsung kirim tanpa re-encoding
+        if (file.size <= 2.5 * 1024 * 1024) {
+            return resolve(file);
+        }
+
+        // Cek dukungan MediaRecorder dan captureStream
+        const canCaptureCanvas = typeof HTMLCanvasElement !== 'undefined' && HTMLCanvasElement.prototype.captureStream;
+        const canRecord = typeof MediaRecorder !== 'undefined';
+
+        if (!canCaptureCanvas || !canRecord) {
+            console.warn('Browser tidak mendukung MediaRecorder canvas stream, menggunakan file video original.');
+            return resolve(file);
+        }
+
+        const videoUrl = URL.createObjectURL(file);
+        const video = document.createElement('video');
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'auto';
+        video.src = videoUrl;
+
+        const cleanup = () => {
+            try {
+                video.pause();
+                video.removeAttribute('src');
+                video.load();
+                URL.revokeObjectURL(videoUrl);
+            } catch(e) {}
+        };
+
+        video.onerror = () => {
+            cleanup();
+            resolve(file);
+        };
+
+        video.onloadedmetadata = async () => {
+            try {
+                const origW = video.videoWidth || 640;
+                const origH = video.videoHeight || 480;
+                const duration = video.duration || 10;
+
+                // Hitung skala resolusi agar ringan
+                let targetW = origW;
+                let targetH = origH;
+                const maxDim = options.maxDimension;
+
+                if (targetW > maxDim || targetH > maxDim) {
+                    if (targetW >= targetH) {
+                        targetH = Math.round((targetH * maxDim) / targetW);
+                        targetW = maxDim;
+                    } else {
+                        targetW = Math.round((targetW * maxDim) / targetH);
+                        targetH = maxDim;
+                    }
+                }
+                // Pastikan ukuran genap untuk codec video
+                targetW = targetW % 2 === 0 ? targetW : targetW + 1;
+                targetH = targetH % 2 === 0 ? targetH : targetH + 1;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = targetW;
+                canvas.height = targetH;
+                const ctx = canvas.getContext('2d', { alpha: false });
+
+                // Stream dari canvas
+                const stream = canvas.captureStream(options.fps);
+
+                // Tambahkan audio track jika ada
+                try {
+                    const audioStream = video.captureStream ? video.captureStream() : (video.mozCaptureStream ? video.mozCaptureStream() : null);
+                    if (audioStream && audioStream.getAudioTracks().length > 0) {
+                        stream.addTrack(audioStream.getAudioTracks()[0]);
+                    }
+                } catch (e) {}
+
+                // Tentukan supported mimeType
+                let mimeType = 'video/webm;codecs=vp8,opus';
+                if (MediaRecorder.isTypeSupported('video/mp4;codecs=avc1,mp4a.40.2')) {
+                    mimeType = 'video/mp4;codecs=avc1,mp4a.40.2';
+                } else if (MediaRecorder.isTypeSupported('video/mp4')) {
+                    mimeType = 'video/mp4';
+                } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+                    mimeType = 'video/webm;codecs=vp8';
+                } else if (MediaRecorder.isTypeSupported('video/webm')) {
+                    mimeType = 'video/webm';
+                }
+
+                let recorder;
+                try {
+                    recorder = new MediaRecorder(stream, {
+                        mimeType: mimeType,
+                        videoBitsPerSecond: options.bitrate
+                    });
+                } catch(err) {
+                    cleanup();
+                    return resolve(file);
+                }
+
+                const chunks = [];
+                recorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) chunks.push(e.data);
+                };
+
+                recorder.onstop = () => {
+                    cleanup();
+                    if (chunks.length === 0) {
+                        return resolve(file);
+                    }
+                    const blob = new Blob(chunks, { type: mimeType.split(';')[0] });
+                    const isMp4 = mimeType.includes('mp4');
+                    const extension = isMp4 ? '.mp4' : '.webm';
+                    const cleanName = (file.name.replace(/\.[^.]+$/, '') || 'rekaman_lapangan') + extension;
+
+                    const compressedFile = new File([blob], cleanName, {
+                        type: blob.type,
+                        lastModified: Date.now()
+                    });
+
+                    // Hanya gunakan jika hasil kompresi lebih kecil dari aslinya
+                    if (compressedFile.size < file.size) {
+                        resolve(compressedFile);
+                    } else {
+                        resolve(file);
+                    }
+                };
+
+                let isRendering = true;
+                const drawFrame = () => {
+                    if (!isRendering) return;
+                    if (video.currentTime >= options.maxDuration || video.ended || video.paused) {
+                        if (recorder.state === 'recording') {
+                            recorder.stop();
+                        }
+                        isRendering = false;
+                        return;
+                    }
+                    ctx.drawImage(video, 0, 0, targetW, targetH);
+
+                    if (typeof options.onProgress === 'function' && duration > 0) {
+                        const pct = Math.min(99, Math.round((video.currentTime / Math.min(duration, options.maxDuration)) * 100));
+                        options.onProgress(pct);
+                    }
+
+                    if ('requestVideoFrameCallback' in video) {
+                        video.requestVideoFrameCallback(drawFrame);
+                    } else {
+                        requestAnimationFrame(drawFrame);
+                    }
+                };
+
+                recorder.start(100);
+                video.playbackRate = 1.0;
+                await video.play();
+                drawFrame();
+
+                video.onended = () => {
+                    if (recorder.state === 'recording') {
+                        recorder.stop();
+                    }
+                    isRendering = false;
+                };
+            } catch(e) {
+                console.warn('Video compression exception:', e);
+                cleanup();
+                resolve(file);
+            }
+        };
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // ── 1. MODAL CLOSING TIKET LIVE MTTR CALCULATION ──
     const modalCloseDateInput = document.getElementById('modal_tanggal_close');
@@ -7934,14 +8209,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <div class="wa-msg-text">${formatMessageWithMentions(k.informasi || '')}</div>
 
-                        ${k.foto_url ? `
+                        ${k.is_video || k.video_url ? `
+                        <div class="wa-media-card wa-video-card">
+                            <video src="${k.video_url || k.foto_url}" controls playsinline preload="metadata" class="wa-video-player"></video>
+                        </div>` : (k.foto_url ? `
                         <div class="wa-media-card" onclick="zoomPhoto('${k.foto_url}', '${k.kategori} - ${k.formatted_time}')">
                             <img src="${k.foto_url}" alt="Foto Kronologis" class="wa-media-img" loading="lazy">
                             <div class="wa-media-badge">
                                 <i class="bi bi-arrows-fullscreen"></i>
                                 <span>Klik untuk memperbesar</span>
                             </div>
-                        </div>` : ''}
+                        </div>` : '')}
 
                         ${k.has_coordinates ? `
                         <div class="wa-location-card">
@@ -10338,9 +10616,11 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     if (waDirectChatForm) {
         const waChatTextInput = document.getElementById('waChatTextInput');
         const waChatFotoInput = document.getElementById('waChatFotoInput');
+        const waChatVideoRecordInput = document.getElementById('waChatVideoRecordInput');
         const waChatLat = document.getElementById('waChatLatitude');
         const waChatLng = document.getElementById('waChatLongitude');
         const btnWaUploadFoto = document.getElementById('btnWaUploadFoto');
+        const btnWaRecordVideo = document.getElementById('btnWaRecordVideo');
         const btnWaCameraWatermark = document.getElementById('btnWaCameraWatermark');
         const btnWaCameraPolos = document.getElementById('btnWaCameraPolos');
         const btnWaShareLocation = document.getElementById('btnWaShareLocation');
@@ -10351,6 +10631,12 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         const waPhotoThumb = document.getElementById('waPhotoThumb');
         const waPhotoDefaultIcon = document.getElementById('waPhotoDefaultIcon');
         const btnRemoveWaPhoto = document.getElementById('btnRemoveWaPhoto');
+        const waVideoPreviewChip = document.getElementById('waVideoPreviewChip');
+        const waVideoFileName = document.getElementById('waVideoFileName');
+        const waVideoSizeBadge = document.getElementById('waVideoSizeBadge');
+        const waVideoThumb = document.getElementById('waVideoThumb');
+        const waVideoDefaultIcon = document.getElementById('waVideoDefaultIcon');
+        const btnRemoveWaVideo = document.getElementById('btnRemoveWaVideo');
         const waLocationChip = document.getElementById('waLocationChip');
         const waLocationCoordsText = document.getElementById('waLocationCoordsText');
         const btnRemoveWaLocation = document.getElementById('btnRemoveWaLocation');
@@ -10361,6 +10647,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
         let currentWaCompressedPhoto = null;
         let waCompressionPromise = null;
+        let currentWaCompressedVideo = null;
+        let waVideoCompressionPromise = null;
+        let currentWaVideoThumbUrl = null;
         let currentPhotoMode = 'watermark'; // 'watermark' | 'plain' | 'gallery'
 
         let activeMentionIndex = 0;
@@ -10452,114 +10741,29 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         function checkMentionTrigger() {
             if (!waChatTextInput) return;
             const val = waChatTextInput.value;
-            const cursorPos = waChatTextInput.selectionStart;
-
-            const textBeforeCursor = val.substring(0, cursorPos);
-            const lastAtIndex = textBeforeCursor.lastIndexOf('@');
-
-            if (lastAtIndex !== -1) {
-                const charBeforeAt = lastAtIndex > 0 ? textBeforeCursor[lastAtIndex - 1] : ' ';
-                const textBetween = textBeforeCursor.substring(lastAtIndex + 1);
-
-                if ((/\s/.test(charBeforeAt) || lastAtIndex === 0) && !textBetween.includes('\n') && textBetween.length <= 30) {
-                    showMentionDropdown(textBetween, lastAtIndex);
-                    return;
-                }
-            }
-
-            hideMentionDropdown();
-        }
-
-        // Input & Click triggers for @mentions
-        waChatTextInput?.addEventListener('input', function() {
-            checkMentionTrigger();
-        });
-
-        waChatTextInput?.addEventListener('click', function() {
-            checkMentionTrigger();
-        });
-
-        // Click on mention list item
-        waMentionList?.addEventListener('mousedown', function(e) {
-            e.preventDefault(); // Prevent blur on textarea
-            const item = e.target.closest('.wa-mention-item');
-            if (item) {
-                const idx = parseInt(item.getAttribute('data-index'), 10);
-                if (!isNaN(idx) && filteredMentionUsers[idx]) {
-                    insertMention(filteredMentionUsers[idx]);
-                }
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (waMentionDropdown && !waMentionDropdown.contains(e.target) && e.target !== waChatTextInput) {
-                hideMentionDropdown();
-            }
-
-            // Gojek-style quick reply chip click handler
-            const chip = e.target.closest('.wa-quick-chip');
-            if (chip && waChatTextInput) {
-                e.preventDefault();
-                const text = chip.getAttribute('data-text') || chip.textContent.trim();
-                waChatTextInput.value = text;
-                waChatTextInput.focus();
-                waChatTextInput.dispatchEvent(new Event('input', { bubbles: true }));
-
-                const pill = waChatTextInput.closest('.wa-floating-input-pill');
-                if (pill) {
-                    pill.style.borderColor = '#2C7FFF';
-                    pill.style.boxShadow = '0 0 0 3px rgba(44, 127, 255, 0.25)';
-                    setTimeout(() => {
-                        pill.style.borderColor = '';
-                        pill.style.boxShadow = '';
-                    }, 400);
-                }
-            }
-        });
-
-        // Keydown handler (Arrow keys, Enter, Tab, Escape, Submit)
-        waChatTextInput?.addEventListener('keydown', function(e) {
-            // Jika dropdown mention sedang aktif
-            if (waMentionDropdown && !waMentionDropdown.classList.contains('d-none') && filteredMentionUsers.length > 0) {
-                if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    activeMentionIndex = (activeMentionIndex + 1) % filteredMentionUsers.length;
-                    updateMentionActiveItem();
-                    return;
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    activeMentionIndex = (activeMentionIndex - 1 + filteredMentionUsers.length) % filteredMentionUsers.length;
-                    updateMentionActiveItem();
-                    return;
-                } else if (e.key === 'Enter' || e.key === 'Tab') {
-                    e.preventDefault();
-                    if (filteredMentionUsers[activeMentionIndex]) {
-                        insertMention(filteredMentionUsers[activeMentionIndex]);
-                    }
-                    return;
-                } else if (e.key === 'Escape') {
-                    e.preventDefault();
-                    hideMentionDropdown();
-                    return;
-                }
-            }
-
-            // Enter key to submit (Shift+Enter for newline)
+                      // Enter key to submit (Shift+Enter for newline)
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (this.value.trim().length > 0 || (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || currentWaCompressedPhoto) {
+                if (this.value.trim().length > 0 || (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || (waChatVideoRecordInput && waChatVideoRecordInput.files && waChatVideoRecordInput.files.length > 0) || currentWaCompressedPhoto || currentWaCompressedVideo) {
                     waDirectChatForm.requestSubmit();
                 }
             }
         });
 
-        // 1. Upload Foto (Galeri)
+        // 1. Upload Media (Foto / Video dari Galeri)
         btnWaUploadFoto?.addEventListener('click', function() {
             currentPhotoMode = 'gallery';
             if (waChatFotoInput) {
                 waChatFotoInput.removeAttribute('capture');
+                waChatFotoInput.setAttribute('accept', 'image/*,video/*');
                 waChatFotoInput.click();
+            }
+        });
+
+        // 1.B Rekam Video Lapangan Langsung dari Kamera HP
+        btnWaRecordVideo?.addEventListener('click', function() {
+            if (waChatVideoRecordInput) {
+                waChatVideoRecordInput.click();
             }
         });
 
@@ -10567,6 +10771,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         btnWaCameraWatermark?.addEventListener('click', function() {
             currentPhotoMode = 'watermark';
             if (waChatFotoInput) {
+                waChatFotoInput.setAttribute('accept', 'image/*');
                 waChatFotoInput.setAttribute('capture', 'environment');
                 waChatFotoInput.click();
             }
@@ -10576,18 +10781,108 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         btnWaCameraPolos?.addEventListener('click', function() {
             currentPhotoMode = 'plain';
             if (waChatFotoInput) {
+                waChatFotoInput.setAttribute('accept', 'image/*');
                 waChatFotoInput.setAttribute('capture', 'environment');
                 waChatFotoInput.click();
             }
         });
 
-        // Event saat file foto dipilih / difoto dari kamera
-        waChatFotoInput?.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const originalFile = this.files[0];
-                if (waPhotoFileName) waPhotoFileName.textContent = originalFile.name;
-                
-                // Tampilkan chip dengan status sedang mengompres
+        function clearPhotoAttachment() {
+            currentWaCompressedPhoto = null;
+            waCompressionPromise = null;
+            if (waChatFotoInput) waChatFotoInput.value = '';
+            if (waPhotoThumb) {
+                waPhotoThumb.src = '#';
+                waPhotoThumb.classList.add('d-none');
+            }
+            if (waPhotoDefaultIcon) waPhotoDefaultIcon.classList.remove('d-none');
+            if (waPhotoPreviewChip) {
+                waPhotoPreviewChip.classList.add('d-none');
+                waPhotoPreviewChip.classList.remove('d-flex');
+            }
+        }
+
+        function clearVideoAttachment() {
+            currentWaCompressedVideo = null;
+            waVideoCompressionPromise = null;
+            currentWaVideoThumbUrl = null;
+            if (waChatVideoRecordInput) waChatVideoRecordInput.value = '';
+            if (waVideoThumb) {
+                waVideoThumb.src = '#';
+                waVideoThumb.classList.add('d-none');
+            }
+            if (waVideoDefaultIcon) waVideoDefaultIcon.classList.remove('d-none');
+            if (waVideoPreviewChip) {
+                waVideoPreviewChip.classList.add('d-none');
+                waVideoPreviewChip.classList.remove('d-flex');
+            }
+        }
+
+        // Handler terpadu untuk file foto atau video yang dipilih/direkam
+        function handleMediaSelected(file, isDirectRecord = false) {
+            if (!file) return;
+
+            const isVideo = file.type.startsWith('video/') || /\.(mp4|webm|mov|m4v|3gp|avi)$/i.test(file.name);
+
+            if (isVideo) {
+                // Bersihkan foto jika sebelumnya ada (1 media per pesan)
+                clearPhotoAttachment();
+
+                if (waVideoFileName) waVideoFileName.textContent = file.name || (isDirectRecord ? 'rekaman_lapangan.mp4' : 'video.mp4');
+                if (waVideoSizeBadge) {
+                    waVideoSizeBadge.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill py-0.5 px-1.5';
+                    waVideoSizeBadge.innerHTML = '<span class="spinner-border spinner-border-sm me-1" style="width: 0.5rem; height: 0.5rem;"></span><span id="waVideoStatusText">Mengompres agar ringan...</span>';
+                }
+                if (waVideoPreviewChip) {
+                    waVideoPreviewChip.classList.remove('d-none');
+                    waVideoPreviewChip.classList.add('d-flex');
+                }
+                if (waAttachmentPreviewBar) waAttachmentPreviewBar.classList.remove('d-none');
+
+                // Ekstrak thumbnail frame pertama secara cepat
+                getVideoThumbnail(file).then(thumb => {
+                    if (thumb && waVideoThumb) {
+                        waVideoThumb.src = thumb;
+                        waVideoThumb.classList.remove('d-none');
+                        if (waVideoDefaultIcon) waVideoDefaultIcon.classList.add('d-none');
+                        currentWaVideoThumbUrl = thumb;
+                    }
+                });
+
+                // Jalankan kompresi video ringan (~1Mbps, 720p/480p)
+                waVideoCompressionPromise = compressVideoFile(file, {
+                    maxDimension: 854,
+                    bitrate: 1000000,
+                    fps: 24,
+                    maxDuration: 60,
+                    onProgress: (pct) => {
+                        const statusTxt = document.getElementById('waVideoStatusText');
+                        if (statusTxt) statusTxt.textContent = `Ringankan: ${pct}%`;
+                    }
+                }).then(compressedVideo => {
+                    currentWaCompressedVideo = compressedVideo;
+                    const origSize = formatFileSize(file.size);
+                    const compSize = formatFileSize(compressedVideo.size);
+                    if (waVideoSizeBadge) {
+                        waVideoSizeBadge.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5';
+                        waVideoSizeBadge.innerHTML = `<i class="bi bi-lightning-charge-fill me-0.5 text-warning"></i><span>Ringan &bull; ${compSize}</span>`;
+                        waVideoSizeBadge.title = `Video berhasil diringankan dari ${origSize} menjadi ${compSize} agar cepat terkirim di jaringan lapangan.`;
+                    }
+                    return compressedVideo;
+                }).catch(err => {
+                    console.warn('Kompresi video gagal, menggunakan file asli:', err);
+                    currentWaCompressedVideo = file;
+                    if (waVideoSizeBadge) {
+                        waVideoSizeBadge.className = 'badge bg-light text-dark border rounded-pill py-0.5 px-2';
+                        waVideoSizeBadge.textContent = formatFileSize(file.size);
+                    }
+                    return file;
+                });
+            } else {
+                // File adalah gambar / foto
+                clearVideoAttachment();
+
+                if (waPhotoFileName) waPhotoFileName.textContent = file.name;
                 if (waPhotoSizeBadge) {
                     waPhotoSizeBadge.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill py-0.5 px-1.5';
                     waPhotoSizeBadge.innerHTML = '<span class="spinner-border spinner-border-sm me-1" style="width: 0.5rem; height: 0.5rem;"></span>...';
@@ -10598,10 +10893,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 }
                 if (waAttachmentPreviewBar) waAttachmentPreviewBar.classList.remove('d-none');
 
-                // Preview thumbnail instan
-                if (waPhotoThumb && originalFile.type.startsWith('image/')) {
+                if (waPhotoThumb && file.type.startsWith('image/')) {
                     try {
-                        waPhotoThumb.src = URL.createObjectURL(originalFile);
+                        waPhotoThumb.src = URL.createObjectURL(file);
                         waPhotoThumb.classList.remove('d-none');
                         if (waPhotoDefaultIcon) waPhotoDefaultIcon.classList.add('d-none');
                     } catch(e) {}
@@ -10609,8 +10903,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
                 const isWatermark = (currentPhotoMode === 'watermark');
 
-                // Proses kompresi & watermark GPS (jika mode watermark dipilih)
-                waCompressionPromise = compressImageFile(originalFile, {
+                waCompressionPromise = compressImageFile(file, {
                     maxWidth: 1600,
                     maxHeight: 1600,
                     quality: 0.82,
@@ -10621,8 +10914,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                     }
                 }).then(compressedFile => {
                     currentWaCompressedPhoto = compressedFile;
-
-                    const origSize = formatFileSize(originalFile.size);
+                    const origSize = formatFileSize(file.size);
                     const compSize = formatFileSize(compressedFile.size);
 
                     if (waPhotoSizeBadge) {
@@ -10646,40 +10938,45 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                     return compressedFile;
                 }).catch(err => {
                     console.warn('Kompresi gambar gagal, menggunakan file asli:', err);
-                    currentWaCompressedPhoto = originalFile;
+                    currentWaCompressedPhoto = file;
                     if (waPhotoSizeBadge) {
                         waPhotoSizeBadge.className = 'badge bg-light text-dark border rounded-pill py-0.5 px-2';
-                        waPhotoSizeBadge.textContent = formatFileSize(originalFile.size);
+                        waPhotoSizeBadge.textContent = formatFileSize(file.size);
                     }
-                    return originalFile;
+                    return file;
                 });
+            }
+        }
+
+        // Event saat file foto/video dipilih dari galeri/file
+        waChatFotoInput?.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                handleMediaSelected(this.files[0], false);
             } else {
-                currentWaCompressedPhoto = null;
-                waCompressionPromise = null;
-                if (waPhotoPreviewChip) {
-                    waPhotoPreviewChip.classList.add('d-none');
-                    waPhotoPreviewChip.classList.remove('d-flex');
-                }
+                clearPhotoAttachment();
+                checkPreviewBarEmpty();
+            }
+        });
+
+        // Event saat video direkam langsung dari kamera HP
+        waChatVideoRecordInput?.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                handleMediaSelected(this.files[0], true);
+            } else {
+                clearVideoAttachment();
                 checkPreviewBarEmpty();
             }
         });
 
         // Hapus attachment foto
         btnRemoveWaPhoto?.addEventListener('click', function() {
-            currentWaCompressedPhoto = null;
-            waCompressionPromise = null;
-            if (waChatFotoInput) waChatFotoInput.value = '';
-            if (waPhotoThumb) {
-                waPhotoThumb.src = '#';
-                waPhotoThumb.classList.add('d-none');
-            }
-            if (waPhotoDefaultIcon) {
-                waPhotoDefaultIcon.classList.remove('d-none');
-            }
-            if (waPhotoPreviewChip) {
-                waPhotoPreviewChip.classList.add('d-none');
-                waPhotoPreviewChip.classList.remove('d-flex');
-            }
+            clearPhotoAttachment();
+            checkPreviewBarEmpty();
+        });
+
+        // Hapus attachment video
+        btnRemoveWaVideo?.addEventListener('click', function() {
+            clearVideoAttachment();
             checkPreviewBarEmpty();
         });
 
@@ -10730,7 +11027,10 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         });
 
         function checkPreviewBarEmpty() {
-            if (waPhotoPreviewChip && waLocationChip && waPhotoPreviewChip.classList.contains('d-none') && waLocationChip.classList.contains('d-none')) {
+            const photoHidden = !waPhotoPreviewChip || waPhotoPreviewChip.classList.contains('d-none');
+            const videoHidden = !waVideoPreviewChip || waVideoPreviewChip.classList.contains('d-none');
+            const locHidden = !waLocationChip || waLocationChip.classList.contains('d-none');
+            if (photoHidden && videoHidden && locHidden) {
                 if (waAttachmentPreviewBar) waAttachmentPreviewBar.classList.add('d-none');
             }
         }
@@ -10878,20 +11178,25 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             e.preventDefault();
             stopVoiceRecognition();
             const textVal = waChatTextInput ? waChatTextInput.value.trim() : '';
-            const hasPhoto = (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || currentWaCompressedPhoto;
+            const hasPhoto = (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0 && !waChatFotoInput.files[0].type.startsWith('video/')) || currentWaCompressedPhoto;
+            const hasVideo = currentWaCompressedVideo || (waChatVideoRecordInput && waChatVideoRecordInput.files && waChatVideoRecordInput.files.length > 0) || (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files[0] && (waChatFotoInput.files[0].type.startsWith('video/') || /\.(mp4|webm|mov|m4v|3gp|avi)$/i.test(waChatFotoInput.files[0].name)));
             const hasLoc = waChatLat && waChatLat.value !== '';
 
-            if (!textVal && !hasPhoto && !hasLoc) return;
+            if (!textVal && !hasPhoto && !hasVideo && !hasLoc) return;
 
             // Simpan data form & previews sebelum input di-reset
             const photoThumbSrc = (waPhotoThumb && !waPhotoThumb.classList.contains('d-none')) ? waPhotoThumb.src : null;
+            const videoPreviewSrc = currentWaCompressedVideo ? URL.createObjectURL(currentWaCompressedVideo) : (currentWaVideoThumbUrl || null);
             const latVal = waChatLat ? waChatLat.value : '';
             const lngVal = waChatLng ? waChatLng.value : '';
             const activeReply = activeReplyData ? { ...activeReplyData } : null;
 
-            // Tunggu jika proses kompresi foto di background sedang berlangsung
+            // Tunggu jika proses kompresi media di background sedang berlangsung
             if (waCompressionPromise) {
                 try { await waCompressionPromise; } catch(e) {}
+            }
+            if (waVideoCompressionPromise) {
+                try { await waVideoCompressionPromise; } catch(e) {}
             }
 
             const formData = new FormData(waDirectChatForm);
@@ -10904,8 +11209,11 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 cancelReply();
             }
 
-            // Pasang file foto yang sudah terkompresi otomatis
-            if (currentWaCompressedPhoto) {
+            // Pasang file video atau foto yang sudah terkompresi otomatis
+            if (currentWaCompressedVideo) {
+                formData.set('foto', currentWaCompressedVideo, currentWaCompressedVideo.name);
+                formData.set('video', currentWaCompressedVideo, currentWaCompressedVideo.name);
+            } else if (currentWaCompressedPhoto) {
                 formData.set('foto', currentWaCompressedPhoto, currentWaCompressedPhoto.name);
             }
 
@@ -10917,22 +11225,10 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                     waChatTextInput.blur();
                 }
             }
-            currentWaCompressedPhoto = null;
-            waCompressionPromise = null;
-            if (waChatFotoInput) waChatFotoInput.value = '';
+            clearPhotoAttachment();
+            clearVideoAttachment();
             if (waChatLat) waChatLat.value = '';
             if (waChatLng) waChatLng.value = '';
-            if (waPhotoThumb) {
-                waPhotoThumb.src = '#';
-                waPhotoThumb.classList.add('d-none');
-            }
-            if (waPhotoDefaultIcon) {
-                waPhotoDefaultIcon.classList.remove('d-none');
-            }
-            if (waPhotoPreviewChip) {
-                waPhotoPreviewChip.classList.add('d-none');
-                waPhotoPreviewChip.classList.remove('d-flex');
-            }
             if (waLocationChip) {
                 waLocationChip.classList.add('d-none');
                 waLocationChip.classList.remove('d-flex');
@@ -10966,14 +11262,21 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                 </div>
                             </div>
                             <div class="wa-msg-text">${formatMessageWithMentions(formData.get('informasi') || textVal)}</div>
-                            ${hasPhoto && photoThumbSrc && photoThumbSrc !== '#' ? `
+                            ${hasVideo ? `
+                            <div class="wa-media-card wa-video-card" style="opacity: 0.88;">
+                                ${videoPreviewSrc ? `<video src="${videoPreviewSrc}" controls playsinline preload="metadata" class="wa-video-player" style="filter: brightness(0.92);"></video>` : ''}
+                                <div class="wa-media-badge">
+                                    <span class="spinner-border spinner-border-sm me-1" style="width: 0.72rem; height: 0.72rem;"></span>
+                                    <span>Mengunggah video ringan...</span>
+                                </div>
+                            </div>` : (hasPhoto && photoThumbSrc && photoThumbSrc !== '#' ? `
                             <div class="wa-media-card" style="opacity: 0.85;">
                                 <img src="${photoThumbSrc}" alt="Mengunggah Foto..." class="wa-media-img" style="filter: brightness(0.92);">
                                 <div class="wa-media-badge">
                                     <span class="spinner-border spinner-border-sm me-1" style="width: 0.72rem; height: 0.72rem;"></span>
                                     <span>Mengunggah foto...</span>
                                 </div>
-                            </div>` : ''}
+                            </div>` : '')}
                             ${hasLoc ? `
                             <div class="wa-location-card">
                                 <div class="wa-loc-icon"><i class="bi bi-geo-alt-fill text-danger"></i></div>
@@ -11004,8 +11307,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                             label: 'Pesan Tiket #{{ $tiket->id }}',
                             tiket_id: {{ $tiket->id }},
                             temp_element_id: tempId,
-                            text: textVal || (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan'),
+                            text: textVal || (hasVideo ? 'Mengunggah Video' : (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan')),
                             has_photo: hasPhoto,
+                            has_video: hasVideo,
                             has_location: hasLoc
                         }
                     });
@@ -11020,7 +11324,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                             position: 'top-end',
                             icon: 'info',
                             title: 'Tersimpan Offline',
-                            text: 'Pesan & foto tersimpan di HP dan akan otomatis terkirim saat sinyal kembali.',
+                            text: 'Pesan tersimpan di HP dan akan otomatis terkirim saat sinyal kembali.',
                             showConfirmButton: false,
                             timer: 3500
                         });
@@ -11053,8 +11357,16 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                 statusIcon.title = 'Terkirim (Belum dilihat)';
                             }
 
-                            // Update foto url asli jika upload foto
-                            if (res.data.foto_url) {
+                            // Update media url asli jika upload video atau foto
+                            if (res.data.is_video || res.data.video_url) {
+                                const mediaCard = tempEl.querySelector('.wa-media-card');
+                                if (mediaCard) {
+                                    mediaCard.style.opacity = '1';
+                                    mediaCard.className = 'wa-media-card wa-video-card';
+                                    mediaCard.onclick = null;
+                                    mediaCard.innerHTML = `<video src="${res.data.video_url || res.data.foto_url}" controls playsinline preload="metadata" class="wa-video-player"></video>`;
+                                }
+                            } else if (res.data.foto_url) {
                                 const mediaCard = tempEl.querySelector('.wa-media-card');
                                 if (mediaCard) {
                                     mediaCard.style.opacity = '1';
@@ -11158,8 +11470,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                 label: 'Pesan Tiket #{{ $tiket->id }}',
                                 tiket_id: {{ $tiket->id }},
                                 temp_element_id: tempId,
-                                text: textVal || (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan'),
+                                text: textVal || (hasVideo ? 'Mengunggah Video' : (hasPhoto ? 'Mengunggah Foto' : 'Koordinat GPS Lapangan')),
                                 has_photo: hasPhoto,
+                                has_video: hasVideo,
                                 has_location: hasLoc
                             }
                         });
@@ -11203,6 +11516,26 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                 statusIcon.id = 'status-icon-' + resData.id;
                 statusIcon.className = 'bi bi-check2-all wa-status-icon wa-status-sent';
                 statusIcon.title = 'Terkirim (Belum dilihat)';
+            }
+
+            // Update media card (video / foto) setelah sinkronisasi offline sukses
+            if (resData.is_video || resData.video_url) {
+                const mediaCard = tempEl.querySelector('.wa-media-card');
+                if (mediaCard) {
+                    mediaCard.style.opacity = '1';
+                    mediaCard.className = 'wa-media-card wa-video-card';
+                    mediaCard.onclick = null;
+                    mediaCard.innerHTML = `<video src="${resData.video_url || resData.foto_url}" controls playsinline preload="metadata" class="wa-video-player"></video>`;
+                }
+            } else if (resData.foto_url) {
+                const mediaCard = tempEl.querySelector('.wa-media-card');
+                if (mediaCard) {
+                    mediaCard.style.opacity = '1';
+                    mediaCard.onclick = function() {
+                        openWaImagePreview(resData.foto_url, resData.informasi || 'Dokumentasi Lapangan');
+                    };
+                    mediaCard.innerHTML = `<img src="${resData.foto_url}" alt="Dokumentasi" class="wa-media-img"><div class="wa-media-badge"><i class="bi bi-camera-fill me-1"></i> Foto Lapangan</div>`;
+                }
             }
         }
     });

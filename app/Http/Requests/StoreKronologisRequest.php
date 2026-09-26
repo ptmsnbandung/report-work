@@ -35,7 +35,8 @@ class StoreKronologisRequest extends FormRequest
             'kategori'  => ['nullable', 'string', 'in:IZIN,OTDR,TRACING,MATERIAL,JOINTING,LINK_UP,SELESAI,LAIN'],
             'informasi' => ['required', 'string', 'max:5000'],
             'timestamp' => ['nullable', 'date'],
-            'foto'      => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:25600'], // max 25MB (client compresses automatically)
+            'foto'      => ['nullable', 'file', 'mimes:jpeg,png,jpg,webp,mp4,webm,mov,m4v,3gp,avi', 'max:51200'], // max 50MB
+            'video'     => ['nullable', 'file', 'mimes:mp4,webm,mov,m4v,3gp,avi', 'max:51200'],
             'latitude'  => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         ];
@@ -51,9 +52,12 @@ class StoreKronologisRequest extends FormRequest
             'kategori.in'       => 'Kategori kronologis tidak valid.',
             'informasi.required'=> 'Informasi update lapangan wajib diisi.',
             'informasi.max'     => 'Informasi maksimal 5000 karakter.',
-            'foto.image'        => 'File yang diupload harus berupa gambar.',
-            'foto.mimes'        => 'Format foto harus berupa JPEG, PNG, JPG, atau WEBP.',
-            'foto.max'          => 'Ukuran foto maksimal 25 MB.',
+            'foto.file'         => 'File lampiran tidak valid.',
+            'foto.mimes'        => 'Format lampiran harus berupa foto (JPEG, PNG, JPG, WEBP) atau video (MP4, WEBM, MOV, 3GP).',
+            'foto.max'          => 'Ukuran lampiran maksimal 50 MB.',
+            'video.file'        => 'File video tidak valid.',
+            'video.mimes'       => 'Format video harus berupa MP4, WEBM, MOV, atau 3GP.',
+            'video.max'         => 'Ukuran video maksimal 50 MB.',
             'latitude.numeric'  => 'Format latitude harus berupa angka koordinat.',
             'longitude.numeric' => 'Format longitude harus berupa angka koordinat.',
         ];
