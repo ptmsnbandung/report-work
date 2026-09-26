@@ -506,9 +506,7 @@
     }
 
     .wa-msg-menu-btn i {
-        font-size: 1.25rem;
-        font-weight: 900;
-        -webkit-text-stroke: 0.5px currentColor;
+        font-size: 0.85rem;
         display: inline-block;
         line-height: 1;
     }
@@ -516,24 +514,24 @@
     .wa-bubble-outgoing .wa-msg-menu-btn {
         background: transparent !important;
         border: none !important;
-        color: #1e3a8a !important;
+        color: #1e40af !important;
     }
 
     .wa-bubble-incoming .wa-msg-menu-btn {
         background: transparent !important;
         border: none !important;
-        color: #334155 !important;
+        color: #475569 !important;
     }
 
     .wa-msg-menu-btn:hover,
     .wa-msg-menu-btn:focus,
     .wa-msg-menu-btn[aria-expanded="true"] {
         opacity: 1 !important;
-        color: #000000 !important;
+        color: #0f172a !important;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        transform: scale(1.18);
+        transform: scale(1.08);
     }
 
     .wa-bubble-outgoing .wa-msg-menu-btn:hover,
@@ -541,7 +539,7 @@
     .wa-bubble-outgoing .wa-msg-menu-btn[aria-expanded="true"] {
         background: transparent !important;
         border: none !important;
-        color: #1d4ed8 !important;
+        color: #172554 !important;
         box-shadow: none !important;
     }
 
