@@ -178,6 +178,15 @@
             }
         }
 
+        /* Hide all PWA install and open-in-app banners when opened inside installed app */
+        @media all and (display-mode: standalone), all and (display-mode: fullscreen), all and (display-mode: minimal-ui) {
+            .pwa-download-dash-card,
+            #pwaInstallBanner,
+            .btn-trigger-pwa-install {
+                display: none !important;
+            }
+        }
+
         /* ── CENTERED APP PERMISSIONS MODAL DIALOG ── */
         .msn-permission-backdrop {
             position: fixed;
@@ -1152,18 +1161,30 @@
             // Function to dynamically check if app is actually installed and update UI
             window.applyPwaInstalledState = async function(forcedState) {
                 const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                    || window.matchMedia('(display-mode: fullscreen)').matches
+                    || window.matchMedia('(display-mode: minimal-ui)').matches
                     || window.navigator.standalone === true 
                     || document.referrer.includes('android-app://')
-                    || window.location.search.includes('source=pwa');
+                    || window.location.search.includes('source=pwa')
+                    || sessionStorage.getItem('is_pwa_standalone') === '1';
 
+                // When running inside the installed PWA mobile app, hide the card completely
+                if (isStandalone) {
+                    sessionStorage.setItem('is_pwa_standalone', '1');
+                    localStorage.setItem('pwa_installed', '1');
+                    document.querySelectorAll('.pwa-download-dash-card, #pwaInstallBanner, .btn-trigger-pwa-install').forEach(card => {
+                        card.classList.add('d-none');
+                        card.style.setProperty('display', 'none', 'important');
+                    });
+                    return true;
+                }
+
+                // When accessed from regular browser (not standalone app):
                 let isInstalled = false;
 
                 if (typeof forcedState === 'boolean') {
                     isInstalled = forcedState;
                     if (!isInstalled) localStorage.removeItem('pwa_installed');
-                } else if (isStandalone) {
-                    isInstalled = true;
-                    localStorage.setItem('pwa_installed', '1');
                 } else if ('getInstalledRelatedApps' in navigator) {
                     try {
                         const relatedApps = await navigator.getInstalledRelatedApps();
