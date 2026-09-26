@@ -111,7 +111,17 @@ self.addEventListener('push', function (event) {
     };
 
     event.waitUntil(
-        self.registration.showNotification(title, options)
+        Promise.all([
+            self.registration.showNotification(title, options),
+            self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+                clientList.forEach(function (client) {
+                    client.postMessage({
+                        type: 'PUSH_NOTIFICATION_RECEIVED',
+                        payload: payload
+                    });
+                });
+            })
+        ])
     );
 });
 

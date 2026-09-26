@@ -1084,6 +1084,15 @@
                 } catch (e) {}
             };
 
+            // Listen to background push broadcasts from service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.addEventListener('message', function(event) {
+                    if (event.data && event.data.type === 'PUSH_NOTIFICATION_RECEIVED') {
+                        window.playNotificationSound();
+                    }
+                });
+            }
+
             async function registerServiceWorkerAndPush() {
                 if (!('serviceWorker' in navigator)) return;
 
