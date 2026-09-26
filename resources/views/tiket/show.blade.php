@@ -405,16 +405,16 @@
 
     .wa-bubble-incoming {
         background: #ffffff;
-        border: 1px solid #dbe3ed;
+        border: 1px solid rgba(0, 0, 0, 0.06);
         border-radius: 16px 16px 16px 4px;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 1.5px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
     }
 
     .wa-bubble-outgoing {
         background: #e0edfe;
-        border: 1px solid #bfdbfe;
+        border: 1px solid rgba(37, 99, 235, 0.12);
         border-radius: 16px 16px 4px 16px;
-        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08), 0 1px 2px rgba(37, 99, 235, 0.04);
+        box-shadow: 0 1.5px 4px rgba(37, 99, 235, 0.06), 0 1px 2px rgba(37, 99, 235, 0.03);
         margin-left: auto;
     }
 
