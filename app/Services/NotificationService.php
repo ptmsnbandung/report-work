@@ -95,12 +95,15 @@ class NotificationService
             // Web Push Notification ke HP & Browser pengguna
             try {
                 $senderName = $kronologis->user ? $kronologis->user->name : 'Teknis';
+                $senderAvatar = $kronologis->user?->avatar_url 
+                    ?: ('https://ui-avatars.com/api/?name=' . urlencode($senderName) . '&background=0284c7&color=fff&size=192&bold=true&rounded=true');
                 $cleanInfo = preg_replace('/^>\s*/m', '', (string) $kronologis->informasi);
                 $this->webPushService->sendToUsers(
                     $recipients,
                     "💬 {$tiket->no_tiket} - {$senderName}",
                     $cleanInfo ?: 'Pembaruan koordinasi lapangan.',
-                    route('tiket.show', $tiket->id)
+                    route('tiket.show', $tiket->id),
+                    $senderAvatar
                 );
             } catch (\Throwable $e) {
                 Log::warning('WebPush failed for new kronologis: ' . $e->getMessage());

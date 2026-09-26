@@ -124,7 +124,7 @@ class WebPushService
             return 0;
         }
 
-        $payload = json_encode([
+        $payloadData = [
             'title' => $title,
             'body' => $message,
             'url' => $url,
@@ -132,7 +132,14 @@ class WebPushService
                 'url' => $url,
                 'timestamp' => now()->timestamp,
             ],
-        ]);
+        ];
+
+        // Jika ada foto profil pengirim (WhatsApp-style avatar), sertakan sebagai icon notifikasi
+        if (!empty($icon)) {
+            $payloadData['icon'] = $icon;
+        }
+
+        $payload = json_encode($payloadData);
 
         $sentCount = 0;
         $staleSubscriptions = [];

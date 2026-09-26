@@ -2,7 +2,7 @@
    PT MEDIA SOLUSI NETWORK (MSN) - PWA & WEB PUSH SERVICE WORKER
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'ptmsn-report-v1.4';
+const CACHE_NAME = 'ptmsn-report-v1.5';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
@@ -102,6 +102,11 @@ self.addEventListener('push', function (event) {
             { action: 'open', title: 'Buka Tiket' }
         ]
     };
+
+    // Jika notifikasi pesan/chat membawa foto profil pengirim (WhatsApp-style avatar), gunakan sebagai thumbnail
+    if (payload.icon) {
+        options.icon = payload.icon;
+    }
 
     event.waitUntil(
         self.registration.showNotification(title, options)
