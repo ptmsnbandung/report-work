@@ -296,6 +296,24 @@
             font-size: 0.58rem !important;
         }
     }
+
+    /* Red Action Button for Notification Deletion */
+    .notif-btn-delete {
+        background: #ef4444 !important;
+        border: 1px solid #dc2626 !important;
+        color: #ffffff !important;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .notif-btn-delete:hover {
+        background: #dc2626 !important;
+        border-color: #b91c1c !important;
+        color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+    }
+    .notif-btn-delete:active {
+        transform: translateY(0);
+    }
 </style>
 @endpush
 
@@ -519,21 +537,21 @@
                         </h6>
 
                         <!-- Content Preview Card -->
-                        <div class="p-2.5 rounded-3 bg-light border border-light-subtle mb-2.5 text-break" style="font-size: 0.83rem; line-height: 1.45;">
+                        <div class="rounded-3 bg-light border border-light-subtle mb-2.5 text-break" style="font-size: 0.84rem; line-height: 1.5; padding: 0.85rem 1rem;">
                             @if($senderName)
-                                <div class="d-flex align-items-center gap-1.5 mb-1 text-navy fw-semibold" style="font-size: 0.78rem;">
+                                <div class="d-flex align-items-center gap-1.5 mb-1.5 text-navy fw-semibold" style="font-size: 0.8rem;">
                                     <i class="bi bi-person-fill text-primary"></i>
                                     <span>{{ $senderName }}</span>
                                 </div>
                             @endif
-                            <div class="text-secondary">{{ $msgBody }}</div>
+                            <div class="text-secondary" style="font-size: 0.84rem;">{{ $msgBody }}</div>
                         </div>
 
                         <!-- Action Controls Footer -->
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2" onclick="event.stopPropagation();">
                             <div class="d-flex align-items-center gap-2">
                                 @if(!empty($data['url']))
-                                    <a href="{{ $data['url'] }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 0.76rem; min-height: 30px;">
+                                    <a href="{{ $data['url'] }}" class="btn btn-sm btn-primary rounded-3 px-3 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 0.78rem; border-radius: 8px !important; min-height: 32px;">
                                         <i class="bi bi-arrow-right-circle-fill"></i>
                                         <span>Buka Tiket</span>
                                     </a>
@@ -542,7 +560,7 @@
                                 @if($isUnread)
                                     <form method="POST" action="{{ route('notifications.read', $n->id) }}" class="d-inline m-0">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 shadow-2xs d-inline-flex align-items-center gap-1" style="font-size: 0.75rem; min-height: 30px;" title="Tandai Sudah Dibaca">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary rounded-3 px-2.5 py-1.5 shadow-2xs d-inline-flex align-items-center gap-1" style="font-size: 0.76rem; border-radius: 8px !important; min-height: 32px;" title="Tandai Sudah Dibaca">
                                             <i class="bi bi-check2 text-success"></i>
                                             <span class="d-none d-sm-inline">Tandai Dibaca</span>
                                         </button>
@@ -553,8 +571,8 @@
                             <form method="POST" action="{{ route('notifications.destroy', $n->id) }}" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus notifikasi ini?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-light border rounded-pill px-2.5 text-danger shadow-2xs d-inline-flex align-items-center gap-1" title="Hapus Notifikasi" style="font-size: 0.75rem; min-height: 30px;">
-                                    <i class="bi bi-trash"></i>
+                                <button type="submit" class="btn btn-sm btn-danger rounded-3 px-2.5 py-1.5 shadow-xs d-inline-flex align-items-center justify-content-center gap-1.5 notif-btn-delete fw-semibold" title="Hapus Notifikasi" style="font-size: 0.78rem; border-radius: 8px !important; min-height: 32px;">
+                                    <i class="bi bi-trash3-fill text-white"></i>
                                     <span class="d-none d-sm-inline">Hapus</span>
                                 </button>
                             </form>
