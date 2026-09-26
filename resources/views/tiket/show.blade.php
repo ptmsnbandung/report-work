@@ -10788,7 +10788,80 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         function checkMentionTrigger() {
             if (!waChatTextInput) return;
             const val = waChatTextInput.value;
-                      // Enter key to submit (Shift+Enter for newline)
+            const cursorPos = waChatTextInput.selectionStart;
+
+            const textBeforeCursor = val.substring(0, cursorPos);
+            const lastAtIndex = textBeforeCursor.lastIndexOf('@');
+
+            if (lastAtIndex !== -1) {
+                const charBeforeAt = lastAtIndex > 0 ? textBeforeCursor[lastAtIndex - 1] : ' ';
+                const textBetween = textBeforeCursor.substring(lastAtIndex + 1);
+
+                if ((/\s/.test(charBeforeAt) || lastAtIndex === 0) && !textBetween.includes('\n') && textBetween.length <= 30) {
+                    showMentionDropdown(textBetween, lastAtIndex);
+                    return;
+                }
+            }
+
+            hideMentionDropdown();
+        }
+
+        // Input & Click triggers for @mentions
+        waChatTextInput?.addEventListener('input', function() {
+            checkMentionTrigger();
+        });
+
+        waChatTextInput?.addEventListener('click', function() {
+            checkMentionTrigger();
+        });
+
+        // Click on mention list item
+        waMentionList?.addEventListener('mousedown', function(e) {
+            e.preventDefault(); // Prevent blur on textarea
+            const item = e.target.closest('.wa-mention-item');
+            if (item) {
+                const idx = parseInt(item.getAttribute('data-index'), 10);
+                if (!isNaN(idx) && filteredMentionUsers[idx]) {
+                    insertMention(filteredMentionUsers[idx]);
+                }
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (waMentionDropdown && !waMentionDropdown.contains(e.target) && e.target !== waChatTextInput) {
+                hideMentionDropdown();
+            }
+        });
+
+        // Keydown handler (Arrow keys, Enter, Tab, Escape, Submit)
+        waChatTextInput?.addEventListener('keydown', function(e) {
+            // Jika dropdown mention sedang aktif
+            if (waMentionDropdown && !waMentionDropdown.classList.contains('d-none') && filteredMentionUsers.length > 0) {
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    activeMentionIndex = (activeMentionIndex + 1) % filteredMentionUsers.length;
+                    updateMentionActiveItem();
+                    return;
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    activeMentionIndex = (activeMentionIndex - 1 + filteredMentionUsers.length) % filteredMentionUsers.length;
+                    updateMentionActiveItem();
+                    return;
+                } else if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    if (filteredMentionUsers[activeMentionIndex]) {
+                        insertMention(filteredMentionUsers[activeMentionIndex]);
+                    }
+                    return;
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    hideMentionDropdown();
+                    return;
+                }
+            }
+
+            // Enter key to submit (Shift+Enter for newline)
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 if (this.value.trim().length > 0 || (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || (waChatVideoRecordInput && waChatVideoRecordInput.files && waChatVideoRecordInput.files.length > 0) || currentWaCompressedPhoto || currentWaCompressedVideo) {
@@ -10798,38 +10871,52 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         });
 
         // 1. Upload Media (Foto / Video dari Galeri)
-        btnWaUploadFoto?.addEventListener('click', function() {
+        btnWaUploadFoto?.addEventListener('click', function(e) {
+            e.preventDefault();
             currentPhotoMode = 'gallery';
             if (waChatFotoInput) {
                 waChatFotoInput.removeAttribute('capture');
                 waChatFotoInput.setAttribute('accept', 'image/*,video/*');
+                waChatFotoInput.value = '';
                 waChatFotoInput.click();
             }
         });
 
         // 1.B Rekam Video Lapangan Langsung dari Kamera HP
-        btnWaRecordVideo?.addEventListener('click', function() {
+        btnWaRecordVideo?.addEventListener('click', function(e) {
+            e.preventDefault();
             if (waChatVideoRecordInput) {
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    waChatVideoRecordInput.setAttribute('capture', 'environment');
+                } else {
+                    waChatVideoRecordInput.removeAttribute('capture');
+                }
+                waChatVideoRecordInput.value = '';
                 waChatVideoRecordInput.click();
             }
         });
 
         // 2. Kamera GPS (Dengan Logo MSN, Timestamp & Alamat)
-        btnWaCameraWatermark?.addEventListener('click', function() {
+        btnWaCameraWatermark?.addEventListener('click', function(e) {
+            e.preventDefault();
             currentPhotoMode = 'watermark';
             if (waChatFotoInput) {
                 waChatFotoInput.setAttribute('accept', 'image/*');
                 waChatFotoInput.setAttribute('capture', 'environment');
+                waChatFotoInput.value = '';
                 waChatFotoInput.click();
             }
         });
 
         // 3. Kamera Polos (Tanpa Watermark)
-        btnWaCameraPolos?.addEventListener('click', function() {
+        btnWaCameraPolos?.addEventListener('click', function(e) {
+            e.preventDefault();
             currentPhotoMode = 'plain';
             if (waChatFotoInput) {
                 waChatFotoInput.setAttribute('accept', 'image/*');
                 waChatFotoInput.setAttribute('capture', 'environment');
+                waChatFotoInput.value = '';
                 waChatFotoInput.click();
             }
         });
