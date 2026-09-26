@@ -1165,16 +1165,20 @@
     }
 
     /* ── Penanganan Core & JC Mode Selector ── */
+    /* ── Penanganan Core & JC Mode Selector ── */
     .penanganan-mode-card {
         transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
         border-radius: 14px;
         cursor: pointer;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
     }
     .penanganan-mode-card .penanganan-mode-inner {
         background: #f8fafc;
         border: 2px solid #e2e8f0 !important;
         transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
         border-radius: 14px;
+        padding: 0.85rem 1rem;
     }
     .penanganan-mode-card:hover .penanganan-mode-inner {
         border-color: #cbd5e1 !important;
@@ -1182,14 +1186,28 @@
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
+    .penanganan-mode-card:active .penanganan-mode-inner {
+        transform: scale(0.98);
+    }
     .penanganan-mode-card.is-selected .penanganan-mode-inner {
         background: #ffffff;
         border-color: #6366f1 !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.16);
+        box-shadow: 0 4px 16px rgba(99, 102, 241, 0.12);
     }
     .penanganan-mode-card#cardModeManuver.is-selected .penanganan-mode-inner {
+        background: #ffffff;
         border-color: #a855f7 !important;
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.16);
+        box-shadow: 0 4px 16px rgba(168, 85, 247, 0.12);
+    }
+    .penanganan-mode-icon-box {
+        width: 40px;
+        height: 40px;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+    .penanganan-mode-card.is-selected .penanganan-mode-icon-box {
+        transform: scale(1.05);
     }
     .bg-indigo-subtle {
         background-color: rgba(99, 102, 241, 0.12) !important;
@@ -1202,6 +1220,25 @@
     }
     .text-purple {
         color: #9333ea !important;
+    }
+
+    @media (max-width: 767.98px) {
+        .penanganan-mode-card .penanganan-mode-inner {
+            padding: 0.75rem 0.85rem !important;
+            border-radius: 12px;
+        }
+        .penanganan-mode-icon-box {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 1rem !important;
+        }
+        .penanganan-title-text {
+            font-size: 0.88rem !important;
+        }
+        .penanganan-desc-text {
+            font-size: 0.74rem !important;
+            line-height: 1.35 !important;
+        }
     }
 
     /* Empty state */
@@ -3997,9 +4034,9 @@
                     @endphp
 
                     <!-- Tipe Penanganan Switcher Banner -->
-                    <div class="card border-0 shadow-sm rounded-xl mb-4 bg-white overflow-hidden">
-                        <div class="card-body p-3 p-md-4">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2.5 mb-3 pb-2 border-bottom">
+                    <div class="card border-0 shadow-sm rounded-xl mb-3 mb-md-4 bg-white overflow-hidden">
+                        <div class="card-body p-2.5 p-sm-3 p-md-4">
+                            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2.5 mb-3 pb-2 border-bottom">
                                 <div>
                                     <div class="fw-bold text-navy fs-6 d-flex align-items-center gap-2">
                                         <i class="bi bi-bezier2" style="color: #6366f1;"></i>
@@ -4009,15 +4046,15 @@
                                         Tentukan metode perbaikan kabel. Anda dapat memilih salah satu atau <strong>mengaktifkan keduanya</strong> sekaligus.
                                     </div>
                                 </div>
-                                <div id="penangananStatusIndicator" class="d-flex align-items-center gap-2 flex-wrap">
+                                <div id="penangananStatusIndicator" class="d-flex align-items-center justify-content-between justify-content-md-end gap-2 flex-wrap w-100 w-md-auto">
                                     <span class="badge bg-light text-navy border px-2.5 py-1.5 rounded-pill small">
-                                        Pilihan Aktif: <strong id="penangananActiveLabel" class="text-primary">
+                                        Pilihan: <strong id="penangananActiveLabel" class="text-primary">
                                             @if($activePenanganan === 'KEDUA')
-                                                Jointing Lurus &amp; Manuver Core (Keduanya)
+                                                Jointing &amp; Manuver (Keduanya)
                                             @elseif($activePenanganan === 'MANUVER_CORE')
-                                                Manuver Core (Swapping Core)
+                                                Manuver Core
                                             @else
-                                                Jointing Lurus (Kabel &amp; JC)
+                                                Jointing Lurus
                                             @endif
                                         </strong>
                                     </span>
@@ -4035,28 +4072,27 @@
                                 </div>
                             </div>
 
-                            <div class="row g-2.5 g-md-3" id="penangananModeSelector">
+                            <div class="row g-2 g-md-3" id="penangananModeSelector">
                                 <!-- Option 1: Jointing Lurus -->
                                 <div class="col-12 col-md-6">
                                     <div class="penanganan-mode-card {{ $isJointingActive ? 'active is-selected' : '' }}"
                                          id="cardModeJointing"
-                                         style="cursor: pointer;"
                                          onclick="togglePenangananCard('JOINTING_LURUS')">
-                                        <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 h-100 border penanganan-mode-inner">
-                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                                        <div class="d-flex align-items-start gap-2.5 penanganan-mode-inner h-100">
+                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center mt-0.5">
                                                 <i class="bi bi-diagram-3-fill"></i>
                                             </div>
                                             <div class="flex-grow-1 min-w-0">
-                                                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
-                                                    <div class="fw-bold text-navy text-truncate" style="font-size: 0.95rem;">1. Jointing Lurus</div>
-                                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                                                        <span class="badge bg-indigo-subtle text-indigo font-monospace" style="font-size: 0.72rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
+                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                    <div class="fw-bold text-navy text-truncate penanganan-title-text">1. Jointing Lurus</div>
+                                                    <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                                                        <span class="badge bg-indigo-subtle text-indigo font-monospace px-1.5 py-0.5 rounded-pill" style="font-size: 0.68rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
                                                         <div class="penanganan-radio-check d-flex align-items-center">
                                                             <i class="bi {{ $isJointingActive ? 'bi-check-circle-fill text-indigo fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
+                                                <div class="text-muted penanganan-desc-text">
                                                     Penyambungan kabel lurus eksisting &amp; jumper, mapping tube-core per tray, serta penambahan closure baru.
                                                 </div>
                                             </div>
@@ -4068,23 +4104,22 @@
                                 <div class="col-12 col-md-6">
                                     <div class="penanganan-mode-card {{ $isManuverActive ? 'active is-selected' : '' }}"
                                          id="cardModeManuver"
-                                         style="cursor: pointer;"
                                          onclick="togglePenangananCard('MANUVER_CORE')">
-                                        <div class="d-flex align-items-start gap-2.5 p-3 rounded-3 h-100 border penanganan-mode-inner">
-                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 mt-0.5" style="width: 42px; height: 42px; font-size: 1.2rem;">
+                                        <div class="d-flex align-items-start gap-2.5 penanganan-mode-inner h-100">
+                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center mt-0.5">
                                                 <i class="bi bi-shuffle"></i>
                                             </div>
                                             <div class="flex-grow-1 min-w-0">
-                                                <div class="d-flex align-items-center justify-content-between gap-2 mb-1">
-                                                    <div class="fw-bold text-navy text-truncate" style="font-size: 0.95rem;">2. Manuver Core</div>
-                                                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
-                                                        <span class="badge bg-purple-subtle text-purple font-monospace" style="font-size: 0.72rem;">{{ $tiket->manuverCores->count() }} Record</span>
+                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
+                                                    <div class="fw-bold text-navy text-truncate penanganan-title-text">2. Manuver Core</div>
+                                                    <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
+                                                        <span class="badge bg-purple-subtle text-purple font-monospace px-1.5 py-0.5 rounded-pill" style="font-size: 0.68rem;">{{ $tiket->manuverCores->count() }} Record</span>
                                                         <div class="penanganan-radio-check d-flex align-items-center">
                                                             <i class="bi {{ $isManuverActive ? 'bi-check-circle-fill text-purple fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="text-muted small lh-sm" style="font-size: 0.78rem;">
+                                                <div class="text-muted penanganan-desc-text">
                                                     Pengalihan alokasi core serat optik (swapping core / bypass jalur putus) sebelum dan sesudah perbaikan.
                                                 </div>
                                             </div>
