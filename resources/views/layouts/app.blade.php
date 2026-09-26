@@ -688,6 +688,16 @@
         }
         setTimeout(window.hideMsnLoader, 1200);
 
+        // Pastikan loader langsung hilang saat navigasi kembali dari cache browser (bfcache)
+        window.addEventListener('pageshow', function() {
+            window.hideMsnLoader();
+        });
+
+        // Tampilkan feedback instan saat tombol kembali bawaan HP ditekan
+        window.addEventListener('popstate', function() {
+            window.showMsnLoader('Memuat Halaman...');
+        });
+
         // Tampilkan loader saat navigasi internal antar halaman (sidebar / menu / link)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not([download]):not(.no-loader)');

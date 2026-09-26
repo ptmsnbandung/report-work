@@ -120,7 +120,7 @@
                         @endphp
                         <li>
                             <a class="dropdown-item py-2.5 px-3 d-flex align-items-start gap-2.5 position-relative {{ $isUnread ? 'bg-light bg-opacity-75' : '' }}"
-                               href="{{ route('notifications.read', $notif->id) }}"
+                               href="{{ !empty($nData['url']) ? $nData['url'] : route('notifications.read', $notif->id) }}"
                                style="border-bottom:1px solid #f1f5f9; white-space: normal;">
                                 <div style="width:32px;height:32px;background:var(--bs-{{ $nColor }}, #2563eb);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;">
                                     <i class="bi {{ $nIcon }}" style="font-size:0.9rem;"></i>

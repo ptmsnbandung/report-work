@@ -480,7 +480,7 @@
                 }
             @endphp
 
-            <div class="notif-card-item {{ $isUnread ? 'is-unread' : '' }}" onclick="window.location='{{ route('notifications.read', $n->id) }}'">
+            <div class="notif-card-item {{ $isUnread ? 'is-unread' : '' }}" onclick="window.location='{{ !empty($data['url']) ? $data['url'] : route('notifications.read', $n->id) }}'">
                 <div class="d-flex align-items-start gap-3">
                     <!-- Icon Box -->
                     <div class="notif-type-icon flex-shrink-0" style="background: {{ $theme['bg'] }}; color: {{ $theme['color'] }}; border: 1.5px solid {{ $theme['border'] }};">
@@ -533,7 +533,7 @@
                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2" onclick="event.stopPropagation();">
                             <div class="d-flex align-items-center gap-2">
                                 @if(!empty($data['url']))
-                                    <a href="{{ route('notifications.read', $n->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 0.76rem; min-height: 30px;">
+                                    <a href="{{ $data['url'] }}" class="btn btn-sm btn-primary rounded-pill px-3 shadow-xs d-inline-flex align-items-center gap-1.5 fw-semibold" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; font-size: 0.76rem; min-height: 30px;">
                                         <i class="bi bi-arrow-right-circle-fill"></i>
                                         <span>Buka Tiket</span>
                                     </a>
