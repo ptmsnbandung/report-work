@@ -92,7 +92,7 @@ class NotificationService
                 ]);
             }
 
-            // Web Push Notification ke HP & Browser pengguna
+            // Web Push Notification ke HP & Browser pengguna (Format WhatsApp-Style)
             try {
                 $senderName = $kronologis->user ? $kronologis->user->name : 'Teknis';
                 $senderAvatar = $kronologis->user?->avatar_url 
@@ -100,8 +100,8 @@ class NotificationService
                 $cleanInfo = preg_replace('/^>\s*/m', '', (string) $kronologis->informasi);
                 $this->webPushService->sendToUsers(
                     $recipients,
-                    "💬 {$tiket->no_tiket} - {$senderName}",
-                    $cleanInfo ?: 'Pembaruan koordinasi lapangan.',
+                    $senderName,
+                    "{$tiket->no_tiket}: " . ($cleanInfo ?: 'Pembaruan koordinasi lapangan.'),
                     route('tiket.show', $tiket->id),
                     $senderAvatar
                 );

@@ -2,7 +2,7 @@
    PT MEDIA SOLUSI NETWORK (MSN) - PWA & WEB PUSH SERVICE WORKER
    ═══════════════════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'ptmsn-report-v1.6';
+const CACHE_NAME = 'ptmsn-report-v1.7';
 const STATIC_ASSETS = [
     '/',
     '/manifest.json',
@@ -93,6 +93,8 @@ self.addEventListener('push', function (event) {
     const title = payload.title || 'PT MSN Tiketing';
     const options = {
         body: payload.body || 'Pemberitahuan baru dari sistem tiketing gangguan.',
+        icon: payload.icon || '/assets/icon-192.png',
+        badge: '/assets/icon-192.png',
         sound: '/assets/sounds/msn-notification.mp3',
         vibrate: [150, 80, 150, 80, 250],
         renotify: true,
@@ -105,11 +107,6 @@ self.addEventListener('push', function (event) {
             { action: 'open', title: 'Buka Tiket' }
         ]
     };
-
-    // Jika notifikasi pesan/chat membawa foto profil pengirim (WhatsApp-style avatar), gunakan sebagai thumbnail
-    if (payload.icon) {
-        options.icon = payload.icon;
-    }
 
     event.waitUntil(
         self.registration.showNotification(title, options)
