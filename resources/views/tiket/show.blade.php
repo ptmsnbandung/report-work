@@ -478,14 +478,14 @@
     }
 
     .wa-msg-menu-btn {
-        background: #f1f5f9;
-        border: 1.5px solid #cbd5e1;
-        color: #0f172a !important;
-        width: 26px;
-        height: 26px;
-        min-width: 26px;
-        padding: 0;
-        border-radius: 50%;
+        background: transparent !important;
+        border: none !important;
+        color: #334155 !important;
+        width: auto;
+        min-width: 20px;
+        height: auto;
+        padding: 2px 4px;
+        border-radius: 4px;
         cursor: pointer;
         line-height: 1;
         transition: all 0.18s ease;
@@ -493,47 +493,48 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        box-shadow: none !important;
         -webkit-tap-highlight-color: transparent;
     }
 
     .wa-msg-menu-btn i {
-        font-size: 1.15rem;
+        font-size: 1.25rem;
         font-weight: 900;
-        -webkit-text-stroke: 0.6px currentColor;
+        -webkit-text-stroke: 0.5px currentColor;
         display: inline-block;
         line-height: 1;
     }
 
     .wa-bubble-outgoing .wa-msg-menu-btn {
-        background: #e0e7ff;
-        border-color: #93c5fd;
+        background: transparent !important;
+        border: none !important;
         color: #1e3a8a !important;
     }
 
     .wa-bubble-incoming .wa-msg-menu-btn {
-        background: #f8fafc;
-        border-color: #cbd5e1;
-        color: #0f172a !important;
+        background: transparent !important;
+        border: none !important;
+        color: #334155 !important;
     }
 
     .wa-msg-menu-btn:hover,
     .wa-msg-menu-btn:focus,
     .wa-msg-menu-btn[aria-expanded="true"] {
         opacity: 1 !important;
-        color: #ffffff !important;
-        background: #1e293b !important;
-        border-color: #0f172a !important;
-        transform: scale(1.12);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        color: #000000 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        transform: scale(1.18);
     }
 
     .wa-bubble-outgoing .wa-msg-menu-btn:hover,
     .wa-bubble-outgoing .wa-msg-menu-btn:focus,
     .wa-bubble-outgoing .wa-msg-menu-btn[aria-expanded="true"] {
-        background: #1d4ed8 !important;
-        border-color: #1e40af !important;
-        color: #ffffff !important;
+        background: transparent !important;
+        border: none !important;
+        color: #1d4ed8 !important;
+        box-shadow: none !important;
     }
 
     .wa-msg-dropdown-menu {
