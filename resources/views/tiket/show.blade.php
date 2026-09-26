@@ -305,7 +305,7 @@
         min-height: 450px;
         max-height: 650px;
         overflow-y: auto;
-        scroll-behavior: smooth;
+        scroll-behavior: auto !important;
     }
 
     .wa-chat-stream::-webkit-scrollbar {
@@ -3771,6 +3771,12 @@
                                 </div>
                             @endif
                         </div>
+                        <script>
+                            (function() {
+                                var s = document.getElementById('timelineList');
+                                if (s) s.scrollTop = s.scrollHeight;
+                            })();
+                        </script>
 
                         <!-- Floating Scroll-to-Bottom Button (WhatsApp Style) -->
                         <button type="button" id="btnWaScrollBottom" class="wa-scroll-bottom-btn d-none" title="Ke Pesan Terbaru">
