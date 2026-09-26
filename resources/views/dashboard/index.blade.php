@@ -323,26 +323,6 @@
         </div>
     </div>
 
-    {{-- ── SLA EXCEEDED ALERT ── --}}
-    @if(($totalSlaExceeded > 0 || count($overSlaActiveTikets) > 0) && $user->hasRole(['admin', 'helpdesk', 'sa_cs']))
-    <div class="sla-alert anim-sla-alert">
-        <div style="width:38px;height:38px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <i class="bi bi-exclamation-triangle-fill" style="color:#ef4444;font-size:1.1rem;"></i>
-        </div>
-        <div class="flex-grow-1">
-            <div style="font-weight:700;color:#b91c1c;font-size:0.88rem;">
-                Perhatian: {{ count($overSlaActiveTikets) > 0 ? count($overSlaActiveTikets) . ' Tiket Aktif Melewati Target SLA!' : $totalSlaExceeded . ' Tiket Tercatat Melebihi SLA' }}
-            </div>
-            <div style="font-size:0.78rem;color:#ef4444;opacity:0.85;margin-top:2px;">
-                Segera prioritaskan koordinasi percepatan penyelesaian bersama tim teknis di lapangan.
-            </div>
-        </div>
-        <a href="{{ route('reports.index', ['sla_status' => 'LEBIH']) }}" class="btn btn-danger btn-sm px-3 shadow-xs">
-            Lihat Tiket &rarr;
-        </a>
-    </div>
-    @endif
-
     {{-- ── STAT CARDS ROW ── --}}
     <div class="row g-3 mb-4">
         {{-- Total Tiket --}}
