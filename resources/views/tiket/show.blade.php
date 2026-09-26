@@ -1023,6 +1023,82 @@
         transform: scale(0.94);
     }
 
+    /* WhatsApp-style Voice Note to Text (Speech Recognition) */
+    .wa-voice-btn {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        color: #54656f;
+        font-size: 1.18rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-bottom: 2px;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+    }
+
+    .wa-voice-btn:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #2C7FFF;
+        transform: scale(1.08);
+    }
+
+    .wa-voice-btn.recording {
+        background: #ef4444 !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        animation: waVoicePulse 1.3s infinite cubic-bezier(0.66, 0, 0, 1);
+        transform: scale(1.08);
+    }
+
+    @keyframes waVoicePulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+        }
+    }
+
+    .wa-voice-listening-toast {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 20;
+        white-space: nowrap;
+        pointer-events: none;
+        animation: fadeInDown 0.2s ease;
+    }
+
+    .wa-voice-wave-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #ef4444;
+        animation: pulseDot 1s infinite;
+    }
+
     @media (max-width: 768px) {
         .wa-chat-input-bar {
             padding: 0.45rem 0.6rem calc(0.45rem + env(safe-area-inset-bottom, 0px)) 0.6rem !important;
@@ -3848,6 +3924,11 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!-- Voice Note to Text (Speech Recognition) Microphone Button -->
+                                <button type="button" class="wa-voice-btn" id="btnWaVoiceNote" title="Ketik dengan Suara (Voice Note to Text)">
+                                    <i class="bi bi-mic-fill"></i>
+                                </button>
                             </div>
 
                             <!-- Floating Submit Button -->
@@ -10659,9 +10740,148 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             }
         }
 
+        // ── 15.5. VOICE NOTE TO TEXT (SPEECH-TO-TEXT LANGSUNG DI DALAM INPUT CHAT) ──
+        const btnWaVoiceNote = document.getElementById('btnWaVoiceNote');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isRecordingVoice = false;
+        let originalPlaceholder = waChatTextInput ? waChatTextInput.getAttribute('placeholder') || 'Ketik update koordinasi ...' : '';
+        let voiceToastEl = null;
+
+        function showVoiceListeningToast() {
+            if (!voiceToastEl) {
+                voiceToastEl = document.createElement('div');
+                voiceToastEl.className = 'wa-voice-listening-toast';
+                voiceToastEl.innerHTML = '<span class="wa-voice-wave-dot"></span> <span>Mendengarkan suara... Silakan bicara</span>';
+                const pill = document.querySelector('.wa-floating-input-pill');
+                if (pill) {
+                    pill.style.position = 'relative';
+                    pill.appendChild(voiceToastEl);
+                }
+            }
+            voiceToastEl.classList.remove('d-none');
+        }
+
+        function hideVoiceListeningToast() {
+            if (voiceToastEl) {
+                voiceToastEl.classList.add('d-none');
+            }
+        }
+
+        if (SpeechRecognition) {
+            try {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'id-ID'; // Bahasa Indonesia
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.maxAlternatives = 1;
+
+                let speechStartText = '';
+
+                recognition.onstart = function() {
+                    isRecordingVoice = true;
+                    if (btnWaVoiceNote) {
+                        btnWaVoiceNote.classList.add('recording');
+                        btnWaVoiceNote.title = 'Sedang mendengarkan... Klik untuk berhenti';
+                        btnWaVoiceNote.innerHTML = '<i class="bi bi-mic-mute-fill"></i>';
+                    }
+                    if (waChatTextInput) {
+                        speechStartText = waChatTextInput.value;
+                        waChatTextInput.setAttribute('placeholder', '🔴 Mendengarkan suara... Bicara sekarang');
+                        waChatTextInput.focus();
+                    }
+                    showVoiceListeningToast();
+                };
+
+                recognition.onresult = function(event) {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    if (waChatTextInput) {
+                        const currentSpoken = (finalTranscript + interimTranscript).trim();
+                        if (currentSpoken.length > 0) {
+                            const separator = (speechStartText.trim().length > 0 && !speechStartText.endsWith(' ')) ? ' ' : '';
+                            waChatTextInput.value = speechStartText + (speechStartText ? separator : '') + currentSpoken;
+                            // Auto expand textarea
+                            waChatTextInput.style.height = 'auto';
+                            waChatTextInput.style.height = Math.min(waChatTextInput.scrollHeight, 100) + 'px';
+                            waChatTextInput.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                    }
+                };
+
+                recognition.onerror = function(event) {
+                    console.warn('Speech recognition error:', event.error);
+                    if (event.error === 'not-allowed') {
+                        alert('Izin mikrofon belum diberikan. Silakan izinkan akses mikrofon pada browser Anda untuk menggunakan fitur speech-to-text.');
+                    }
+                    stopVoiceRecognition();
+                };
+
+                recognition.onend = function() {
+                    stopVoiceRecognition();
+                };
+            } catch (err) {
+                console.warn('SpeechRecognition initialization error:', err);
+            }
+        }
+
+        function startVoiceRecognition() {
+            if (!recognition) {
+                alert('Browser Anda belum mendukung Web Speech Recognition. Disarankan menggunakan Google Chrome atau browser berbasis Chromium pada HP/Laptop.');
+                return;
+            }
+            try {
+                recognition.start();
+            } catch (err) {
+                console.warn('SpeechRecognition start retry:', err);
+                try {
+                    recognition.stop();
+                    setTimeout(() => {
+                        try { recognition.start(); } catch(e) {}
+                    }, 200);
+                } catch(e) {}
+            }
+        }
+
+        function stopVoiceRecognition() {
+            isRecordingVoice = false;
+            if (btnWaVoiceNote) {
+                btnWaVoiceNote.classList.remove('recording');
+                btnWaVoiceNote.title = 'Ketik dengan Suara (Voice Note to Text)';
+                btnWaVoiceNote.innerHTML = '<i class="bi bi-mic-fill"></i>';
+            }
+            if (waChatTextInput) {
+                waChatTextInput.setAttribute('placeholder', originalPlaceholder);
+            }
+            hideVoiceListeningToast();
+            if (recognition) {
+                try { recognition.stop(); } catch (e) {}
+            }
+        }
+
+        btnWaVoiceNote?.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (isRecordingVoice) {
+                stopVoiceRecognition();
+            } else {
+                startVoiceRecognition();
+            }
+        });
+
         // Submitting Chat Form via AJAX (WhatsApp-Native Optimistic UI: Clock -> Sent (Grey 2-ticks) -> Read (Blue 2-ticks))
         waDirectChatForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+            stopVoiceRecognition();
             const textVal = waChatTextInput ? waChatTextInput.value.trim() : '';
             const hasPhoto = (waChatFotoInput && waChatFotoInput.files && waChatFotoInput.files.length > 0) || currentWaCompressedPhoto;
             const hasLoc = waChatLat && waChatLat.value !== '';
