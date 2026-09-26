@@ -283,6 +283,106 @@
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
+        /* ── PWA LIVE INSTALLATION & PROGRESS MODAL ── */
+        .msn-pwa-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 11, 20, 0.78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1090;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            animation: fadeInModal 0.25s ease-out;
+        }
+        .msn-pwa-modal-card {
+            position: relative;
+            width: 100%;
+            max-width: 440px;
+            background: linear-gradient(150deg, #07152b 0%, #0d2757 60%, #081a38 100%);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 20px;
+            padding: 1.6rem 1.5rem;
+            box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(56, 189, 248, 0.25);
+            animation: popInCard 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .pwa-pulse-bubble {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+        .pwa-pulse-bubble::before, .pwa-pulse-bubble::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 24px;
+            border: 2px solid rgba(56, 189, 248, 0.35);
+            animation: pwaRadarPulse 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        }
+        .pwa-pulse-bubble::after {
+            animation-delay: 1s;
+        }
+        @keyframes pwaRadarPulse {
+            0% { transform: scale(0.85); opacity: 1; }
+            100% { transform: scale(1.35); opacity: 0; }
+        }
+        .pwa-progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pwa-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #38bdf8 0%, #2563eb 50%, #10b981 100%);
+            border-radius: 999px;
+            transition: width 0.45s ease-in-out;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+        }
+        .pwa-guide-step-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.65rem 0.85rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        .pwa-step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
         /* ═══════════════════════════════════════════════════════════════════
            PT MSN SIGNATURE LOGO SPINNER LOADER (GLOBAL OVERLAY) - 60FPS GPU
            ═══════════════════════════════════════════════════════════════════ */
@@ -1002,12 +1102,52 @@
             // Always register Service Worker for PWA caching & offline support
             registerServiceWorkerAndPush();
 
-            // ── PWA INSTALLATION STATE & PROMPT HANDLER (100% Native & Legal) ──
+            // ── PWA INSTALLATION STATE & PROGRESS MODAL HANDLER ──
             let deferredPwaPrompt = null;
-            const pwaInstallBanner = document.getElementById('pwaInstallBanner');
-            const btnPwaInstallAction = document.getElementById('btnPwaInstallAction');
-            const btnDismissPwa = document.getElementById('btnDismissPwa');
-            const btnClosePwaBanner = document.getElementById('btnClosePwaBanner');
+            const pwaProgressModal = document.getElementById('pwaProgressModal');
+            const pwaStepProgressState = document.getElementById('pwaStepProgressState');
+            const pwaStepSuccessState = document.getElementById('pwaStepSuccessState');
+            const pwaStepManualState = document.getElementById('pwaStepManualState');
+            const pwaProgressBarFill = document.getElementById('pwaProgressBarFill');
+            const pwaProgressPercent = document.getElementById('pwaProgressPercent');
+            const pwaProgressStatusText = document.getElementById('pwaProgressStatusText');
+            const pwaProgressStepLabel = document.getElementById('pwaProgressStepLabel');
+
+            function showPwaModalState(state) {
+                if (!pwaProgressModal) return;
+                pwaProgressModal.classList.remove('d-none');
+                pwaStepProgressState?.classList.toggle('d-none', state !== 'progress');
+                pwaStepSuccessState?.classList.toggle('d-none', state !== 'success');
+                pwaStepManualState?.classList.toggle('d-none', state !== 'manual');
+            }
+
+            function hidePwaProgressModal() {
+                if (pwaProgressModal) pwaProgressModal.classList.add('d-none');
+            }
+
+            document.getElementById('btnClosePwaProgressModal')?.addEventListener('click', hidePwaProgressModal);
+            document.getElementById('btnClosePwaSuccess')?.addEventListener('click', hidePwaProgressModal);
+            document.getElementById('btnClosePwaManual')?.addEventListener('click', hidePwaProgressModal);
+
+            // Tab switching in manual guide
+            const tabGuideAndroid = document.getElementById('tabGuideAndroid');
+            const tabGuideIos = document.getElementById('tabGuideIos');
+            const guideAndroidContent = document.getElementById('guideAndroidContent');
+            const guideIosContent = document.getElementById('guideIosContent');
+
+            tabGuideAndroid?.addEventListener('click', () => {
+                tabGuideAndroid.classList.add('active');
+                tabGuideIos?.classList.remove('active');
+                guideAndroidContent?.classList.remove('d-none');
+                guideIosContent?.classList.add('d-none');
+            });
+
+            tabGuideIos?.addEventListener('click', () => {
+                tabGuideIos.classList.add('active');
+                tabGuideAndroid?.classList.remove('active');
+                guideIosContent?.classList.remove('d-none');
+                guideAndroidContent?.classList.add('d-none');
+            });
 
             // Function to check if app is already installed and hide all install triggers
             window.applyPwaInstalledState = function() {
@@ -1028,22 +1168,61 @@
             const isAlreadyPwa = window.applyPwaInstalledState();
 
             window.triggerPwaInstall = async function() {
+                const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                showPwaModalState('progress');
+                
+                // Reset progress UI
+                if (pwaProgressBarFill) pwaProgressBarFill.style.width = '18%';
+                if (pwaProgressPercent) pwaProgressPercent.textContent = '18%';
+                if (pwaProgressStepLabel) pwaProgressStepLabel.innerHTML = '<i class="bi bi-arrow-repeat spin me-1"></i> Memeriksa Sistem';
+                if (pwaProgressStatusText) pwaProgressStatusText.textContent = 'Memeriksa kompatibilitas manifest dan kesiapan perangkat...';
+
+                await new Promise(r => setTimeout(r, 450));
+                if (pwaProgressBarFill) pwaProgressBarFill.style.width = '52%';
+                if (pwaProgressPercent) pwaProgressPercent.textContent = '52%';
+                if (pwaProgressStepLabel) pwaProgressStepLabel.innerHTML = '<i class="bi bi-cloud-arrow-down-fill me-1"></i> Mengunduh Cache Offline';
+                if (pwaProgressStatusText) pwaProgressStatusText.textContent = 'Menyimpan aset antarmuka & modul offline ke penyimpanan lokal HP...';
+
+                await new Promise(r => setTimeout(r, 600));
+                if (pwaProgressBarFill) pwaProgressBarFill.style.width = '84%';
+                if (pwaProgressPercent) pwaProgressPercent.textContent = '84%';
+                if (pwaProgressStepLabel) pwaProgressStepLabel.innerHTML = '<i class="bi bi-phone-fill me-1"></i> Integrasi Layar Utama';
+                if (pwaProgressStatusText) pwaProgressStatusText.textContent = 'Menyiapkan shortcut & ikon aplikasi di Layar Utama (Home Screen)...';
+
+                await new Promise(r => setTimeout(r, 450));
+
                 if (deferredPwaPrompt) {
-                    deferredPwaPrompt.prompt();
-                    const choiceResult = await deferredPwaPrompt.userChoice;
-                    if (choiceResult.outcome === 'accepted') {
-                        localStorage.setItem('pwa_installed', '1');
-                        window.applyPwaInstalledState();
-                        console.log('User accepted PWA installation');
+                    if (pwaProgressBarFill) pwaProgressBarFill.style.width = '95%';
+                    if (pwaProgressPercent) pwaProgressPercent.textContent = '95%';
+                    if (pwaProgressStepLabel) pwaProgressStepLabel.innerHTML = '<i class="bi bi-hand-index-thumb-fill me-1"></i> Konfirmasi Perangkat';
+                    if (pwaProgressStatusText) pwaProgressStatusText.textContent = 'Silakan tap tombol "Instal" pada jendela konfirmasi browser...';
+
+                    try {
+                        deferredPwaPrompt.prompt();
+                        const choiceResult = await deferredPwaPrompt.userChoice;
+                        if (choiceResult && choiceResult.outcome === 'accepted') {
+                            if (pwaProgressBarFill) pwaProgressBarFill.style.width = '100%';
+                            if (pwaProgressPercent) pwaProgressPercent.textContent = '100%';
+                            localStorage.setItem('pwa_installed', '1');
+                            window.applyPwaInstalledState();
+                            await new Promise(r => setTimeout(r, 350));
+                            showPwaModalState('success');
+                        } else {
+                            hidePwaProgressModal();
+                        }
+                    } catch (err) {
+                        console.error('PWA prompt error:', err);
+                        showPwaModalState('manual');
                     }
                     deferredPwaPrompt = null;
                 } else {
-                    const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    // Fallback to interactive visual guide
                     if (isIos) {
-                        alert('📲 CARA PASANG DI IPHONE / IPAD:\n1. Buka halaman ini di browser Safari.\n2. Tekan tombol Share / Bagikan (ikon kotak dengan panah ke atas).\n3. Pilih "Tambahkan ke Layar Utama" (Add to Home Screen).\n4. Tekan "Tambah".');
+                        tabGuideIos?.click();
                     } else {
-                        alert('📲 CARA PASANG DI ANDROID / PC:\n1. Tekan menu browser (titik tiga ⋮ di pojok kanan atas).\n2. Pilih "Instal Aplikasi" atau "Tambahkan ke Layar Utama".\n3. Konfirmasi pemasangan.');
+                        tabGuideAndroid?.click();
                     }
+                    showPwaModalState('manual');
                 }
             };
 
@@ -1051,7 +1230,6 @@
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPwaPrompt = e;
-                    // Prompt disimpan secara silent dan hanya dipicu saat pengguna menekan tombol Pasang/Download di Dashboard
                 });
 
                 document.querySelectorAll('.btn-trigger-pwa-install').forEach(btn => {
@@ -1063,6 +1241,7 @@
                 localStorage.setItem('pwa_installed', '1');
                 window.applyPwaInstalledState();
                 deferredPwaPrompt = null;
+                showPwaModalState('success');
                 console.log('PT MSN PWA successfully installed!');
             });
         });
@@ -1135,6 +1314,153 @@
         </div>
     </div>
     @endauth
+
+    <!-- PWA Install & Realtime Progress Modal Dialog -->
+    <div id="pwaProgressModal" class="d-none msn-pwa-modal-backdrop">
+        <div class="msn-pwa-modal-card">
+            <!-- Close Button -->
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" id="btnClosePwaProgressModal" aria-label="Tutup" style="font-size: 0.75rem; opacity: 0.75; z-index: 10;"></button>
+            
+            <!-- STATE 1: Live Download / Installation Progress -->
+            <div id="pwaStepProgressState" class="text-center pt-2 pb-1">
+                <div class="pwa-pulse-bubble">
+                    <img src="{{ asset('assets/logo-msn BG Trans - Copy2.png') }}" alt="PT MSN" style="width: 38px; height: 38px; object-fit: contain;">
+                </div>
+
+                <div class="d-inline-flex align-items-center gap-1.5 px-2.5 py-0.5 rounded-pill mb-2" style="background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.28); color: #38bdf8; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4px;">
+                    <span class="pulse-dot" style="width: 5px; height: 5px; background: #38bdf8; box-shadow: 0 0 6px #38bdf8;"></span>
+                    <span>MEMASANG APLIKASI WEB (PWA)</span>
+                </div>
+
+                <h5 class="fw-bold text-white mb-1" style="font-size: 1.15rem; letter-spacing: -0.3px;">Memproses Pemasangan...</h5>
+                <p class="text-white-50 px-2 mb-3" id="pwaProgressStatusText" style="font-size: 0.82rem; line-height: 1.45;">
+                    Menghubungkan Service Worker &amp; mengunduh aset offline...
+                </p>
+
+                <!-- Progress Bar & Percentage -->
+                <div class="mb-3 px-1">
+                    <div class="d-flex justify-content-between text-white-50 small mb-1.5" style="font-size: 0.75rem;">
+                        <span id="pwaProgressStepLabel"><i class="bi bi-arrow-repeat spin me-1"></i> Sinkronisasi Aset</span>
+                        <span id="pwaProgressPercent" class="fw-bold text-info">0%</span>
+                    </div>
+                    <div class="pwa-progress-track">
+                        <div class="pwa-progress-fill" id="pwaProgressBarFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Reassuring Explanation Notice Box -->
+                <div class="p-2.5 rounded-3 mb-2 text-start" style="background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(56, 189, 248, 0.2);">
+                    <div class="d-flex gap-2">
+                        <i class="bi bi-info-circle-fill text-info mt-0.5" style="font-size: 0.95rem;"></i>
+                        <div style="font-size: 0.74rem; color: rgba(226, 232, 240, 0.85); line-height: 1.4;">
+                            <strong>Mengapa tidak muncul di notifikasi unduhan browser?</strong><br>
+                            Aplikasi Web (PWA) dipasang <em>langsung</em> oleh sistem Android/iOS ke Layar Utama (Home Screen) tanpa mengunduh file APK manual di bar download.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STATE 2: Success Confirmation -->
+            <div id="pwaStepSuccessState" class="d-none text-center pt-2 pb-1">
+                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 62px; height: 62px; background: rgba(16, 185, 129, 0.18); border: 2px solid rgba(16, 185, 129, 0.4); color: #10b981; font-size: 1.8rem; box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+
+                <div class="d-inline-flex align-items-center gap-1.5 px-2.5 py-0.5 rounded-pill mb-2" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.4px;">
+                    <i class="bi bi-check-lg"></i>
+                    <span>BERHASIL TERPASANG</span>
+                </div>
+
+                <h5 class="fw-bold text-white mb-1" style="font-size: 1.15rem; letter-spacing: -0.3px;">Aplikasi Siap Digunakan!</h5>
+                <p class="text-white-50 px-2 mb-3" style="font-size: 0.82rem; line-height: 1.45;">
+                    Ikon <strong>MSN Report</strong> kini telah berhasil ditambahkan ke Layar Utama (Home Screen) HP Anda.
+                </p>
+
+                <div class="p-2.5 rounded-3 mb-3 text-start" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25);">
+                    <div class="d-flex gap-2 align-items-center">
+                        <i class="bi bi-phone text-success fs-5"></i>
+                        <div style="font-size: 0.75rem; color: rgba(226, 232, 240, 0.9); line-height: 1.35;">
+                            Buka Layar Utama HP Anda dan tap ikon <strong>MSN Report</strong> untuk pengalaman layar penuh yang cepat &amp; hemat kuota.
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-success rounded-pill py-2.5 px-4 fw-bold w-100 shadow-sm" id="btnClosePwaSuccess" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-size: 0.88rem;">
+                    <i class="bi bi-check2 me-1"></i> Mengerti &amp; Selesai
+                </button>
+            </div>
+
+            <!-- STATE 3: Manual Guide (For iOS Safari or Android when prompt cannot auto-dispatch) -->
+            <div id="pwaStepManualState" class="d-none text-center pt-2 pb-1">
+                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 58px; height: 58px; background: rgba(56, 189, 248, 0.15); border: 1.5px solid rgba(56, 189, 248, 0.35); color: #38bdf8; font-size: 1.5rem;">
+                    <i class="bi bi-phone-vibrate"></i>
+                </div>
+
+                <h5 class="fw-bold text-white mb-1" style="font-size: 1.15rem; letter-spacing: -0.3px;">Panduan Pemasangan</h5>
+                <p class="text-white-50 px-2 mb-3" style="font-size: 0.8rem; line-height: 1.4;">
+                    Ikuti langkah cepat berikut untuk menaruh ikon aplikasi di Layar Utama HP:
+                </p>
+
+                <!-- OS Tabs -->
+                <ul class="nav nav-pills nav-fill mb-3 p-1 rounded-pill" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);">
+                    <li class="nav-item">
+                        <button class="nav-link active rounded-pill py-1 px-3 text-white fw-semibold" id="tabGuideAndroid" type="button" style="font-size: 0.76rem;">Android (Chrome)</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link rounded-pill py-1 px-3 text-white fw-semibold" id="tabGuideIos" type="button" style="font-size: 0.76rem;">iPhone (Safari)</button>
+                    </li>
+                </ul>
+
+                <!-- Android Content -->
+                <div id="guideAndroidContent">
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">1</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Tekan tombol <strong>Menu Titik Tiga (<i class="bi bi-three-dots-vertical"></i>)</strong> di pojok kanan atas browser Google Chrome.
+                        </div>
+                    </div>
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">2</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Pilih menu <strong>"Instal Aplikasi"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.
+                        </div>
+                    </div>
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">3</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Tekan <strong>"Instal"</strong> saat jendela konfirmasi muncul.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- iOS Content -->
+                <div id="guideIosContent" class="d-none">
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">1</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Buka website ini di browser <strong>Safari</strong> pada iPhone/iPad Anda.
+                        </div>
+                    </div>
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">2</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Tekan tombol <strong>Share / Bagikan (<i class="bi bi-box-arrow-up"></i>)</strong> di bilah bawah Safari.
+                        </div>
+                    </div>
+                    <div class="pwa-guide-step-card">
+                        <div class="pwa-step-num">3</div>
+                        <div style="font-size: 0.78rem; color: #fff; line-height: 1.35;">
+                            Geser ke bawah dan pilih <strong>"Add to Home Screen" (Tambahkan ke Layar Utama)</strong>, lalu tekan <strong>"Tambah"</strong>.
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-primary rounded-pill py-2.5 px-4 fw-bold w-100 shadow-sm mt-2" id="btnClosePwaManual" style="background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%); border: none; font-size: 0.86rem;">
+                    Tutup Panduan
+                </button>
+            </div>
+        </div>
+    </div>
 
     @stack('scripts')
 </body>
