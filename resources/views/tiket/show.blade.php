@@ -1394,27 +1394,19 @@
     /* ─── NEW KRONOLOGIS CHAT BUBBLE HIGHLIGHT PULSE ─── */
     @keyframes waBubblePulse {
         0% {
-            transform: scale(0.97);
-            box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+            background-color: rgba(44, 127, 255, 0.12);
         }
-        35% {
-            transform: scale(1.025);
-            box-shadow: 0 0 0 8px rgba(13, 148, 136, 0.28), 0 8px 24px rgba(13, 148, 136, 0.2);
-        }
-        70% {
-            transform: scale(1.01);
-            box-shadow: 0 0 0 12px rgba(13, 148, 136, 0.1), 0 4px 16px rgba(13, 148, 136, 0.12);
+        50% {
+            background-color: rgba(44, 127, 255, 0.06);
         }
         100% {
-            transform: scale(1);
-            box-shadow: none;
+            background-color: transparent;
         }
     }
 
     .wa-bubble-new-highlight .wa-bubble {
-        animation: waBubblePulse 2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        outline: 2.5px solid var(--cjp-teal, #0d9488) !important;
-        outline-offset: 2px !important;
+        animation: waBubblePulse 1.8s ease !important;
+        outline: none !important;
     }
 
     /* ── MODALS & PHOTO LIGHTBOX (ON TOP OF FULLSCREEN CHAT Z-INDEX 99999) ── */
@@ -9750,88 +9742,41 @@ document.addEventListener('DOMContentLoaded', function() {
             } catch (e) {}
         }
 
-        if (!targetEl && hasKronoSuccess) {
-            const items = document.querySelectorAll('.wa-msg-row');
-            if (items.length > 0) {
-                targetEl = items[items.length - 1];
+        const stream = document.getElementById('timelineList');
+        if (!stream) return;
+
+        const performInternalScroll = () => {
+            if (targetEl) {
+                const streamRect = stream.getBoundingClientRect();
+                const targetRect = targetEl.getBoundingClientRect();
+                const relativeTop = targetRect.top - streamRect.top + stream.scrollTop;
+                stream.scrollTop = Math.max(0, relativeTop - (stream.clientHeight / 2) + (targetEl.clientHeight / 2));
+            } else {
+                // Selalu pastikan internal scroll chat berada di paling bawah (pesan terbaru)
+                stream.scrollTop = stream.scrollHeight;
             }
-        }
+        };
 
-        if (targetEl) {
-            // 1. Pastikan tab kronologis aktif jika pengguna berada di tab lain
-            const kronoTab = document.getElementById('kronologis-tab');
-            if (kronoTab && typeof bootstrap !== 'undefined') {
-                const bsTab = bootstrap.Tab.getOrCreateInstance(kronoTab);
-                bsTab.show();
+        // Jalankan scroll internal container secara instan
+        performInternalScroll();
+        setTimeout(performInternalScroll, 60);
+        setTimeout(performInternalScroll, 300);
+
+        // Jika ada gambar di dalam chat stream yang masih loading, sesuaikan scroll container
+        const streamImgs = stream.querySelectorAll('img');
+        streamImgs.forEach(img => {
+            if (!img.complete) {
+                img.addEventListener('load', performInternalScroll, { once: true });
             }
+        });
+        window.addEventListener('load', performInternalScroll, { once: true });
 
-            const stream = document.getElementById('timelineList');
-            const isLatest = (!window.location.hash || window.location.hash.startsWith('#krono-item-')) &&
-                             (targetEl === stream?.lastElementChild || targetEl.nextElementSibling === null || newKronoId || hasKronoSuccess);
-
-            const performScroll = (instant = true) => {
-                if (!targetEl) return;
-
-                // A. Scroll internal container (#timelineList) secara presisi ke pesan target/bawah
-                if (stream) {
-                    if (isLatest) {
-                        // Untuk pesan terbaru, scroll stream maksimal ke bawah
-                        stream.scrollTo({
-                            top: stream.scrollHeight + 500,
-                            behavior: instant ? 'auto' : 'smooth'
-                        });
-                    } else {
-                        const streamRect = stream.getBoundingClientRect();
-                        const targetRect = targetEl.getBoundingClientRect();
-                        const relativeTop = targetRect.top - streamRect.top + stream.scrollTop;
-                        stream.scrollTo({
-                            top: Math.max(0, relativeTop - (stream.clientHeight / 2) + (targetEl.clientHeight / 2)),
-                            behavior: instant ? 'auto' : 'smooth'
-                        });
-                    }
-                }
-
-                // B. Posisikan window outer LANGSUNG secara instan (menghilangkan efek meluncur dari atas)
-                const chatContainer = document.querySelector('.wa-chat-container') || targetEl;
-                const chatRect = chatContainer.getBoundingClientRect();
-                const currentWindowY = window.pageYOffset || document.documentElement.scrollTop;
-                const chatPageY = chatRect.top + currentWindowY;
-                const desiredWindowY = Math.max(0, chatPageY - 65);
-
-                window.scrollTo({
-                    top: desiredWindowY,
-                    behavior: 'auto'
-                });
-            };
-
-            // Highlight pulse bubble
-            targetEl.classList.add('wa-bubble-new-highlight');
-            setTimeout(() => {
-                targetEl.classList.remove('wa-bubble-new-highlight');
-            }, 4000);
-
-            // Eksekusi scroll instan langsung tanpa delay visual dari atas
-            performScroll(true);
-            setTimeout(() => performScroll(true), 50);
-            setTimeout(() => performScroll(false), 300);
-
-            // Jika ada gambar di dalam chat stream yang masih loading, re-scroll setelah gambar selesai dimuat
-            if (stream) {
-                const streamImgs = stream.querySelectorAll('img');
-                streamImgs.forEach(img => {
-                    if (!img.complete) {
-                        img.addEventListener('load', () => performScroll(true), { once: true });
-                    }
-                });
-            }
-
-            window.addEventListener('load', () => performScroll(true), { once: true });
-        }
+        // CATATAN: Window halaman browser TIDAK di-scroll ke bawah (window.scrollTo ditiadakan).
+        // Halaman browser tetap berada di atas agar informasi detail tiket langsung terlihat.
     }
 
-    if (newKronoId || hasKronoSuccess || (window.location.hash && window.location.hash.startsWith('#krono-item-'))) {
-        scrollToTargetKrono();
-    }
+    // Jalankan agar chat stream selalu siap di paling bawah
+    scrollToTargetKrono();
 
     // Indikator loading saat submit form kronologis
     const formAddKronologis = document.getElementById('formAddKronologis');
