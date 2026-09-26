@@ -1149,23 +1149,98 @@
                 guideAndroidContent?.classList.add('d-none');
             });
 
-            // Function to check if app is already installed and hide all install triggers
+            // Function to check if app is already installed and update UI to 'Buka di Aplikasi'
             window.applyPwaInstalledState = function() {
                 const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
                     || window.navigator.standalone === true 
-                    || document.referrer.includes('android-app://')
-                    || localStorage.getItem('pwa_installed') === '1';
+                    || document.referrer.includes('android-app://');
+                const isInstalled = isStandalone || localStorage.getItem('pwa_installed') === '1';
 
-                if (isStandalone) {
-                    document.querySelectorAll('.pwa-download-dash-card, #pwaInstallBanner, .btn-trigger-pwa-install').forEach(el => {
-                        el.classList.add('d-none');
-                        el.style.display = 'none';
-                    });
-                }
-                return isStandalone;
+                document.querySelectorAll('.pwa-download-dash-card').forEach(card => {
+                    card.classList.remove('d-none');
+                    card.style.display = '';
+
+                    const titleEl = card.querySelector('.pwa-card-title') || card.querySelector('h6');
+                    const descEl = card.querySelector('.pwa-card-desc') || card.querySelector('p');
+                    const btn = card.querySelector('.btn-trigger-pwa-install');
+
+                    if (isInstalled) {
+                        if (titleEl) titleEl.innerHTML = '<i class="bi bi-patch-check-fill text-success me-1"></i> Aplikasi Mobile PT MSN';
+                        if (descEl) descEl.textContent = 'Aplikasi telah terpasang di perangkat Anda. Buka langsung untuk navigasi cepat & notifikasi instan.';
+                        if (btn) {
+                            btn.setAttribute('data-pwa-state', 'installed');
+                            btn.style.background = 'linear-gradient(135deg, #0d9488 0%, #10b981 100%)';
+                            btn.style.boxShadow = '0 4px 14px rgba(16, 185, 129, 0.45)';
+                            btn.innerHTML = '<i class="bi bi-box-arrow-up-right"></i> <span>Buka di Aplikasi</span>';
+                        }
+                    } else {
+                        if (titleEl) titleEl.textContent = 'Aplikasi Mobile PT MSN';
+                        if (descEl) descEl.textContent = 'Pasang aplikasi untuk akses cepat, praktis, dan notifikasi langsung di HP.';
+                        if (btn) {
+                            btn.setAttribute('data-pwa-state', 'not_installed');
+                            btn.style.background = 'linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%)';
+                            btn.style.boxShadow = '0 4px 14px rgba(44, 127, 255, 0.4)';
+                            btn.innerHTML = '<i class="bi bi-download"></i> <span>Pasang Aplikasi</span>';
+                        }
+                    }
+                });
+
+                return isInstalled;
             };
 
             const isAlreadyPwa = window.applyPwaInstalledState();
+
+            window.handlePwaButtonClick = function(e) {
+                const btn = e.currentTarget;
+                const state = btn.getAttribute('data-pwa-state');
+
+                if (state === 'installed') {
+                    const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+                        || window.navigator.standalone === true 
+                        || document.referrer.includes('android-app://');
+
+                    if (isStandalone) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Aplikasi Sedang Aktif',
+                                text: 'Anda saat ini sudah berada di dalam Aplikasi MSN Report versi Layar Penuh.',
+                                timer: 2500,
+                                showConfirmButton: false,
+                                customClass: { popup: 'msn-swal-popup' }
+                            });
+                        } else {
+                            alert('Anda saat ini sudah berada di dalam Aplikasi MSN Report.');
+                        }
+                    } else {
+                        // User in standard browser but app is installed
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Buka di Aplikasi',
+                                html: 'Aplikasi <b>MSN Report</b> telah terpasang di HP Anda.<br>Silakan buka ikon <strong>MSN Report</strong> di Layar Utama (Home Screen) untuk pengalaman layar penuh.',
+                                confirmButtonText: 'Buka Halaman Utama',
+                                showCancelButton: true,
+                                cancelButtonText: 'Tutup',
+                                customClass: { 
+                                    popup: 'msn-swal-popup', 
+                                    confirmButton: 'btn btn-primary rounded-pill px-4',
+                                    cancelButton: 'btn btn-light rounded-pill px-3'
+                                },
+                                buttonsStyling: false
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.href = '{{ url("/") }}';
+                                }
+                            });
+                        } else {
+                            window.location.href = '{{ url("/") }}';
+                        }
+                    }
+                } else {
+                    window.triggerPwaInstall();
+                }
+            };
 
             window.triggerPwaInstall = async function() {
                 const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -1226,16 +1301,14 @@
                 }
             };
 
-            if (!isAlreadyPwa) {
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPwaPrompt = e;
-                });
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPwaPrompt = e;
+            });
 
-                document.querySelectorAll('.btn-trigger-pwa-install').forEach(btn => {
-                    btn.addEventListener('click', window.triggerPwaInstall);
-                });
-            }
+            document.querySelectorAll('.btn-trigger-pwa-install').forEach(btn => {
+                btn.addEventListener('click', window.handlePwaButtonClick);
+            });
 
             window.addEventListener('appinstalled', () => {
                 localStorage.setItem('pwa_installed', '1');

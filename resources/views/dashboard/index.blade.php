@@ -424,13 +424,13 @@
                     </div>
                 </div>
                 <div class="col text-start">
-                    <h6 class="fw-bold mb-0.5 text-white" style="font-size: 0.95rem; letter-spacing: -0.2px;">Aplikasi Mobile PT MSN</h6>
-                    <p class="text-white-50 mb-0 small" style="font-size: 0.78rem; line-height: 1.35;">
+                    <h6 class="fw-bold mb-0.5 text-white pwa-card-title" style="font-size: 0.95rem; letter-spacing: -0.2px;">Aplikasi Mobile PT MSN</h6>
+                    <p class="text-white-50 mb-0 small pwa-card-desc" style="font-size: 0.78rem; line-height: 1.35;">
                         Pasang aplikasi untuk akses cepat, praktis, dan notifikasi langsung di HP.
                     </p>
                 </div>
                 <div class="col-12 col-md-auto text-end">
-                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3.5 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2 btn-trigger-pwa-install w-100 w-md-auto justify-content-center" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none; font-size: 0.8rem; box-shadow: 0 4px 14px rgba(44, 127, 255, 0.4); cursor: pointer;">
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill px-3.5 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2 btn-trigger-pwa-install w-100 w-md-auto justify-content-center" data-pwa-state="not_installed" style="background: linear-gradient(135deg, #2C7FFF 0%, #1b39da 100%); border: none; font-size: 0.8rem; box-shadow: 0 4px 14px rgba(44, 127, 255, 0.4); cursor: pointer;">
                         <i class="bi bi-download"></i>
                         <span>Pasang Aplikasi</span>
                     </button>
