@@ -35,18 +35,28 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $loginInput = trim($request->input('email'));
+        $password = $request->input('password');
         $remember = $request->has('remember') ? $request->boolean('remember') : true;
 
-        if (!Auth::attempt($credentials, $remember)) {
+        $fieldType = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $authenticated = Auth::attempt([$fieldType => $loginInput, 'password' => $password], $remember);
+
+        if (!$authenticated) {
+            // Coba field alternatif jika belum cocok (email <-> username)
+            $altField = $fieldType === 'email' ? 'username' : 'email';
+            $authenticated = Auth::attempt([$altField => $loginInput, 'password' => $password], $remember);
+        }
+
+        if (!$authenticated) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kombinasi email dan password tidak sesuai.',
+                    'message' => 'Kombinasi email/username dan password tidak sesuai.',
                 ], 422);
             }
             return back()->withErrors([
-                'email' => 'Kombinasi email dan password tidak sesuai.',
+                'email' => 'Kombinasi email/username dan password tidak sesuai.',
             ])->onlyInput('email');
         }
 

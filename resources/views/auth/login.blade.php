@@ -921,15 +921,15 @@
 
                 <!-- Email Address Input -->
                 <div class="form-group-custom">
-                    <label for="email" class="custom-label">Email Perusahaan</label>
+                    <label for="email" class="custom-label">Email atau Username</label>
                     <div class="input-box">
-                        <i class="bi bi-envelope input-icon-left"></i>
-                        <input type="email"
+                        <i class="bi bi-person-badge input-icon-left"></i>
+                        <input type="text"
                                class="custom-input @error('email') is-invalid @enderror"
                                id="email"
                                name="email"
                                value="{{ old('email') }}"
-                               placeholder="nama@connecti.id"
+                               placeholder="Masukkan email atau username"
                                required
                                autofocus
                                autocomplete="username">
@@ -1006,7 +1006,7 @@
                 </button>
 
                 <!-- Tim Teknis -->
-                <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'katasandi')">
+                <button type="button" class="role-chip-btn" onclick="fillLogin('teknis@connecti.id', 'password')">
                     <div class="role-chip-icon" style="background:#fff7ed; color:#ea580c;">
                         <i class="bi bi-tools"></i>
                     </div>
