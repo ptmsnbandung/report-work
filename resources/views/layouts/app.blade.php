@@ -1075,6 +1075,15 @@
                 }
             };
 
+            // ── GLOBAL PT MSN NOTIFICATION CHIME HELPER ──
+            window.playNotificationSound = function() {
+                try {
+                    const audio = new Audio('/assets/sounds/msn-notification.mp3');
+                    audio.volume = 0.85;
+                    audio.play().catch(() => {});
+                } catch (e) {}
+            };
+
             async function registerServiceWorkerAndPush() {
                 if (!('serviceWorker' in navigator)) return;
 
