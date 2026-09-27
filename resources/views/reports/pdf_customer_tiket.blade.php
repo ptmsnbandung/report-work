@@ -186,20 +186,13 @@
     <table class="header-table">
         <tr>
             <td style="width: 58%; vertical-align: middle;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        @if($logoBase64)
-                        <td style="width: 130px; vertical-align: middle; padding-right: 10px;">
-                            <img src="{{ $logoBase64 }}" alt="Logo PT MSN" style="height: 36px; max-width: 125px; width: auto;">
-                        </td>
-                        @endif
-                        <td style="vertical-align: middle;">
-                            <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
-                            <div class="company-sub">FIBER OPTIC BACKBONE &amp; NETWORK OPERATION CENTER</div>
-                            <div class="company-addr">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
-                        </td>
-                    </tr>
-                </table>
+                @if($logoBase64)
+                    <img src="{{ $logoBase64 }}" alt="PT Media Solusi Network" style="height: 42px; max-width: 190px; width: auto; display: block; margin-bottom: 4px;">
+                @else
+                    <div class="company-title">PT MEDIA SOLUSI NETWORK</div>
+                @endif
+                <div class="company-sub">FIBER OPTIC BACKBONE &amp; NETWORK OPERATION CENTER</div>
+                <div class="company-addr">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
             </td>
             <td style="width: 42%; vertical-align: middle;" class="text-right">
                 <div class="doc-title">BERITA ACARA PENANGANAN GANGGUAN</div>
