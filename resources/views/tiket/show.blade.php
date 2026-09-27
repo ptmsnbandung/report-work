@@ -3000,11 +3000,25 @@
                             <li><hr class="dropdown-divider my-1"></li>
                             <li class="tiket-dropdown-header-label">Export Dokumen</li>
                             <li>
-                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', $tiket->id) }}">
+                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'internal']) }}" title="Laporan internal lengkap beserta mapping core dan kronologis">
                                     <div class="tiket-dropdown-icon-box bg-danger-subtle text-danger">
                                         <i class="bi bi-file-earmark-pdf-fill"></i>
                                     </div>
-                                    <span>Export Berita Acara PDF</span>
+                                    <div class="d-flex flex-column">
+                                        <span>PDF Internal (Lengkap)</span>
+                                        <small class="text-muted" style="font-size: 0.68rem;">Data teknis, mapping core & kronologis</small>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'customer']) }}" title="Berita Acara resmi untuk diberikan ke pelanggan / mitra">
+                                    <div class="tiket-dropdown-icon-box bg-primary-subtle text-primary">
+                                        <i class="bi bi-file-earmark-person-fill"></i>
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                        <span>PDF Pelanggan (Customer)</span>
+                                        <small class="text-muted" style="font-size: 0.68rem;">Berita Acara resmi, akar masalah & foto</small>
+                                    </div>
                                 </a>
                             </li>
                             <li>

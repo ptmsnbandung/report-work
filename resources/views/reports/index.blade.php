@@ -661,9 +661,15 @@
                                 </div>
 
                                 <div class="d-flex align-items-center gap-1">
-                                    <a href="{{ route('reports.export.tiket.pdf', $t->id) }}" class="btn btn-outline-danger btn-sm px-2 py-1" title="Export PDF Berita Acara">
-                                        <i class="bi bi-file-earmark-pdf"></i>
-                                    </a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-danger btn-sm px-2 py-1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Export PDF">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size:0.8rem;">
+                                            <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
+                                            <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
+                                        </ul>
+                                    </div>
                                     <a href="{{ route('tiket.show', $t->id) }}" class="btn btn-cjp-teal btn-sm px-2.5 py-1 d-flex align-items-center gap-1">
                                         <span>Detail</span>
                                         <i class="bi bi-chevron-right" style="font-size:0.7rem;"></i>
@@ -727,9 +733,15 @@
                                         <a href="{{ route('tiket.show', $t->id) }}" class="btn btn-light border btn-sm" title="Lihat Detail">
                                             <i class="bi bi-eye text-navy"></i>
                                         </a>
-                                        <a href="{{ route('reports.export.tiket.pdf', $t->id) }}" class="btn btn-light border btn-sm text-danger" title="Export PDF Berita Acara">
-                                            <i class="bi bi-file-earmark-pdf"></i>
-                                        </a>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button type="button" class="btn btn-light border btn-sm text-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Pilihan Export PDF">
+                                                <i class="bi bi-file-earmark-pdf"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size:0.8rem;">
+                                                <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
+                                                <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

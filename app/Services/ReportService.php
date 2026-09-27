@@ -102,9 +102,28 @@ class ReportService
 
     /**
      * Generate file PDF Berita Acara / Laporan Resmi 1 Tiket
+     * @param Tiket $tiket
+     * @param string $type ('internal' | 'customer')
      */
-    public function generateSingleTiketPdf(Tiket $tiket)
+    public function generateSingleTiketPdf(Tiket $tiket, string $type = 'internal')
     {
+        if ($type === 'customer') {
+            $tiket->loadMissing([
+                'creator',
+                'closer',
+                'resume',
+                'dokumentasis',
+                'titikPerbaikans',
+            ]);
+
+            $pdf = Pdf::loadView('reports.pdf_customer_tiket', [
+                'tiket' => $tiket,
+                'printDate' => now()->translatedFormat('l, d F Y H:i') . ' WIB',
+            ])->setPaper('a4', 'portrait');
+
+            return $pdf;
+        }
+
         $tiket->loadMissing([
             'creator',
             'closer',
@@ -115,6 +134,8 @@ class ReportService
             'jointClosures.cores',
             'jointClosures.creator',
             'manuverCores',
+            'handoverShifts.userFrom',
+            'handoverShifts.userTo',
             'dokumentasis'
         ]);
 

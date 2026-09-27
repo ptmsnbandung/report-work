@@ -128,12 +128,20 @@ class ReportController extends Controller
 
     /**
      * Export Berita Acara 1 Tiket ke PDF Resmi (Portrait)
+     * Mendukung opsi: internal (default) dan customer
      */
-    public function exportTiketPdf(Tiket $tiket)
+    public function exportTiketPdf(Request $request, Tiket $tiket)
     {
+        $type = $request->query('type', 'internal');
         $safeNoTiket = str_replace(['/', '\\'], '_', $tiket->no_tiket);
-        $filename = 'Berita_Acara_Gangguan_' . $safeNoTiket . '.pdf';
-        return $this->reportService->generateSingleTiketPdf($tiket)->download($filename);
+        
+        if ($type === 'customer') {
+            $filename = 'Berita_Acara_Pelanggan_' . $safeNoTiket . '.pdf';
+        } else {
+            $filename = 'Berita_Acara_Internal_' . $safeNoTiket . '.pdf';
+        }
+
+        return $this->reportService->generateSingleTiketPdf($tiket, $type)->download($filename);
     }
 
     /**
