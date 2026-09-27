@@ -132,10 +132,46 @@
         overflow-y: auto !important;
     }
 
+    .wa-chat-container.wa-fullscreen .wa-quick-replies-wrapper {
+        padding: 0.45rem 1.25rem 0.25rem 1.25rem !important;
+        max-width: 980px;
+        margin: 0 auto !important;
+        width: 100%;
+    }
+
     .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
         flex-shrink: 0 !important;
         flex-grow: 0 !important;
-        padding-bottom: max(0.65rem, env(safe-area-inset-bottom, 0px)) !important;
+        padding: 0.55rem 1.25rem max(1.35rem, calc(1.1rem + env(safe-area-inset-bottom, 0px))) 1.25rem !important;
+        max-width: 980px;
+        margin: 0 auto !important;
+        width: 100%;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-floating-input-pill {
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.12), 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-send-btn {
+        box-shadow: 0 4px 14px rgba(44, 127, 255, 0.35) !important;
+    }
+
+    .wa-chat-container.wa-fullscreen .wa-scroll-bottom-btn {
+        bottom: 125px !important;
+        right: max(20px, calc((100vw - 980px) / 2 + 20px)) !important;
+    }
+
+    .wa-chat-container.wa-fullscreen:not(:has(.wa-quick-replies-wrapper)) .wa-scroll-bottom-btn {
+        bottom: 85px !important;
+    }
+
+    @media (max-width: 768px) {
+        .wa-chat-container.wa-fullscreen .wa-chat-input-bar {
+            padding: 0.45rem 0.75rem max(1.2rem, calc(0.95rem + env(safe-area-inset-bottom, 0px))) 0.75rem !important;
+        }
+        .wa-chat-container.wa-fullscreen .wa-quick-replies-wrapper {
+            padding: 0.3rem 0.75rem 0.2rem 0.75rem !important;
+        }
     }
 
     /* Sembunyikan semua elemen lain saat fullscreen aktif */
