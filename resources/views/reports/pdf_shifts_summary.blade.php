@@ -109,19 +109,38 @@
             padding-top: 4px;
         }
     </style>
+@php
+    $logoPath = public_path('assets/logo-msn BG Trans.png');
+    if (!file_exists($logoPath)) {
+        $logoPath = public_path('assets/logo-msn BG Trans - Copy2.png');
+    }
+    $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : null;
+@endphp
 </head>
 <body>
 
     <!-- Header Table -->
     <table class="header-table">
         <tr>
-            <td style="width: 55%;">
-                <div class="company-title">PT MEGA SIBER NUSANTARA (MSN)</div>
-                <div class="company-sub">Laporan Audit &amp; Serah Terima (Handover) Shift Lapangan</div>
+            <td style="width: 60%; vertical-align: middle;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        @if($logoBase64)
+                        <td style="width: 135px; vertical-align: middle; padding-right: 10px;">
+                            <img src="{{ $logoBase64 }}" alt="Logo PT MSN" style="height: 36px; max-width: 130px; width: auto;">
+                        </td>
+                        @endif
+                        <td style="vertical-align: middle;">
+                            <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
+                            <div class="company-sub">Laporan Audit &amp; Serah Terima (Handover) Shift Lapangan</div>
+                            <div style="font-size: 7pt; color: #64748b; margin-top: 1px;">Fiber Optic Backbone &amp; Network Operation Center</div>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td style="width: 45%;">
+            <td style="width: 40%; vertical-align: middle;" class="text-right">
                 <div class="doc-title">REKAPITULASI OPER SHIFT TIKET</div>
-                <div style="font-size: 8pt; color: #64748b; text-align: right;">
+                <div style="font-size: 8pt; color: #64748b; text-align: right; margin-top: 2px;">
                     Periode: 
                     @if(!empty($filters['start_date']) || !empty($filters['end_date']))
                         {{ $filters['start_date'] ?? 'Awal' }} s/d {{ $filters['end_date'] ?? 'Sekarang' }}

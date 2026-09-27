@@ -101,19 +101,38 @@
             text-align: right;
         }
     </style>
+@php
+    $logoPath = public_path('assets/logo-msn BG Trans.png');
+    if (!file_exists($logoPath)) {
+        $logoPath = public_path('assets/logo-msn BG Trans - Copy2.png');
+    }
+    $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : null;
+@endphp
 </head>
 <body>
 
     <!-- ── HEADER ── -->
     <table class="header-table">
         <tr>
-            <td style="width: 60%;">
-                <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
-                <div class="company-sub">LAPORAN REKAPITULASI PENANGANAN GANGGUAN BACKBONE</div>
+            <td style="width: 62%; vertical-align: middle;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        @if($logoBase64)
+                        <td style="width: 135px; vertical-align: middle; padding-right: 10px;">
+                            <img src="{{ $logoBase64 }}" alt="Logo PT MSN" style="height: 36px; max-width: 130px; width: auto;">
+                        </td>
+                        @endif
+                        <td style="vertical-align: middle;">
+                            <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
+                            <div class="company-sub">LAPORAN REKAPITULASI PENANGANAN GANGGUAN BACKBONE</div>
+                            <div style="font-size: 7pt; color: #64748b; margin-top: 1px;">Fiber Optic Backbone &amp; Network Operation Center</div>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td style="width: 40%;" class="text-right">
-                <div class="doc-title">SUMMARY REPORT & SLA COMPLIANCE</div>
-                <div style="font-size: 7.5pt; color: #64748b;">
+            <td style="width: 38%; vertical-align: middle;" class="text-right">
+                <div class="doc-title">SUMMARY REPORT &amp; SLA COMPLIANCE</div>
+                <div style="font-size: 7.5pt; color: #64748b; margin-top: 2px;">
                     Dicetak: {{ $printDate }}
                 </div>
             </td>

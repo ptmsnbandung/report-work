@@ -133,17 +133,36 @@
             page-break-after: always;
         }
     </style>
+@php
+    $logoPath = public_path('assets/logo-msn BG Trans.png');
+    if (!file_exists($logoPath)) {
+        $logoPath = public_path('assets/logo-msn BG Trans - Copy2.png');
+    }
+    $logoBase64 = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : null;
+@endphp
 </head>
 <body>
 
     <!-- ── HEADER ── -->
     <table class="header-table">
         <tr>
-            <td style="width: 55%;">
-                <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
-                <div class="company-sub">FIBER OPTIC BACKBONE & NETWORK OPERATION CENTER</div>
+            <td style="width: 60%; vertical-align: middle;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        @if($logoBase64)
+                        <td style="width: 130px; vertical-align: middle; padding-right: 10px;">
+                            <img src="{{ $logoBase64 }}" alt="Logo PT MSN" style="height: 36px; max-width: 125px; width: auto;">
+                        </td>
+                        @endif
+                        <td style="vertical-align: middle;">
+                            <div class="company-title">PT MEDIA SOLUSI NETWORK (MSN)</div>
+                            <div class="company-sub">FIBER OPTIC BACKBONE &amp; NETWORK OPERATION CENTER</div>
+                            <div style="font-size: 7pt; color: #64748b; margin-top: 1px;">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td style="width: 45%;" class="text-right">
+            <td style="width: 40%; vertical-align: middle;" class="text-right">
                 <div class="doc-title">BERITA ACARA GANGGUAN</div>
                 <div class="doc-no">{{ $tiket->no_tiket }}</div>
             </td>
