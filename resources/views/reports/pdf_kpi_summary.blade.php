@@ -2,75 +2,92 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Eksekutif KPI & Evaluasi Kinerja</title>
+    <title>Laporan Eksekutif KPI &amp; Evaluasi Kinerja</title>
     <style>
         @page {
-            margin: 20px 25px 25px 25px;
+            margin: 18px 24px 22px 24px;
             size: A4 portrait;
         }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #1e293b;
-            font-size: 8.5pt;
-            line-height: 1.35;
+            color: #0f172a;
+            font-size: 8.2pt;
+            line-height: 1.4;
         }
         .header-table {
             width: 100%;
             border-bottom: 2px solid #0f172a;
             padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-        .company-title {
-            font-size: 13pt;
-            font-weight: bold;
-            color: #0f172a;
-            text-transform: uppercase;
+            margin-bottom: 10px;
         }
         .company-sub {
-            font-size: 8pt;
+            font-size: 7.8pt;
             color: #2563eb;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .company-addr {
+            font-size: 7pt;
+            color: #64748b;
+            margin-top: 1px;
         }
         .doc-title {
             font-size: 11pt;
-            font-weight: bold;
+            font-weight: 800;
             text-align: right;
             color: #0f172a;
+            letter-spacing: 0.4px;
+        }
+        .doc-no-badge {
+            display: inline-block;
+            font-size: 7.5pt;
+            font-family: monospace;
+            color: #1e40af;
+            font-weight: 700;
+            text-align: right;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 3px;
         }
 
         .section-title {
-            font-size: 9pt;
-            font-weight: bold;
+            font-size: 8.5pt;
+            font-weight: 700;
             color: #ffffff;
             background-color: #0f172a;
             padding: 4px 8px;
-            margin-top: 12px;
+            margin-top: 10px;
             margin-bottom: 6px;
             border-radius: 3px;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .summary-boxes {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 5px 0;
             margin-bottom: 8px;
         }
         .summary-card {
-            border: 1px solid #cbd5e1;
+            border: 1px solid #e2e8f0;
             background-color: #f8fafc;
-            padding: 6px 8px;
+            padding: 6px 6px;
             border-radius: 4px;
             text-align: center;
         }
         .summary-label {
-            font-size: 6.8pt;
+            font-size: 6.5pt;
             text-transform: uppercase;
             color: #64748b;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.2px;
         }
         .summary-val {
             font-size: 11pt;
-            font-weight: bold;
+            font-weight: 800;
             color: #0f172a;
             margin-top: 2px;
         }
@@ -78,37 +95,41 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 8pt;
+            font-size: 7.8pt;
+            margin-bottom: 4px;
         }
         .data-table th {
-            background-color: #1e293b;
+            background-color: #0f172a;
             color: #ffffff;
-            font-weight: bold;
+            font-weight: 700;
             text-align: left;
-            padding: 5px 6px;
-            border: 1px solid #1e293b;
-            font-size: 7.5pt;
+            padding: 4.5px 6px;
+            border: 1px solid #0f172a;
+            font-size: 7.2pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
         .data-table td {
             padding: 4.5px 6px;
             border: 1px solid #e2e8f0;
             vertical-align: middle;
         }
-        .data-table tr:nth-child(even) {
+        .data-table tr:nth-child(even) td {
             background-color: #f8fafc;
         }
 
         .badge {
             display: inline-block;
             padding: 2px 5px;
-            font-size: 7pt;
-            font-weight: bold;
+            font-size: 6.8pt;
+            font-weight: 700;
             border-radius: 3px;
+            text-transform: uppercase;
         }
-        .badge-success { background-color: #dcfce7; color: #15803d; }
-        .badge-warning { background-color: #fef3c7; color: #b45309; }
-        .badge-danger { background-color: #fee2e2; color: #b91c1c; }
-        .badge-primary { background-color: #dbeafe; color: #1d4ed8; }
+        .badge-success { background-color: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-warning { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-danger  { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .badge-primary { background-color: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
 
         .rank-circle {
             display: inline-block;
@@ -117,19 +138,20 @@
             line-height: 16px;
             text-align: center;
             border-radius: 50%;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 7pt;
             background-color: #f1f5f9;
             color: #334155;
+            border: 1px solid #cbd5e1;
         }
-        .rank-1 { background-color: #fef08a; color: #854d0e; }
-        .rank-2 { background-color: #e2e8f0; color: #334155; }
-        .rank-3 { background-color: #fed7aa; color: #9a3412; }
+        .rank-1 { background-color: #fef08a; color: #854d0e; border-color: #facc15; }
+        .rank-2 { background-color: #e2e8f0; color: #334155; border-color: #94a3b8; }
+        .rank-3 { background-color: #fed7aa; color: #9a3412; border-color: #fdba74; }
 
         .footer-note {
-            margin-top: 15px;
-            font-size: 7.5pt;
-            color: #64748b;
+            margin-top: 12px;
+            font-size: 7pt;
+            color: #94a3b8;
             text-align: right;
             border-top: 1px solid #e2e8f0;
             padding-top: 4px;
@@ -150,21 +172,19 @@
         <tr>
             <td style="width: 60%; vertical-align: middle;">
                 @if($logoBase64)
-                    <img src="{{ $logoBase64 }}" alt="PT Media Solusi Network" style="height: 42px; max-width: 190px; width: auto; display: block; margin-bottom: 4px;">
-                @else
-                    <div class="company-title">PT MEDIA SOLUSI NETWORK</div>
+                    <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 38px; max-width: 190px; width: auto; display: block; margin-bottom: 4px;">
                 @endif
                 <div class="company-sub">Key Performance Indicators (KPI) &amp; Executive Performance Report</div>
-                <div style="font-size: 7pt; color: #64748b; margin-top: 1px;">Fiber Optic Backbone &amp; Network Operation Center</div>
+                <div class="company-addr">Fiber Optic Backbone &amp; Network Operation Center</div>
             </td>
-            <td style="width: 40%; vertical-align: middle;" class="text-right">
+            <td style="width: 40%; vertical-align: middle;" align="right">
                 <div class="doc-title">EVALUASI KINERJA OPERASIONAL</div>
-                <div style="font-size: 8pt; color: #64748b; text-align: right; margin-top: 2px;">
+                <div class="doc-no-badge">
                     Periode: 
                     @if($startDate || $endDate)
                         {{ $startDate ?? 'Awal' }} s/d {{ $endDate ?? 'Sekarang' }}
                     @else
-                        Semua Waktu (All Time)
+                        Semua Periode (All Time)
                     @endif
                 </div>
             </td>
@@ -175,7 +195,7 @@
     <div class="section-title">1. Ringkasan Eksekutif KPI Utama</div>
     <table class="summary-boxes">
         <tr>
-            <td style="width: 20%; padding-right: 4px;">
+            <td style="width: 20%;">
                 <div class="summary-card">
                     <div class="summary-label">KEPATUHAN SLA</div>
                     <div class="summary-val" style="color: {{ $executiveKpi['sla_compliance_rate'] >= 90 ? '#15803d' : ($executiveKpi['sla_compliance_rate'] >= 75 ? '#b45309' : '#b91c1c') }};">
@@ -183,19 +203,19 @@
                     </div>
                 </div>
             </td>
-            <td style="width: 20%; padding-right: 4px;">
+            <td style="width: 20%;">
                 <div class="summary-card">
                     <div class="summary-label">AVG RESPON PERTAMA</div>
                     <div class="summary-val" style="color: #2563eb;">{{ $executiveKpi['formatted_avg_response'] }}</div>
                 </div>
             </td>
-            <td style="width: 20%; padding-right: 4px;">
+            <td style="width: 20%;">
                 <div class="summary-card">
                     <div class="summary-label">AVG MTTR</div>
                     <div class="summary-val" style="color: #0d9488;">{{ $executiveKpi['formatted_avg_mttr'] }}</div>
                 </div>
             </td>
-            <td style="width: 20%; padding-right: 4px;">
+            <td style="width: 20%;">
                 <div class="summary-card">
                     <div class="summary-label">TOTAL STOP CLOCK</div>
                     <div class="summary-val" style="color: #d97706;">{{ $executiveKpi['formatted_total_stop_clock'] }}</div>
@@ -233,23 +253,23 @@
                     </span>
                 </td>
                 <td>
-                    <strong>{{ $t['name'] }}</strong><br>
+                    <strong style="color: #0f172a;">{{ $t['name'] }}</strong><br>
                     <small style="color: #64748b; font-size: 7pt;">{{ $t['email'] }}</small>
                 </td>
-                <td style="text-align: center;">{{ $t['total_resolved'] }}</td>
+                <td style="text-align: center; font-weight: 700;">{{ $t['total_resolved'] }}</td>
                 <td style="text-align: center;">
                     <span class="badge {{ $t['sla_compliance_rate'] >= 90 ? 'badge-success' : ($t['sla_compliance_rate'] >= 75 ? 'badge-warning' : 'badge-danger') }}">
                         {{ $t['sla_compliance_rate'] }}%
                     </span>
                 </td>
-                <td style="text-align: center;">{{ $t['formatted_avg_mttr'] }}</td>
+                <td style="text-align: center; font-family: monospace; font-weight: 700;">{{ $t['formatted_avg_mttr'] }}</td>
                 <td style="text-align: center;">
                     <span class="badge {{ $t['interval_compliance_rate'] >= 85 ? 'badge-success' : 'badge-warning' }}">
                         {{ $t['interval_compliance_rate'] }}%
                     </span>
                 </td>
-                <td style="text-align: center; font-weight: bold; color: #1e40af;">
-                    {{ $t['kpi_score'] }} / 100
+                <td style="text-align: center; font-weight: 800; color: #1e40af; font-size: 8.5pt;">
+                    {{ $t['kpi_score'] }} <span style="font-size: 6.8pt; color: #64748b; font-weight: normal;">/ 100</span>
                 </td>
             </tr>
             @empty
@@ -277,14 +297,14 @@
             <tr>
                 <td style="text-align: center;">{{ $index + 1 }}</td>
                 <td>
-                    <strong>{{ $h['name'] }}</strong><br>
+                    <strong style="color: #0f172a;">{{ $h['name'] }}</strong><br>
                     <small style="color: #64748b; font-size: 7pt;">{{ $h['email'] }}</small>
                 </td>
-                <td style="text-align: center;">{{ $h['total_created'] }} tiket</td>
+                <td style="text-align: center; font-weight: 700;">{{ $h['total_created'] }} tiket</td>
                 <td style="text-align: center;">
                     <span class="badge badge-primary">{{ $h['total_verified'] }} tiket</span>
                 </td>
-                <td style="text-align: center; font-weight: bold;">{{ $h['formatted_avg_verification'] }}</td>
+                <td style="text-align: center; font-family: monospace; font-weight: 700;">{{ $h['formatted_avg_verification'] }}</td>
             </tr>
             @empty
             <tr>

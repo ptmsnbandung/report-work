@@ -5,57 +5,64 @@
     <title>Laporan Gangguan - {{ $tiket->no_tiket }}</title>
     <style>
         @page {
-            margin: 20px 25px 25px 25px;
+            margin: 18px 24px 22px 24px;
             size: A4 portrait;
         }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #1e293b;
-            font-size: 9pt;
-            line-height: 1.4;
+            color: #0f172a;
+            font-size: 8.5pt;
+            line-height: 1.42;
         }
         .header-table {
             width: 100%;
             border-bottom: 2px solid #0f172a;
             padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-        .company-title {
-            font-size: 14pt;
-            font-weight: bold;
-            color: #0f172a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-bottom: 10px;
         }
         .company-sub {
-            font-size: 8pt;
+            font-size: 7.8pt;
             color: #0d9488;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .company-addr {
+            font-size: 7pt;
+            color: #64748b;
+            margin-top: 1px;
         }
         .doc-title {
             font-size: 11pt;
-            font-weight: bold;
+            font-weight: 800;
             text-align: right;
             color: #0f172a;
+            letter-spacing: 0.4px;
         }
-        .doc-no {
-            font-size: 9pt;
+        .doc-no-badge {
+            display: inline-block;
+            font-size: 8.5pt;
             font-family: monospace;
-            color: #2563eb;
-            font-weight: bold;
+            color: #0369a1;
+            font-weight: 700;
             text-align: right;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 3px;
         }
 
         .section-title {
-            font-size: 9.5pt;
-            font-weight: bold;
+            font-size: 8.5pt;
+            font-weight: 700;
             color: #ffffff;
             background-color: #0f172a;
             padding: 4px 8px;
-            margin-top: 10px;
+            margin-top: 9px;
             margin-bottom: 6px;
             border-radius: 3px;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         table.data-table {
@@ -64,22 +71,27 @@
             margin-bottom: 8px;
         }
         table.data-table th, table.data-table td {
-            border: 1px solid #cbd5e1;
+            border: 1px solid #e2e8f0;
             padding: 4px 6px;
-            font-size: 8.5pt;
+            font-size: 8pt;
         }
         table.data-table th {
             background-color: #f1f5f9;
             color: #0f172a;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 7.8pt;
             text-align: left;
+            border-color: #cbd5e1;
+        }
+        table.data-table tr:nth-child(even) td {
+            background-color: #f8fafc;
         }
 
         .badge {
             display: inline-block;
             padding: 2px 6px;
-            font-size: 7.5pt;
-            font-weight: bold;
+            font-size: 7pt;
+            font-weight: 700;
             border-radius: 3px;
             text-transform: uppercase;
         }
@@ -94,35 +106,38 @@
             margin-bottom: 6px;
         }
         .info-grid td {
-            padding: 3px 4px;
-            font-size: 8.5pt;
+            padding: 3.5px 5px;
+            font-size: 8pt;
             vertical-align: top;
+            border-bottom: 1px solid #f1f5f9;
         }
         .info-label {
-            font-weight: bold;
+            font-weight: 700;
             color: #475569;
             width: 25%;
         }
-        .info-colon { width: 2%; }
+        .info-colon { width: 2%; text-align: center; color: #94a3b8; }
         .info-val { width: 73%; color: #0f172a; }
 
         .signature-table {
             width: 100%;
-            margin-top: 20px;
+            margin-top: 18px;
             border-collapse: collapse;
+            page-break-inside: avoid;
         }
         .signature-box {
             width: 33.33%;
             text-align: center;
             vertical-align: top;
-            font-size: 8.5pt;
+            font-size: 8pt;
+            padding: 4px;
         }
         .sign-space {
-            height: 45px;
+            height: 42px;
         }
 
         .footer-note {
-            margin-top: 15px;
+            margin-top: 14px;
             font-size: 7pt;
             color: #94a3b8;
             border-top: 1px solid #e2e8f0;
@@ -133,7 +148,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 6px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .doc-gallery-table td {
             width: 33.33%;
@@ -144,22 +159,23 @@
         .doc-img-card {
             border: 1px solid #cbd5e1;
             padding: 4px;
-            background: #ffffff;
+            background: #f8fafc;
             border-radius: 3px;
         }
         .doc-img {
             max-width: 100%;
-            max-height: 100px;
+            max-height: 105px;
             height: auto;
             border-radius: 2px;
             display: block;
             margin: 0 auto;
+            border: 1px solid #e2e8f0;
         }
         .doc-caption {
             font-size: 7pt;
-            color: #475569;
+            color: #334155;
             margin-top: 3px;
-            line-height: 1.2;
+            line-height: 1.25;
         }
         .page-break {
             page-break-after: always;
@@ -180,16 +196,16 @@
         <tr>
             <td style="width: 58%; vertical-align: middle;">
                 @if($logoBase64)
-                    <img src="{{ $logoBase64 }}" alt="PT Media Solusi Network" style="height: 42px; max-width: 190px; width: auto; display: block; margin-bottom: 4px;">
+                    <img src="{{ $logoBase64 }}" alt="PT Media Solusi Network" style="height: 44px; max-width: 200px; width: auto; display: block; margin-bottom: 3px;">
                 @else
-                    <div class="company-title">PT MEDIA SOLUSI NETWORK</div>
+                    <div style="font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase;">PT MEDIA SOLUSI NETWORK</div>
                 @endif
                 <div class="company-sub">FIBER OPTIC BACKBONE &amp; NETWORK OPERATION CENTER</div>
-                <div style="font-size: 7pt; color: #64748b; margin-top: 1px;">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
+                <div class="company-addr">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
             </td>
             <td style="width: 42%; vertical-align: middle;" class="text-right">
                 <div class="doc-title">BERITA ACARA GANGGUAN</div>
-                <div class="doc-no">{{ $tiket->no_tiket }}</div>
+                <div class="doc-no-badge">{{ $tiket->no_tiket }}</div>
             </td>
         </tr>
     </table>
@@ -512,6 +528,8 @@
             @endforeach
         </tbody>
     </table>
+    @endif
+
     <!-- ── 8. DOKUMENTASI FOTO LAPANGAN (JIKA ADA) ── -->
     @if($tiket->dokumentasis && $tiket->dokumentasis->count() > 0)
     <div class="section-title">8. Dokumentasi Foto Lapangan (Field Evidence)</div>
