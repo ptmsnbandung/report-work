@@ -311,7 +311,6 @@
         max-height: 650px;
         overflow-y: auto;
         overflow-x: hidden;
-        scroll-behavior: auto !important;
         overflow-anchor: auto !important;
         overscroll-behavior-y: contain;
     }
@@ -1220,7 +1219,7 @@
 
     .wa-scroll-bottom-btn {
         position: absolute;
-        bottom: 74px;
+        bottom: 116px;
         right: 20px;
         width: 38px;
         height: 38px;
@@ -1238,6 +1237,14 @@
         cursor: pointer;
         z-index: 20;
         transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .wa-chat-container:not(:has(.wa-quick-replies-wrapper)) .wa-scroll-bottom-btn {
+        bottom: 74px;
+    }
+
+    .wa-chat-container:has(.wa-closed-notice) .wa-scroll-bottom-btn {
+        bottom: 60px;
     }
 
     .wa-scroll-bottom-btn:hover {
@@ -10075,11 +10082,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!stream) return;
         if (instant) {
             stream.style.scrollBehavior = 'auto';
-        }
-        stream.scrollTop = stream.scrollHeight + 99999;
-        const anchor = document.getElementById('waStreamBottomAnchor');
-        if (anchor && typeof anchor.scrollIntoView === 'function') {
-            try { anchor.scrollIntoView({ block: 'end', behavior: 'instant' }); } catch(e) {}
+            stream.scrollTop = stream.scrollHeight + 99999;
+        } else {
+            stream.scrollTo({
+                top: stream.scrollHeight + 99999,
+                behavior: 'smooth'
+            });
+            setTimeout(() => {
+                checkStreamScroll(stream);
+            }, 350);
         }
     }
     window.scrollChatToBottom = scrollChatToBottom;
@@ -11741,7 +11752,9 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         checkStreamScroll(initStream);
     }
 
-    btnWaScrollBottom?.addEventListener('click', function() {
+    btnWaScrollBottom?.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         scrollChatToBottom(false);
     });
 
