@@ -2802,24 +2802,28 @@
         transition: color 0.15s ease;
     }
     /* ═══════════════════════════════════════════════════════════════════
-       COMPACT & CLEAN MODAL JOINT CLOSURE STYLING (MOBILE & DESKTOP)
+       COMPACT & CLEAN MODAL STYLING FOR JC & MANUVER CORE (MOBILE & DESKTOP)
        ═══════════════════════════════════════════════════════════════════ */
-    #tambahJointClosureModal .modal-content {
-        border-radius: 14px;
+    #tambahJointClosureModal .modal-content,
+    #addManuverModal .modal-content {
+        border-radius: 14px !important;
     }
 
-    #tambahJointClosureModal .modal-header {
-        padding: 0.65rem 0.9rem !important;
+    #tambahJointClosureModal .modal-header,
+    #addManuverModal .modal-header {
+        padding: 0.6rem 0.9rem !important;
         background: linear-gradient(135deg, #0b1528 0%, #1e293b 100%) !important;
     }
 
-    #tambahJointClosureModal .modal-title {
+    #tambahJointClosureModal .modal-title,
+    #addManuverModal .modal-title {
         font-size: 0.88rem !important;
         font-weight: 700;
         letter-spacing: -0.1px;
     }
 
-    #tambahJointClosureModal .modal-body {
+    #tambahJointClosureModal .modal-body,
+    #addManuverModal .modal-body {
         padding: 0.65rem !important;
     }
 
@@ -2838,7 +2842,8 @@
         letter-spacing: 0.2px;
     }
 
-    #tambahJointClosureModal .form-label {
+    #tambahJointClosureModal .form-label,
+    #addManuverModal .form-label {
         font-size: 0.73rem !important;
         font-weight: 600 !important;
         color: #1e293b !important;
@@ -2846,7 +2851,9 @@
     }
 
     #tambahJointClosureModal .form-control,
-    #tambahJointClosureModal .form-select {
+    #tambahJointClosureModal .form-select,
+    #addManuverModal .form-control,
+    #addManuverModal .form-select {
         font-size: 0.78rem !important;
         padding: 0.28rem 0.55rem !important;
         height: 32px !important;
@@ -2859,14 +2866,27 @@
     }
 
     #tambahJointClosureModal .form-control:focus,
-    #tambahJointClosureModal .form-select:focus {
+    #tambahJointClosureModal .form-select:focus,
+    #addManuverModal .form-control:focus,
+    #addManuverModal .form-select:focus {
         border-color: #2563eb !important;
         background-color: #ffffff !important;
         box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
         outline: none !important;
     }
 
-    #tambahJointClosureModal .input-group-text {
+    #addManuverModal .btn-group .btn {
+        height: 32px !important;
+        padding: 0.2rem 0.45rem !important;
+        font-size: 0.74rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 6px !important;
+    }
+
+    #tambahJointClosureModal .input-group-text,
+    #addManuverModal .input-group-text {
         font-size: 0.72rem !important;
         padding: 0.25rem 0.5rem !important;
         height: 32px !important;
@@ -2876,7 +2896,8 @@
         color: #475569 !important;
     }
 
-    #tambahJointClosureModal .input-group .btn {
+    #tambahJointClosureModal .input-group .btn,
+    #addManuverModal .input-group .btn {
         height: 32px !important;
         padding: 0.25rem 0.6rem !important;
         display: inline-flex;
@@ -2885,14 +2906,16 @@
         font-size: 0.75rem;
     }
 
-    #tambahJointClosureModal .form-switch {
+    #tambahJointClosureModal .form-switch,
+    #addManuverModal .form-switch {
         padding: 0.45rem 0.6rem !important;
         border-radius: 8px !important;
         background: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
     }
 
-    #tambahJointClosureModal .form-switch .form-check-input {
+    #tambahJointClosureModal .form-switch .form-check-input,
+    #addManuverModal .form-switch .form-check-input {
         width: 1.85rem !important;
         height: 1.05rem !important;
         margin-top: 0.1rem !important;
@@ -2943,10 +2966,12 @@
     }
 
     @media (max-width: 575.98px) {
-        #tambahJointClosureModal .modal-header {
-            padding: 0.55rem 0.75rem !important;
+        #tambahJointClosureModal .modal-header,
+        #addManuverModal .modal-header {
+            padding: 0.5rem 0.75rem !important;
         }
-        #tambahJointClosureModal .modal-body {
+        #tambahJointClosureModal .modal-body,
+        #addManuverModal .modal-body {
             padding: 0.45rem !important;
         }
         #tambahJointClosureModal .section-card-jc {
@@ -2958,7 +2983,8 @@
             font-size: 0.72rem !important;
             margin-bottom: 0.35rem !important;
         }
-        #tambahJointClosureModal .modal-footer {
+        #tambahJointClosureModal .modal-footer,
+        #addManuverModal .modal-footer {
             padding: 0.45rem 0.75rem !important;
         }
     }
@@ -6381,26 +6407,26 @@
 
 <!-- ── MODAL TAMBAH MANUVER CORE (FASE 5) ── -->
 <div class="modal fade" id="addManuverModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
             <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
                 @csrf
-                <div class="modal-header bg-navy text-white px-3 px-md-4 py-2.5">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1.5 text-teal" style="width: 32px; height: 32px;">
-                            <i class="bi bi-shuffle fs-6 text-info"></i>
+                <div class="modal-header bg-navy text-white px-3 py-2 border-bottom border-secondary border-opacity-25">
+                    <div class="d-flex align-items-center gap-2 overflow-hidden pe-2">
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1 text-teal flex-shrink-0" style="width: 28px; height: 28px;">
+                            <i class="bi bi-shuffle text-info" style="font-size: 0.85rem;"></i>
                         </div>
-                        <div>
-                            <h6 class="modal-title fw-bold text-white mb-0" style="font-size: 0.95rem;">
+                        <div class="overflow-hidden">
+                            <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.88rem;">
                                 Tambah Record Manuver Core
                             </h6>
-                            <div class="text-white-50" style="font-size: 0.72rem;">Splicing & Bypassing Fiber Optik</div>
+                            <div class="text-white-50 text-truncate" style="font-size: 0.68rem;">Splicing &amp; Bypassing Fiber Optik</div>
                         </div>
                     </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-3 p-md-4" style="max-height: calc(100dvh - 125px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
-                    <div class="row g-2.5 g-md-3">
+                <div class="modal-body p-2.5 p-sm-3" style="max-height: calc(100dvh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                    <div class="row g-2">
                         <!-- Titik Lokasi & Jenis Lokasi -->
                         <div class="col-12 col-md-7">
                             <label for="titik_manuver" class="form-label small fw-bold text-navy mb-1">
@@ -6414,15 +6440,15 @@
                                    required>
                             <!-- Quick suggestions from existing Titik Perbaikan & Joint Closures -->
                             @if($tiket->titikPerbaikans->count() > 0 || $tiket->jointClosures->count() > 0)
-                            <div class="d-flex flex-wrap gap-1 mt-1.5 align-items-center">
-                                <span class="small text-muted me-1" style="font-size: 0.7rem;">Pilih preset:</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1 align-items-center">
+                                <span class="small text-muted me-1" style="font-size: 0.68rem;">Preset:</span>
                                 @foreach($tiket->titikPerbaikans as $tp)
-                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-2" style="font-size: 0.7rem;" data-titik="{{ $tp->nama_titik }}">
+                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $tp->nama_titik }}">
                                     {{ $tp->nama_titik }}
                                 </button>
                                 @endforeach
                                 @foreach($tiket->jointClosures as $jc)
-                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-2" style="font-size: 0.7rem;" data-titik="{{ $jc->nama_closure }}">
+                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $jc->nama_closure }}">
                                     {{ $jc->nama_closure }}
                                 </button>
                                 @endforeach
@@ -6443,36 +6469,36 @@
                         </div>
 
                         <!-- Tipe Manuver (Sebelum / Sesudah) -->
-                        <div class="col-12 col-sm-6">
+                        <div class="col-6 col-sm-6">
                             <label class="form-label small fw-bold text-navy d-block mb-1">
                                 Status Alokasi <span class="text-danger">*</span>
                             </label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
-                                <label class="btn btn-outline-secondary btn-sm py-1.5" for="tipeSebelum" style="font-size: 0.78rem;">
-                                    <i class="bi bi-clock-history me-1"></i> SEBELUM (Awal)
+                                <label class="btn btn-outline-secondary btn-sm" for="tipeSebelum">
+                                    <i class="bi bi-clock-history me-1"></i> SEBELUM
                                 </label>
 
                                 <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
-                                <label class="btn btn-outline-success btn-sm py-1.5" for="tipeSesudah" style="font-size: 0.78rem;">
-                                    <i class="bi bi-check2-circle me-1"></i> SESUDAH (Hasil)
+                                <label class="btn btn-outline-success btn-sm" for="tipeSesudah">
+                                    <i class="bi bi-check2-circle me-1"></i> SESUDAH
                                 </label>
                             </div>
                         </div>
 
                         <!-- Durasi Status Manuver -->
-                        <div class="col-12 col-sm-6">
+                        <div class="col-6 col-sm-6">
                             <label class="form-label small fw-bold text-navy d-block mb-1">
                                 Sifat Manuver <span class="text-danger">*</span>
                             </label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="status_manuver" id="manuverTemp" value="TEMPORARY" autocomplete="off" checked>
-                                <label class="btn btn-outline-warning btn-sm py-1.5" for="manuverTemp" style="font-size: 0.78rem;">
-                                    <i class="bi bi-hourglass-split me-1"></i> SEMENTARA (Darurat)
+                                <label class="btn btn-outline-warning btn-sm" for="manuverTemp">
+                                    <i class="bi bi-hourglass-split me-1"></i> SEMENTARA
                                 </label>
 
                                 <input type="radio" class="btn-check" name="status_manuver" id="manuverPerm" value="PERMANENT" autocomplete="off">
-                                <label class="btn btn-outline-primary btn-sm py-1.5" for="manuverPerm" style="font-size: 0.78rem;">
+                                <label class="btn btn-outline-primary btn-sm" for="manuverPerm">
                                     <i class="bi bi-pin-angle-fill me-1"></i> PERMANEN
                                 </label>
                             </div>
@@ -6483,7 +6509,7 @@
                             <div class="fiber-patcher-box">
                                 <div class="fiber-patcher-header">
                                     <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                        <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                        <span class="badge bg-primary text-white px-2 py-0.5 rounded-pill" style="font-size: 0.68rem;">
                                             <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher
                                         </span>
                                     </div>
@@ -6575,13 +6601,13 @@
                                 <!-- Connected Lines Tray (Chips) -->
                                 <div class="fiber-chips-tray" id="manuverChipsTray">
                                     <div class="d-flex align-items-center justify-content-between mb-1.5">
-                                        <span class="small fw-bold text-light" style="font-size:0.75rem;">
+                                        <span class="small fw-bold text-light" style="font-size:0.72rem;">
                                             <i class="bi bi-diagram-3 me-1 text-info"></i> Sambungan Terpasang:
                                         </span>
                                         <span class="small text-muted font-monospace" style="font-size:0.68rem;" id="manuverTotalCoresText">0 Core</span>
                                     </div>
                                     <div class="fiber-connections-chips" id="manuverConnectionsChips">
-                                        <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>
+                                        <span class="text-muted small fst-italic py-1" style="font-size:0.7rem;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>
                                     </div>
                                 </div>
                             </div>
@@ -6621,10 +6647,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light px-3 px-md-4 py-2.5 d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-outline-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-cjp-teal btn-sm px-4 fw-semibold shadow-xs">
-                        <i class="bi bi-save me-1"></i> Simpan Manuver Core
+                <div class="modal-footer bg-light px-3 py-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-3 flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
+                        <i class="bi bi-x me-1"></i> Batal
+                    </button>
+                    <button type="submit" class="btn btn-cjp-teal btn-sm px-4 fw-semibold shadow-xs flex-fill flex-sm-grow-0">
+                        <i class="bi bi-check2-circle me-1"></i> Simpan Manuver Core
                     </button>
                 </div>
             </form>
