@@ -351,6 +351,24 @@
         overscroll-behavior-y: contain;
     }
 
+    /* Kunci scroll anchoring HANYA pada anchor bawah agar rendering awal langsung berada di chat terbaru tanpa delay/lompatan */
+    .wa-msg-row,
+    .wa-message-row,
+    .wa-date-divider,
+    .wa-media-card,
+    .wa-location-card,
+    .wa-quote-box {
+        overflow-anchor: none !important;
+    }
+
+    #waStreamBottomAnchor {
+        overflow-anchor: auto !important;
+        height: 1px;
+        width: 100%;
+        flex-shrink: 0;
+        pointer-events: none;
+    }
+
     .wa-chat-stream::-webkit-scrollbar {
         width: 6px;
     }
@@ -776,18 +794,17 @@
         overflow: hidden;
         max-width: 280px;
         width: 100%;
+        height: 158px;
         cursor: pointer;
         position: relative;
         border: 1px solid rgba(0, 0, 0, 0.08);
         background: #f1f5f9;
-        min-height: 120px;
         aspect-ratio: 16 / 9;
+        contain: size layout;
     }
     .wa-media-img {
         width: 100%;
         height: 100%;
-        max-height: 180px;
-        min-height: 120px;
         aspect-ratio: 16 / 9;
         object-fit: cover;
         display: block;
@@ -3811,7 +3828,7 @@
                                                 </div>
                                                 @elseif($krono->foto_url)
                                                 <div class="wa-media-card" onclick="zoomPhoto('{{ asset($krono->foto_url) }}', '{{ $krono->kategori }} - {{ $krono->timestamp->format('d/m/Y H:i') }} WIB')">
-                                                    <img src="{{ asset($krono->foto_url) }}" alt="Foto Kronologis" class="wa-media-img">
+                                                    <img src="{{ asset($krono->foto_url) }}" alt="Foto Kronologis" class="wa-media-img" width="280" height="158" loading="eager" decoding="async">
                                                     <div class="wa-media-badge">
                                                         <i class="bi bi-arrows-fullscreen"></i>
                                                         <span>Klik untuk memperbesar</span>
@@ -8318,7 +8335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <video src="${k.video_url || k.foto_url}" controls playsinline preload="metadata" class="wa-video-player"></video>
                         </div>` : (k.foto_url ? `
                         <div class="wa-media-card" onclick="zoomPhoto('${k.foto_url}', '${k.kategori} - ${k.formatted_time}')">
-                            <img src="${k.foto_url}" alt="Foto Kronologis" class="wa-media-img" loading="lazy">
+                            <img src="${k.foto_url}" alt="Foto Kronologis" class="wa-media-img" width="280" height="158" loading="lazy" decoding="async">
                             <div class="wa-media-badge">
                                 <i class="bi bi-arrows-fullscreen"></i>
                                 <span>Klik untuk memperbesar</span>
