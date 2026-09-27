@@ -781,11 +781,14 @@
         border: 1px solid rgba(0, 0, 0, 0.08);
         background: #f1f5f9;
         min-height: 120px;
+        aspect-ratio: 16 / 9;
     }
     .wa-media-img {
         width: 100%;
+        height: 100%;
         max-height: 180px;
         min-height: 120px;
+        aspect-ratio: 16 / 9;
         object-fit: cover;
         display: block;
         transition: transform 0.25s ease, opacity 0.25s ease;
@@ -3866,8 +3869,12 @@
                             (function() {
                                 var s = document.getElementById('timelineList');
                                 if (s) {
-                                    s.style.scrollBehavior = 'auto';
-                                    s.scrollTop = 999999;
+                                    s.style.setProperty('scroll-behavior', 'auto', 'important');
+                                    s.scrollTop = s.scrollHeight || 999999;
+                                    var anchor = document.getElementById('waStreamBottomAnchor');
+                                    if (anchor && typeof anchor.scrollIntoView === 'function') {
+                                        anchor.scrollIntoView({ behavior: 'instant', block: 'end' });
+                                    }
                                 }
                             })();
                         </script>
@@ -10133,8 +10140,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const stream = document.getElementById('timelineList');
         if (!stream) return;
         if (instant) {
-            stream.style.scrollBehavior = 'auto';
-            stream.scrollTop = stream.scrollHeight + 99999;
+            stream.style.setProperty('scroll-behavior', 'auto', 'important');
+            stream.scrollTop = stream.scrollHeight;
+            const anchor = document.getElementById('waStreamBottomAnchor');
+            if (anchor && typeof anchor.scrollIntoView === 'function') {
+                anchor.scrollIntoView({ behavior: 'instant', block: 'end' });
+            }
         } else {
             stream.scrollTo({
                 top: stream.scrollHeight + 99999,
@@ -10176,14 +10187,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        // Jalankan scroll internal container secara instan berulang pada awal pemuatan
+        // Jalankan scroll internal container secara instan tanpa delay
         performInternalScroll();
         requestAnimationFrame(performInternalScroll);
-        setTimeout(performInternalScroll, 50);
-        setTimeout(performInternalScroll, 150);
-        setTimeout(performInternalScroll, 350);
-        setTimeout(performInternalScroll, 700);
-        setTimeout(performInternalScroll, 1200);
 
         // Pantau jika ada gambar atau video di dalam stream yang sedang dimuat
         const streamMedia = stream.querySelectorAll('img, video');
@@ -10200,7 +10206,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let resizePasses = 0;
             const ro = new ResizeObserver(() => {
                 if (!targetEl) {
-                    if (!userHasScrolledTimeline || resizePasses < 6) {
+                    if (!userHasScrolledTimeline || resizePasses < 4) {
                         scrollChatToBottom(true);
                         resizePasses++;
                     } else {
@@ -10221,13 +10227,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Listener saat tab Kronologis dibuka kembali dari tab lain (Bootstrap Tab)
     const kronologisTabBtn = document.getElementById('kronologis-tab');
     if (kronologisTabBtn) {
+        // 'show.bs.tab' jalan seketika saat tombol tab diklik (sebelum transisi tab dimulai)
+        kronologisTabBtn.addEventListener('show.bs.tab', function () {
+            userHasScrolledTimeline = false;
+            scrollChatToBottom(true);
+            requestAnimationFrame(() => scrollChatToBottom(true));
+        });
+        // 'shown.bs.tab' jalan setelah transisi tab selesai
         kronologisTabBtn.addEventListener('shown.bs.tab', function () {
             userHasScrolledTimeline = false;
             scrollChatToBottom(true);
             requestAnimationFrame(() => scrollChatToBottom(true));
-            setTimeout(() => scrollChatToBottom(true), 50);
-            setTimeout(() => scrollChatToBottom(true), 150);
-            setTimeout(() => scrollChatToBottom(true), 350);
         });
     }
 
