@@ -2801,9 +2801,166 @@
         line-height: 1;
         transition: color 0.15s ease;
     }
-    .fiber-conn-chip-del:hover {
-        color: #ef4444;
-        transform: scale(1.2);
+    /* ═══════════════════════════════════════════════════════════════════
+       COMPACT & CLEAN MODAL JOINT CLOSURE STYLING (MOBILE & DESKTOP)
+       ═══════════════════════════════════════════════════════════════════ */
+    #tambahJointClosureModal .modal-content {
+        border-radius: 14px;
+    }
+
+    #tambahJointClosureModal .modal-header {
+        padding: 0.65rem 0.9rem !important;
+        background: linear-gradient(135deg, #0b1528 0%, #1e293b 100%) !important;
+    }
+
+    #tambahJointClosureModal .modal-title {
+        font-size: 0.88rem !important;
+        font-weight: 700;
+        letter-spacing: -0.1px;
+    }
+
+    #tambahJointClosureModal .modal-body {
+        padding: 0.65rem !important;
+    }
+
+    #tambahJointClosureModal .section-card-jc {
+        padding: 0.6rem 0.65rem !important;
+        border-radius: 10px !important;
+        margin-bottom: 0.6rem !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    #tambahJointClosureModal .section-title-jc {
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.45rem !important;
+        letter-spacing: 0.2px;
+    }
+
+    #tambahJointClosureModal .form-label {
+        font-size: 0.73rem !important;
+        font-weight: 600 !important;
+        color: #1e293b !important;
+        margin-bottom: 0.15rem !important;
+    }
+
+    #tambahJointClosureModal .form-control,
+    #tambahJointClosureModal .form-select {
+        font-size: 0.78rem !important;
+        padding: 0.28rem 0.55rem !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        border-radius: 6px !important;
+        border: 1px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        box-shadow: none !important;
+        color: #0f172a !important;
+    }
+
+    #tambahJointClosureModal .form-control:focus,
+    #tambahJointClosureModal .form-select:focus {
+        border-color: #2563eb !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15) !important;
+        outline: none !important;
+    }
+
+    #tambahJointClosureModal .input-group-text {
+        font-size: 0.72rem !important;
+        padding: 0.25rem 0.5rem !important;
+        height: 32px !important;
+        background: #f1f5f9 !important;
+        border: 1px solid #cbd5e1 !important;
+        font-weight: 600 !important;
+        color: #475569 !important;
+    }
+
+    #tambahJointClosureModal .input-group .btn {
+        height: 32px !important;
+        padding: 0.25rem 0.6rem !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+
+    #tambahJointClosureModal .form-switch {
+        padding: 0.45rem 0.6rem !important;
+        border-radius: 8px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    #tambahJointClosureModal .form-switch .form-check-input {
+        width: 1.85rem !important;
+        height: 1.05rem !important;
+        margin-top: 0.1rem !important;
+    }
+
+    /* Splicing matrix compact rows */
+    #tambahJointClosureModal .jc-core-input-row {
+        padding: 0.4rem 0.5rem !important;
+        border-radius: 7px !important;
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        margin-bottom: 0.3rem !important;
+    }
+
+    #tambahJointClosureModal .jc-core-input-row .form-label {
+        font-size: 0.65rem !important;
+        color: #64748b !important;
+        margin-bottom: 1px !important;
+        font-weight: 600 !important;
+    }
+
+    #tambahJointClosureModal .jc-core-input-row .form-control,
+    #tambahJointClosureModal .jc-core-input-row .form-select {
+        font-size: 0.74rem !important;
+        padding: 0.2rem 0.4rem !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        border-radius: 5px !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    #tambahJointClosureModal .jc-core-input-row .form-control:focus,
+    #tambahJointClosureModal .jc-core-input-row .form-select:focus {
+        background-color: #ffffff !important;
+        border-color: #2563eb !important;
+    }
+
+    #tambahJointClosureModal .btn-remove-core-row {
+        height: 28px !important;
+        padding: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border-radius: 5px !important;
+        font-size: 0.78rem !important;
+    }
+
+    @media (max-width: 575.98px) {
+        #tambahJointClosureModal .modal-header {
+            padding: 0.55rem 0.75rem !important;
+        }
+        #tambahJointClosureModal .modal-body {
+            padding: 0.45rem !important;
+        }
+        #tambahJointClosureModal .section-card-jc {
+            padding: 0.5rem 0.5rem !important;
+            margin-bottom: 0.45rem !important;
+            border-radius: 8px !important;
+        }
+        #tambahJointClosureModal .section-title-jc {
+            font-size: 0.72rem !important;
+            margin-bottom: 0.35rem !important;
+        }
+        #tambahJointClosureModal .modal-footer {
+            padding: 0.45rem 0.75rem !important;
+        }
     }
 </style>
 @endpush
@@ -5448,24 +5605,22 @@
         <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
             <form action="{{ route('tiket.joint-closure.store', $tiket->id) }}" method="POST" id="formTambahJointClosure">
                 @csrf
-                <div class="modal-header bg-navy text-white px-3 px-sm-4 py-3 border-bottom border-secondary border-opacity-25">
+                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25">
                     <div class="d-flex align-items-center gap-2 overflow-hidden pe-2">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-teal bg-opacity-20 text-teal rounded-circle p-1.5 flex-shrink-0" style="width: 32px; height: 32px;">
-                            <i class="bi bi-diagram-3-fill"></i>
-                        </div>
-                        <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.95rem;">
+                        <i class="bi bi-diagram-3-fill text-teal fs-6 flex-shrink-0"></i>
+                        <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.88rem;">
                             Tambah Data Joint Closure (JC) &amp; Sambungan Kabel
                         </h6>
                     </div>
                     <button type="button" class="btn-close btn-close-white flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-2.5 p-sm-3.5 p-md-4">
+                <div class="modal-body p-2 p-sm-3">
                     <!-- Section 1: Identitas & Lokasi Closure -->
-                    <div class="p-2.5 p-sm-3 bg-light rounded-3 border mb-3">
-                        <h6 class="fw-bold text-navy mb-2.5 small text-uppercase letter-spacing-1 d-flex align-items-center gap-1.5">
+                    <div class="section-card-jc p-2.5 p-sm-3 bg-light rounded-3 border mb-2.5">
+                        <h6 class="section-title-jc fw-bold text-navy mb-2 small text-uppercase letter-spacing-1 d-flex align-items-center gap-1.5">
                             <i class="bi bi-geo-alt-fill text-danger"></i> 1. Identitas &amp; Lokasi Fisik Closure
                         </h6>
-                        <div class="row g-2.5">
+                        <div class="row g-2">
                             <div class="col-12 col-md-5">
                                 <label for="jc_nama" class="form-label small fw-bold text-navy mb-1">
                                     Nama / Kode Closure <span class="text-danger">*</span>
@@ -5473,28 +5628,28 @@
                                 <input type="text" class="form-control form-control-sm" id="jc_nama" name="nama_closure" placeholder="Contoh: JC-01, JC Tiang Span 14" required>
                             </div>
 
-                            <div class="col-12 col-sm-6 col-md-3">
+                            <div class="col-6 col-md-3">
                                 <label for="jc_jenis" class="form-label small fw-bold text-navy mb-1">
                                     Jenis Closure <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-select form-select-sm" id="jc_jenis" name="jenis_closure" required>
-                                    <option value="DOME" selected>DOME (Closure Kubah)</option>
-                                    <option value="INLINE">INLINE (Closure Lurus)</option>
+                                    <option value="DOME" selected>DOME (Kubah)</option>
+                                    <option value="INLINE">INLINE (Lurus)</option>
                                     <option value="BOX_FAT">BOX FAT / FDT</option>
-                                    <option value="OTB">OTB (Optical Termination Box)</option>
+                                    <option value="OTB">OTB (Optical Box)</option>
                                 </select>
                             </div>
 
-                            <div class="col-12 col-sm-6 col-md-4">
+                            <div class="col-6 col-md-4">
                                 <label for="jc_lokasi" class="form-label small fw-bold text-navy mb-1">
                                     Penempatan Fisik <span class="text-danger">*</span>
                                 </label>
                                 <select class="form-select form-select-sm" id="jc_lokasi" name="lokasi_fisik" required>
-                                    <option value="POLE" selected>POLE / Tiang Udara</option>
+                                    <option value="POLE" selected>POLE (Tiang Udara)</option>
                                     <option value="MANHOLE">MANHOLE (Bawah Tanah)</option>
                                     <option value="HANDHOLE">HANDHOLE</option>
                                     <option value="PEDESTAL">PEDESTAL</option>
-                                    <option value="INDOOR_RACK">INDOOR / Rak OTB</option>
+                                    <option value="INDOOR_RACK">INDOOR (Rak OTB)</option>
                                 </select>
                             </div>
 
@@ -5503,22 +5658,22 @@
                                     <label class="form-label small fw-bold text-navy mb-0">
                                         <i class="bi bi-crosshair text-danger me-1"></i> Koordinat GPS Lokasi Closure
                                     </label>
-                                    <button type="button" class="btn btn-link p-0 text-teal small text-decoration-none fw-semibold" id="btnGetLocationJc">
+                                    <button type="button" class="btn btn-link p-0 text-teal small text-decoration-none fw-semibold" id="btnGetLocationJc" style="font-size: 0.72rem;">
                                         <i class="bi bi-crosshair"></i> Ambil GPS Saya
                                     </button>
                                 </div>
                                 <div class="row g-1.5">
                                     <div class="col-6">
                                         <div class="input-group input-group-sm">
-                                            <span class="input-group-text px-2 bg-white text-muted small fw-semibold">Lat</span>
-                                            <input type="number" step="any" class="form-control" id="latitude_jc" name="latitude" placeholder="-6.xxxxxx">
+                                            <span class="input-group-text px-2 bg-light text-muted small fw-semibold">Lat</span>
+                                            <input type="number" step="any" class="form-control form-control-sm" id="latitude_jc" name="latitude" placeholder="-6.xxxxxx">
                                         </div>
                                     </div>
                                     <div class="col-6">
                                         <div class="input-group input-group-sm">
-                                            <span class="input-group-text px-2 bg-white text-muted small fw-semibold">Lng</span>
-                                            <input type="number" step="any" class="form-control" id="longitude_jc" name="longitude" placeholder="107.xxxxxx">
-                                            <button type="button" class="btn btn-outline-primary px-2.5" id="btnOpenMapPickerJc" title="Pilih di Peta">
+                                            <span class="input-group-text px-2 bg-light text-muted small fw-semibold">Lng</span>
+                                            <input type="number" step="any" class="form-control form-control-sm" id="longitude_jc" name="longitude" placeholder="107.xxxxxx">
+                                            <button type="button" class="btn btn-outline-primary px-2" id="btnOpenMapPickerJc" title="Pilih di Peta">
                                                 <i class="bi bi-map"></i>
                                             </button>
                                         </div>
@@ -5527,13 +5682,13 @@
                             </div>
 
                             <div class="col-12 col-md-5 d-flex align-items-stretch">
-                                <div class="form-check form-switch p-2.5 p-sm-3 bg-white rounded-3 border w-100 mb-0 d-flex align-items-start gap-2 shadow-xs">
-                                    <input class="form-check-input ms-0 mt-1 flex-shrink-0" type="checkbox" role="switch" id="jc_is_aset_baru" name="is_aset_baru" value="1">
+                                <div class="form-check form-switch p-2 bg-white rounded-3 border w-100 mb-0 d-flex align-items-start gap-2 shadow-xs">
+                                    <input class="form-check-input ms-0 mt-0.5 flex-shrink-0" type="checkbox" role="switch" id="jc_is_aset_baru" name="is_aset_baru" value="1">
                                     <div class="flex-grow-1">
-                                        <label class="form-check-label small fw-bold text-navy cursor-pointer d-block mb-0.5" for="jc_is_aset_baru">
+                                        <label class="form-check-label small fw-bold text-navy cursor-pointer d-block mb-0" for="jc_is_aset_baru" style="font-size: 0.75rem;">
                                             <i class="bi bi-stars text-warning me-1"></i> Tandai Penambahan Aset Baru (New Cut)
                                         </label>
-                                        <div class="text-muted" style="font-size: 0.7rem; line-height: 1.3;">Centang jika ada pemasangan closure fisik baru yang sebelumnya tidak ada.</div>
+                                        <div class="text-muted" style="font-size: 0.68rem; line-height: 1.25;">Centang jika ada pemasangan closure fisik baru.</div>
                                     </div>
                                 </div>
                             </div>
@@ -5541,21 +5696,21 @@
                     </div>
 
                     <!-- Section 2: Spesifikasi Kabel & Kapasitas Tube -->
-                    <div class="p-2.5 p-sm-3 bg-light rounded-3 border mb-3">
-                        <h6 class="fw-bold text-navy mb-2.5 small text-uppercase letter-spacing-1 d-flex align-items-center gap-1.5">
-                            <i class="bi bi-bezier2 text-primary"></i> 2. Spesifikasi Kabel &amp; Kapasitas (Kabel Eksisting vs Jumper)
+                    <div class="section-card-jc p-2.5 p-sm-3 bg-light rounded-3 border mb-2.5">
+                        <h6 class="section-title-jc fw-bold text-navy mb-2 small text-uppercase letter-spacing-1 d-flex align-items-center gap-1.5">
+                            <i class="bi bi-bezier2 text-primary"></i> 2. Spesifikasi Kabel &amp; Kapasitas
                         </h6>
-                        <div class="row g-2.5">
+                        <div class="row g-2">
                             <!-- Kabel Asal -->
                             <div class="col-12 col-md-6">
-                                <div class="p-2.5 p-sm-3 bg-white rounded-3 border h-100 shadow-xs">
-                                    <div class="d-flex align-items-center gap-1.5 mb-2">
-                                        <span class="badge bg-primary text-white rounded-pill px-2.5 py-1" style="font-size: 0.68rem; letter-spacing: 0.3px;">
+                                <div class="p-2 p-sm-2.5 bg-white rounded-3 border h-100 shadow-xs">
+                                    <div class="d-flex align-items-center gap-1 mb-1.5">
+                                        <span class="badge bg-primary text-white rounded-pill px-2 py-0.5" style="font-size: 0.65rem; letter-spacing: 0.2px;">
                                             <i class="bi bi-box-arrow-in-right me-1"></i> KABEL ASAL / EKSISTING
                                         </span>
                                     </div>
-                                    <div class="row g-2">
-                                        <div class="col-12 col-sm-7">
+                                    <div class="row g-1.5">
+                                        <div class="col-7">
                                             <label for="jc_kapasitas_asal" class="form-label small fw-bold text-navy mb-1">
                                                 Kapasitas Kabel <span class="text-danger">*</span>
                                             </label>
@@ -5569,7 +5724,7 @@
                                                 <option value="288">288 Core</option>
                                             </select>
                                         </div>
-                                        <div class="col-12 col-sm-5">
+                                        <div class="col-5">
                                             <label for="jc_tube_asal" class="form-label small fw-bold text-navy mb-1">
                                                 Jumlah Tube <span class="text-danger">*</span>
                                             </label>
@@ -5581,14 +5736,14 @@
 
                             <!-- Kabel Jumper -->
                             <div class="col-12 col-md-6">
-                                <div class="p-2.5 p-sm-3 bg-white rounded-3 border h-100 shadow-xs">
-                                    <div class="d-flex align-items-center gap-1.5 mb-2">
-                                        <span class="badge bg-teal text-white rounded-pill px-2.5 py-1" style="font-size: 0.68rem; letter-spacing: 0.3px;">
+                                <div class="p-2 p-sm-2.5 bg-white rounded-3 border h-100 shadow-xs">
+                                    <div class="d-flex align-items-center gap-1 mb-1.5">
+                                        <span class="badge bg-teal text-white rounded-pill px-2 py-0.5" style="font-size: 0.65rem; letter-spacing: 0.2px;">
                                             <i class="bi bi-box-arrow-right me-1"></i> KABEL JUMPER / DISTRIBUSI
                                         </span>
                                     </div>
-                                    <div class="row g-2">
-                                        <div class="col-12 col-sm-7">
+                                    <div class="row g-1.5">
+                                        <div class="col-7">
                                             <label for="jc_kapasitas_jumper" class="form-label small fw-bold text-navy mb-1">
                                                 Kapasitas Kabel <span class="text-danger">*</span>
                                             </label>
@@ -5602,7 +5757,7 @@
                                                 <option value="288">288 Core</option>
                                             </select>
                                         </div>
-                                        <div class="col-12 col-sm-5">
+                                        <div class="col-5">
                                             <label for="jc_tube_jumper" class="form-label small fw-bold text-navy mb-1">
                                                 Jumlah Tube <span class="text-danger">*</span>
                                             </label>
@@ -5615,12 +5770,12 @@
                     </div>
 
                     <!-- Section 3: Visual Interactive Splicing Tray & Dynamic Core Splicing Matrix -->
-                    <div class="p-2.5 p-sm-3 bg-light rounded-3 border">
+                    <div class="section-card-jc p-2.5 p-sm-3 bg-light rounded-3 border">
                         <!-- Visual Interactive Splicing Tray Component -->
-                        <div class="fiber-patcher-box mb-3">
+                        <div class="fiber-patcher-box mb-2.5">
                             <div class="fiber-patcher-header">
                                 <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                    <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill" style="font-size: 0.72rem;">
+                                    <span class="badge bg-primary text-white px-2 py-0.5 rounded-pill" style="font-size: 0.68rem;">
                                         <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher (Jointing Lurus)
                                     </span>
                                 </div>
@@ -5714,47 +5869,47 @@
                             <!-- Connected Chips Tray -->
                             <div class="fiber-chips-tray">
                                 <div class="d-flex align-items-center justify-content-between mb-1.5">
-                                    <span class="small fw-bold text-white" style="font-size:0.75rem;">
-                                        <i class="bi bi-link-45deg me-1 text-info"></i> Daftar Sambungan Aktif:
+                                    <span class="small fw-bold text-white" style="font-size:0.72rem;">
+                                        <i class="bi bi-link-45deg me-1 text-info"></i> Sambungan Aktif:
                                     </span>
-                                    <span class="small text-muted" id="jcTotalCoresText" style="font-size:0.7rem;">0 Core Terhubung</span>
+                                    <span class="small text-muted" id="jcTotalCoresText" style="font-size:0.68rem;">0 Core Terhubung</span>
                                 </div>
                                 <div class="fiber-connections-chips" id="jcConnectionsChips">
-                                    <span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>
+                                    <span class="text-muted small fst-italic py-1" style="font-size:0.7rem;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Synchronized Splicing Table -->
                         <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-1.5">
-                            <span class="small fw-bold text-navy"><i class="bi bi-table me-1"></i> Daftar Core yang Disambung / Matrix:</span>
-                            <button type="button" class="btn btn-xs btn-outline-success rounded-pill px-2.5" id="btnAddCoreRow">
+                            <span class="small fw-bold text-navy" style="font-size: 0.78rem;"><i class="bi bi-table me-1"></i> Daftar Core yang Disambung / Matrix:</span>
+                            <button type="button" class="btn btn-xs btn-outline-success rounded-pill px-2.5" id="btnAddCoreRow" style="font-size: 0.72rem;">
                                 <i class="bi bi-plus-lg me-1"></i> Tambah Baris Manual
                             </button>
                         </div>
 
-                        <div id="jcCoreRowsContainer" class="d-flex flex-column gap-2">
+                        <div id="jcCoreRowsContainer" class="d-flex flex-column gap-1.5">
                             <!-- Template Row 1 (Default) -->
-                            <div class="jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs">
-                                <div class="row g-2 align-items-center">
+                            <div class="jc-core-input-row p-2 bg-white rounded-3 border shadow-xs">
+                                <div class="row g-1.5 align-items-center">
                                     <div class="col-6 col-md-2">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Asal</label>
                                         <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
                                     </div>
                                     <div class="col-6 col-md-2">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Asal</label>
                                         <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core 1" value="Core 1">
                                     </div>
                                     <div class="col-6 col-md-2">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Jumper</label>
                                         <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
                                     </div>
                                     <div class="col-6 col-md-2">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Jumper</label>
                                         <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core 1" value="Core 1">
                                     </div>
                                     <div class="col-6 col-md-2">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Status</label>
                                         <select class="form-select form-select-sm" name="core_status[]">
                                             <option value="TERHUBUNG" selected>TERHUBUNG</option>
                                             <option value="SPARE">SPARE (Sisa)</option>
@@ -5763,7 +5918,7 @@
                                         </select>
                                     </div>
                                     <div class="col-4 col-md-1">
-                                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Loss (dB)</label>
                                         <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02" value="0.02">
                                     </div>
                                     <div class="col-2 col-md-1 text-end pt-md-3">
@@ -5776,7 +5931,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light px-3 py-2.5 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="modal-footer bg-light px-3 py-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <button type="button" class="btn btn-light border btn-sm px-3 flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
                         <i class="bi bi-x me-1"></i> Batal
                     </button>
@@ -9386,27 +9541,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if (jcConnections.length === 0) {
             // Default template row
             const newRow = document.createElement('div');
-            newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+            newRow.className = 'jc-core-input-row p-2 bg-white rounded-3 border shadow-xs';
             newRow.innerHTML = `
-                <div class="row g-2 align-items-center">
+                <div class="row g-1.5 align-items-center">
                     <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Asal</label>
                         <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" placeholder="Tube 1" value="Tube 1">
                     </div>
                     <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Asal</label>
                         <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" placeholder="Core 1" value="Core 1">
                     </div>
                     <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Jumper</label>
                         <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" placeholder="Tube 1" value="Tube 1">
                     </div>
                     <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Jumper</label>
                         <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" placeholder="Core 1" value="Core 1">
                     </div>
                     <div class="col-6 col-md-2">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Status</label>
                         <select class="form-select form-select-sm" name="core_status[]">
                             <option value="TERHUBUNG" selected>TERHUBUNG</option>
                             <option value="SPARE">SPARE (Sisa)</option>
@@ -9415,7 +9570,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </select>
                     </div>
                     <div class="col-4 col-md-1">
-                        <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                        <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Loss (dB)</label>
                         <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" placeholder="0.02" value="0.02">
                     </div>
                     <div class="col-2 col-md-1 text-end pt-md-3">
@@ -9436,27 +9591,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 const loss = conn.loss !== undefined ? conn.loss : '0.02';
 
                 const newRow = document.createElement('div');
-                newRow.className = 'jc-core-input-row p-2.5 bg-white rounded-3 border shadow-xs';
+                newRow.className = 'jc-core-input-row p-2 bg-white rounded-3 border shadow-xs';
                 newRow.innerHTML = `
-                    <div class="row g-2 align-items-center">
+                    <div class="row g-1.5 align-items-center">
                         <div class="col-6 col-md-2">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Asal</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Asal</label>
                             <input type="text" class="form-control form-control-sm font-monospace" name="tube_asal[]" value="${tAsal}">
                         </div>
                         <div class="col-6 col-md-2">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Asal</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Asal</label>
                             <input type="text" class="form-control form-control-sm font-monospace" name="core_asal[]" value="${cAsal}">
                         </div>
                         <div class="col-6 col-md-2">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Tube Jumper</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Tube Jumper</label>
                             <input type="text" class="form-control form-control-sm font-monospace" name="tube_jumper[]" value="${tJumper}">
                         </div>
                         <div class="col-6 col-md-2">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Core Jumper</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Core Jumper</label>
                             <input type="text" class="form-control form-control-sm font-monospace" name="core_jumper[]" value="${cJumper}">
                         </div>
                         <div class="col-6 col-md-2">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Status</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Status</label>
                             <select class="form-select form-select-sm" name="core_status[]">
                                 <option value="TERHUBUNG" ${status === 'TERHUBUNG' ? 'selected' : ''}>TERHUBUNG</option>
                                 <option value="SPARE" ${status === 'SPARE' ? 'selected' : ''}>SPARE (Sisa)</option>
@@ -9465,7 +9620,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </select>
                         </div>
                         <div class="col-4 col-md-1">
-                            <label class="form-label small text-muted mb-1" style="font-size: 0.7rem;">Loss (dB)</label>
+                            <label class="form-label small text-muted mb-0.5" style="font-size: 0.65rem;">Loss (dB)</label>
                             <input type="number" step="0.01" class="form-control form-control-sm font-monospace" name="loss_db[]" value="${loss}">
                         </div>
                         <div class="col-2 col-md-1 text-end pt-md-3">
