@@ -666,8 +666,8 @@
                                             <i class="bi bi-file-earmark-pdf"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size:0.8rem;">
-                                            <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
-                                            <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
+                                            <li><a class="dropdown-item py-1.5 no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
+                                            <li><a class="dropdown-item py-1.5 no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
                                         </ul>
                                     </div>
                                     <a href="{{ route('tiket.show', $t->id) }}" class="btn btn-cjp-teal btn-sm px-2.5 py-1 d-flex align-items-center gap-1">
@@ -738,8 +738,8 @@
                                                 <i class="bi bi-file-earmark-pdf"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" style="font-size:0.8rem;">
-                                                <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
-                                                <li><a class="dropdown-item py-1.5" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
+                                                <li><a class="dropdown-item py-1.5 no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'internal']) }}"><i class="bi bi-file-earmark-text text-danger me-1.5"></i> PDF Internal (Lengkap)</a></li>
+                                                <li><a class="dropdown-item py-1.5 no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $t->id, 'type' => 'customer']) }}"><i class="bi bi-file-earmark-person text-primary me-1.5"></i> PDF Pelanggan (Customer)</a></li>
                                             </ul>
                                         </div>
                                     </div>

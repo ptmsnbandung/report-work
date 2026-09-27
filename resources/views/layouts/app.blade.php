@@ -645,6 +645,7 @@
     <script>
         // ── PT MSN SIGNATURE LOGO LOADER CONTROLLER ──
         let msnLoaderHidden = false;
+        let msnLoaderTimeout = null;
         window.showMsnLoader = function(text) {
             msnLoaderHidden = false;
             const el = document.getElementById('msnGlobalPreloader');
@@ -656,10 +657,14 @@
                     el.classList.remove('fade-out');
                 });
             }
+            if (msnLoaderTimeout) clearTimeout(msnLoaderTimeout);
+            // Safety fallback: otomatis sembunyikan loader jika halaman tidak berpindah dalam 4.5 detik
+            msnLoaderTimeout = setTimeout(window.hideMsnLoader, 4500);
         };
 
         window.hideMsnLoader = function() {
             if (msnLoaderHidden) return;
+            if (msnLoaderTimeout) clearTimeout(msnLoaderTimeout);
             const el = document.getElementById('msnGlobalPreloader');
             if (!el) return;
             msnLoaderHidden = true;
@@ -700,11 +705,12 @@
 
         // Tampilkan loader saat navigasi internal antar halaman (sidebar / menu / link)
         document.addEventListener('click', function(e) {
-            const link = e.target.closest('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not([download]):not(.no-loader)');
+            const link = e.target.closest('a[href]:not([target="_blank"]):not([href^="#"]):not([href^="javascript:"]):not([download]):not(.no-loader):not([data-no-loader="true"])');
             if (link && link.href && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.defaultPrevented) {
                 try {
                     const url = new URL(link.href, window.location.origin);
-                    if (url.origin === window.location.origin && url.pathname !== window.location.pathname) {
+                    const isDownloadOrExport = /export|download|\.pdf|\.xlsx|\.csv/i.test(url.pathname + url.search);
+                    if (!isDownloadOrExport && url.origin === window.location.origin && url.pathname !== window.location.pathname) {
                         window.showMsnLoader('Memuat Halaman...');
                     }
                 } catch(err) {}

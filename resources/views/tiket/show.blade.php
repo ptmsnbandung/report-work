@@ -3036,7 +3036,7 @@
                             <li><hr class="dropdown-divider my-1"></li>
                             <li class="tiket-dropdown-header-label">Export Dokumen</li>
                             <li>
-                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'internal']) }}" title="Laporan internal lengkap beserta mapping core dan kronologis">
+                                <a class="tiket-hero-dropdown-item no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'internal']) }}" title="Laporan internal lengkap beserta mapping core dan kronologis">
                                     <div class="tiket-dropdown-icon-box bg-danger-subtle text-danger">
                                         <i class="bi bi-file-earmark-pdf-fill"></i>
                                     </div>
@@ -3047,7 +3047,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'customer']) }}" title="Berita Acara resmi untuk diberikan ke pelanggan / mitra">
+                                <a class="tiket-hero-dropdown-item no-loader" data-no-loader="true" href="{{ route('reports.export.tiket.pdf', ['tiket' => $tiket->id, 'type' => 'customer']) }}" title="Berita Acara resmi untuk diberikan ke pelanggan / mitra">
                                     <div class="tiket-dropdown-icon-box bg-primary-subtle text-primary">
                                         <i class="bi bi-file-earmark-person-fill"></i>
                                     </div>
@@ -3058,7 +3058,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="tiket-hero-dropdown-item" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
+                                <a class="tiket-hero-dropdown-item no-loader" data-no-loader="true" href="{{ route('reports.export.excel', ['search' => $tiket->no_tiket]) }}">
                                     <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
                                         <i class="bi bi-file-earmark-excel-fill"></i>
                                     </div>
