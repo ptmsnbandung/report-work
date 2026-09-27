@@ -129,6 +129,38 @@
             padding-top: 4px;
             text-align: right;
         }
+        .doc-gallery-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+            margin-bottom: 10px;
+        }
+        .doc-gallery-table td {
+            width: 33.33%;
+            padding: 4px;
+            vertical-align: top;
+            text-align: center;
+        }
+        .doc-img-card {
+            border: 1px solid #cbd5e1;
+            padding: 4px;
+            background: #ffffff;
+            border-radius: 3px;
+        }
+        .doc-img {
+            max-width: 100%;
+            max-height: 100px;
+            height: auto;
+            border-radius: 2px;
+            display: block;
+            margin: 0 auto;
+        }
+        .doc-caption {
+            font-size: 7pt;
+            color: #475569;
+            margin-top: 3px;
+            line-height: 1.2;
+        }
         .page-break {
             page-break-after: always;
         }
@@ -486,6 +518,61 @@
             </tr>
             @endforeach
         </tbody>
+    </table>
+    <!-- ── 8. DOKUMENTASI FOTO LAPANGAN (JIKA ADA) ── -->
+    @if($tiket->dokumentasis && $tiket->dokumentasis->count() > 0)
+    <div class="section-title">8. Dokumentasi Foto Lapangan (Field Evidence)</div>
+    @php
+        $selectedDocs = $tiket->dokumentasis->take(3);
+    @endphp
+    <table class="doc-gallery-table">
+        <tr>
+            @foreach($selectedDocs as $doc)
+            @php
+                $resolvedPath = null;
+                if (!empty($doc->file_path)) {
+                    $candidates = [
+                        storage_path('app/public/' . $doc->file_path),
+                        public_path('storage/' . $doc->file_path),
+                        public_path($doc->file_path),
+                        storage_path('app/' . $doc->file_path),
+                        public_path('uploads/' . $doc->file_path),
+                        base_path($doc->file_path),
+                        $doc->file_path,
+                    ];
+                    foreach ($candidates as $cand) {
+                        if ($cand && file_exists($cand) && !is_dir($cand)) {
+                            $resolvedPath = $cand;
+                            break;
+                        }
+                    }
+                }
+                $imgBase64 = null;
+                if ($resolvedPath) {
+                    $mime = mime_content_type($resolvedPath) ?: 'image/jpeg';
+                    $imgBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($resolvedPath));
+                }
+            @endphp
+            <td>
+                <div class="doc-img-card">
+                    @if($imgBase64)
+                        <img src="{{ $imgBase64 }}" alt="Dokumentasi" class="doc-img">
+                    @else
+                        <div style="height: 80px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; color: #94a3b8;">
+                            Foto Dokumentasi Terlampir
+                        </div>
+                    @endif
+                    <div class="doc-caption">
+                        <strong>{{ $doc->kategori_label ?? $doc->kategori }}</strong><br>
+                        {{ $doc->keterangan ?: 'Dokumentasi perbaikan lapangan' }}
+                    </div>
+                </div>
+            </td>
+            @endforeach
+            @for($i = count($selectedDocs); $i < 3; $i++)
+            <td style="width: 33.33%;"></td>
+            @endfor
+        </tr>
     </table>
     @endif
 

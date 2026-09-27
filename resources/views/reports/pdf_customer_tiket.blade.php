@@ -330,10 +330,35 @@
     <table class="doc-gallery-table">
         <tr>
             @foreach($selectedDocs as $doc)
+            @php
+                $resolvedPath = null;
+                if (!empty($doc->file_path)) {
+                    $candidates = [
+                        storage_path('app/public/' . $doc->file_path),
+                        public_path('storage/' . $doc->file_path),
+                        public_path($doc->file_path),
+                        storage_path('app/' . $doc->file_path),
+                        public_path('uploads/' . $doc->file_path),
+                        base_path($doc->file_path),
+                        $doc->file_path,
+                    ];
+                    foreach ($candidates as $cand) {
+                        if ($cand && file_exists($cand) && !is_dir($cand)) {
+                            $resolvedPath = $cand;
+                            break;
+                        }
+                    }
+                }
+                $imgBase64 = null;
+                if ($resolvedPath) {
+                    $mime = mime_content_type($resolvedPath) ?: 'image/jpeg';
+                    $imgBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($resolvedPath));
+                }
+            @endphp
             <td>
                 <div class="doc-img-card">
-                    @if(file_exists(public_path($doc->file_path)))
-                        <img src="{{ public_path($doc->file_path) }}" alt="Dokumentasi" class="doc-img">
+                    @if($imgBase64)
+                        <img src="{{ $imgBase64 }}" alt="Dokumentasi" class="doc-img">
                     @else
                         <div style="height: 80px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; color: #94a3b8;">
                             Foto Dokumentasi Terlampir
