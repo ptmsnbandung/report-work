@@ -10707,6 +10707,20 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
             this.style.height = Math.min(this.scrollHeight, 100) + 'px';
         });
 
+        // Quick reply chips handler (Rekomendasi Chat Cepat)
+        document.querySelectorAll('.wa-quick-chip').forEach(function(chip) {
+            chip.addEventListener('click', function() {
+                const text = this.getAttribute('data-text');
+                if (text && waChatTextInput) {
+                    waChatTextInput.value = text;
+                    waChatTextInput.style.height = 'auto';
+                    waChatTextInput.style.height = Math.min(waChatTextInput.scrollHeight, 100) + 'px';
+                    waChatTextInput.focus();
+                    waChatTextInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            });
+        });
+
         function showMentionDropdown(query, startIndex) {
             if (!waMentionDropdown || !waMentionList) return;
 
