@@ -206,8 +206,9 @@ class KronologisService
      */
     public function deleteKronologis(Kronologis $kronologis, User $user): bool
     {
-        if (!$user->hasRole('admin')) {
-            throw new InvalidArgumentException('Hanya Administrator yang berhak menghapus catatan kronologis.');
+        $isOwner = (int) $user->id === (int) $kronologis->user_id;
+        if (!$user->hasRole('admin') && !$isOwner) {
+            throw new InvalidArgumentException('Anda tidak berhak menghapus catatan kronologis ini.');
         }
 
         // Hapus file foto jika ada di public_path

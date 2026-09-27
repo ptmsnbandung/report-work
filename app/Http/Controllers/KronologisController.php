@@ -258,17 +258,20 @@ class KronologisController extends Controller
      */
     public function destroy(Request $request, Tiket $tiket, Kronologis $kronologis): RedirectResponse|JsonResponse
     {
-        if (!$request->user()->hasRole('admin')) {
+        $isOwner = (int) $request->user()->id === (int) $kronologis->user_id;
+        $canDelete = $request->user()->hasRole('admin') || ($isOwner && $tiket->status !== 'CLOSE');
+
+        if (!$canDelete) {
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Akses ditolak. Hanya Admin yang dapat menghapus kronologis.',
+                    'message' => 'Akses ditolak. Anda tidak memiliki izin untuk menghapus pesan ini.',
                 ], 403);
             }
 
             return redirect()
                 ->route('tiket.show', $tiket->id)
-                ->with('error', 'Akses ditolak. Hanya Admin yang dapat menghapus kronologis.');
+                ->with('error', 'Akses ditolak. Anda tidak memiliki izin untuk menghapus pesan ini.');
         }
 
         try {

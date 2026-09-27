@@ -3705,6 +3705,7 @@
                                                                 $sentMoment = $krono->created_at ?? $krono->timestamp;
                                                                 $diffMinutes = $sentMoment ? $sentMoment->diffInMinutes(now()) : 999;
                                                                 $canEditMessage = ($tiket->status !== 'CLOSE') && ($isMe || auth()->user()->hasRole('admin')) && ($diffMinutes <= 5);
+                                                                $canDeleteMessage = auth()->user()->hasRole('admin') || ($isMe && $tiket->status !== 'CLOSE');
                                                             @endphp
                                                             @if($canEditMessage)
                                                             <li>
@@ -3713,7 +3714,7 @@
                                                                 </button>
                                                             </li>
                                                             @endif
-                                                            @if(auth()->user()->hasRole('admin'))
+                                                            @if($canDeleteMessage)
                                                             <li><hr class="dropdown-divider my-1"></li>
                                                             <li>
                                                                 <button type="button" class="dropdown-item wa-msg-dropdown-item text-danger btn-action-delete" data-id="{{ $krono->id }}">
@@ -8151,6 +8152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const sentMoment = k.created_at ? new Date(k.created_at) : (k.timestamp ? new Date(k.timestamp) : new Date());
             const diffMinutes = (Date.now() - sentMoment.getTime()) / (1000 * 60);
             const canEdit = !isTiketClosed && (isMe || isAdmin) && (diffMinutes <= 5);
+            const canDelete = isAdmin || (!isTiketClosed && isMe);
             const canReply = !isTiketClosed && canChat;
             const safeInfoAttr = rawEscape(k.informasi || '');
 
@@ -8216,7 +8218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <i class="bi bi-pencil-square text-warning"></i> Edit
                                         </button>
                                     </li>` : ''}
-                                    ${isAdmin ? `
+                                    ${canDelete ? `
                                     <li><hr class="dropdown-divider my-1"></li>
                                     <li>
                                         <button type="button" class="dropdown-item wa-msg-dropdown-item text-danger btn-action-delete" data-id="${k.id}">
@@ -11587,6 +11589,17 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
                                             <li>
                                                 <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-reply" data-id="${res.data.id}" data-sender="Anda" data-text="${safeInfoAttr}">
                                                     <i class="bi bi-reply-fill text-info"></i> Balas
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item btn-action-edit" data-id="${res.data.id}" data-text="${safeInfoAttr}">
+                                                    <i class="bi bi-pencil-square text-warning"></i> Edit
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li>
+                                                <button type="button" class="dropdown-item wa-msg-dropdown-item text-danger btn-action-delete" data-id="${res.data.id}">
+                                                    <i class="bi bi-trash3-fill"></i> Hapus
                                                 </button>
                                             </li>
                                         </ul>
