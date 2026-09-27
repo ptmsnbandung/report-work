@@ -86,7 +86,7 @@ Route::middleware(['auth', 'role'])->group(function () {
         ->middleware('role:admin,helpdesk,teknis')
         ->name('tiket.kronologis.update');
     Route::delete('/tiket/{tiket}/kronologis/{kronologis}', [KronologisController::class, 'destroy'])
-        ->middleware('role:admin')
+        ->middleware('role:admin,helpdesk,teknis')
         ->name('tiket.kronologis.destroy');
 
     // Modul Resume & Material (Fase 4)
