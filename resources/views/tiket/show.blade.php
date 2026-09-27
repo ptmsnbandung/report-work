@@ -3808,7 +3808,7 @@
                                                 </div>
                                                 @elseif($krono->foto_url)
                                                 <div class="wa-media-card" onclick="zoomPhoto('{{ asset($krono->foto_url) }}', '{{ $krono->kategori }} - {{ $krono->timestamp->format('d/m/Y H:i') }} WIB')">
-                                                    <img src="{{ asset($krono->foto_url) }}" alt="Foto Kronologis" class="wa-media-img" loading="lazy">
+                                                    <img src="{{ asset($krono->foto_url) }}" alt="Foto Kronologis" class="wa-media-img">
                                                     <div class="wa-media-badge">
                                                         <i class="bi bi-arrows-fullscreen"></i>
                                                         <span>Klik untuk memperbesar</span>
@@ -10147,6 +10147,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     window.scrollChatToBottom = scrollChatToBottom;
 
+    let userHasScrolledTimeline = false;
+
     function scrollToTargetKrono() {
         let targetEl = null;
 
@@ -10174,27 +10176,38 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
 
-        // Jalankan scroll internal container secara instan
+        // Jalankan scroll internal container secara instan berulang pada awal pemuatan
         performInternalScroll();
         requestAnimationFrame(performInternalScroll);
+        setTimeout(performInternalScroll, 50);
+        setTimeout(performInternalScroll, 150);
+        setTimeout(performInternalScroll, 350);
+        setTimeout(performInternalScroll, 700);
+        setTimeout(performInternalScroll, 1200);
 
         // Pantau jika ada gambar atau video di dalam stream yang sedang dimuat
         const streamMedia = stream.querySelectorAll('img, video');
         streamMedia.forEach(media => {
             if (!media.complete) {
-                media.addEventListener('load', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
-                media.addEventListener('loadedmetadata', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
+                media.addEventListener('load', () => { if (!targetEl && !userHasScrolledTimeline) scrollChatToBottom(true); }, { once: true });
+                media.addEventListener('loadedmetadata', () => { if (!targetEl && !userHasScrolledTimeline) scrollChatToBottom(true); }, { once: true });
             }
         });
-        window.addEventListener('load', () => { if (!targetEl) scrollChatToBottom(true); }, { once: true });
+        window.addEventListener('load', () => { if (!targetEl && !userHasScrolledTimeline) scrollChatToBottom(true); }, { once: true });
 
-        // Gunakan ResizeObserver agar saat rendering selesai, chat stream langsung berada di posisi bawah tanpa delay
+        // Gunakan ResizeObserver agar saat rendering elemen selesai, chat stream selalu berada di posisi paling baru
         if (window.ResizeObserver) {
+            let resizePasses = 0;
             const ro = new ResizeObserver(() => {
                 if (!targetEl) {
-                    const distanceFromBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight;
-                    if (distanceFromBottom < 180) {
+                    if (!userHasScrolledTimeline || resizePasses < 6) {
                         scrollChatToBottom(true);
+                        resizePasses++;
+                    } else {
+                        const distanceFromBottom = stream.scrollHeight - stream.scrollTop - stream.clientHeight;
+                        if (distanceFromBottom < 180) {
+                            scrollChatToBottom(true);
+                        }
                     }
                 }
             });
@@ -10209,8 +10222,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const kronologisTabBtn = document.getElementById('kronologis-tab');
     if (kronologisTabBtn) {
         kronologisTabBtn.addEventListener('shown.bs.tab', function () {
+            userHasScrolledTimeline = false;
             scrollChatToBottom(true);
             requestAnimationFrame(() => scrollChatToBottom(true));
+            setTimeout(() => scrollChatToBottom(true), 50);
+            setTimeout(() => scrollChatToBottom(true), 150);
+            setTimeout(() => scrollChatToBottom(true), 350);
         });
     }
 
@@ -11805,6 +11822,8 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
         }
         streamEl._waScrollHandler = function() { checkStreamScroll(streamEl); };
         streamEl.addEventListener('scroll', streamEl._waScrollHandler);
+        streamEl.addEventListener('wheel', function() { userHasScrolledTimeline = true; }, { passive: true });
+        streamEl.addEventListener('touchmove', function() { userHasScrolledTimeline = true; }, { passive: true });
     }
 
     // Attach listener to initial stream if present
@@ -11818,6 +11837,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
     btnWaScrollBottom?.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
+        userHasScrolledTimeline = false;
         scrollChatToBottom(false);
     });
 
@@ -11846,12 +11866,12 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
         setTimeout(() => {
             isWaTransitioning = false;
+            scrollChatToBottom(true);
         }, 320);
 
         // Scroll stream ke bawah setelah animasi berjalan
         requestAnimationFrame(() => {
-            const stream = document.getElementById('timelineList');
-            if (stream) stream.scrollTop = stream.scrollHeight;
+            scrollChatToBottom(true);
         });
     }
 
