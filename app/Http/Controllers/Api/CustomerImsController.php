@@ -31,6 +31,7 @@ class CustomerImsController extends Controller
                 ->table('trx_batchjob_register as r')
                 ->leftJoin('m_pelanggan as m', 'r.nik_penduduk', '=', 'm.nik_penduduk')
                 ->leftJoin('m_bandwith as b', 'r.kode_bandwith', '=', 'b.kode_bandwith')
+                ->leftJoin('m_pop as p', 'r.kode_pop', '=', 'p.kode_pop')
                 ->select([
                     'r.nomor_internet',
                     'r.nama_pelanggan',
@@ -43,6 +44,7 @@ class CustomerImsController extends Controller
                     'r.kode_bandwith',
                     'b.nominal_bandwith',
                     'r.kode_pop',
+                    'p.nama_pop',
                     'r.olt',
                     'r.index_olt',
                     'r.media_akses',
@@ -70,6 +72,9 @@ class CustomerImsController extends Controller
                     $alamatLengkap .= ' (' . implode(', ', $rtRw) . ')';
                 }
 
+                $namaPop = trim((string) ($c->nama_pop ?? ''));
+                $popDisplay = $namaPop !== '' ? $namaPop : (string) ($c->kode_pop ?: '');
+
                 $odpInfo = trim(($c->olt ?: '') . ' ' . ($c->index_olt ?: ''));
                 $gps = trim($c->lon_lat ?: ($c->loc_maps ?: ''));
 
@@ -85,11 +90,13 @@ class CustomerImsController extends Controller
                     'alamat' => $alamatLengkap,
                     'alamat_pelanggan' => $alamatLengkap,
                     'alamat_pasang' => (string) ($c->alamat_pasang ?: ''),
-                    'titik_odp' => $odpInfo ?: ($c->kode_pop ?: ''),
+                    'titik_odp' => $odpInfo ?: $popDisplay,
                     'kode_bandwith' => $bwDisplay,
                     'nominal_bandwith' => $nominalBw,
                     'raw_kode_bandwith' => (string) ($c->kode_bandwith ?: ''),
-                    'kode_pop' => (string) ($c->kode_pop ?: ''),
+                    'kode_pop' => $popDisplay,
+                    'nama_pop' => $namaPop,
+                    'raw_kode_pop' => (string) ($c->kode_pop ?: ''),
                     'lon_lat' => (string) $gps,
                     'loc_maps' => (string) ($c->loc_maps ?: ''),
                     'media_akses' => (string) ($c->media_akses ?: 'Fiber Optik'),
@@ -124,6 +131,7 @@ class CustomerImsController extends Controller
                 ->table('trx_batchjob_register as r')
                 ->leftJoin('m_pelanggan as m', 'r.nik_penduduk', '=', 'm.nik_penduduk')
                 ->leftJoin('m_bandwith as b', 'r.kode_bandwith', '=', 'b.kode_bandwith')
+                ->leftJoin('m_pop as p', 'r.kode_pop', '=', 'p.kode_pop')
                 ->select([
                     'r.nomor_internet',
                     'r.nama_pelanggan',
@@ -136,6 +144,7 @@ class CustomerImsController extends Controller
                     'r.kode_bandwith',
                     'b.nominal_bandwith',
                     'r.kode_pop',
+                    'p.nama_pop',
                     'r.olt',
                     'r.index_olt',
                     'r.media_akses',
@@ -161,6 +170,9 @@ class CustomerImsController extends Controller
                 $alamatLengkap .= ' (' . implode(', ', $rtRw) . ')';
             }
 
+            $namaPop = trim((string) ($customer->nama_pop ?? ''));
+            $popDisplay = $namaPop !== '' ? $namaPop : (string) ($customer->kode_pop ?: '');
+
             $odpInfo = trim(($customer->olt ?: '') . ' ' . ($customer->index_olt ?: ''));
             $gps = trim($customer->lon_lat ?: ($customer->loc_maps ?: ''));
 
@@ -178,11 +190,13 @@ class CustomerImsController extends Controller
                     'alamat' => $alamatLengkap,
                     'alamat_pelanggan' => $alamatLengkap,
                     'alamat_pasang' => (string) ($customer->alamat_pasang ?: ''),
-                    'titik_odp' => $odpInfo ?: ($customer->kode_pop ?: ''),
+                    'titik_odp' => $odpInfo ?: $popDisplay,
                     'kode_bandwith' => $bwDisplay,
                     'nominal_bandwith' => $nominalBw,
                     'raw_kode_bandwith' => (string) ($customer->kode_bandwith ?: ''),
-                    'kode_pop' => (string) ($customer->kode_pop ?: ''),
+                    'kode_pop' => $popDisplay,
+                    'nama_pop' => $namaPop,
+                    'raw_kode_pop' => (string) ($customer->kode_pop ?: ''),
                     'lon_lat' => (string) $gps,
                     'loc_maps' => (string) ($customer->loc_maps ?: ''),
                     'media_akses' => (string) ($customer->media_akses ?: 'Fiber Optik'),
