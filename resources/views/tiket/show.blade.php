@@ -430,6 +430,49 @@
         user-select: none;
     }
 
+    /* ─── CHAT MESSAGE SEND & RECEIVE KEYFRAME ANIMATIONS ─── */
+    @keyframes waMsgSendIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.9) translateY(16px) translateX(12px);
+        }
+        65% {
+            opacity: 1;
+            transform: scale(1.015) translateY(-2px) translateX(0);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0) translateX(0);
+        }
+    }
+
+    @keyframes waMsgReceiveIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.9) translateY(16px) translateX(-12px);
+        }
+        65% {
+            opacity: 1;
+            transform: scale(1.015) translateY(-2px) translateX(0);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0) translateX(0);
+        }
+    }
+
+    .wa-msg-anim-send {
+        animation: waMsgSendIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        transform-origin: bottom right;
+        will-change: transform, opacity;
+    }
+
+    .wa-msg-anim-receive {
+        animation: waMsgReceiveIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        transform-origin: bottom left;
+        will-change: transform, opacity;
+    }
+
     /* Message Row & Bubble */
     .wa-msg-row,
     .wa-message-row {
@@ -8469,8 +8512,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return rawEscape(text);
     }
 
-    function buildSingleKronoHtml(k) {
+    function buildSingleKronoHtml(k, isNew = false) {
             const isMe = (k.user_id === currentUserId);
+            const animClass = isNew ? (isMe ? 'wa-msg-anim-send' : 'wa-msg-anim-receive') : '';
             const initials = (k.user_name || 'U').substring(0, 2).toUpperCase();
             const senderColor = getSenderColor(k.user_name);
             const userAvatar = k.user_avatar || null;
@@ -8485,7 +8529,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const kTimestampUnix = k.timestamp ? Math.floor(new Date(k.timestamp).getTime() / 1000) : Math.floor(sentMoment.getTime() / 1000);
 
             return `
-                <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'}" id="krono-item-${k.id}" data-id="${k.id}" data-timestamp="${kTimestampUnix}">
+                <div class="wa-msg-row ${isMe ? 'wa-msg-outgoing' : 'wa-msg-incoming'} ${animClass}" id="krono-item-${k.id}" data-id="${k.id}" data-timestamp="${kTimestampUnix}">
                     ${!isMe ? `
                     <div class="wa-avatar" style="background-color: ${userAvatar ? 'transparent' : senderColor};" title="${k.user_name}">
                         ${userAvatar ? `<img src="${userAvatar}" alt="${k.user_name}" class="wa-avatar-img">` : initials}
@@ -8644,7 +8688,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Simpan posisi scroll window agar tidak melompat
         const savedWindowY = window.scrollY || window.pageYOffset;
 
-        stream.insertAdjacentHTML('beforeend', buildSingleKronoHtml(k));
+        stream.insertAdjacentHTML('beforeend', buildSingleKronoHtml(k, true));
 
         // Pertahankan posisi scroll window
         window.scrollTo(0, savedWindowY);
@@ -11792,7 +11836,7 @@ _Catatan: Mohon tim teknis terkait segera melakukan penanganan dan memperbarui l
 
             if (stream) {
                 const optimisticHtml = `
-                    <div class="wa-msg-row wa-msg-outgoing" id="${tempId}" data-timestamp="${Math.floor(Date.now() / 1000)}" style="animation: waMsgPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);">
+                    <div class="wa-msg-row wa-msg-outgoing wa-msg-anim-send" id="${tempId}" data-timestamp="${Math.floor(Date.now() / 1000)}">
                         <div class="wa-bubble wa-bubble-outgoing">
                             <div class="wa-bubble-header">
                                 <div class="wa-sender-info">
