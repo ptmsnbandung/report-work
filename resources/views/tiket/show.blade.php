@@ -3203,14 +3203,22 @@
                             </span>
                         @endif
 
-                        <!-- Assigned Team Badge -->
+                        <!-- Assigned Team Badges (Menampilkan Seluruh Teknisi yang Ditunjuk) -->
                         @if($tiket->assigned_lead_id)
-                            <span class="badge bg-primary bg-opacity-25 text-white border border-primary border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
-                                <i class="bi bi-person-check-fill text-info me-1"></i> PIC: {{ $tiket->assignedLead?->name }}
-                                @if($tiket->assigned_team && count($tiket->assigned_team) > 0)
-                                    <span class="text-white-50 ms-0.5">(+{{ count($tiket->assigned_team) }})</span>
-                                @endif
+                            <span class="badge bg-primary bg-opacity-35 text-white border border-primary border-opacity-60 rounded-pill px-3 py-1 ms-1 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" title="Leader / PIC Utama Lapangan">
+                                <i class="bi bi-person-badge-fill text-info"></i>
+                                <span>PIC: {{ $tiket->assignedLead?->name }}</span>
                             </span>
+                            @if($tiket->assigned_team_users && $tiket->assigned_team_users->count() > 0)
+                                @foreach($tiket->assigned_team_users as $tUser)
+                                    @if($tUser->id !== $tiket->assigned_lead_id)
+                                        <span class="badge rounded-pill px-2.5 py-1 ms-1 fw-semibold text-white border border-info border-opacity-40 d-inline-flex align-items-center gap-1 shadow-xs" style="background: rgba(14, 165, 233, 0.22); backdrop-filter: blur(4px);" title="Anggota Tim Lapangan">
+                                            <i class="bi bi-person-fill text-info"></i>
+                                            <span>{{ $tUser->name }}</span>
+                                        </span>
+                                    @endif
+                                @endforeach
+                            @endif
                         @else
                             <span class="badge bg-secondary bg-opacity-35 text-white border border-white border-opacity-25 rounded-pill px-3 py-1 ms-1 fw-bold">
                                 <i class="bi bi-person-dash me-1"></i> Belum Ditugaskan
@@ -4383,7 +4391,7 @@
                                     <i class="bi bi-shield-lock-fill text-primary" style="font-size: 1.15rem;"></i>
                                     <span>
                                         <strong>Mode Pemantauan (Read-Only):</strong> 
-                                        Tiket ini sedang ditangani oleh <strong>{{ $tiket->assignedLead?->name ?? 'Tim Teknisi Lapangan' }}</strong>. 
+                                        Tiket ini sedang ditangani oleh <strong>{{ $tiket->assigned_team_names_formatted }}</strong>. 
                                         Hanya tim yang ditugaskan, Manager Teknis, dan HelpDesk NOC yang dapat mengirim update koordinasi.
                                     </span>
                                 </div>

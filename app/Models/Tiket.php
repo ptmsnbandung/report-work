@@ -280,6 +280,43 @@ class Tiket extends Model
     }
 
     /**
+     * Dapatkan semua User model teknisi yang ditugaskan (Lead + Anggota Tim).
+     */
+    public function getAllAssignedUsersAttribute(): \Illuminate\Support\Collection
+    {
+        $ids = $this->getAllAssignedUserIds();
+        if (empty($ids)) {
+            return collect();
+        }
+
+        return User::whereIn('id', $ids)->get();
+    }
+
+    /**
+     * Format string daftar nama seluruh teknisi yang ditugaskan (misal: "Abdul Ghani (PIC), Budi, Dani").
+     */
+    public function getAssignedTeamNamesFormattedAttribute(): string
+    {
+        if (!$this->assigned_lead_id) {
+            return 'Belum Ditugaskan';
+        }
+
+        $leadName = $this->assignedLead?->name ?? 'Lead Teknis';
+        $teamUsers = $this->assigned_team_users;
+
+        $names = [];
+        $names[] = $leadName . ' (PIC)';
+
+        foreach ($teamUsers as $u) {
+            if ($u->id != $this->assigned_lead_id) {
+                $names[] = $u->name;
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
+    /**
      * Dapatkan semua ID teknisi yang ditugaskan (Lead + Anggota Tim).
      */
     public function getAllAssignedUserIds(): array
