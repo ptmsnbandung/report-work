@@ -145,9 +145,6 @@
     </div>
 </aside>
 
-<!-- Mobile Sidebar Overlay -->
-<div class="sidebar-overlay" id="sidebarOverlay"></div>
-
 <!-- Phase Alert Toast (replacing window.alert) -->
 <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;" id="phaseToastContainer">
     <div id="phaseToast" class="toast align-items-center text-white border-0" role="alert"

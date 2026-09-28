@@ -545,6 +545,7 @@
     </style>
 
     @stack('styles')
+</head>
 @php
     $isAdminView = auth()->check() && auth()->user()->hasRole('admin');
 @endphp
