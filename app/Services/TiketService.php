@@ -26,12 +26,15 @@ class TiketService
     }
 
     /**
-     * Generate Nomor Tiket otomatis dengan format: BDG-YYYYMMDD-XXX
+     * Generate Nomor Tiket otomatis dengan format:
+     * - Backbone: BDG-YYYYMMDD-XXX
+     * - Broadband: BRD-YYYYMMDD-XXX
      */
-    public function generateNoTiket(?Carbon $date = null): string
+    public function generateNoTiket(?Carbon $date = null, string $category = 'BACKBONE'): string
     {
         $date = $date ?: Carbon::now();
-        $prefix = 'BDG-' . $date->format('Ymd') . '-';
+        $code = ($category === 'BROADBAND') ? 'BRD' : 'BDG';
+        $prefix = "{$code}-" . $date->format('Ymd') . '-';
 
         $lastTiket = Tiket::where('no_tiket', 'like', $prefix . '%')
             ->orderBy('no_tiket', 'desc')
@@ -87,29 +90,55 @@ class TiketService
     }
 
     /**
-     * Buat tiket baru (Open Tiket)
+     * Buat tiket baru (Open Tiket) - Mendukung Backbone & Broadband
      */
     public function createTiket(array $data, User $creator): Tiket
     {
         return DB::transaction(function () use ($data, $creator) {
+            $kategori = strtoupper($data['kategori_tiket'] ?? 'BACKBONE');
+            $isBroadband = ($kategori === 'BROADBAND');
+
             $tanggalOpen = !empty($data['tanggal_open'])
                 ? Carbon::parse($data['tanggal_open'])
                 : Carbon::now();
 
             $noTiket = !empty($data['no_tiket'])
                 ? $data['no_tiket']
-                : $this->generateNoTiket($tanggalOpen);
+                : $this->generateNoTiket($tanggalOpen, $kategori);
+
+            $segment = $data['backbone_segment'] ?? ($isBroadband ? ($data['kode_pop'] ?? 'BROADBAND') : '-');
+            
+            $statusLinkImpact = $data['status_link_impact'] ?? null;
+            if (empty($statusLinkImpact) && $isBroadband) {
+                $custName = $data['nama_pelanggan'] ?? 'Pelanggan';
+                $cid = $data['id_pelanggan'] ?? '-';
+                $kendala = $data['jenis_kendala_broadband'] ?? 'Gangguan Layanan';
+                $statusLinkImpact = "Broadband: {$custName} ({$cid}) - {$kendala}";
+            }
 
             $slaTarget = !empty($data['sla_target_minutes'])
                 ? (int) $data['sla_target_minutes']
-                : $this->getDefaultSlaTarget($data['backbone_segment']);
+                : ($isBroadband ? 240 : $this->getDefaultSlaTarget($segment));
 
             $tiket = Tiket::create([
                 'no_tiket' => $noTiket,
-                'status_link_impact' => $data['status_link_impact'],
-                'backbone_segment' => $data['backbone_segment'],
+                'kategori_tiket' => $kategori,
+                'id_pelanggan' => $data['id_pelanggan'] ?? null,
+                'nama_pelanggan' => $data['nama_pelanggan'] ?? null,
+                'no_kontak_pelanggan' => $data['no_kontak_pelanggan'] ?? null,
+                'alamat_pelanggan' => $data['alamat_pelanggan'] ?? null,
+                'titik_odp' => $data['titik_odp'] ?? null,
+                'kode_bandwith' => $data['kode_bandwith'] ?? null,
+                'kode_pop' => $data['kode_pop'] ?? null,
+                'lon_lat_pelanggan' => $data['lon_lat_pelanggan'] ?? null,
+                'sn_ont' => $data['sn_ont'] ?? null,
+                'jenis_kendala_broadband' => $data['jenis_kendala_broadband'] ?? null,
+                'redaman_sebelum' => $data['redaman_sebelum'] ?? null,
+                'redaman_sesudah' => $data['redaman_sesudah'] ?? null,
+                'status_link_impact' => $statusLinkImpact ?? 'Gangguan Link / Layanan',
+                'backbone_segment' => $segment,
                 'deskripsi' => $data['deskripsi'] ?? null,
-                'tipe_penanganan' => $data['tipe_penanganan'] ?? 'JOINTING_LURUS',
+                'tipe_penanganan' => $data['tipe_penanganan'] ?? ($isBroadband ? 'MAINTENANCE_BROADBAND' : 'JOINTING_LURUS'),
                 'tanggal_open' => $tanggalOpen,
                 'tanggal_close' => null,
                 'status' => 'OPEN',
@@ -144,6 +173,19 @@ class TiketService
         }
 
         $updateData = [
+            'kategori_tiket' => $data['kategori_tiket'] ?? $tiket->kategori_tiket,
+            'id_pelanggan' => array_key_exists('id_pelanggan', $data) ? $data['id_pelanggan'] : $tiket->id_pelanggan,
+            'nama_pelanggan' => array_key_exists('nama_pelanggan', $data) ? $data['nama_pelanggan'] : $tiket->nama_pelanggan,
+            'no_kontak_pelanggan' => array_key_exists('no_kontak_pelanggan', $data) ? $data['no_kontak_pelanggan'] : $tiket->no_kontak_pelanggan,
+            'alamat_pelanggan' => array_key_exists('alamat_pelanggan', $data) ? $data['alamat_pelanggan'] : $tiket->alamat_pelanggan,
+            'titik_odp' => array_key_exists('titik_odp', $data) ? $data['titik_odp'] : $tiket->titik_odp,
+            'kode_bandwith' => array_key_exists('kode_bandwith', $data) ? $data['kode_bandwith'] : $tiket->kode_bandwith,
+            'kode_pop' => array_key_exists('kode_pop', $data) ? $data['kode_pop'] : $tiket->kode_pop,
+            'lon_lat_pelanggan' => array_key_exists('lon_lat_pelanggan', $data) ? $data['lon_lat_pelanggan'] : $tiket->lon_lat_pelanggan,
+            'sn_ont' => array_key_exists('sn_ont', $data) ? $data['sn_ont'] : $tiket->sn_ont,
+            'jenis_kendala_broadband' => array_key_exists('jenis_kendala_broadband', $data) ? $data['jenis_kendala_broadband'] : $tiket->jenis_kendala_broadband,
+            'redaman_sebelum' => array_key_exists('redaman_sebelum', $data) ? $data['redaman_sebelum'] : $tiket->redaman_sebelum,
+            'redaman_sesudah' => array_key_exists('redaman_sesudah', $data) ? $data['redaman_sesudah'] : $tiket->redaman_sesudah,
             'status_link_impact' => $data['status_link_impact'] ?? $tiket->status_link_impact,
             'backbone_segment' => $data['backbone_segment'] ?? $tiket->backbone_segment,
             'deskripsi' => array_key_exists('deskripsi', $data) ? $data['deskripsi'] : $tiket->deskripsi,
@@ -505,14 +547,36 @@ class TiketService
             ->visibleForUser()
             ->latest('tanggal_open');
 
-        // Filter search keyword (no_tiket, status_link_impact)
+        // Filter search keyword (no_tiket, status_link_impact, id_pelanggan, nama_pelanggan, sn_ont, titik_odp)
         if (!empty($filters['q'])) {
             $search = trim($filters['q']);
             $query->where(function (Builder $q) use ($search) {
                 $q->where('no_tiket', 'like', "%{$search}%")
                   ->orWhere('status_link_impact', 'like', "%{$search}%")
-                  ->orWhere('backbone_segment', 'like', "%{$search}%");
+                  ->orWhere('backbone_segment', 'like', "%{$search}%")
+                  ->orWhere('id_pelanggan', 'like', "%{$search}%")
+                  ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+                  ->orWhere('titik_odp', 'like', "%{$search}%")
+                  ->orWhere('sn_ont', 'like', "%{$search}%")
+                  ->orWhere('alamat_pelanggan', 'like', "%{$search}%");
             });
+        }
+
+        // Filter Kategori Tiket (BACKBONE vs BROADBAND)
+        if (!empty($filters['kategori'])) {
+            $cat = strtoupper($filters['kategori']);
+            if ($cat === 'BROADBAND') {
+                $query->where(function ($q) {
+                    $q->where('kategori_tiket', 'BROADBAND')
+                      ->orWhere('no_tiket', 'like', 'BRD-%');
+                });
+            } elseif ($cat === 'BACKBONE') {
+                $query->where(function ($q) {
+                    $q->where('kategori_tiket', 'BACKBONE')
+                      ->orWhere('no_tiket', 'like', 'BDG-%')
+                      ->orWhereNull('kategori_tiket');
+                });
+            }
         }
 
         // Filter status

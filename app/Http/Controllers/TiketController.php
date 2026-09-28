@@ -72,6 +72,18 @@ class TiketController extends Controller
     }
 
     /**
+     * Preview nomor tiket otomatis via AJAX
+     */
+    public function previewNumber(Request $request): JsonResponse
+    {
+        $date = $request->filled('tanggal') ? Carbon::parse($request->input('tanggal')) : Carbon::now();
+        $category = strtoupper($request->input('kategori', 'BACKBONE'));
+        $noTiket = $this->tiketService->generateNoTiket($date, $category);
+
+        return response()->json(['no_tiket' => $noTiket]);
+    }
+
+    /**
      * Simpan tiket baru
      */
     public function store(StoreTiketRequest $request): RedirectResponse
@@ -534,19 +546,6 @@ class TiketController extends Controller
                 ->route('tiket.index')
                 ->with('error', 'Gagal menghapus tiket: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * Endpoint JSON preview nomor tiket sesuai tanggal
-     */
-    public function previewNumber(Request $request): JsonResponse
-    {
-        $date = $request->filled('tanggal') ? Carbon::parse($request->input('tanggal')) : Carbon::now();
-        $preview = $this->tiketService->generateNoTiket($date);
-
-        return response()->json([
-            'no_tiket' => $preview,
-        ]);
     }
 
     /**

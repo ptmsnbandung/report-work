@@ -17,6 +17,19 @@ class Tiket extends Model
 
     protected $fillable = [
         'no_tiket',
+        'kategori_tiket',
+        'id_pelanggan',
+        'nama_pelanggan',
+        'no_kontak_pelanggan',
+        'alamat_pelanggan',
+        'titik_odp',
+        'kode_bandwith',
+        'kode_pop',
+        'lon_lat_pelanggan',
+        'sn_ont',
+        'jenis_kendala_broadband',
+        'redaman_sebelum',
+        'redaman_sesudah',
         'status_link_impact',
         'backbone_segment',
         'deskripsi',
@@ -59,6 +72,48 @@ class Tiket extends Model
             'response_time_minutes' => 'integer',
             'sla_target_minutes' => 'integer',
         ];
+    }
+
+    public function isBroadband(): bool
+    {
+        return ($this->kategori_tiket === 'BROADBAND' || str_starts_with((string) $this->no_tiket, 'BRD-'));
+    }
+
+    public function isBackbone(): bool
+    {
+        return !$this->isBroadband();
+    }
+
+    public function getKategoriTiketLabelAttribute(): string
+    {
+        return $this->isBroadband() ? 'Maintenance User Broadband' : 'Backbone Transmission';
+    }
+
+    public function getCustomerWhatsappUrlAttribute(): ?string
+    {
+        if (empty($this->no_kontak_pelanggan)) {
+            return null;
+        }
+
+        $phone = preg_replace('/[^0-9]/', '', (string) $this->no_kontak_pelanggan);
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+
+        $text = urlencode("Halo Bapak/Ibu {$this->nama_pelanggan}, kami dari Tim Teknis terkait tiket perbaikan broadband {$this->no_tiket}.");
+        return "https://wa.me/{$phone}?text={$text}";
+    }
+
+    public function getGoogleMapsUrlAttribute(): ?string
+    {
+        if (empty($this->lon_lat_pelanggan)) {
+            return null;
+        }
+
+        $clean = trim($this->lon_lat_pelanggan);
+        return "https://www.google.com/maps/search/?api=1&query=" . urlencode($clean);
     }
 
     public function creator(): BelongsTo

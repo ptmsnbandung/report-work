@@ -440,9 +440,19 @@
                         </div>
                     </div>
 
+                    <!-- Kategori Tiket (col-12 on mobile, col-sm-6 col-md-6 col-lg-2 on desktop) -->
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-2">
+                        <label for="filter_kategori" class="filter-label">Kategori Tiket</label>
+                        <select id="filter_kategori" name="kategori" class="form-select form-select-sm filter-form-select">
+                            <option value="">Semua Kategori</option>
+                            <option value="BACKBONE" {{ ($filters['kategori'] ?? request('kategori')) === 'BACKBONE' ? 'selected' : '' }}>Backbone FO</option>
+                            <option value="BROADBAND" {{ ($filters['kategori'] ?? request('kategori')) === 'BROADBAND' ? 'selected' : '' }}>Broadband User</option>
+                        </select>
+                    </div>
+
                     <!-- Segment Backbone (col-12 on mobile, col-sm-6 col-md-6 col-lg-2 on desktop) -->
                     <div class="col-12 col-sm-6 col-md-6 col-lg-2">
-                        <label for="filter_segment" class="filter-label">Segment Backbone</label>
+                        <label for="filter_segment" class="filter-label">Segment / POP</label>
                         <select id="filter_segment" name="segment" class="form-select form-select-sm filter-form-select">
                             <option value="">Semua Segment</option>
                             @foreach($masterSegments as $ms)
@@ -533,12 +543,21 @@
                 <div class="tiket-mobile-card-body">
                     <!-- Row 1: No Tiket & Status Badges -->
                     <div class="d-flex align-items-center justify-content-between mb-2">
-                        <div class="d-flex align-items-center gap-1.5">
+                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
                             <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none">
                                 <span class="badge bg-light text-primary font-monospace border px-2 py-1" style="font-size:0.75rem;">
                                     <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
                                 </span>
                             </a>
+                            @if($tiket->isBroadband())
+                                <span class="badge text-white px-1.5 py-0.5 rounded-pill font-monospace" style="background-color: #4f46e5; font-size: 0.62rem;">
+                                    <i class="bi bi-router-fill me-0.5"></i> BROADBAND
+                                </span>
+                            @else
+                                <span class="badge bg-primary px-1.5 py-0.5 rounded-pill font-monospace" style="font-size: 0.62rem;">
+                                    <i class="bi bi-diagram-3-fill me-0.5"></i> BACKBONE
+                                </span>
+                            @endif
                             @php
                                 $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
                             @endphp
@@ -581,10 +600,17 @@
                         </a>
                     </h6>
 
-                    <!-- Row 3: Segment Backbone -->
-                    <div class="small text-muted d-flex align-items-center gap-1 mb-2" style="font-size:0.75rem;">
-                        <i class="bi bi-geo-alt-fill text-teal"></i>
-                        <span class="text-truncate">{{ $tiket->backbone_segment }}</span>
+                    <!-- Row 3: Segment Backbone / Info Pelanggan -->
+                    <div class="small text-muted d-flex align-items-center gap-2 mb-2 flex-wrap" style="font-size:0.75rem;">
+                        @if($tiket->isBroadband())
+                            <span class="badge bg-light text-dark border"><i class="bi bi-person me-1 text-primary"></i>{{ $tiket->nama_pelanggan ?: 'Pelanggan' }} (CID: {{ $tiket->id_pelanggan ?: '-' }})</span>
+                            @if($tiket->titik_odp)
+                                <span class="badge bg-primary-subtle text-primary"><i class="bi bi-hdd-rack me-1"></i>{{ $tiket->titik_odp }}</span>
+                            @endif
+                        @else
+                            <i class="bi bi-geo-alt-fill text-teal"></i>
+                            <span class="text-truncate">{{ $tiket->backbone_segment }}</span>
+                        @endif
                     </div>
 
                     <!-- Row 4: Meta info & Action Buttons -->
@@ -628,19 +654,19 @@
         <div class="d-none d-md-block table-responsive">
             <table class="table table-pro align-middle mb-0">
                 <colgroup>
-                    <col style="width: 15%;">
-                    <col style="width: 22%;">
+                    <col style="width: 16%;">
+                    <col style="width: 23%;">
                     <col style="width: 14%;">
                     <col style="width: 9%;">
                     <col style="width: 9%;">
                     <col style="width: 8%;">
+                    <col style="width: 10%;">
                     <col style="width: 11%;">
-                    <col style="width: 12%;">
                 </colgroup>
                 <thead>
                     <tr>
                         <th><i class="bi bi-hash me-1"></i>No Tiket</th>
-                        <th><i class="bi bi-hdd-network me-1"></i>Segment &amp; Link</th>
+                        <th><i class="bi bi-hdd-network me-1"></i>Kategori &amp; Link / Pelanggan</th>
                         <th><i class="bi bi-clock-history me-1"></i>Waktu</th>
                         <th class="text-center"><i class="bi bi-activity me-1"></i>Status</th>
                         <th class="text-center"><i class="bi bi-stopwatch me-1"></i>Target / MTTR</th>
@@ -661,6 +687,11 @@
                                         {{ $tiket->no_tiket }}
                                     </span>
                                 </a>
+                                @if($tiket->isBroadband())
+                                    <span class="badge text-white px-1.5 py-0.5 rounded-pill font-monospace" style="background-color: #4f46e5; font-size: 0.62rem;">
+                                        BRD
+                                    </span>
+                                @endif
                                 @php
                                     $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
                                 @endphp
@@ -675,15 +706,26 @@
                             </div>
                         </td>
 
-                        <!-- Segment & Link Impact -->
+                        <!-- Segment & Link Impact / Pelanggan -->
                         <td>
                             <a href="{{ route('tiket.show', $tiket->id) }}" class="impact-title text-decoration-none text-truncate d-block" title="{{ $tiket->status_link_impact }}">
                                 {{ $tiket->status_link_impact }}
                             </a>
-                            <div class="d-flex align-items-center gap-1 mt-1">
-                                <span class="badge-segment" title="{{ $tiket->backbone_segment }}">
-                                    <i class="bi bi-geo-alt-fill text-teal me-1"></i>{{ $tiket->backbone_segment }}
-                                </span>
+                            <div class="d-flex align-items-center gap-1.5 mt-1 flex-wrap">
+                                @if($tiket->isBroadband())
+                                    <span class="badge bg-light text-navy border px-2 py-0.5" style="font-size: 0.68rem;" title="ID Pelanggan (CID)">
+                                        <i class="bi bi-person-badge text-primary me-0.5"></i> CID: {{ $tiket->id_pelanggan ?: '-' }}
+                                    </span>
+                                    @if($tiket->titik_odp)
+                                    <span class="badge bg-primary-subtle text-primary px-2 py-0.5" style="font-size: 0.68rem;" title="Titik ODP">
+                                        <i class="bi bi-hdd-rack me-0.5"></i> {{ $tiket->titik_odp }}
+                                    </span>
+                                    @endif
+                                @else
+                                    <span class="badge-segment" title="{{ $tiket->backbone_segment }}">
+                                        <i class="bi bi-geo-alt-fill text-teal me-1"></i>{{ $tiket->backbone_segment }}
+                                    </span>
+                                @endif
                             </div>
                         </td>
 

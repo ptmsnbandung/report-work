@@ -3174,6 +3174,17 @@
                             <i class="bi bi-ticket-perforated-fill text-info" style="font-size: 0.95rem;"></i>
                             <span>{{ $tiket->no_tiket }}</span>
                         </span>
+
+                        @if($tiket->isBroadband())
+                            <span class="badge text-white px-3 py-1 rounded-pill fw-bold shadow-xs" style="background-color: #4f46e5; border: 1px solid rgba(255,255,255,0.3);">
+                                <i class="bi bi-router-fill me-1"></i> BROADBAND
+                            </span>
+                        @else
+                            <span class="badge bg-primary bg-opacity-75 text-white px-3 py-1 rounded-pill fw-bold shadow-xs" style="border: 1px solid rgba(255,255,255,0.3);">
+                                <i class="bi bi-diagram-3-fill me-1"></i> BACKBONE
+                            </span>
+                        @endif
+
                         @if($tiket->status === 'OPEN')
                             <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
                                 <i class="bi bi-exclamation-circle-fill me-1"></i> OPEN
@@ -3406,6 +3417,78 @@
             </div>
         </div>
     </div>
+
+    <!-- ── BROADBAND CUSTOMER PROFILE CARD (KHUSUS BROADBAND) ── -->
+    @if($tiket->isBroadband())
+    <div class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden" style="border: 1.5px solid #c7d2fe !important; background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);">
+        <div class="card-header py-2.5 px-3 px-md-3.5 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: rgba(79, 70, 229, 0.06);">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge text-white px-2 py-1 rounded-pill" style="background-color: #4f46e5;">
+                    <i class="bi bi-person-lines-fill me-1"></i> DATA PELANGGAN BROADBAND
+                </span>
+                <span class="fw-bold text-navy font-monospace small">CID: {{ $tiket->id_pelanggan ?: '-' }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                @if($tiket->customer_whatsapp_url)
+                <a href="{{ $tiket->customer_whatsapp_url }}" target="_blank" class="btn btn-sm btn-success px-2.5 py-1 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5 fw-bold" style="font-size: 0.75rem;">
+                    <i class="bi bi-whatsapp"></i> Chat WhatsApp
+                </a>
+                @endif
+                @if($tiket->google_maps_url)
+                <a href="{{ $tiket->google_maps_url }}" target="_blank" class="btn btn-sm btn-primary px-2.5 py-1 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5 fw-bold" style="font-size: 0.75rem;">
+                    <i class="bi bi-geo-alt-fill"></i> Navigasi GPS
+                </a>
+                @endif
+            </div>
+        </div>
+        <div class="card-body p-3 p-md-3.5">
+            <div class="row g-3">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="text-muted small mb-0.5"><i class="bi bi-person text-primary"></i> Nama Pelanggan:</div>
+                    <div class="fw-bold text-navy fs-6">{{ $tiket->nama_pelanggan ?: '-' }}</div>
+                    @if($tiket->no_kontak_pelanggan)
+                    <div class="text-secondary small mt-0.5">
+                        <i class="bi bi-telephone text-success"></i> {{ $tiket->no_kontak_pelanggan }}
+                    </div>
+                    @endif
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="text-muted small mb-0.5"><i class="bi bi-hdd-rack text-primary"></i> Titik ODP / Bandwidth / POP:</div>
+                    <div class="fw-semibold text-dark">
+                        <span class="badge bg-primary-subtle text-primary">{{ $tiket->titik_odp ?: 'ODP: -' }}</span>
+                        <span class="badge bg-secondary-subtle text-secondary">{{ $tiket->kode_bandwith ?: 'BW: -' }}</span>
+                        <span class="badge bg-light text-dark border">{{ $tiket->kode_pop ?: 'POP: -' }}</span>
+                    </div>
+                    @if($tiket->sn_ont)
+                    <div class="text-muted small mt-1 font-monospace">
+                        <i class="bi bi-cpu text-primary"></i> SN ONT: {{ $tiket->sn_ont }}
+                    </div>
+                    @endif
+                </div>
+
+                <div class="col-12 col-md-12 col-lg-4">
+                    <div class="text-muted small mb-0.5"><i class="bi bi-activity text-danger"></i> Kendala & Redaman:</div>
+                    <div class="fw-bold text-danger small mb-1">
+                        {{ $tiket->jenis_kendala_broadband ?: ($tiket->deskripsi ?: 'Gangguan Layanan Broadband') }}
+                    </div>
+                    <div class="d-flex align-items-center gap-2 text-muted small">
+                        <span>Awal: <strong class="text-dark">{{ $tiket->redaman_sebelum ?: '-' }}</strong></span>
+                        <span>&rarr;</span>
+                        <span>Akhir: <strong class="text-success">{{ $tiket->redaman_sesudah ?: '-' }}</strong></span>
+                    </div>
+                </div>
+
+                @if($tiket->alamat_pelanggan)
+                <div class="col-12 border-top pt-2 mt-2">
+                    <div class="text-muted small"><i class="bi bi-geo-alt text-danger"></i> Alamat Pemasangan:</div>
+                    <div class="text-dark small mt-0.5">{{ $tiket->alamat_pelanggan }}</div>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- ── SUMMARY INFO CARD ── -->
     <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">

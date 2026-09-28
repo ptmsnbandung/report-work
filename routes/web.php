@@ -148,6 +148,10 @@ Route::middleware(['auth', 'role'])->group(function () {
     // API Helper (Geocoding & Reverse Geocode)
     Route::get('/api/reverse-geocode', [GeocodeController::class, 'reverse'])->name('api.reverse-geocode');
 
+    // API Helper IMS Customer Search (Broadband Maintenance)
+    Route::get('/api/ims/customers/search', [\App\Http\Controllers\Api\CustomerImsController::class, 'search'])->name('api.ims.customers.search');
+    Route::get('/api/ims/customers/{cid}', [\App\Http\Controllers\Api\CustomerImsController::class, 'show'])->name('api.ims.customers.show');
+
     // Modul MTTR / SLA & Reporting (Fase 6)
     Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
     Route::get('/reports/kpi', [\App\Http\Controllers\ReportController::class, 'kpi'])->name('reports.kpi');
