@@ -4096,10 +4096,6 @@
                                 if (s) {
                                     s.style.setProperty('scroll-behavior', 'auto', 'important');
                                     s.scrollTop = s.scrollHeight || 999999;
-                                    var anchor = document.getElementById('waStreamBottomAnchor');
-                                    if (anchor && typeof anchor.scrollIntoView === 'function') {
-                                        anchor.scrollIntoView({ behavior: 'instant', block: 'end' });
-                                    }
                                 }
                             })();
                         </script>
@@ -10392,10 +10388,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (instant) {
             stream.style.setProperty('scroll-behavior', 'auto', 'important');
             stream.scrollTop = stream.scrollHeight;
-            const anchor = document.getElementById('waStreamBottomAnchor');
-            if (anchor && typeof anchor.scrollIntoView === 'function') {
-                anchor.scrollIntoView({ behavior: 'instant', block: 'end' });
-            }
         } else {
             stream.scrollTo({
                 top: stream.scrollHeight + 99999,
@@ -10407,6 +10399,32 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     window.scrollChatToBottom = scrollChatToBottom;
+
+    function alignChatToViewport(behavior = 'instant') {
+        if (window.location.hash && window.location.hash !== '#kronologis-pane' && !window.location.hash.startsWith('#kronologis')) {
+            return;
+        }
+        const kronoPane = document.getElementById('kronologis-pane');
+        if (!kronoPane || !kronoPane.classList.contains('active')) return;
+
+        const waContainer = document.querySelector('.wa-chat-container');
+        if (!waContainer) return;
+
+        const topbar = document.querySelector('.app-topbar');
+        const topbarHeight = topbar ? topbar.offsetHeight : 58;
+
+        const rect = waContainer.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const targetY = Math.max(0, rect.top + scrollTop - topbarHeight - 6);
+
+        if (targetY > 0) {
+            window.scrollTo({
+                top: targetY,
+                behavior: behavior
+            });
+        }
+    }
+    window.alignChatToViewport = alignChatToViewport;
 
     let userHasScrolledTimeline = false;
 
@@ -10474,6 +10492,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Jalankan agar chat stream selalu siap di paling bawah secara instan
     scrollToTargetKrono();
 
+    // Kunci posisi scroll halaman agar pas di kotak chat dan tidak melompat naik ke atas pada refresh
+    if (!newKronoId && (!window.location.hash || window.location.hash === '#kronologis-pane' || window.location.hash === '')) {
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        alignChatToViewport('instant');
+        requestAnimationFrame(() => alignChatToViewport('instant'));
+        setTimeout(() => alignChatToViewport('instant'), 100);
+        setTimeout(() => alignChatToViewport('instant'), 300);
+        window.addEventListener('load', () => alignChatToViewport('instant'), { once: true });
+    }
+
     // Listener saat tab Kronologis dibuka kembali dari tab lain (Bootstrap Tab)
     const kronologisTabBtn = document.getElementById('kronologis-tab');
     if (kronologisTabBtn) {
@@ -10481,13 +10511,13 @@ document.addEventListener('DOMContentLoaded', function() {
         kronologisTabBtn.addEventListener('show.bs.tab', function () {
             userHasScrolledTimeline = false;
             scrollChatToBottom(true);
-            requestAnimationFrame(() => scrollChatToBottom(true));
+            alignChatToViewport('instant');
         });
         // 'shown.bs.tab' jalan setelah transisi tab selesai
         kronologisTabBtn.addEventListener('shown.bs.tab', function () {
             userHasScrolledTimeline = false;
             scrollChatToBottom(true);
-            requestAnimationFrame(() => scrollChatToBottom(true));
+            alignChatToViewport('smooth');
         });
     }
 
