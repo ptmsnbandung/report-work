@@ -3457,8 +3457,8 @@
                     <div class="text-muted small mb-0.5"><i class="bi bi-hdd-rack text-primary"></i> Titik ODP / Bandwidth / POP:</div>
                     <div class="fw-semibold text-dark">
                         <span class="badge bg-primary-subtle text-primary">{{ $tiket->titik_odp ?: 'ODP: -' }}</span>
-                        <span class="badge bg-secondary-subtle text-secondary">{{ $tiket->kode_bandwith ?: 'BW: -' }}</span>
-                        <span class="badge bg-light text-dark border">{{ $tiket->kode_pop ?: 'POP: -' }}</span>
+                        <span class="badge bg-secondary-subtle text-secondary">{{ $nominalBandwith ? $nominalBandwith . ' Mbps' : ($tiket->kode_bandwith ?: 'BW: -') }}</span>
+                        <span class="badge bg-light text-dark border">{{ $namaPop ?: ($tiket->kode_pop ?: 'POP: -') }}</span>
                     </div>
                     @if($tiket->sn_ont)
                     <div class="text-muted small mt-1 font-monospace">

@@ -205,7 +205,29 @@ class TiketController extends Controller
             ->groupBy('assigned_lead_id')
             ->map->count();
 
-        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews', 'allTechnicians', 'technicianWorkloads'));
+        // Ambil nama POP dan nominal bandwidth dari database IMS
+        $namaPop = null;
+        $nominalBandwith = null;
+        if ($tiket->isBroadband()) {
+            try {
+                if ($tiket->kode_pop) {
+                    $namaPop = \Illuminate\Support\Facades\DB::connection('mysql_ims')
+                        ->table('m_pop')
+                        ->where('kode_pop', $tiket->kode_pop)
+                        ->value('nama_pop');
+                }
+                if ($tiket->kode_bandwith) {
+                    $nominalBandwith = \Illuminate\Support\Facades\DB::connection('mysql_ims')
+                        ->table('m_bandwith')
+                        ->where('kode_bandwith', $tiket->kode_bandwith)
+                        ->value('nominal_bandwith');
+                }
+            } catch (\Throwable $e) {
+                // Gagal ambil data IMS, tampilkan kode saja
+            }
+        }
+
+        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews', 'allTechnicians', 'technicianWorkloads', 'namaPop', 'nominalBandwith'));
     }
 
     /**
