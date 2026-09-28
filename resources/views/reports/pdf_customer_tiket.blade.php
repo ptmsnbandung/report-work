@@ -5,47 +5,73 @@
     <title>Berita Acara Gangguan Pelanggan - {{ $tiket->no_tiket }}</title>
     <style>
         @page {
-            margin: 18px 24px 22px 24px;
+            margin-top: 68px;
+            margin-bottom: 56px;
+            margin-left: 24px;
+            margin-right: 24px;
             size: A4 portrait;
         }
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             color: #0f172a;
             font-size: 8.5pt;
-            line-height: 1.42;
+            line-height: 1.4;
+            position: relative;
         }
-        .header-table {
+
+        /* ── KOP SURAT RESMI PT. MEDIA SOLUSI NETWORK ── */
+        .msn-letterhead-header {
+            position: fixed;
+            top: -68px;
+            left: -24px;
+            right: -24px;
+            height: 58px;
+            z-index: 1000;
+        }
+
+        /* ── WATERMARK RESMI MSN TENGAH HALAMAN ── */
+        .msn-watermark {
+            position: fixed;
+            top: 25%;
+            left: 15%;
+            width: 70%;
+            height: 50%;
+            text-align: center;
+            z-index: -1000;
+            opacity: 0.045;
+        }
+
+        /* ── FOOTER RESMI PT. MEDIA SOLUSI NETWORK ── */
+        .msn-letterhead-footer {
+            position: fixed;
+            bottom: -56px;
+            left: -24px;
+            right: -24px;
+            height: 48px;
+            z-index: 1000;
+        }
+
+        /* ── DOKUMEN HEADER & BADGE ── */
+        .doc-header-table {
             width: 100%;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 8px;
-            margin-bottom: 10px;
-        }
-        .company-sub {
-            font-size: 7.8pt;
-            color: #0d9488;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-        .company-addr {
-            font-size: 7pt;
-            color: #64748b;
-            margin-top: 1px;
+            border-bottom: 2px solid #0c2033;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
         }
         .doc-title {
-            font-size: 10.5pt;
+            font-size: 11pt;
             font-weight: 800;
-            text-align: right;
-            color: #0f172a;
+            color: #0c2033;
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
         .doc-sub {
-            font-size: 7.5pt;
+            font-size: 7.2pt;
             font-weight: 700;
-            text-align: right;
             color: #0284c7;
             letter-spacing: 0.4px;
             margin-top: 1px;
+            text-transform: uppercase;
         }
         .doc-no-badge {
             display: inline-block;
@@ -58,17 +84,16 @@
             border: 1px solid #bae6fd;
             padding: 2px 8px;
             border-radius: 4px;
-            margin-top: 3px;
         }
 
         .section-title {
             font-size: 8.5pt;
             font-weight: 700;
             color: #ffffff;
-            background-color: #0f172a;
+            background-color: #0c2033;
             padding: 4px 8px;
-            margin-top: 9px;
-            margin-bottom: 6px;
+            margin-top: 8px;
+            margin-bottom: 5px;
             border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -77,10 +102,10 @@
         .info-grid {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .info-grid td {
-            padding: 3.5px 5px;
+            padding: 3px 5px;
             font-size: 8pt;
             vertical-align: top;
             border-bottom: 1px solid #f1f5f9;
@@ -88,18 +113,18 @@
         .info-label {
             font-weight: 700;
             color: #475569;
-            width: 27%;
+            width: 28%;
         }
         .info-colon { width: 2%; text-align: center; color: #94a3b8; }
-        .info-val { width: 71%; color: #0f172a; }
+        .info-val { width: 70%; color: #0f172a; }
 
         .status-box {
             background-color: #f8fafc;
             border: 1px solid #e2e8f0;
-            border-left: 4px solid #0d9488;
-            padding: 7px 10px;
-            margin-top: 4px;
-            margin-bottom: 8px;
+            border-left: 4px solid #00bcd4;
+            padding: 6px 9px;
+            margin-top: 2px;
+            margin-bottom: 6px;
             border-radius: 0 4px 4px 0;
         }
 
@@ -119,12 +144,12 @@
         .doc-gallery-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 6px;
-            margin-bottom: 8px;
+            margin-top: 5px;
+            margin-bottom: 6px;
         }
         .doc-gallery-table td {
             width: 33.33%;
-            padding: 4px;
+            padding: 3px;
             vertical-align: top;
             text-align: center;
         }
@@ -136,7 +161,7 @@
         }
         .doc-img {
             max-width: 100%;
-            max-height: 105px;
+            max-height: 98px;
             height: auto;
             border-radius: 2px;
             display: block;
@@ -144,7 +169,7 @@
             border: 1px solid #e2e8f0;
         }
         .doc-caption {
-            font-size: 7pt;
+            font-size: 6.8pt;
             color: #334155;
             margin-top: 3px;
             line-height: 1.25;
@@ -152,7 +177,7 @@
 
         .signature-table {
             width: 100%;
-            margin-top: 18px;
+            margin-top: 14px;
             border-collapse: collapse;
             page-break-inside: avoid;
         }
@@ -164,16 +189,7 @@
             padding: 4px;
         }
         .sign-space {
-            height: 45px;
-        }
-
-        .footer-note {
-            margin-top: 14px;
-            font-size: 7pt;
-            color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
-            padding-top: 4px;
-            text-align: right;
+            height: 42px;
         }
     </style>
 @php
@@ -186,21 +202,106 @@
 </head>
 <body>
 
-    <!-- ── HEADER PERUSAHAAN ── -->
-    <table class="header-table">
+    <!-- ── 1. HEADER KOP SURAT RESMI (TEMPLATING PT MEDIA SOLUSI NETWORK) ── -->
+    <div class="msn-letterhead-header">
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <!-- Sisi Kiri: Ornamen Grafis Geometris Slate & Cyan -->
+                <td style="width: 46%; vertical-align: top; padding: 0;">
+                    <svg width="240" height="52" viewBox="0 0 240 52" style="display: block;">
+                        <polygon points="0,0 210,0 185,52 0,52" fill="#0c2033"/>
+                        <polygon points="215,0 225,0 200,52 190,52" fill="#00d2ff"/>
+                        <polygon points="230,0 240,0 215,52 205,52" fill="#0284c7"/>
+                        <polygon points="15,0 28,0 8,52 0,52" fill="#00d2ff" opacity="0.25"/>
+                    </svg>
+                </td>
+                <!-- Sisi Kanan: Logo & Brand PT. MEDIA SOLUSI NETWORK -->
+                <td style="width: 54%; vertical-align: middle; text-align: right; padding-right: 24px; padding-top: 4px;">
+                    <table style="float: right; border-collapse: collapse;">
+                        <tr>
+                            <td style="vertical-align: middle; padding-right: 8px;">
+                                @if($logoBase64)
+                                    <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 38px; width: auto; display: block;">
+                                @else
+                                    <svg width="34" height="34" viewBox="0 0 100 100">
+                                        <line x1="25" y1="30" x2="75" y2="30" stroke="#00d2ff" stroke-width="6"/>
+                                        <line x1="25" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="6"/>
+                                        <line x1="75" y1="30" x2="50" y2="75" stroke="#00d2ff" stroke-width="6"/>
+                                        <circle cx="25" cy="30" r="14" fill="#0284c7" stroke="#ffffff" stroke-width="3"/>
+                                        <circle cx="25" cy="30" r="6" fill="#ffffff"/>
+                                        <circle cx="75" cy="30" r="14" fill="#00d2ff" stroke="#ffffff" stroke-width="3"/>
+                                        <circle cx="75" cy="30" r="6" fill="#ffffff"/>
+                                        <circle cx="50" cy="75" r="16" fill="#0ea5e9" stroke="#ffffff" stroke-width="3"/>
+                                        <circle cx="50" cy="75" r="7" fill="#ffffff"/>
+                                    </svg>
+                                @endif
+                            </td>
+                            <td style="vertical-align: middle; text-align: left;">
+                                <div style="font-size: 11pt; font-weight: 800; line-height: 1.1; letter-spacing: 0.2px;">
+                                    <span style="color: #00bcd4;">PT. MEDIA</span><br>
+                                    <span style="color: #0f294a;">SOLUSI NETWORK</span>
+                                </div>
+                                <div style="font-size: 4.8pt; font-weight: 700; color: #64748b; letter-spacing: 2px; margin-top: 1.5px; text-transform: uppercase;">
+                                    G E T &nbsp; Y O U R &nbsp; I T &nbsp; A C C E S S
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── 2. WATERMARK TENGAH HALAMAN ── -->
+    <div class="msn-watermark">
+        <svg width="340" height="340" viewBox="0 0 100 100">
+            <line x1="25" y1="30" x2="75" y2="30" stroke="#0284c7" stroke-width="7"/>
+            <line x1="25" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="7"/>
+            <line x1="75" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="7"/>
+            <circle cx="25" cy="30" r="16" fill="#0284c7"/>
+            <circle cx="75" cy="30" r="16" fill="#0284c7"/>
+            <circle cx="50" cy="75" r="18" fill="#0284c7"/>
+        </svg>
+    </div>
+
+    <!-- ── 3. FOOTER BAR RESMI PT. MEDIA SOLUSI NETWORK ── -->
+    <div class="msn-letterhead-footer">
+        <table style="width: 100%; border-collapse: collapse; background: #0c2033; border-top: 2.5px solid #00d2ff; color: #ffffff; padding: 4px 12px; font-size: 6.2pt;">
+            <tr>
+                <td style="width: 32%; vertical-align: middle; padding: 2px 6px; border-right: 1px solid rgba(255,255,255,0.12);">
+                    <div style="color: #00d2ff; font-weight: 800; font-size: 6.8pt; margin-bottom: 1px; letter-spacing: 0.3px;">OFFICE</div>
+                    <div style="color: #cbd5e1; line-height: 1.25;">
+                        Jl. Raya Leuwigajah No. 223 Kel. Utama, Kec. Cimahi Selatan, Kota Cimahi, 40533
+                    </div>
+                </td>
+                <td style="width: 33%; vertical-align: middle; padding: 2px 6px; border-right: 1px solid rgba(255,255,255,0.12);">
+                    <div style="color: #00d2ff; font-weight: 800; font-size: 6.8pt; margin-bottom: 1px; letter-spacing: 0.3px;">OPERATIONAL</div>
+                    <div style="color: #cbd5e1; line-height: 1.25;">
+                        Jl. Reog No 18, Kel. Turangga, Kec. Lengkong, Kota Bandung, 40264
+                    </div>
+                </td>
+                <td style="width: 18%; vertical-align: middle; padding: 2px 6px; text-align: center; border-right: 1px solid rgba(255,255,255,0.12);">
+                    <div style="color: #ffffff; font-weight: 700; font-size: 6.8pt; line-height: 1.3;">
+                        0896-9662-9955<br>
+                        (022)-7303384
+                    </div>
+                </td>
+                <td style="width: 17%; vertical-align: middle; padding: 2px 6px; text-align: right;">
+                    <div style="color: #00d2ff; font-weight: 700; font-size: 6.8pt;">ptmsn.co.id</div>
+                    <div style="color: #cbd5e1; font-size: 6.2pt; margin-top: 1px;">info@ptmsn.co.id</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── 4. KONTEN DOKUMEN BERITA ACARA ── -->
+    <table class="doc-header-table">
         <tr>
-            <td style="width: 58%; vertical-align: middle;">
-                @if($logoBase64)
-                    <img src="{{ $logoBase64 }}" alt="PT Media Solusi Network" style="height: 44px; max-width: 200px; width: auto; display: block; margin-bottom: 3px;">
-                @else
-                    <div style="font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase;">PT MEDIA SOLUSI NETWORK</div>
-                @endif
-                <div class="company-sub">FIBER OPTIC BACKBONE &amp; NETWORK OPERATION CENTER</div>
-                <div class="company-addr">Layanan Pemeliharaan &amp; Operasional Jaringan Telekomunikasi</div>
-            </td>
-            <td style="width: 42%; vertical-align: middle;" class="text-right">
+            <td style="vertical-align: middle;">
                 <div class="doc-title">BERITA ACARA PENANGANAN GANGGUAN</div>
                 <div class="doc-sub">INCIDENT REPORT &bull; CUSTOMER COPY</div>
+            </td>
+            <td style="vertical-align: middle; text-align: right;">
                 <div class="doc-no-badge">{{ $tiket->no_tiket }}</div>
             </td>
         </tr>
@@ -210,8 +311,8 @@
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
                 <td style="width: 70%;">
-                    <div style="font-size: 8pt; color: #64748b; font-weight: bold; text-transform: uppercase;">Status Penyelesaian Insiden:</div>
-                    <div style="font-size: 11pt; font-weight: bold; color: #0d9488; margin-top: 2px;">
+                    <div style="font-size: 7.5pt; color: #64748b; font-weight: bold; text-transform: uppercase;">Status Penyelesaian Insiden:</div>
+                    <div style="font-size: 10.5pt; font-weight: bold; color: #0d9488; margin-top: 1px;">
                         @if($tiket->status === 'CLOSE')
                             ✓ SELESAI &bull; LAYANAN NORMAL KEMBALI
                         @else
@@ -220,8 +321,8 @@
                     </div>
                 </td>
                 <td style="width: 30%; text-align: right;">
-                    <div style="font-size: 8pt; color: #64748b; font-weight: bold;">Kepatuhan SLA:</div>
-                    <div style="margin-top: 2px;">
+                    <div style="font-size: 7.5pt; color: #64748b; font-weight: bold;">Kepatuhan SLA:</div>
+                    <div style="margin-top: 1px;">
                         @if($tiket->sla_status === 'TEPAT')
                             <span class="badge badge-success">MEMENUHI SLA</span>
                         @elseif($tiket->sla_status === 'LEBIH')
@@ -241,7 +342,7 @@
         <tr>
             <td class="info-label">Nomor Tiket / Referensi</td>
             <td class="info-colon">:</td>
-            <td class="info-val"><strong style="font-family: monospace; font-size: 9pt;">{{ $tiket->no_tiket }}</strong></td>
+            <td class="info-val"><strong style="font-family: monospace; font-size: 8.5pt;">{{ $tiket->no_tiket }}</strong></td>
         </tr>
         <tr>
             <td class="info-label">Segmen Link Layanan</td>
@@ -357,7 +458,7 @@
                     @if($imgBase64)
                         <img src="{{ $imgBase64 }}" alt="Dokumentasi" class="doc-img">
                     @else
-                        <div style="height: 80px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; color: #94a3b8;">
+                        <div style="height: 75px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 7.5pt; color: #94a3b8;">
                             Foto Dokumentasi Terlampir
                         </div>
                     @endif
@@ -379,25 +480,21 @@
     <table class="signature-table">
         <tr>
             <td class="signature-box">
-                <div style="color: #64748b; font-size: 8pt;">Penyedia Layanan (Service Provider):</div>
+                <div style="color: #64748b; font-size: 7.8pt;">Penyedia Layanan (Service Provider):</div>
                 <div style="font-weight: bold; margin-top: 2px;">PT MEDIA SOLUSI NETWORK</div>
                 <div class="sign-space"></div>
                 <div><strong>( {{ $tiket->closer?->name ?? ($tiket->creator?->name ?? 'Helpdesk / NOC MSN') }} )</strong></div>
-                <div style="font-size: 7.5pt; color: #64748b;">Network Operation Center (NOC)</div>
+                <div style="font-size: 7.2pt; color: #64748b;">Network Operation Center (NOC)</div>
             </td>
             <td class="signature-box">
-                <div style="color: #64748b; font-size: 8pt;">Penerima Laporan / Pelanggan:</div>
+                <div style="color: #64748b; font-size: 7.8pt;">Penerima Laporan / Pelanggan:</div>
                 <div style="font-weight: bold; margin-top: 2px;">PERWAKILAN PELANGGAN / MITRA</div>
                 <div class="sign-space"></div>
                 <div><strong>( .................................................... )</strong></div>
-                <div style="font-size: 7.5pt; color: #64748b;">PIC Operasional Pelanggan</div>
+                <div style="font-size: 7.2pt; color: #64748b;">PIC Operasional Pelanggan</div>
             </td>
         </tr>
     </table>
-
-    <div class="footer-note">
-        Dokumen Berita Acara resmi diterbitkan oleh PT MEDIA SOLUSI NETWORK pada {{ $printDate }}.
-    </div>
 
 </body>
 </html>
