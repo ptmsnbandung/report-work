@@ -262,29 +262,52 @@ class TiketService
                 $this->stopStopClock($tiket, $teknisi);
             }
 
-            $tiket->update([
+            $updateData = [
                 'status' => 'PENDING_VERIFIKASI',
                 'resolved_by' => $teknisi->id,
                 'resolved_at' => $resolvedAt,
                 'closing_notes_teknisi' => $catatan,
                 'tipe_penanganan' => $tipePenanganan,
-            ]);
+            ];
 
-            // Sinkronkan tipe penanganan ke Resume Pekerjaan jika ada
+            if ($tiket->isBroadband()) {
+                if (isset($data['redaman_sebelum']) && $data['redaman_sebelum'] !== '') {
+                    $updateData['redaman_sebelum'] = $data['redaman_sebelum'];
+                }
+                if (isset($data['redaman_sesudah']) && $data['redaman_sesudah'] !== '') {
+                    $updateData['redaman_sesudah'] = $data['redaman_sesudah'];
+                }
+            }
+
+            $tiket->update($updateData);
+
+            // Sinkronkan tipe penanganan / redaman ke Resume Pekerjaan jika ada
             if ($tiket->resume) {
-                $tiket->resume->update([
+                $resumeUpdate = [
                     'tipe_penanganan' => $tipePenanganan,
                     'joint_closure_type' => $data['joint_closure_type'] ?? $tiket->resume->joint_closure_type,
                     'core_count_jointed' => $data['core_count_jointed'] ?? $tiket->resume->core_count_jointed,
-                ]);
+                ];
+                if ($tiket->isBroadband()) {
+                    if (isset($data['redaman_sebelum']) && $data['redaman_sebelum'] !== '') {
+                        $resumeUpdate['redaman_sebelum'] = $data['redaman_sebelum'];
+                    }
+                    if (isset($data['redaman_sesudah']) && $data['redaman_sesudah'] !== '') {
+                        $resumeUpdate['redaman_sesudah'] = $data['redaman_sesudah'];
+                    }
+                }
+                $tiket->resume->update($resumeUpdate);
             }
 
             // Catat ke kronologis otomatis
-            $tipeLabel = match ($tipePenanganan) {
-                'MANUVER_CORE' => 'Manuver Core (Swapping Core)',
-                'JOINTING_LURUS' => 'Jointing Lurus (Straight Splice)',
-                default => 'Lainnya / Normalisasi',
-            };
+            $tipeLabel = $tiket->isBroadband() 
+                ? 'Maintenance Pelanggan Broadband'
+                : match ($tipePenanganan) {
+                    'MANUVER_CORE'   => 'Manuver Core (Swapping Core)',
+                    'JOINTING_LURUS' => 'Jointing Lurus (Straight Splice)',
+                    'LAINNYA'        => 'Lainnya / Normalisasi',
+                    default          => 'Penanganan Fisik',
+                };
 
             Kronologis::create([
                 'id_tiket' => $tiket->id,

@@ -3821,30 +3821,39 @@
     <!-- ── MANDATORY CLOSING CHECKLIST CARD (ANTI CLOSING SEMBARANGAN) ── -->
     @php
         $prereqs = $tiket->checkClosingPrerequisites();
+        $isBroadband = $tiket->isBroadband();
+        $totalItems = $isBroadband ? 3 : 4;
+        
         $completedCount = 0;
-        if ($prereqs['items']['resume_filled']) $completedCount++;
-        if ($prereqs['items']['photo_uploaded']) $completedCount++;
-        if ($prereqs['items']['titik_perbaikan']) $completedCount++;
-        if ($prereqs['items']['tipe_penanganan']) $completedCount++;
-        $progressPercent = $completedCount * 25;
+        if (!empty($prereqs['items']['resume_filled'])) $completedCount++;
+        if (!empty($prereqs['items']['photo_uploaded'])) $completedCount++;
+        
+        if ($isBroadband) {
+            if (!empty($prereqs['items']['redaman_sesudah'])) $completedCount++;
+        } else {
+            if (!empty($prereqs['items']['titik_perbaikan'])) $completedCount++;
+            if (!empty($prereqs['items']['tipe_penanganan'])) $completedCount++;
+        }
+        
+        $progressPercent = (int) round(($completedCount / $totalItems) * 100);
     @endphp
     @if($tiket->status !== 'CLOSE')
     <div class="closing-readiness-card">
         <!-- Header with Progress -->
         <div class="closing-readiness-header">
             <div class="d-flex align-items-center gap-2.5">
-                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: #ffffff; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);">
+                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; background: linear-gradient(135deg, {{ $isBroadband ? '#059669 0%, #10b981 100%' : '#1e40af 0%, #3b82f6 100%' }}); color: #ffffff; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
                     <i class="bi bi-shield-lock-fill" style="font-size: 0.95rem;"></i>
                 </div>
                 <div>
                     <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                        <span class="fw-bold text-navy" style="font-size: 0.92rem; letter-spacing: -0.2px;">Kesiapan Closing Tiket</span>
+                        <span class="fw-bold text-navy" style="font-size: 0.92rem; letter-spacing: -0.2px;">Kesiapan Closing {{ $isBroadband ? 'Maintenance Broadband' : 'Tiket Backbone' }}</span>
                         <span class="badge rounded-pill fw-bold" style="background: {{ $progressPercent === 100 ? '#ecfdf5' : '#eff6ff' }}; color: {{ $progressPercent === 100 ? '#059669' : '#1d4ed8' }}; border: 1px solid {{ $progressPercent === 100 ? '#a7f3d0' : '#bfdbfe' }}; font-size: 0.68rem;">
-                            {{ $completedCount }}/4 Terpenuhi ({{ $progressPercent }}%)
+                            {{ $completedCount }}/{{ $totalItems }} Terpenuhi ({{ $progressPercent }}%)
                         </span>
                     </div>
                     <div class="text-muted small d-none d-sm-block" style="font-size: 0.72rem; margin-top: 1px;">
-                        4 syarat mandatori yang wajib dilengkapi teknisi sebelum closing awal dapat diajukan
+                        {{ $totalItems }} syarat mandatori yang wajib dilengkapi teknisi sebelum closing awal dapat diajukan
                     </div>
                 </div>
             </div>
@@ -3869,9 +3878,79 @@
             <div class="closing-progress-bar-fill" style="width: {{ $progressPercent }}%; background: {{ $progressPercent === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : ($progressPercent >= 50 ? 'linear-gradient(90deg, #3b82f6, #10b981)' : 'linear-gradient(90deg, #f59e0b, #3b82f6)') }};"></div>
         </div>
 
-        <!-- 4 Grid Tiles -->
+        <!-- Grid Tiles -->
         <div class="p-3 bg-light bg-opacity-40">
             <div class="row g-2.5">
+                @if($isBroadband)
+                <!-- ── BROADBAND MANDATORI TILES ── -->
+                <!-- 1. Resume / Tindakan Perbaikan -->
+                <div class="col-12 col-md-4">
+                    <div class="closing-item-tile {{ !empty($prereqs['items']['resume_filled']) ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('resume-tab'); if(tab) { tab.click(); document.getElementById('resume-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk mengisi / melihat Resume & Tindakan Perbaikan">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ !empty($prereqs['items']['resume_filled']) ? 'bi-check-lg' : 'bi-file-earmark-text' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">1. Resume &amp; Tindakan</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ !empty($prereqs['items']['resume_filled']) ? '#059669' : '#64748b' }};">
+                                    {{ !empty($prereqs['items']['resume_filled']) ? 'Problem & Action diisi' : 'Belum diisi lengkap' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Dokumentasi Foto Lapangan / OPM -->
+                <div class="col-12 col-md-4">
+                    <div class="closing-item-tile {{ !empty($prereqs['items']['photo_uploaded']) ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('dokumentasi-tab'); if(tab) { tab.click(); document.getElementById('dokumentasi-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk mengupload Foto Dokumentasi / Ukur OPM / Modem">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ !empty($prereqs['items']['photo_uploaded']) ? 'bi-check-lg' : 'bi-camera' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">2. Foto / OPM / Modem</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ !empty($prereqs['items']['photo_uploaded']) ? '#059669' : '#64748b' }};">
+                                    {{ $tiket->dokumentasis->count() > 0 ? $tiket->dokumentasis->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Redaman Sesudah (dBm) Normal -->
+                <div class="col-12 col-md-4">
+                    <div class="closing-item-tile {{ !empty($prereqs['items']['redaman_sesudah']) ? 'is-complete' : 'is-pending' }}" 
+                         onclick="const tab = document.getElementById('resume-tab'); if(tab) { tab.click(); document.getElementById('resume-pane')?.scrollIntoView({behavior:'smooth', block:'start'}); }" 
+                         title="Klik untuk melihat / mengisi Redaman Hasil Perbaikan">
+                        <div class="d-flex align-items-center gap-2 min-w-0">
+                            <div class="closing-tile-icon-box">
+                                <i class="bi {{ !empty($prereqs['items']['redaman_sesudah']) ? 'bi-check-lg' : 'bi-activity' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">3. Redaman Sesudah</div>
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ !empty($prereqs['items']['redaman_sesudah']) ? '#059669' : '#64748b' }};">
+                                    {{ ($tiket->redaman_sesudah ?? $tiket->resume?->redaman_sesudah) ? ($tiket->redaman_sesudah ?? $tiket->resume?->redaman_sesudah) . ' dBm (Normal)' : 'Wajib diisi (dBm)' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="closing-tile-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                @else
+                <!-- ── BACKBONE MANDATORI TILES ── -->
                 <!-- 1. Resume -->
                 <div class="col-6 col-xl-3">
                     <div class="closing-item-tile {{ $prereqs['items']['resume_filled'] ? 'is-complete' : 'is-pending' }}" 
@@ -3959,6 +4038,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -3986,6 +4066,7 @@
                         @endif
                     </button>
                 </li>
+                @if($tiket->isBackbone())
                 <li class="nav-item" role="presentation">
                     <button class="nav-link d-flex align-items-center gap-1.5"
                             id="penanganan-tab" data-bs-toggle="tab" data-bs-target="#penanganan-pane" type="button" role="tab">
@@ -3994,6 +4075,7 @@
                         <span class="badge bg-light text-navy border" id="penangananCountBadge">{{ $tiket->jointClosures->count() + $tiket->manuverCores->count() }}</span>
                     </button>
                 </li>
+                @endif
                 <li class="nav-item" role="presentation">
                     <button class="nav-link d-flex align-items-center gap-1.5"
                             id="material-tab" data-bs-toggle="tab" data-bs-target="#material-pane" type="button" role="tab">
@@ -4643,6 +4725,7 @@
                 </div>
 
                 <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
+                @if($tiket->isBackbone())
                 <div class="tab-pane fade" id="penanganan-pane" role="tabpanel">
                     @php
                         $rawPenanganan = $tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan;
@@ -5188,6 +5271,7 @@
                         @endif
                     </div>
                 </div>
+                @endif {{-- isBackbone: Penanganan Core & JC --}}
 
                 <!-- ════ TAB 3: MATERIAL & TITIK PERBAIKAN (FASE 4) ════ -->
                 <div class="tab-pane fade" id="material-pane" role="tabpanel">
@@ -7227,17 +7311,18 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <div class="alert alert-primary py-2.5 px-3 small mb-3">
+                    <div class="alert alert-primary py-2 px-3 small mb-3">
                         <i class="bi bi-info-circle me-1"></i>
                         Setelah disubmit, status tiket akan berubah menjadi <strong>MENUNGGU VERIFIKASI (PENDING_VERIFIKASI)</strong>. HelpDesk / NOC akan melakukan pengecekan stabilitas link sebelum closing akhir.
                     </div>
 
-                    <!-- Checklist Prasyarat Mandatori (Point 1) -->
+                    <!-- Checklist Prasyarat Mandatori -->
                     <div class="card border rounded-3 p-3 mb-3 bg-light">
-                        <h6 class="fw-bold text-navy small mb-2 d-flex align-items-center gap-1.5">
+                        <h6 class="fw-bold text-navy small mb-2 d-flex align-items-center gap-1">
                             <i class="bi bi-shield-check text-primary"></i> Checklist Mandatori Penyelesaian Tiket
                         </h6>
                         <div class="row g-2">
+                            {{-- ── 1. Resume Pekerjaan (SEMUA TIPE) ──  --}}
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
                                     <i class="bi {{ $prereqs['items']['resume_filled'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
@@ -7247,15 +7332,37 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- ── 2. Dokumentasi Foto (SEMUA TIPE) ── --}}
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
                                     <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
                                     <div class="small">
-                                        <div class="fw-bold text-navy">2. Dokumentasi Foto Lapangan / OTDR</div>
+                                        <div class="fw-bold text-navy">2. Dokumentasi Foto Lapangan</div>
                                         <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['photo_uploaded'] ? $tiket->dokumentasis->count() . ' foto terupload' : 'Minimal 1 foto dokumentasi wajib diunggah' }}</div>
                                     </div>
                                 </div>
                             </div>
+
+                            @if($tiket->isBroadband())
+                            {{-- ── 3. Redaman Sesudah (KHUSUS BROADBAND) ── --}}
+                            <div class="col-12 col-sm-6">
+                                <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
+                                    <i class="bi {{ $prereqs['items']['redaman_sesudah'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
+                                    <div class="small">
+                                        <div class="fw-bold text-navy">3. Pengukuran Redaman Sesudah (dBm)</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">
+                                            @if($prereqs['items']['redaman_sesudah'])
+                                                Terisi: {{ $tiket->redaman_sesudah ?? $tiket->resume?->redaman_sesudah }} dBm
+                                            @else
+                                                Wajib diisi di bawah (hasil ukur OPM/modem)
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @else
+                            {{-- ── 3. Titik Perbaikan / JC (KHUSUS BACKBONE) ── --}}
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
                                     <i class="bi {{ $prereqs['items']['titik_perbaikan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
@@ -7265,6 +7372,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- ── 4. Tipe Penanganan (KHUSUS BACKBONE) ── --}}
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex align-items-center gap-2 p-2 rounded bg-white border">
                                     <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
@@ -7274,6 +7383,7 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
 
                         @if(!$prereqs['ready'])
@@ -7284,6 +7394,56 @@
                         @endif
                     </div>
 
+                    @if($tiket->isBroadband())
+                    {{-- ── INPUT REDAMAN (KHUSUS BROADBAND) ── --}}
+                    <div class="card border rounded-3 p-3 mb-3" style="border-color: #0d6efd22 !important; background: #f0f7ff;">
+                        <h6 class="fw-bold small mb-3 d-flex align-items-center gap-1" style="color: #0d6efd;">
+                            <i class="bi bi-activity"></i> Hasil Pengukuran Redaman Optik
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <label for="redaman_sebelum_closing" class="form-label small fw-semibold text-navy">
+                                    Redaman Sebelum Perbaikan (dBm)
+                                    <span class="text-muted fw-normal">(opsional)</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number"
+                                           step="0.01"
+                                           min="-60"
+                                           max="0"
+                                           class="form-control"
+                                           id="redaman_sebelum_closing"
+                                           name="redaman_sebelum"
+                                           value="{{ old('redaman_sebelum', $tiket->redaman_sebelum ?? $tiket->resume?->redaman_sebelum) }}"
+                                           placeholder="-30.00">
+                                    <span class="input-group-text">dBm</span>
+                                </div>
+                                <div class="form-text" style="font-size:0.72rem;">Nilai negatif, contoh: -28.5</div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label for="redaman_sesudah_closing" class="form-label small fw-semibold text-navy">
+                                    Redaman Sesudah Perbaikan (dBm)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number"
+                                           step="0.01"
+                                           min="-60"
+                                           max="0"
+                                           class="form-control"
+                                           id="redaman_sesudah_closing"
+                                           name="redaman_sesudah"
+                                           value="{{ old('redaman_sesudah', $tiket->redaman_sesudah ?? $tiket->resume?->redaman_sesudah) }}"
+                                           placeholder="-18.50"
+                                           {{ $tiket->isBroadband() && !$prereqs['items']['redaman_sesudah'] ? 'required' : '' }}>
+                                    <span class="input-group-text">dBm</span>
+                                </div>
+                                <div class="form-text" style="font-size:0.72rem;">Nilai negatif, contoh: -18.5. Wajib diisi!</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
                     <div class="mb-3">
                         <label for="catatan_closing_teknisi" class="form-label small fw-bold text-navy">
                             Catatan Ringkas Hasil Lapangan untuk Helpdesk / NOC <span class="text-danger">*</span>
@@ -7292,7 +7452,7 @@
                                   id="catatan_closing_teknisi"
                                   name="catatan_closing_teknisi"
                                   rows="3"
-                                  placeholder="Contoh: Splicing core 1-12 di closure KM 14 selesai, redaman terukur -18.2 dBm, link siap diverifikasi NOC..."
+                                  placeholder="{{ $tiket->isBroadband() ? 'Contoh: OPM terbaca -18.2 dBm (normal), modem sudah sinkron, pelanggan terkonfirmasi sudah normal...' : 'Contoh: Splicing core 1-12 di closure KM 14 selesai, redaman terukur -18.2 dBm, link siap diverifikasi NOC...' }}"
                                   required>{{ old('catatan_closing_teknisi') }}</textarea>
                     </div>
                 </div>
@@ -7306,6 +7466,7 @@
         </div>
     </div>
 </div>
+
 @endif
 
 <!-- ── MODAL REJECT CLOSING AWAL OLEH HELPDESK (POINT 2) ── -->

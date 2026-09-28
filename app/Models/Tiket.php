@@ -203,10 +203,44 @@ class Tiket extends Model
     {
         $hasResume = $this->resume !== null && !empty($this->resume->problem_temuan) && !empty($this->resume->action);
         $hasDokumentasi = $this->dokumentasis()->count() > 0;
+
+        $missing = [];
+
+        if ($this->isBroadband()) {
+            // ── MANDATORI TIKET MAINTENANCE BROADBAND ──
+            $hasRedamanSesudah = !empty($this->redaman_sesudah) || !empty($this->resume?->redaman_sesudah);
+
+            if (!$hasResume) {
+                $missing[] = 'Resume pekerjaan / tindakan perbaikan pelanggan wajib diisi (Problem temuan & Action).';
+            }
+            if (!$hasDokumentasi) {
+                $missing[] = 'Minimal lampirkan 1 foto dokumentasi hasil perbaikan lapangan / ukur OPM / modem.';
+            }
+            if (!$hasRedamanSesudah) {
+                $missing[] = 'Hasil pengukuran redaman sesudah (dBm) wajib diisi untuk memastikan layanan pelanggan normal.';
+            }
+
+            return [
+                'is_eligible' => empty($missing),
+                'ready' => empty($missing),
+                'items' => [
+                    'resume' => $hasResume,
+                    'resume_filled' => $hasResume,
+                    'dokumentasi' => $hasDokumentasi,
+                    'photo_uploaded' => $hasDokumentasi,
+                    'redaman_sesudah' => $hasRedamanSesudah,
+                    'titik_perbaikan' => true,
+                    'tipe_penanganan' => true,
+                ],
+                'missing' => $missing,
+                'missing_items' => $missing,
+            ];
+        }
+
+        // ── MANDATORI TIKET BACKBONE TRANSMISI ──
         $hasTitikPerbaikan = $this->titikPerbaikans()->count() > 0 || $this->jointClosures()->count() > 0;
         $hasTipePenanganan = !empty($this->tipe_penanganan) || (!empty($this->resume?->tipe_penanganan));
 
-        $missing = [];
         if (!$hasResume) {
             $missing[] = 'Resume pekerjaan wajib diisi (Problem temuan & Action perbaikan).';
         }
@@ -230,6 +264,7 @@ class Tiket extends Model
                 'photo_uploaded' => $hasDokumentasi,
                 'titik_perbaikan' => $hasTitikPerbaikan,
                 'tipe_penanganan' => $hasTipePenanganan,
+                'redaman_sesudah' => true,
             ],
             'missing' => $missing,
             'missing_items' => $missing,

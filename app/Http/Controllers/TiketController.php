@@ -254,9 +254,12 @@ class TiketController extends Controller
         $request->validate([
             'tipe_penanganan' => 'nullable|string|in:JOINTING_LURUS,MANUVER_CORE,LAINNYA',
             'catatan' => 'nullable|string|max:1000',
+            'catatan_closing_teknisi' => 'nullable|string|max:1000',
             'resolved_at' => 'nullable|date',
             'joint_closure_type' => 'nullable|string|max:100',
             'core_count_jointed' => 'nullable|integer|min:1',
+            'redaman_sebelum' => 'nullable|numeric|between:-50,10',
+            'redaman_sesudah' => 'nullable|numeric|between:-50,10',
         ]);
 
         try {
