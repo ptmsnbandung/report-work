@@ -833,7 +833,7 @@ if (imsSearchInput) {
                             const name = item.nama_pelanggan || '-';
                             const hp = item.no_kontak || item.nomor_hp || '-';
                             const odp = item.titik_odp || '-';
-                            const addr = item.alamat_pelanggan || '-';
+                            const addr = item.alamat || item.alamat_pelanggan || item.alamat_pasang || '-';
 
                             html += `
                                 <div class="ims-result-item" onclick='populateImsCustomer(${JSON.stringify(item).replace(/'/g, "&#39;")})'>
@@ -884,22 +884,32 @@ function populateImsCustomer(item) {
     const cid = item.id_pelanggan || item.nomor_internet || '';
     const name = item.nama_pelanggan || '';
     const hp = item.no_kontak || item.nomor_hp || '';
-    const addr = item.alamat_pelanggan || item.alamat_pasang || '';
+    const addr = item.alamat || item.alamat_pelanggan || item.alamat_pasang || '';
     const odp = item.titik_odp || '';
     const bw = item.kode_bandwith || '';
     const pop = item.kode_pop || '';
     const sn = item.sn_ont || '';
-    const gps = item.lon_lat || item.lon_lat_pelanggan || '';
+    const gps = item.lon_lat || item.lon_lat_pelanggan || item.loc_maps || '';
 
-    document.getElementById('id_pelanggan').value = cid;
-    document.getElementById('nama_pelanggan').value = name;
-    document.getElementById('no_kontak_pelanggan').value = hp;
-    document.getElementById('alamat_pelanggan').value = addr;
-    document.getElementById('titik_odp').value = odp;
-    document.getElementById('kode_bandwith').value = bw;
-    document.getElementById('kode_pop').value = pop;
-    document.getElementById('sn_ont').value = sn;
-    document.getElementById('lon_lat_pelanggan').value = gps;
+    const elIdPelanggan = document.getElementById('id_pelanggan');
+    const elNamaPelanggan = document.getElementById('nama_pelanggan');
+    const elNoKontak = document.getElementById('no_kontak_pelanggan');
+    const elAlamat = document.getElementById('alamat_pelanggan');
+    const elTitikOdp = document.getElementById('titik_odp');
+    const elKodeBw = document.getElementById('kode_bandwith');
+    const elKodePop = document.getElementById('kode_pop');
+    const elSnOnt = document.getElementById('sn_ont');
+    const elLonLat = document.getElementById('lon_lat_pelanggan');
+
+    if (elIdPelanggan) elIdPelanggan.value = cid;
+    if (elNamaPelanggan) elNamaPelanggan.value = name;
+    if (elNoKontak) elNoKontak.value = hp;
+    if (elAlamat) elAlamat.value = addr;
+    if (elTitikOdp) elTitikOdp.value = odp;
+    if (elKodeBw) elKodeBw.value = bw;
+    if (elKodePop) elKodePop.value = pop;
+    if (elSnOnt) elSnOnt.value = sn;
+    if (elLonLat) elLonLat.value = gps;
 
     imsResultsDropdown.classList.add('d-none');
     imsSearchInput.value = `${name} (${cid})`;
