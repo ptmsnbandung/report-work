@@ -2900,15 +2900,20 @@
         border-radius: 14px !important;
     }
 
+    #assignTeknisiModal .modal-header,
     #tambahJointClosureModal .modal-header,
     #addManuverModal .modal-header {
-        padding: 0.6rem 0.9rem !important;
-        background: linear-gradient(135deg, #0b1528 0%, #1e293b 100%) !important;
+        padding: 0.85rem 1.25rem !important;
+        background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%) !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
 
+    #assignTeknisiModal .modal-title,
     #tambahJointClosureModal .modal-title,
     #addManuverModal .modal-title {
-        font-size: 0.88rem !important;
+        color: #ffffff !important;
+        font-size: 0.92rem !important;
         font-weight: 700;
         letter-spacing: -0.1px;
     }
@@ -5603,16 +5608,16 @@
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <form action="{{ route('tiket.assign-teknisi', $tiket->id) }}" method="POST">
                 @csrf
-                <div class="modal-header text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle bg-info bg-opacity-25 p-2 text-info d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                            <i class="bi bi-person-gear fs-5"></i>
+                <div class="modal-header bg-navy text-white" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%) !important; border-bottom: 1px solid rgba(255,255,255,0.15) !important;">
+                    <div class="d-flex align-items-center gap-2.5">
+                        <div class="rounded-circle bg-info bg-opacity-25 p-2 text-info d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px;">
+                            <i class="bi bi-person-gear fs-5 text-info"></i>
                         </div>
                         <div>
-                            <h6 class="modal-title fw-bold text-white mb-0" id="assignTeknisiModalLabel">
+                            <h6 class="modal-title fw-bold text-white mb-0" id="assignTeknisiModalLabel" style="color: #ffffff !important;">
                                 Penugasan Teknisi Lapangan (Dispatch)
                             </h6>
-                            <small class="text-white-50">Tiket #{{ $tiket->no_tiket }} &bull; {{ $tiket->status_link_impact }}</small>
+                            <div class="small text-white-50" style="font-size: 0.78rem;">Tiket #{{ $tiket->no_tiket }} &bull; {{ $tiket->status_link_impact }}</div>
                         </div>
                     </div>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
