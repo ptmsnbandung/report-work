@@ -108,7 +108,13 @@ class TiketWorkflowFase1Test extends TestCase
             'uploaded_by' => $this->teknisi->id,
         ]);
 
-        // Sync tipe penanganan to tiket
+        // 4. Add Penanganan (Joint Closure)
+        \App\Models\TiketJointClosure::create([
+            'id_tiket' => $tiket->id,
+            'nama_closure' => 'JC-KM-12',
+            'tipe_closure' => 'DOME',
+            'created_by' => $this->teknisi->id,
+        ]);
         $tiket->update(['tipe_penanganan' => 'JOINTING_LURUS']);
 
         // Check prerequisites

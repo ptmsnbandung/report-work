@@ -179,6 +179,7 @@ class TiketController extends Controller
             });
 
         $prerequisites = $tiket->checkClosingPrerequisites();
+        $prereqs = $prerequisites;
 
         // Catat timestamp kehadiran/pembacaan tiket oleh user saat ini untuk fitur Read Receipts (Ceklis Biru)
         $ticketViews = [];
@@ -240,7 +241,7 @@ class TiketController extends Controller
             }
         }
 
-        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews', 'allTechnicians', 'technicianWorkloads', 'namaPop', 'nominalBandwith'));
+        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'prereqs', 'ticketViews', 'allTechnicians', 'technicianWorkloads', 'namaPop', 'nominalBandwith'));
     }
 
     /**

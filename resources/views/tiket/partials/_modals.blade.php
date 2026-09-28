@@ -1574,6 +1574,9 @@
 
 <!-- ── MODAL CLOSING AWAL TEKNISI (POINT 1 & 2) ── -->
 @if(auth()->user()->hasRole(['admin', 'teknis', 'teknisi']) && $tiket->status === 'PROSES')
+@php
+    $prereqs = $prereqs ?? $prerequisites ?? $tiket->checkClosingPrerequisites();
+@endphp
 <div class="modal fade" id="closingAwalModal" tabindex="-1" aria-labelledby="closingAwalModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg">
