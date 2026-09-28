@@ -1508,21 +1508,44 @@
     }
 
     /* ─── NEW KRONOLOGIS CHAT BUBBLE HIGHLIGHT PULSE ─── */
-    @keyframes waBubblePulse {
+    @keyframes waBubblePulseIncoming {
         0% {
-            background-color: rgba(44, 127, 255, 0.12);
+            background-color: #ebf3ff !important;
+            box-shadow: 0 0 0 3px rgba(44, 127, 255, 0.3), 0 4px 12px rgba(15, 23, 42, 0.08) !important;
         }
         50% {
-            background-color: rgba(44, 127, 255, 0.06);
+            background-color: #f4f8ff !important;
+            box-shadow: 0 0 0 1.5px rgba(44, 127, 255, 0.15), 0 2px 6px rgba(15, 23, 42, 0.05) !important;
         }
         100% {
-            background-color: transparent;
+            background-color: #ffffff !important;
+            box-shadow: 0 1.5px 4px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02) !important;
         }
     }
 
-    .wa-bubble-new-highlight .wa-bubble {
-        animation: waBubblePulse 1.8s ease !important;
-        outline: none !important;
+    @keyframes waBubblePulseOutgoing {
+        0% {
+            background-color: #d2e6fe !important;
+            box-shadow: 0 0 0 3px rgba(44, 127, 255, 0.3), 0 4px 12px rgba(37, 99, 235, 0.1) !important;
+        }
+        50% {
+            background-color: #dbeafe !important;
+            box-shadow: 0 0 0 1.5px rgba(44, 127, 255, 0.15), 0 2px 6px rgba(37, 99, 235, 0.06) !important;
+        }
+        100% {
+            background-color: #e0edfe !important;
+            box-shadow: 0 1.5px 4px rgba(37, 99, 235, 0.06), 0 1px 2px rgba(37, 99, 235, 0.03) !important;
+        }
+    }
+
+    .wa-bubble-new-highlight .wa-bubble-incoming,
+    .wa-bubble-new-highlight.wa-bubble-incoming {
+        animation: waBubblePulseIncoming 2s ease forwards !important;
+    }
+
+    .wa-bubble-new-highlight .wa-bubble-outgoing,
+    .wa-bubble-new-highlight.wa-bubble-outgoing {
+        animation: waBubblePulseOutgoing 2s ease forwards !important;
     }
 
     /* ── MODALS & PHOTO LIGHTBOX (ON TOP OF FULLSCREEN CHAT Z-INDEX 99999) ── */
