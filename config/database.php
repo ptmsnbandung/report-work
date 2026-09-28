@@ -67,10 +67,10 @@ return [
         'ims' => [
             'driver' => 'mysql',
             'url' => env('DB_IMS_URL'),
-            'host' => env('DB_IMS_HOST', '103.161.207.5'),
+            'host' => env('DB_IMS_HOST', '103.161.201.1'),
             'port' => env('DB_IMS_PORT', '3306'),
             'database' => env('DB_IMS_DATABASE', 'ims_v3'),
-            'username' => env('DB_IMS_USERNAME', 'root'),
+            'username' => env('DB_IMS_USERNAME', 'reka'),
             'password' => env('DB_IMS_PASSWORD', ''),
             'unix_socket' => env('DB_IMS_SOCKET', ''),
             'charset' => env('DB_IMS_CHARSET', 'utf8mb4'),
