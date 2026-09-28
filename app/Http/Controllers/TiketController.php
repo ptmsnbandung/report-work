@@ -211,13 +211,13 @@ class TiketController extends Controller
         if ($tiket->isBroadband()) {
             try {
                 if ($tiket->kode_pop) {
-                    $namaPop = \Illuminate\Support\Facades\DB::connection('mysql_ims')
+                    $namaPop = \Illuminate\Support\Facades\DB::connection('ims')
                         ->table('m_pop')
                         ->where('kode_pop', $tiket->kode_pop)
                         ->value('nama_pop');
                 }
                 if ($tiket->kode_bandwith) {
-                    $nominalBandwith = \Illuminate\Support\Facades\DB::connection('mysql_ims')
+                    $nominalBandwith = \Illuminate\Support\Facades\DB::connection('ims')
                         ->table('m_bandwith')
                         ->where('kode_bandwith', $tiket->kode_bandwith)
                         ->value('nominal_bandwith');
