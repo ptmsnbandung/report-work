@@ -1,4 +1,4 @@
-﻿    <!-- ── TABBED NAVIGATION (MOBILE SCROLLABLE) ── -->
+    <!-- ── TABBED NAVIGATION (MOBILE SCROLLABLE) ── -->
     <div class="card border-0 shadow-sm rounded-xl overflow-hidden mb-1 pb-0 mb-md-4 pb-md-0">
         <div class="card-header bg-white p-2 border-bottom">
             <ul class="nav nav-tabs-mobile" id="tiketTab" role="tablist">
@@ -43,7 +43,7 @@
                             id="dokumentasi-tab" data-bs-toggle="tab" data-bs-target="#dokumentasi-pane" type="button" role="tab">
                         <i class="bi bi-camera-fill text-info"></i>
                         <span>Dokumentasi</span>
-                        <span class="badge bg-light text-navy border" id="dokumentasiCountBadge">{{ $tiket->dokumentasis->count() }}</span>
+                        <span class="badge bg-light text-navy border" id="dokumentasiCountBadge">{{ $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() }}</span>
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">

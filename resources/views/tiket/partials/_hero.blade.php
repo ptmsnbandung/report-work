@@ -880,7 +880,7 @@
                             <div class="min-w-0">
                                 <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">2. Foto / OPM / Modem</div>
                                 <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ !empty($prereqs['items']['photo_uploaded']) ? '#059669' : '#64748b' }};">
-                                    {{ $tiket->dokumentasis->count() > 0 ? $tiket->dokumentasis->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
+                                    {{ $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() > 0 ? $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
                                 </div>
                             </div>
                         </div>
@@ -948,7 +948,7 @@
                             <div class="min-w-0">
                                 <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">2. Foto / OTDR</div>
                                 <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['photo_uploaded'] ? '#059669' : '#64748b' }};">
-                                    {{ $tiket->dokumentasis->count() > 0 ? $tiket->dokumentasis->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
+                                    {{ $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() > 0 ? $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() . ' foto terupload' : 'Wajib minimal 1 foto' }}
                                 </div>
                             </div>
                         </div>

@@ -202,7 +202,7 @@ class Tiket extends Model
     public function checkClosingPrerequisites(): array
     {
         $hasResume = $this->resume !== null && !empty($this->resume->problem_temuan) && !empty($this->resume->action);
-        $hasDokumentasi = $this->dokumentasis()->count() > 0;
+        $hasDokumentasi = $this->dokumentasis()->where('kategori', '!=', 'Bukti Masalah')->count() > 0;
 
         $missing = [];
 

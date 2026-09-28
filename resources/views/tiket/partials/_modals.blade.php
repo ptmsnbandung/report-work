@@ -1614,7 +1614,7 @@
                                     <i class="bi {{ $prereqs['items']['photo_uploaded'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
                                     <div class="small">
                                         <div class="fw-bold text-navy">2. Dokumentasi Foto Lapangan</div>
-                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['photo_uploaded'] ? $tiket->dokumentasis->count() . ' foto terupload' : 'Minimal 1 foto dokumentasi wajib diunggah' }}</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['photo_uploaded'] ? $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah')->count() . ' foto terupload' : 'Minimal 1 foto dokumentasi wajib diunggah' }}</div>
                                     </div>
                                 </div>
                             </div>
