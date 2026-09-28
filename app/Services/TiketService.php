@@ -501,7 +501,8 @@ class TiketService
      */
     public function getFilteredTiket(array $filters = [], int $perPage = 10): LengthAwarePaginator
     {
-        $query = Tiket::with(['creator', 'resolver', 'closer', 'activeStopClock'])
+        $query = Tiket::with(['creator', 'resolver', 'closer', 'activeStopClock', 'assignedLead'])
+            ->visibleForUser()
             ->latest('tanggal_open');
 
         // Filter search keyword (no_tiket, status_link_impact)
@@ -554,14 +555,16 @@ class TiketService
      */
     public function getTiketSummary(): array
     {
-        $total = Tiket::count();
-        $open = Tiket::where('status', 'OPEN')->count();
-        $proses = Tiket::where('status', 'PROSES')->count();
-        $pendingVerifikasi = Tiket::where('status', 'PENDING_VERIFIKASI')->count();
-        $close = Tiket::where('status', 'CLOSE')->count();
-        $lebihSla = Tiket::where('sla_status', 'LEBIH')->count();
-        $tepatSla = Tiket::where('sla_status', 'TEPAT')->count();
-        $stopClockCount = Tiket::where('is_stop_clock', true)->count();
+        $base = Tiket::visibleForUser();
+
+        $total = (clone $base)->count();
+        $open = (clone $base)->where('status', 'OPEN')->count();
+        $proses = (clone $base)->where('status', 'PROSES')->count();
+        $pendingVerifikasi = (clone $base)->where('status', 'PENDING_VERIFIKASI')->count();
+        $close = (clone $base)->where('status', 'CLOSE')->count();
+        $lebihSla = (clone $base)->where('sla_status', 'LEBIH')->count();
+        $tepatSla = (clone $base)->where('sla_status', 'TEPAT')->count();
+        $stopClockCount = (clone $base)->where('is_stop_clock', true)->count();
 
         return [
             'total' => $total,

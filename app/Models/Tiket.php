@@ -310,11 +310,44 @@ class Tiket extends Model
     }
 
     /**
+     * Scope query untuk memfilter tiket yang berhak dilihat oleh pengguna.
+     * Aturan:
+     * - Admin, Manager Teknis, Helpdesk, SA/CS: Melihat SEMUA tiket (termasuk tiket yang belum di-dispatch).
+     * - Teknisi Lapangan: HANYA melihat tiket yang SUDAH DITUGASKAN oleh Manager Teknis (assigned_lead_id IS NOT NULL),
+     *   atau tiket riwayat yang sudah CLOSE. Tiket baru yang belum di-dispatch disembunyikan sampai Manager Teknis memilih petugas.
+     */
+    public function scopeVisibleForUser(\Illuminate\Database\Eloquent\Builder $query, ?User $user = null): \Illuminate\Database\Eloquent\Builder
+    {
+        $user = $user ?? (function_exists('auth') ? auth()->user() : null);
+        if (!$user) {
+            return $query;
+        }
+
+        if ($user->hasRole('teknis')) {
+            return $query->where(function ($q) {
+                $q->whereNotNull('assigned_lead_id')
+                  ->orWhere('status', 'CLOSE');
+            });
+        }
+
+        return $query;
+    }
+
+    /**
+     * Periksa apakah tiket sudah di-assign / di-dispatch oleh Manager Teknis
+     */
+    public function isAssignedByManager(): bool
+    {
+        return !empty($this->assigned_lead_id);
+    }
+
+    /**
      * Periksa apakah user diizinkan menambahkan update koordinasi / kronologis.
      * Aturan:
      * - Admin, Helpdesk, SA/CS, Manager Teknis: Selalu BISA.
-     * - Teknisi: BISA jika ditugaskan (Lead atau Anggota Tim), atau jika tiket belum di-dispatch sama sekali.
+     * - Teknisi: BISA jika ditugaskan (Lead atau Anggota Tim).
      * - Teknisi lain yang tidak ditugaskan pada tiket aktif: HANYA BISA MEMANTAU (Read-only).
+     * - Tiket yang belum di-dispatch sama sekali: Teknisi TIDAK BISA update hingga Manager Teknis menugaskan.
      */
     public function canUserUpdateKoordinasi(?User $user): bool
     {
@@ -327,9 +360,9 @@ class Tiket extends Model
         }
 
         if ($user->hasRole('teknis')) {
-            // Jika tiket belum memiliki teknisi yang ditugaskan, teknisi diizinkan merespon/mencatat
-            if (empty($this->assigned_lead_id) && empty($this->assigned_team)) {
-                return true;
+            // Jika tiket belum ditugaskan oleh Manager Teknis, teknisi belum memiliki akses update
+            if (!$this->isAssignedByManager()) {
+                return false;
             }
 
             // Jika sudah ditugaskan, hanya teknisi yang ditunjuk yang bisa mengirim update

@@ -91,8 +91,16 @@ class TiketController extends Controller
     /**
      * Tampilkan detail tiket
      */
-    public function show(Tiket $tiket): View
+    public function show(Tiket $tiket): View|RedirectResponse
     {
+        $user = auth()->user();
+
+        // Jika user adalah teknisi dan tiket belum di-dispatch oleh Manager Teknis, tolak akses ke halaman detail
+        if ($user && $user->hasRole('teknis') && !$tiket->isAssignedByManager() && $tiket->status !== 'CLOSE') {
+            return redirect()->route('tiket.index')
+                ->with('warning', "Tiket gangguan [{$tiket->no_tiket}] belum ditugaskan oleh Manager Teknis.");
+        }
+
         $totalKronologis = $tiket->kronologis()->count();
         $initialLimit = 40;
 

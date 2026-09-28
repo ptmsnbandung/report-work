@@ -22,14 +22,15 @@ class NotificationService
     ) {}
 
     /**
-     * Kirim notifikasi saat tiket baru dibuat (ke Admin, Manager Teknis, Helpdesk, Teknis, SA/CS)
+     * Kirim notifikasi saat tiket baru dibuat (ke Admin, Manager Teknis, Helpdesk, SA/CS)
+     * Catatan: Teknisi baru akan menerima notifikasi setelah tiket di-dispatch oleh Manager Teknis.
      */
     public function notifyTiketBaru(Tiket $tiket): void
     {
         $creatorId = $tiket->created_by;
 
         $recipients = User::where('is_active', true)
-            ->whereIn('role', ['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])
+            ->whereIn('role', ['admin', 'manager_teknisi', 'helpdesk', 'sa_cs'])
             ->when($creatorId, fn($q) => $q->where('id', '!=', $creatorId))
             ->get();
 

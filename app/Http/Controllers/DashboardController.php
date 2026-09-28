@@ -24,13 +24,14 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $user = Auth::user();
+        $baseTiket = Tiket::visibleForUser($user);
 
         // Statistik Tiket Umum
-        $totalTiket = Tiket::count();
-        $totalOpen = Tiket::where('status', 'OPEN')->count();
-        $totalProses = Tiket::where('status', 'PROSES')->count();
-        $totalClose = Tiket::where('status', 'CLOSE')->count();
-        $totalSlaExceeded = Tiket::where('sla_status', 'LEBIH')->count();
+        $totalTiket = (clone $baseTiket)->count();
+        $totalOpen = (clone $baseTiket)->where('status', 'OPEN')->count();
+        $totalProses = (clone $baseTiket)->where('status', 'PROSES')->count();
+        $totalClose = (clone $baseTiket)->where('status', 'CLOSE')->count();
+        $totalSlaExceeded = (clone $baseTiket)->where('sla_status', 'LEBIH')->count();
 
         // Rata-rata MTTR (dalam menit) untuk tiket yang sudah close
         $mttrStats = $this->mttrService->getMttrAverage();
@@ -42,7 +43,7 @@ class DashboardController extends Controller
         $slaComplianceRate = $slaStats['compliance_rate'];
 
         // Tiket melebihi SLA yang masih aktif (Alert merah untuk Helpdesk & Admin)
-        $overSlaActiveTikets = Tiket::whereIn('status', ['OPEN', 'PROSES'])
+        $overSlaActiveTikets = (clone $baseTiket)->whereIn('status', ['OPEN', 'PROSES'])
             ->get()
             ->filter(function ($t) {
                 if (!$t->tanggal_open || !$t->sla_target_minutes) return false;
@@ -51,13 +52,13 @@ class DashboardController extends Controller
             });
 
         // Tiket terbaru (5 tiket terakhir)
-        $latestTikets = Tiket::with(['creator', 'closer', 'resume'])
+        $latestTikets = (clone $baseTiket)->with(['creator', 'closer', 'resume'])
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
         // Tiket yang sedang aktif (OPEN & PROSES)
-        $activeTikets = Tiket::whereIn('status', ['OPEN', 'PROSES'])
+        $activeTikets = (clone $baseTiket)->whereIn('status', ['OPEN', 'PROSES'])
             ->with(['creator', 'resume', 'kronologis'])
             ->orderBy('tanggal_open', 'asc')
             ->get();
