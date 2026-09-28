@@ -25,7 +25,7 @@
             top: -68px;
             left: -24px;
             right: -24px;
-            height: 58px;
+            height: 60px;
             z-index: 1000;
         }
 
@@ -55,8 +55,8 @@
         .doc-header-table {
             width: 100%;
             border-bottom: 2px solid #0c2033;
-            padding-bottom: 6px;
-            margin-bottom: 8px;
+            padding-bottom: 5px;
+            margin-bottom: 7px;
         }
         .doc-title {
             font-size: 11pt;
@@ -91,9 +91,9 @@
             font-weight: 700;
             color: #ffffff;
             background-color: #0c2033;
-            padding: 4px 8px;
-            margin-top: 8px;
-            margin-bottom: 5px;
+            padding: 3.5px 8px;
+            margin-top: 7px;
+            margin-bottom: 4px;
             border-radius: 3px;
             text-transform: uppercase;
             letter-spacing: 0.3px;
@@ -102,18 +102,18 @@
         table.data-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         table.data-table th, table.data-table td {
             border: 1px solid #e2e8f0;
-            padding: 4px 6px;
-            font-size: 8pt;
+            padding: 3.5px 6px;
+            font-size: 7.8pt;
         }
         table.data-table th {
             background-color: #f1f5f9;
             color: #0f172a;
             font-weight: 700;
-            font-size: 7.8pt;
+            font-size: 7.5pt;
             text-align: left;
             border-color: #cbd5e1;
         }
@@ -137,10 +137,10 @@
         .info-grid {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .info-grid td {
-            padding: 3.5px 5px;
+            padding: 3px 5px;
             font-size: 8pt;
             vertical-align: top;
             border-bottom: 1px solid #f1f5f9;
@@ -155,7 +155,7 @@
 
         .signature-table {
             width: 100%;
-            margin-top: 18px;
+            margin-top: 14px;
             border-collapse: collapse;
             page-break-inside: avoid;
         }
@@ -163,34 +163,60 @@
             width: 33.33%;
             text-align: center;
             vertical-align: top;
-            font-size: 8pt;
-            padding: 4px;
+            font-size: 7.8pt;
+            padding: 4px 8px;
+        }
+        .signature-role {
+            color: #64748b;
+            font-size: 7.5pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .signature-company {
+            font-weight: 800;
+            font-size: 8.5pt;
+            color: #0c2033;
+            margin-top: 1px;
         }
         .sign-space {
-            height: 42px;
+            height: 44px;
+        }
+        .signature-name {
+            font-weight: 800;
+            font-size: 8.2pt;
+            color: #0f172a;
+            border-bottom: 1px solid #94a3b8;
+            display: inline-block;
+            min-width: 140px;
+            padding-bottom: 2px;
+        }
+        .signature-sub {
+            font-size: 7pt;
+            color: #64748b;
+            margin-top: 3px;
         }
 
         .doc-gallery-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 6px;
-            margin-bottom: 8px;
+            margin-top: 5px;
+            margin-bottom: 6px;
         }
         .doc-gallery-table td {
             width: 33.33%;
-            padding: 4px;
+            padding: 3px;
             vertical-align: top;
             text-align: center;
         }
         .doc-img-card {
             border: 1px solid #cbd5e1;
-            padding: 4px;
+            padding: 3px;
             background: #f8fafc;
             border-radius: 3px;
         }
         .doc-img {
             max-width: 100%;
-            max-height: 105px;
+            max-height: 85px;
             height: auto;
             border-radius: 2px;
             display: block;
@@ -198,10 +224,10 @@
             border: 1px solid #e2e8f0;
         }
         .doc-caption {
-            font-size: 7pt;
+            font-size: 6.8pt;
             color: #334155;
-            margin-top: 3px;
-            line-height: 1.25;
+            margin-top: 2px;
+            line-height: 1.2;
         }
         .page-break {
             page-break-after: always;
@@ -219,34 +245,38 @@
 
     <!-- ── 1. HEADER KOP SURAT RESMI (TEMPLATING PT MEDIA SOLUSI NETWORK) ── -->
     <div class="msn-letterhead-header">
-        <table style="width: 100%; border-collapse: collapse;">
+        <!-- Top Accent Strip -->
+        <table style="width: 100%; border-collapse: collapse; height: 3px; font-size: 1px; line-height: 1px;">
+            <tr>
+                <td style="background: #00d2ff; width: 35%; height: 3px;"></td>
+                <td style="background: #0284c7; width: 25%; height: 3px;"></td>
+                <td style="background: #0c2033; width: 40%; height: 3px;"></td>
+            </tr>
+        </table>
+        <!-- Main Kop Surat Table -->
+        <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #00bcd4; background: #ffffff;">
             <tr>
                 <!-- Sisi Kiri: Logo Resmi PT Media Solusi Network -->
-                <td style="width: 50%; vertical-align: middle; text-align: left; padding-left: 24px; padding-top: 4px;">
+                <td style="width: 50%; vertical-align: middle; text-align: left; padding-left: 24px; padding-top: 4px; padding-bottom: 5px;">
                     @if($logoBase64)
-                        <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 40px; width: auto; display: block;">
+                        <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 42px; width: auto; display: block;">
                     @else
-                        <svg width="36" height="36" viewBox="0 0 100 100">
-                            <line x1="25" y1="30" x2="75" y2="30" stroke="#00d2ff" stroke-width="6"/>
-                            <line x1="25" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="6"/>
-                            <line x1="75" y1="30" x2="50" y2="75" stroke="#00d2ff" stroke-width="6"/>
-                            <circle cx="25" cy="30" r="14" fill="#0284c7" stroke="#ffffff" stroke-width="3"/>
-                            <circle cx="25" cy="30" r="6" fill="#ffffff"/>
-                            <circle cx="75" cy="30" r="14" fill="#00d2ff" stroke="#ffffff" stroke-width="3"/>
-                            <circle cx="75" cy="30" r="6" fill="#ffffff"/>
-                            <circle cx="50" cy="75" r="16" fill="#0ea5e9" stroke="#ffffff" stroke-width="3"/>
-                            <circle cx="50" cy="75" r="7" fill="#ffffff"/>
-                        </svg>
+                        <div style="font-size: 12pt; font-weight: 800; color: #0c2033;">
+                            <span style="color: #00bcd4;">PT. MEDIA</span> SOLUSI NETWORK
+                        </div>
                     @endif
                 </td>
-                <!-- Sisi Kanan: Ornamen Grafis Geometris Slate & Cyan -->
-                <td style="width: 50%; vertical-align: top; text-align: right; padding: 0;">
-                    <svg width="240" height="52" viewBox="0 0 240 52" style="display: block; float: right;">
-                        <polygon points="30,0 240,0 240,52 55,52" fill="#0c2033"/>
-                        <polygon points="15,0 25,0 50,52 40,52" fill="#00d2ff"/>
-                        <polygon points="0,0 10,0 35,52 25,52" fill="#0284c7"/>
-                        <polygon points="225,0 240,0 240,52 212,52" fill="#00d2ff" opacity="0.25"/>
-                    </svg>
+                <!-- Sisi Kanan: Corporate NOC Badge & Tagline -->
+                <td style="width: 50%; vertical-align: middle; text-align: right; padding-right: 24px; padding-top: 4px; padding-bottom: 5px;">
+                    <div style="font-size: 8.5pt; font-weight: 800; color: #0c2033; letter-spacing: 0.5px; text-transform: uppercase;">
+                        NETWORK OPERATION CENTER
+                    </div>
+                    <div style="font-size: 6.8pt; font-weight: 700; color: #0284c7; letter-spacing: 0.6px; margin-top: 1.5px; text-transform: uppercase;">
+                        24/7 SUPPORT &bull; FIBER OPTIC INFRASTRUCTURE
+                    </div>
+                    <div style="font-size: 6pt; color: #64748b; margin-top: 2px; letter-spacing: 0.3px;">
+                        OFFICIAL INCIDENT REPORT &bull; PT MEDIA SOLUSI NETWORK
+                    </div>
                 </td>
             </tr>
         </table>
@@ -688,30 +718,33 @@
     <table class="signature-table">
         <tr>
             <td class="signature-box">
-                <div>Dibuat Oleh (Helpdesk / NOC)</div>
+                <div class="signature-role">Dibuat Oleh (Helpdesk / NOC)</div>
+                <div class="signature-company">PT MEDIA SOLUSI NETWORK</div>
                 <div class="sign-space"></div>
-                <div><strong>({{ $tiket->creator?->name ?? 'Helpdesk NOC' }})</strong></div>
-                <div style="font-size: 7.5pt; color: #64748b;">PT MSN</div>
+                <div class="signature-name">( {{ $tiket->creator?->name ?? 'Helpdesk NOC' }} )</div>
+                <div class="signature-sub">NOC &amp; Ticketing Staff</div>
             </td>
             <td class="signature-box">
-                <div>Tim Pelaksana Lapangan (OM)</div>
+                <div class="signature-role">Tim Pelaksana Lapangan (OM)</div>
+                <div class="signature-company">PT MEDIA SOLUSI NETWORK</div>
                 <div class="sign-space"></div>
-                <div>
-                    <strong>(
+                <div class="signature-name">
+                    (
                     @if($tiket->resume && is_array($tiket->resume->team_om) && count($tiket->resume->team_om) > 0)
                         {{ $tiket->resume->team_om[0] }}
                     @else
                         {{ $tiket->closer?->name ?? 'Leader Teknis' }}
                     @endif
-                    )</strong>
+                    )
                 </div>
-                <div style="font-size: 7.5pt; color: #64748b;">Teknis Backbone MSN</div>
+                <div class="signature-sub">Teknisi Backbone &amp; Splicer</div>
             </td>
             <td class="signature-box">
-                <div>Mengetahui (Manager Operasional)</div>
+                <div class="signature-role">Mengetahui (Manager Operasional)</div>
+                <div class="signature-company">PT MEDIA SOLUSI NETWORK</div>
                 <div class="sign-space"></div>
-                <div><strong>( Delli Digital )</strong></div>
-                <div style="font-size: 7.5pt; color: #64748b;">Business Development / NOC</div>
+                <div class="signature-name">( Delli Digital )</div>
+                <div class="signature-sub">Business Development / NOC</div>
             </td>
         </tr>
     </table>
