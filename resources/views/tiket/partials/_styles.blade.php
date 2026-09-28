@@ -1,4 +1,4 @@
-﻿<style>
+<style>
     /* ═══════════════════════════════════════════════════════════════════
        WHATSAPP CHAT-STYLE TIMELINE KRONOLOGIS
        ═══════════════════════════════════════════════════════════════════ */
@@ -1866,6 +1866,120 @@
         white-space: pre-line;
     }
 
+    /* ── DESC CARD HEADER ── */
+    .tiket-desc-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+    }
+    .tiket-desc-card-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px; height: 26px;
+        background: rgba(13, 148, 136, 0.1);
+        color: #0d9488;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .tiket-desc-card-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: 0.1px;
+    }
+
+    /* ── FOTO BUKTI CARD ── */
+    .tiket-foto-bukti-card {
+        background: #fff8f8;
+        border: 1px solid #fecaca;
+        border-left: 4px solid #ef4444;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .tiket-foto-bukti-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.55rem 0.9rem;
+        background: rgba(255,255,255,0.85);
+        border-bottom: 1px solid #fecaca;
+    }
+    .tiket-foto-bukti-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px; height: 26px;
+        background: rgba(239,68,68,0.1);
+        color: #dc2626;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+    }
+    .tiket-foto-bukti-title {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .tiket-foto-bukti-hint {
+        font-size: 0.68rem;
+        color: #94a3b8;
+    }
+    .tiket-foto-bukti-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        align-items: flex-start;
+        flex: 1;
+    }
+
+    /* ── THUMBNAIL ── */
+    .tiket-foto-thumb {
+        position: relative;
+        width: 84px;
+        height: 84px;
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        background: #0f172a;
+        flex-shrink: 0;
+        border: 2px solid #fecaca;
+        transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .tiket-foto-thumb:hover {
+        transform: translateY(-3px) scale(1.04);
+        border-color: #ef4444;
+        box-shadow: 0 6px 16px rgba(239,68,68,0.25);
+    }
+    .tiket-foto-thumb img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .tiket-foto-thumb-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(transparent 55%, rgba(15,23,42,0.75) 100%);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 4px;
+        color: #fff;
+        font-size: 0.65rem;
+        opacity: 0;
+        transition: opacity 0.18s ease;
+    }
+    .tiket-foto-thumb:hover .tiket-foto-thumb-overlay {
+        opacity: 1;
+    }
+
     .tiket-meta-footer {
         display: flex;
         flex-wrap: wrap;
@@ -1877,6 +1991,7 @@
         border-top: 1px solid #f1f5f9;
         font-size: 0.78rem;
     }
+
 
     @media (max-width: 575.98px) {
         .tiket-metric-tile {

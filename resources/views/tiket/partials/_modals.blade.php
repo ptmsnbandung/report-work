@@ -1654,7 +1654,21 @@
                                     <i class="bi {{ $prereqs['items']['tipe_penanganan'] ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger' }} fs-5"></i>
                                     <div class="small">
                                         <div class="fw-bold text-navy">4. Tipe Penanganan</div>
-                                        <div class="text-muted" style="font-size:0.75rem;">{{ $prereqs['items']['tipe_penanganan'] ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih di Penanganan Core & JC (Jointing / Manuver)' }}</div>
+                                        <div class="text-muted" style="font-size:0.75rem;">
+                                            @if($prereqs['items']['tipe_penanganan'])
+                                                @php
+                                                    $jcC = $tiket->jointClosures()->count();
+                                                    $mvC = $tiket->manuverCores()->count();
+                                                    $parts = collect([
+                                                        $jcC > 0 ? $jcC.' Joint Closure' : null,
+                                                        $mvC > 0 ? $mvC.' Manuver Core' : null,
+                                                    ])->filter()->join(', ');
+                                                @endphp
+                                                {{ $parts }}
+                                            @else
+                                                Wajib tambah data Joint Closure atau Manuver Core
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>

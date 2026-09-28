@@ -503,54 +503,47 @@
             @endphp
 
             @if($hasDesc || $hasFoto)
-            <div class="row g-2.5 mb-3 align-items-stretch">
+            <div class="row g-3 mb-3 align-items-stretch">
+
                 @if($hasDesc)
-                <!-- ── KOLOM DESKRIPSI GANGGUAN ── -->
+                {{-- ── DESKRIPSI GANGGUAN ── --}}
                 <div class="{{ $hasFoto ? 'col-12 col-lg-6' : 'col-12' }}">
-                    <div class="tiket-desc-card h-100 d-flex flex-column justify-content-start">
-                        <div class="d-flex align-items-center gap-2 text-navy fw-bold small mb-1.5">
-                            <i class="bi bi-chat-left-text text-teal"></i>
-                            <span>Deskripsi Gangguan &amp; Catatan Awal:</span>
+                    <div class="tiket-desc-card h-100">
+                        <div class="tiket-desc-card-header">
+                            <span class="tiket-desc-card-icon"><i class="bi bi-chat-left-text"></i></span>
+                            <span class="tiket-desc-card-title">Deskripsi Gangguan &amp; Catatan Awal</span>
                         </div>
-                        <div class="tiket-desc-text flex-grow-1">{{ $tiket->deskripsi }}</div>
+                        <div class="tiket-desc-text">{{ $tiket->deskripsi }}</div>
                     </div>
                 </div>
                 @endif
 
                 @if($hasFoto)
-                <!-- ── KOLOM FOTO BUKTI GANGGUAN AWAL ── -->
+                {{-- ── FOTO BUKTI AWAL ── --}}
                 <div class="{{ $hasDesc ? 'col-12 col-lg-6' : 'col-12' }}">
-                    <div class="card border rounded-3 h-100 shadow-xs overflow-hidden" style="background: #f8fafc; border-color: #e2e8f0 !important; border-left: 4px solid #ef4444 !important;">
-                        <div class="p-2 px-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-1" style="background: rgba(255,255,255,0.75);">
-                            <div class="d-flex align-items-center gap-1.5">
-                                <i class="bi bi-camera-fill text-danger"></i>
-                                <span class="fw-bold text-navy" style="font-size: 0.81rem;">Foto Bukti Gangguan Awal</span>
-                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle rounded-pill px-1.5 py-0.5" style="font-size: 0.65rem;">
+                    <div class="tiket-foto-bukti-card h-100">
+                        <div class="tiket-foto-bukti-header">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="tiket-foto-bukti-icon"><i class="bi bi-camera-fill"></i></span>
+                                <span class="tiket-foto-bukti-title">Foto Bukti Gangguan Awal</span>
+                                <span class="badge rounded-pill" style="background: rgba(239,68,68,0.12); color: #dc2626; font-size: 0.65rem; border: 1px solid rgba(239,68,68,0.2); padding: 2px 8px;">
                                     {{ $fotoBuktiMasalah->count() }} Foto
                                 </span>
                             </div>
-                            <span class="text-muted" style="font-size: 0.7rem;">
-                                <i class="bi bi-zoom-in text-primary me-0.5"></i>Klik foto zoom
+                            <span class="tiket-foto-bukti-hint">
+                                <i class="bi bi-arrows-fullscreen me-1"></i>Klik untuk zoom
                             </span>
                         </div>
-                        <div class="p-2.5 d-flex flex-wrap gap-2 align-items-center flex-grow-1">
+                        <div class="tiket-foto-bukti-grid">
                             @foreach($fotoBuktiMasalah as $fb)
-                            <div class="position-relative rounded-3 overflow-hidden shadow-xs border"
-                                 style="width: 74px; height: 74px; cursor: pointer; background: #0f172a; flex-shrink: 0; transition: transform 0.2s ease, box-shadow 0.2s ease;"
-                                 onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah Tiket #{{ $tiket->no_tiket }} &bull; {{ $fb->formatted_timestamp }}')"
-                                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.15)';"
-                                 onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                            <div class="tiket-foto-thumb"
+                                 onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah Tiket #{{ $tiket->no_tiket }} — {{ $fb->formatted_timestamp }}')"
+                                 title="{{ $fb->formatted_timestamp }}">
                                 <img src="{{ asset('storage/' . $fb->file_path) }}"
                                      alt="Bukti Masalah"
-                                     class="w-100 h-100"
-                                     style="object-fit: cover;"
                                      loading="lazy"
                                      onerror="this.onerror=null; this.src='{{ asset($fb->file_path) }}';">
-                                
-                                <div class="position-absolute bottom-0 start-0 end-0 text-center py-0.5"
-                                     style="background: linear-gradient(transparent, rgba(15, 23, 42, 0.85)); color: #ffffff; font-size: 0.6rem; font-weight: 600;">
-                                    <i class="bi bi-arrows-fullscreen"></i>
-                                </div>
+                                <div class="tiket-foto-thumb-overlay"><i class="bi bi-arrows-fullscreen"></i></div>
                             </div>
                             @endforeach
                         </div>
@@ -997,8 +990,17 @@
                             </div>
                             <div class="min-w-0">
                                 <div class="fw-bold text-navy text-truncate closing-tile-title" style="font-size: 0.82rem;">4. Penanganan</div>
-                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['tipe_penanganan'] ? '#059669' : '#64748b' }};">
-                                    {{ $tiket->tipe_penanganan ? str_replace('_', ' ', $tiket->tipe_penanganan) : 'Wajib dipilih' }}
+                                @php
+                                    $jcCount = $tiket->jointClosures()->count();
+                                    $mvCount = $tiket->manuverCores()->count();
+                                    $penangananDesc = $prereqs['items']['tipe_penanganan']
+                                        ? collect([
+                                            $jcCount > 0 ? $jcCount.' JC' : null,
+                                            $mvCount > 0 ? $mvCount.' Manuver' : null,
+                                          ])->filter()->join(', ')
+                                        : 'Wajib tambah JC / Manuver Core';
+                                @endphp
+                                    {{ $penangananDesc }}
                                 </div>
                             </div>
                         </div>

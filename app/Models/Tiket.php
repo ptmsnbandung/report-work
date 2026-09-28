@@ -239,7 +239,7 @@ class Tiket extends Model
 
         // ── MANDATORI TIKET BACKBONE TRANSMISI ──
         $hasTitikPerbaikan = $this->titikPerbaikans()->count() > 0 || $this->jointClosures()->count() > 0;
-        $hasTipePenanganan = !empty($this->tipe_penanganan) || (!empty($this->resume?->tipe_penanganan));
+        $hasTipePenanganan = $this->jointClosures()->count() > 0 || $this->manuverCores()->count() > 0;
 
         if (!$hasResume) {
             $missing[] = 'Resume pekerjaan wajib diisi (Problem temuan & Action perbaikan).';
@@ -251,7 +251,7 @@ class Tiket extends Model
             $missing[] = 'Minimal masukkan 1 titik koordinat perbaikan kabel / joint closure.';
         }
         if (!$hasTipePenanganan) {
-            $missing[] = 'Pilih tipe penanganan (Jointing Lurus atau Manuver Core).';
+            $missing[] = 'Wajib tambahkan minimal 1 data Joint Closure atau Manuver Core sebagai bukti penanganan.';
         }
 
         return [
