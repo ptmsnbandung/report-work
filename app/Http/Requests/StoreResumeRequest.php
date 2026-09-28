@@ -27,6 +27,8 @@ class StoreResumeRequest extends FormRequest
             'joint_closure_type' => ['nullable', 'string', 'max:255'],
             'core_count_jointed' => ['nullable', 'integer', 'min:0'],
             'catatan_tambahan'   => ['nullable', 'string', 'max:5000'],
+            'redaman_sebelum'    => ['nullable', 'numeric', 'between:-60,10'],
+            'redaman_sesudah'    => ['nullable', 'numeric', 'between:-60,10'],
         ];
     }
 

@@ -21,6 +21,8 @@ class ResumePekerjaan extends Model
         'problem_temuan',
         'action',
         'catatan_tambahan',
+        'redaman_sebelum',
+        'redaman_sesudah',
     ];
 
     protected function casts(): array

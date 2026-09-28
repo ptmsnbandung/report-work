@@ -5952,7 +5952,8 @@
                                   required>{{ old('action', $tiket->resume?->action) }}</textarea>
                     </div>
 
-                    <!-- Info Tipe Penanganan (Dikelola di tab Penanganan Core & JC) -->
+                    @if($tiket->isBackbone())
+                    <!-- Info Tipe Penanganan (Dikelola di tab Penanganan Core & JC) - BACKBONE ONLY -->
                     <div class="mb-3 p-3 bg-light rounded-3 border">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                             <div>
@@ -5968,6 +5969,50 @@
                             </small>
                         </div>
                     </div>
+                    @else
+                    <!-- Input Redaman Optik - BROADBAND ONLY -->
+                    <div class="mb-3 p-3 rounded-3 border" style="background:#f0f7ff; border-color:#0d6efd33 !important;">
+                        <label class="form-label small fw-bold mb-2" style="color:#0d6efd;">
+                            <i class="bi bi-activity me-1"></i> Hasil Pengukuran Redaman Optik
+                        </label>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <label for="resume_redaman_sebelum" class="form-label small fw-semibold text-navy">
+                                    Redaman Sebelum Perbaikan (dBm)
+                                    <span class="text-muted fw-normal">(opsional)</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number"
+                                           step="0.01" min="-60" max="0"
+                                           class="form-control"
+                                           id="resume_redaman_sebelum"
+                                           name="redaman_sebelum"
+                                           value="{{ old('redaman_sebelum', $tiket->redaman_sebelum ?? $tiket->resume?->redaman_sebelum) }}"
+                                           placeholder="-30.00">
+                                    <span class="input-group-text">dBm</span>
+                                </div>
+                                <div class="form-text" style="font-size:0.72rem;">Nilai negatif, contoh: -28.5</div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label for="resume_redaman_sesudah" class="form-label small fw-semibold text-navy">
+                                    Redaman Sesudah Perbaikan (dBm)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group input-group-sm">
+                                    <input type="number"
+                                           step="0.01" min="-60" max="0"
+                                           class="form-control"
+                                           id="resume_redaman_sesudah"
+                                           name="redaman_sesudah"
+                                           value="{{ old('redaman_sesudah', $tiket->redaman_sesudah ?? $tiket->resume?->redaman_sesudah) }}"
+                                           placeholder="-18.50">
+                                    <span class="input-group-text">dBm</span>
+                                </div>
+                                <div class="form-text" style="font-size:0.72rem;">Nilai negatif, wajib diisi untuk closing.</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Catatan Tambahan -->
                     <div class="mb-0">
@@ -10706,8 +10751,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    @if($tiket->isBackbone())
     // ── 12.5. SWITCH & TOGGLE METODE PENANGANAN (JOINTING / MANUVER / KEDUANYA) ──
-    window.activeCurrentMode = @json($tiket->isBackbone() ? ($activePenanganan ?? 'JOINTING_LURUS') : '');
+    window.activeCurrentMode = @json($activePenanganan ?? 'JOINTING_LURUS');
 
     window.toggleKeduaPenanganan = function() {
         const current = window.activeCurrentMode || 'JOINTING_LURUS';
@@ -10824,7 +10870,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Gagal update tipe penanganan:', err);
             });
         }
-    };
+    }; {{-- end switchPenangananMode --}}
+    @endif {{-- isBackbone: section 12.5 penanganan mode --}}
 
     // ── 13. URL PARAMETER & HASH ACTIVE TAB SWITCHER ──
     const urlParams = new URLSearchParams(window.location.search);

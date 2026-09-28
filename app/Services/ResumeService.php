@@ -24,22 +24,40 @@ class ResumeService
                 $teamOm = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $teamOm))));
             }
 
+            $resumePayload = [
+                'team_om'            => $teamOm,
+                'problem_temuan'     => $data['problem_temuan'],
+                'action'             => $data['action'],
+                'tipe_penanganan'    => $data['tipe_penanganan'] ?? null,
+                'joint_closure_type' => $data['joint_closure_type'] ?? null,
+                'core_count_jointed' => isset($data['core_count_jointed']) ? (int) $data['core_count_jointed'] : null,
+                'catatan_tambahan'   => $data['catatan_tambahan'] ?? null,
+            ];
+
+            // Simpan redaman optik ke resume (khusus broadband)
+            if (isset($data['redaman_sebelum']) && $data['redaman_sebelum'] !== '') {
+                $resumePayload['redaman_sebelum'] = $data['redaman_sebelum'];
+            }
+            if (isset($data['redaman_sesudah']) && $data['redaman_sesudah'] !== '') {
+                $resumePayload['redaman_sesudah'] = $data['redaman_sesudah'];
+            }
+
             $resume = ResumePekerjaan::updateOrCreate(
                 ['id_tiket' => $tiket->id],
-                [
-                    'team_om'            => $teamOm,
-                    'problem_temuan'     => $data['problem_temuan'],
-                    'action'             => $data['action'],
-                    'tipe_penanganan'    => $data['tipe_penanganan'] ?? null,
-                    'joint_closure_type' => $data['joint_closure_type'] ?? null,
-                    'core_count_jointed' => isset($data['core_count_jointed']) ? (int) $data['core_count_jointed'] : null,
-                    'catatan_tambahan'   => $data['catatan_tambahan'] ?? null,
-                ]
+                $resumePayload
             );
 
             // Update tiket tipe_penanganan if provided in resume
             if (!empty($data['tipe_penanganan'])) {
                 $tiket->tipe_penanganan = $data['tipe_penanganan'];
+            }
+
+            // Sync redaman ke kolom tiket (untuk checkClosingPrerequisites)
+            if (isset($data['redaman_sebelum']) && $data['redaman_sebelum'] !== '') {
+                $tiket->redaman_sebelum = $data['redaman_sebelum'];
+            }
+            if (isset($data['redaman_sesudah']) && $data['redaman_sesudah'] !== '') {
+                $tiket->redaman_sesudah = $data['redaman_sesudah'];
             }
 
             // Jika status masih OPEN, ubah ke PROSES
