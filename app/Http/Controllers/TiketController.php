@@ -107,11 +107,12 @@ class TiketController extends Controller
             'handoverShifts.userTo',
             'kronologis' => function ($q) use ($initialLimit, $totalKronologis) {
                 if ($totalKronologis > $initialLimit) {
-                    $q->orderBy('timestamp', 'desc')
+                    $q->reorder()
+                      ->orderBy('timestamp', 'desc')
                       ->orderBy('id', 'desc')
                       ->take($initialLimit);
                 } else {
-                    $q->orderBy('timestamp', 'asc')->orderBy('id', 'asc');
+                    $q->reorder()->orderBy('timestamp', 'asc')->orderBy('id', 'asc');
                 }
                 $q->with('user');
             },
@@ -125,7 +126,9 @@ class TiketController extends Controller
         ]);
 
         if ($totalKronologis > $initialLimit) {
-            $tiket->setRelation('kronologis', $tiket->kronologis->sortBy('timestamp')->values());
+            $tiket->setRelation('kronologis', $tiket->kronologis->sortBy(function($k) {
+                return ($k->timestamp ? $k->timestamp->timestamp : 0) . '_' . str_pad($k->id, 10, '0', STR_PAD_LEFT);
+            })->values());
         }
 
         $mentionableUsers = User::where('is_active', true)

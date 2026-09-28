@@ -231,21 +231,25 @@ class KronologisService
         $query = $tiket->kronologis()->with('user');
 
         if ($afterId) {
-            return $query->where('id', '>', $afterId)
+            return $query->reorder()
+                ->where('id', '>', $afterId)
                 ->orderBy('timestamp', 'asc')
                 ->orderBy('id', 'asc')
                 ->get();
         }
 
         if ($beforeId) {
-            $items = $query->where('id', '<', $beforeId)
+            $items = $query->reorder()
+                ->where('id', '<', $beforeId)
                 ->orderBy('timestamp', 'desc')
                 ->orderBy('id', 'desc')
                 ->take($limit)
                 ->get();
-            return $items->sortBy('timestamp')->values();
+            return $items->sortBy(function($k) {
+                return ($k->timestamp ? $k->timestamp->timestamp : 0) . '_' . str_pad($k->id, 10, '0', STR_PAD_LEFT);
+            })->values();
         }
 
-        return $query->orderBy('timestamp', 'asc')->orderBy('id', 'asc')->get();
+        return $query->reorder()->orderBy('timestamp', 'asc')->orderBy('id', 'asc')->get();
     }
 }
