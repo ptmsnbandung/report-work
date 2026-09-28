@@ -38,6 +38,7 @@ class CustomerImsController extends Controller
                     'r.rw_pasang',
                     'r.nomor_bangunan',
                     'r.lon_lat',
+                    'r.loc_maps',
                     'r.kode_bandwith',
                     'r.kode_pop',
                     'r.olt',
@@ -50,10 +51,11 @@ class CustomerImsController extends Controller
                     $q->where('r.nomor_internet', 'like', "%{$query}%")
                       ->orWhere('r.nama_pelanggan', 'like', "%{$query}%")
                       ->orWhere('r.alamat_pasang', 'like', "%{$query}%")
+                      ->orWhere('r.nik_penduduk', 'like', "%{$query}%")
                       ->orWhere('m.nomor_hp', 'like', "%{$query}%");
                 })
                 ->where('r.hide', '!=', '1')
-                ->limit(20)
+                ->limit(25)
                 ->get();
 
             $formatted = $customers->map(function ($c) {
@@ -67,6 +69,7 @@ class CustomerImsController extends Controller
                 }
 
                 $odpInfo = trim(($c->olt ?: '') . ' ' . ($c->index_olt ?: ''));
+                $gps = trim($c->lon_lat ?: ($c->loc_maps ?: ''));
 
                 return [
                     'id_pelanggan' => (string) $c->nomor_internet,
@@ -76,8 +79,11 @@ class CustomerImsController extends Controller
                     'titik_odp' => $odpInfo ?: ($c->kode_pop ?: ''),
                     'kode_bandwith' => (string) ($c->kode_bandwith ?: ''),
                     'kode_pop' => (string) ($c->kode_pop ?: ''),
-                    'lon_lat' => (string) ($c->lon_lat ?: ''),
+                    'lon_lat' => (string) $gps,
+                    'loc_maps' => (string) ($c->loc_maps ?: ''),
                     'media_akses' => (string) ($c->media_akses ?: 'Fiber Optik'),
+                    'olt' => (string) ($c->olt ?: ''),
+                    'index_olt' => (string) ($c->index_olt ?: ''),
                 ];
             });
 
@@ -114,6 +120,7 @@ class CustomerImsController extends Controller
                     'r.rw_pasang',
                     'r.nomor_bangunan',
                     'r.lon_lat',
+                    'r.loc_maps',
                     'r.kode_bandwith',
                     'r.kode_pop',
                     'r.olt',
@@ -142,6 +149,7 @@ class CustomerImsController extends Controller
             }
 
             $odpInfo = trim(($customer->olt ?: '') . ' ' . ($customer->index_olt ?: ''));
+            $gps = trim($customer->lon_lat ?: ($customer->loc_maps ?: ''));
 
             return response()->json([
                 'success' => true,
@@ -153,8 +161,11 @@ class CustomerImsController extends Controller
                     'titik_odp' => $odpInfo ?: ($customer->kode_pop ?: ''),
                     'kode_bandwith' => (string) ($customer->kode_bandwith ?: ''),
                     'kode_pop' => (string) ($customer->kode_pop ?: ''),
-                    'lon_lat' => (string) ($customer->lon_lat ?: ''),
+                    'lon_lat' => (string) $gps,
+                    'loc_maps' => (string) ($customer->loc_maps ?: ''),
                     'media_akses' => (string) ($customer->media_akses ?: 'Fiber Optik'),
+                    'olt' => (string) ($customer->olt ?: ''),
+                    'index_olt' => (string) ($customer->index_olt ?: ''),
                 ],
             ]);
         } catch (\Throwable $e) {
