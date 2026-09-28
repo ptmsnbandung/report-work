@@ -1,4 +1,4 @@
-﻿<!-- ── MODAL PENUGASAN TEKNISI / DISPATCH (MANAGER TEKNIS & ADMIN) ── -->
+<!-- ── MODAL PENUGASAN TEKNISI / DISPATCH (MANAGER TEKNIS & ADMIN) ── -->
 @if(auth()->user()->hasRole(['admin', 'manager_teknisi']) && $tiket->status !== 'CLOSE')
 <div class="modal fade" id="assignTeknisiModal" tabindex="-1" aria-labelledby="assignTeknisiModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -2057,5 +2057,3 @@
     </div>
 </div>
 @endif
-
-@endsection
