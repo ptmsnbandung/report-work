@@ -10707,7 +10707,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ── 12.5. SWITCH & TOGGLE METODE PENANGANAN (JOINTING / MANUVER / KEDUANYA) ──
-    window.activeCurrentMode = @json($activePenanganan);
+    window.activeCurrentMode = @json($tiket->isBackbone() ? ($activePenanganan ?? 'JOINTING_LURUS') : '');
 
     window.toggleKeduaPenanganan = function() {
         const current = window.activeCurrentMode || 'JOINTING_LURUS';
