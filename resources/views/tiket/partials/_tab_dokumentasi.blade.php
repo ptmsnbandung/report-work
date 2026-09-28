@@ -1,4 +1,4 @@
-﻿                <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
+                <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
                 <div class="tab-pane fade" id="dokumentasi-pane" role="tabpanel">
                     <div class="tab-header-banner">
                         <div class="tab-header-left">
@@ -18,15 +18,19 @@
                         @endif
                     </div>
 
-                    @if($tiket->dokumentasis->count() > 0)
+                    @php
+                        $dokumentasiPekerjaan = $tiket->dokumentasis->where('kategori', '!=', 'Bukti Masalah');
+                    @endphp
+
+                    @if($dokumentasiPekerjaan->count() > 0)
                         <!-- Category Filter Chips -->
                         <div class="d-flex flex-wrap gap-2 mb-3 align-items-center" id="docFilterChips">
                             <span class="small text-muted fw-bold me-1"><i class="bi bi-funnel-fill text-teal"></i> Filter:</span>
                             <button type="button" class="doc-filter-pill-pro active" data-filter="all">
-                                Semua ({{ $tiket->dokumentasis->count() }})
+                                Semua ({{ $dokumentasiPekerjaan->count() }})
                             </button>
                             @php
-                                $categories = $tiket->dokumentasis->groupBy('kategori');
+                                $categories = $dokumentasiPekerjaan->groupBy('kategori');
                             @endphp
                             @foreach($categories as $catName => $items)
                             <button type="button" class="doc-filter-pill-pro" data-filter="{{ Str::slug($catName) }}">
@@ -37,7 +41,7 @@
 
                         <!-- Gallery Grid -->
                         <div class="row g-3" id="docGalleryGrid">
-                            @foreach($tiket->dokumentasis as $dok)
+                            @foreach($dokumentasiPekerjaan as $dok)
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3 doc-gallery-item" data-category="{{ Str::slug($dok->kategori) }}">
                                 <div class="doc-card-pro h-100 position-relative">
                                     <!-- Photo Thumbnail -->

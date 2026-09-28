@@ -943,7 +943,6 @@
                             </label>
                             <select class="form-select form-select-sm" id="doc_kategori" name="kategori" required>
                                 <option value="" disabled selected>-- Pilih Kategori --</option>
-                                <option value="Bukti Masalah">🚨 Bukti Gangguan / Masalah Awal</option>
                                 <option value="Hasil Jointing">🔧 Hasil Jointing / Splicing</option>
                                 <option value="Closure Terpasang">📦 Closure Terpasang</option>
                                 <option value="Kondisi Lokasi">📍 Kondisi Lokasi & Kerusakan</option>
@@ -953,7 +952,6 @@
                             </select>
                             <!-- Quick Category Selector Chips -->
                             <div class="d-flex flex-wrap gap-1 mt-2">
-                                <span class="badge bg-light text-danger border cursor-pointer doc-cat-preset" data-cat="Bukti Masalah">Bukti Masalah</span>
                                 <span class="badge bg-light text-navy border cursor-pointer doc-cat-preset" data-cat="Hasil Jointing">Hasil Jointing</span>
                                 <span class="badge bg-light text-navy border cursor-pointer doc-cat-preset" data-cat="Closure Terpasang">Closure Terpasang</span>
                                 <span class="badge bg-light text-navy border cursor-pointer doc-cat-preset" data-cat="Kondisi Lokasi">Kondisi Lokasi</span>

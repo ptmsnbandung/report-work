@@ -511,32 +511,45 @@
                 $fotoBuktiMasalah = $tiket->dokumentasis->where('kategori', 'Bukti Masalah');
             @endphp
             @if($fotoBuktiMasalah->count() > 0)
-            <!-- Galeri Foto Bukti Masalah Awal -->
-            <div class="p-2.5 rounded-3 mb-3" style="background: rgba(239, 68, 68, 0.04); border: 1px dashed rgba(239, 68, 68, 0.3);">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <div class="d-flex align-items-center gap-1.5 text-danger fw-bold small">
-                        <i class="bi bi-camera-fill"></i>
-                        <span>Foto Bukti Gangguan Awal ({{ $fotoBuktiMasalah->count() }} Foto):</span>
-                    </div>
-                    <small class="text-muted" style="font-size: 0.7rem;">Klik foto untuk memperbesar</small>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                    @foreach($fotoBuktiMasalah as $fb)
-                    <div class="position-relative rounded-3 overflow-hidden shadow-xs border"
-                         style="width: 80px; height: 80px; cursor: pointer; background: #0f172a;"
-                         onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah &bull; {{ $fb->formatted_timestamp }}')">
-                        <img src="{{ asset('storage/' . $fb->file_path) }}"
-                             alt="Bukti Masalah"
-                             class="w-100 h-100"
-                             style="object-fit: cover; transition: transform 0.2s ease;"
-                             onmouseover="this.style.transform='scale(1.08)'"
-                             onmouseout="this.style.transform='scale(1)'"
-                             onerror="this.onerror=null; this.src='{{ asset($fb->file_path) }}';">
-                        <div class="position-absolute bottom-0 start-0 end-0 text-center py-0.5" style="background: rgba(0,0,0,0.6); color: #fff; font-size: 0.6rem;">
-                            <i class="bi bi-zoom-in"></i> Zoom
+            <!-- ── KARTU FOTO BUKTI GANGGUAN AWAL ── -->
+            <div class="card border rounded-3 mb-3 shadow-xs overflow-hidden" style="background: #ffffff; border-color: #e2e8f0 !important;">
+                <div class="card-header py-2 px-3 bg-light bg-opacity-75 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 26px; height: 26px; background: #fee2e2; color: #ef4444; font-size: 0.8rem;">
+                            <i class="bi bi-camera-fill"></i>
                         </div>
+                        <span class="fw-bold text-navy" style="font-size: 0.82rem;">Foto Bukti Gangguan Awal</span>
+                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle rounded-pill px-2 py-0.5" style="font-size: 0.68rem; font-weight: 600;">
+                            {{ $fotoBuktiMasalah->count() }} Foto
+                        </span>
                     </div>
-                    @endforeach
+                    <span class="text-muted" style="font-size: 0.72rem;">
+                        <i class="bi bi-zoom-in text-primary me-1"></i>Klik foto untuk memperbesar
+                    </span>
+                </div>
+                <div class="card-body p-3">
+                    <div class="d-flex flex-wrap gap-2.5 align-items-center">
+                        @foreach($fotoBuktiMasalah as $fb)
+                        <div class="position-relative rounded-3 overflow-hidden shadow-xs border"
+                             style="width: 92px; height: 92px; cursor: pointer; background: #0f172a; flex-shrink: 0; transition: transform 0.2s ease, box-shadow 0.2s ease;"
+                             onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah Tiket #{{ $tiket->no_tiket }} &bull; {{ $fb->formatted_timestamp }}')"
+                             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';"
+                             onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                            <img src="{{ asset('storage/' . $fb->file_path) }}"
+                                 alt="Bukti Masalah"
+                                 class="w-100 h-100"
+                                 style="object-fit: cover;"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='{{ asset($fb->file_path) }}';">
+                            
+                            <!-- Overlay Hover / Zoom -->
+                            <div class="position-absolute bottom-0 start-0 end-0 d-flex align-items-center justify-content-center py-1"
+                                 style="background: linear-gradient(transparent, rgba(15, 23, 42, 0.85)); color: #ffffff; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2px;">
+                                <i class="bi bi-arrows-fullscreen me-1"></i> Zoom
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
             @endif
