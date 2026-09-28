@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CloseTiketRequest;
 use App\Http\Requests\StoreTiketRequest;
 use App\Http\Requests\UpdateTiketRequest;
+use App\Models\Kronologis;
 use App\Models\MasterSla;
 use App\Models\Tiket;
 use App\Models\User;
@@ -316,9 +317,10 @@ class TiketController extends Controller
             $teamDesc = $teamUsers ? " bersama tim: {$teamUsers}" : "";
             $catatanDesc = $request->catatan_dispatch ? "\n> Catatan: {$request->catatan_dispatch}" : "";
 
-            $this->kronologisService->createKronologis($tiket, [
+            Kronologis::create([
+                'id_tiket' => $tiket->id,
                 'user_id' => $request->user()->id,
-                'kategori' => 'UPDATE',
+                'kategori' => 'LAIN',
                 'informasi' => "👨‍🔧 **DISPATCH / PENUGASAN TIM**\nManager Teknis ({$request->user()->name}) menugaskan **{$leadUser?->name}**{$teamDesc} untuk menangani perbaikan tiket ini.{$catatanDesc}",
                 'timestamp' => now(),
             ]);
