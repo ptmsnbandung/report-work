@@ -3495,18 +3495,24 @@
         <div class="card-body p-3 p-md-3.5">
             <!-- 4 Metric Micro-Tiles Grid -->
             <div class="row g-2 g-md-2.5 mb-2.5">
-                <!-- 1. Segment Backbone -->
+                <!-- 1. Segment Backbone / POP -->
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="tiket-metric-tile">
                         <div class="d-flex align-items-center gap-2 mb-1">
                             <div class="tiket-metric-icon bg-teal-subtle text-teal">
                                 <i class="bi bi-diagram-3-fill"></i>
                             </div>
-                            <span class="tiket-metric-label">Segment Backbone</span>
+                            <span class="tiket-metric-label">{{ $tiket->isBroadband() ? 'POP / Area Layanan' : 'Segment Backbone' }}</span>
                         </div>
+                        @if($tiket->isBroadband())
+                        <div class="tiket-metric-value text-truncate" title="{{ $namaPop ?: $tiket->kode_pop }}">
+                            {{ $namaPop ?: ($tiket->kode_pop ?: '-') }}
+                        </div>
+                        @else
                         <div class="tiket-metric-value text-truncate" title="{{ $tiket->backbone_segment }}">
                             {{ $tiket->backbone_segment }}
                         </div>
+                        @endif
                     </div>
                 </div>
 
