@@ -993,6 +993,7 @@
                                           ])->filter()->join(', ')
                                         : 'Wajib tambah JC / Manuver Core';
                                 @endphp
+                                <div class="text-truncate closing-tile-desc" style="font-size: 0.7rem; color: {{ $prereqs['items']['tipe_penanganan'] ? '#059669' : '#64748b' }};">
                                     {{ $penangananDesc }}
                                 </div>
                             </div>
@@ -1009,3 +1010,4 @@
     @endif
 
     <!-- ── TABBED NAVIGATION (MOBILE SCROLLABLE) ── -->
+</div>

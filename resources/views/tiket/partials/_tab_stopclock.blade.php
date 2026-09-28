@@ -1,4 +1,4 @@
-﻿                <!-- ════ TAB 6: STOP CLOCK & SHIFT HANDOVER ════ -->
+                <!-- ════ TAB 6: STOP CLOCK & SHIFT HANDOVER ════ -->
                 <div class="tab-pane fade" id="stopclock-pane" role="tabpanel">
                     <div class="tab-header-banner">
                         <div class="tab-header-left">
@@ -145,7 +145,6 @@
                             @endif
                         </div>
                     </div>
-                </div>
 
             </div>
         </div>
