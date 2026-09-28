@@ -1,4 +1,10 @@
-﻿                                <i class="bi bi-file-earmark-text-fill"></i>
+﻿                <!-- ════ TAB 2: RESUME PEKERJAAN (FASE 4) ════ -->
+                <div class="tab-pane fade" id="resume-pane" role="tabpanel">
+                    <!-- Header Banner -->
+                    <div class="tab-header-banner">
+                        <div class="tab-header-left">
+                            <div class="tab-header-icon-box icon-box-blue">
+                                <i class="bi bi-file-earmark-text-fill"></i>
                             </div>
                             <div>
                                 <div class="tab-header-title">Resume Akhir Pekerjaan</div>
@@ -138,9 +144,3 @@
                     @endif
                 </div>
 
-                <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
-                @if($tiket->isBackbone())
-                <div class="tab-pane fade" id="penanganan-pane" role="tabpanel">
-                    @php
-                        $rawPenanganan = $tiket->tipe_penanganan ?? $tiket->resume?->tipe_penanganan;
-                        $hasJc = $tiket->jointClosures->count() > 0;

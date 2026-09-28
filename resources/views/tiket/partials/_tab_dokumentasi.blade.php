@@ -1,4 +1,10 @@
-﻿                            </div>
+﻿                <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
+                <div class="tab-pane fade" id="dokumentasi-pane" role="tabpanel">
+                    <div class="tab-header-banner">
+                        <div class="tab-header-left">
+                            <div class="tab-header-icon-box icon-box-cyan">
+                                <i class="bi bi-camera-fill"></i>
+                            </div>
                             <div>
                                 <div class="tab-header-title">Dokumentasi Foto Lapangan</div>
                                 <div class="tab-header-subtitle">Foto jointing, closure, kondisi tiang, dan hasil ukur OTDR</div>
@@ -112,10 +118,3 @@
                     @endif
                 </div>
 
-                <!-- ════ TAB 6: STOP CLOCK & SHIFT HANDOVER ════ -->
-                <div class="tab-pane fade" id="stopclock-pane" role="tabpanel">
-                    <div class="tab-header-banner">
-                        <div class="tab-header-left">
-                            <div class="tab-header-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">
-                                <i class="bi bi-stopwatch"></i>
-                            </div>

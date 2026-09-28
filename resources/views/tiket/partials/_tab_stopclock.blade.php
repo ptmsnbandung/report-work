@@ -1,4 +1,10 @@
-﻿                            </div>
+﻿                <!-- ════ TAB 6: STOP CLOCK & SHIFT HANDOVER ════ -->
+                <div class="tab-pane fade" id="stopclock-pane" role="tabpanel">
+                    <div class="tab-header-banner">
+                        <div class="tab-header-left">
+                            <div class="tab-header-icon-box" style="background: rgba(245, 158, 11, 0.15); color: #d97706;">
+                                <i class="bi bi-stopwatch"></i>
+                            </div>
                             <div>
                                 <div class="tab-header-title">Stop Clock SLA & Serah Terima Shift</div>
                                 <div class="tab-header-subtitle">Log riwayat jeda penghitungan SLA dan handover antar shift</div>
@@ -147,3 +153,10 @@
 
 </div>
 
+<!-- ── MODAL PENUGASAN TEKNISI / DISPATCH (MANAGER TEKNIS & ADMIN) ── -->
+@if(auth()->user()->hasRole(['admin', 'manager_teknisi']) && $tiket->status !== 'CLOSE')
+<div class="modal fade" id="assignTeknisiModal" tabindex="-1" aria-labelledby="assignTeknisiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <form action="{{ route('tiket.assign-teknisi', $tiket->id) }}" method="POST">
+                @csrf

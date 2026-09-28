@@ -1,4 +1,10 @@
-﻿                                <div class="tab-header-left">
+﻿                <!-- ════ TAB 3: MATERIAL & TITIK PERBAIKAN (FASE 4) ════ -->
+                <div class="tab-pane fade" id="material-pane" role="tabpanel">
+                    <div class="row g-4">
+                        <!-- Materials Column -->
+                        <div class="col-12 col-lg-6">
+                            <div class="tab-header-banner">
+                                <div class="tab-header-left">
                                     <div class="tab-header-icon-box icon-box-amber">
                                         <i class="bi bi-box-seam-fill"></i>
                                     </div>
@@ -212,10 +218,3 @@
                     </div>
                 </div>
 
-                <!-- ════ TAB 4: DOKUMENTASI FOTO (FASE 5) ════ -->
-                <div class="tab-pane fade" id="dokumentasi-pane" role="tabpanel">
-                    <div class="tab-header-banner">
-                        <div class="tab-header-left">
-                            <div class="tab-header-icon-box icon-box-cyan">
-                                <i class="bi bi-camera-fill"></i>
-                            </div>

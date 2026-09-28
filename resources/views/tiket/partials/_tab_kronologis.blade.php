@@ -1,4 +1,10 @@
-﻿                                <div class="wa-header-avatar">
+﻿                <!-- ════ TAB 1: KRONOLOGIS (FASE 3 - WHATSAPP CHAT FEED) ════ -->
+                <div class="tab-pane fade show active" id="kronologis-pane" role="tabpanel">
+                    <div class="wa-chat-container shadow-xs">
+                        <!-- Chat Header -->
+                        <div class="wa-chat-header">
+                            <div class="d-flex align-items-center gap-2 gap-sm-2.5 overflow-hidden flex-grow-1">
+                                <div class="wa-header-avatar">
                                     <i class="bi bi-chat-dots-fill text-white"></i>
                                 </div>
                                 <div class="overflow-hidden flex-grow-1">
@@ -462,9 +468,3 @@
                     </div>
                 </div>
 
-                <!-- ════ TAB 2: RESUME PEKERJAAN (FASE 4) ════ -->
-                <div class="tab-pane fade" id="resume-pane" role="tabpanel">
-                    <!-- Header Banner -->
-                    <div class="tab-header-banner">
-                        <div class="tab-header-left">
-                            <div class="tab-header-icon-box icon-box-blue">
