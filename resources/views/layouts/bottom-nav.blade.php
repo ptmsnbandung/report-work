@@ -79,8 +79,8 @@
         @endif
     </a>
 
-    <!-- 5. Monitoring (Role Helpdesk & Teknis) / Profil Akun (Role Lainnya) -->
-    @if($currentUser && $currentUser->hasRole(['helpdesk', 'teknis']))
+    <!-- 5. Monitoring (Role Manager Teknis, Helpdesk, Teknis, Admin) / Profil Akun (Role Lainnya) -->
+    @if($currentUser && $currentUser->hasRole(['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs']))
     <a href="{{ route('reports.index') }}" class="bottom-nav-item {{ str_starts_with($currentRoute, 'reports.') ? 'active' : '' }}" title="Monitoring">
         <i class="bi {{ str_starts_with($currentRoute, 'reports.') ? 'bi-graph-up-arrow' : 'bi-graph-up' }}"></i>
         <span>Monitoring</span>

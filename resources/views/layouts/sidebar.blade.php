@@ -72,8 +72,8 @@
         </a>
         @endif
 
-        <!-- LAPORAN & SLA -->
-        @if($currentUser->hasRole(['admin', 'helpdesk', 'sa_cs', 'teknis']))
+        <!-- LAPORAN & SLA (MONITORING) -->
+        @if($currentUser->hasRole(['admin', 'manager_teknisi', 'helpdesk', 'sa_cs', 'teknis']))
         <div class="nav-section-title" style="margin-top:0.5rem;">Laporan & SLA</div>
 
         <a href="{{ route('reports.index') }}" class="sidebar-link {{ $currentRoute === 'reports.index' ? 'active' : '' }}">
