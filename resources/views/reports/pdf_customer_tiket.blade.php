@@ -206,47 +206,32 @@
     <div class="msn-letterhead-header">
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
-                <!-- Sisi Kiri: Ornamen Grafis Geometris Slate & Cyan -->
-                <td style="width: 46%; vertical-align: top; padding: 0;">
-                    <svg width="240" height="52" viewBox="0 0 240 52" style="display: block;">
-                        <polygon points="0,0 210,0 185,52 0,52" fill="#0c2033"/>
-                        <polygon points="215,0 225,0 200,52 190,52" fill="#00d2ff"/>
-                        <polygon points="230,0 240,0 215,52 205,52" fill="#0284c7"/>
-                        <polygon points="15,0 28,0 8,52 0,52" fill="#00d2ff" opacity="0.25"/>
-                    </svg>
+                <!-- Sisi Kiri: Logo Resmi PT Media Solusi Network -->
+                <td style="width: 50%; vertical-align: middle; text-align: left; padding-left: 24px; padding-top: 4px;">
+                    @if($logoBase64)
+                        <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 40px; width: auto; display: block;">
+                    @else
+                        <svg width="36" height="36" viewBox="0 0 100 100">
+                            <line x1="25" y1="30" x2="75" y2="30" stroke="#00d2ff" stroke-width="6"/>
+                            <line x1="25" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="6"/>
+                            <line x1="75" y1="30" x2="50" y2="75" stroke="#00d2ff" stroke-width="6"/>
+                            <circle cx="25" cy="30" r="14" fill="#0284c7" stroke="#ffffff" stroke-width="3"/>
+                            <circle cx="25" cy="30" r="6" fill="#ffffff"/>
+                            <circle cx="75" cy="30" r="14" fill="#00d2ff" stroke="#ffffff" stroke-width="3"/>
+                            <circle cx="75" cy="30" r="6" fill="#ffffff"/>
+                            <circle cx="50" cy="75" r="16" fill="#0ea5e9" stroke="#ffffff" stroke-width="3"/>
+                            <circle cx="50" cy="75" r="7" fill="#ffffff"/>
+                        </svg>
+                    @endif
                 </td>
-                <!-- Sisi Kanan: Logo & Brand PT. MEDIA SOLUSI NETWORK -->
-                <td style="width: 54%; vertical-align: middle; text-align: right; padding-right: 24px; padding-top: 4px;">
-                    <table style="float: right; border-collapse: collapse;">
-                        <tr>
-                            <td style="vertical-align: middle; padding-right: 8px;">
-                                @if($logoBase64)
-                                    <img src="{{ $logoBase64 }}" alt="MSN Logo" style="height: 38px; width: auto; display: block;">
-                                @else
-                                    <svg width="34" height="34" viewBox="0 0 100 100">
-                                        <line x1="25" y1="30" x2="75" y2="30" stroke="#00d2ff" stroke-width="6"/>
-                                        <line x1="25" y1="30" x2="50" y2="75" stroke="#0284c7" stroke-width="6"/>
-                                        <line x1="75" y1="30" x2="50" y2="75" stroke="#00d2ff" stroke-width="6"/>
-                                        <circle cx="25" cy="30" r="14" fill="#0284c7" stroke="#ffffff" stroke-width="3"/>
-                                        <circle cx="25" cy="30" r="6" fill="#ffffff"/>
-                                        <circle cx="75" cy="30" r="14" fill="#00d2ff" stroke="#ffffff" stroke-width="3"/>
-                                        <circle cx="75" cy="30" r="6" fill="#ffffff"/>
-                                        <circle cx="50" cy="75" r="16" fill="#0ea5e9" stroke="#ffffff" stroke-width="3"/>
-                                        <circle cx="50" cy="75" r="7" fill="#ffffff"/>
-                                    </svg>
-                                @endif
-                            </td>
-                            <td style="vertical-align: middle; text-align: left;">
-                                <div style="font-size: 11pt; font-weight: 800; line-height: 1.1; letter-spacing: 0.2px;">
-                                    <span style="color: #00bcd4;">PT. MEDIA</span><br>
-                                    <span style="color: #0f294a;">SOLUSI NETWORK</span>
-                                </div>
-                                <div style="font-size: 4.8pt; font-weight: 700; color: #64748b; letter-spacing: 2px; margin-top: 1.5px; text-transform: uppercase;">
-                                    G E T &nbsp; Y O U R &nbsp; I T &nbsp; A C C E S S
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                <!-- Sisi Kanan: Ornamen Grafis Geometris Slate & Cyan -->
+                <td style="width: 50%; vertical-align: top; text-align: right; padding: 0;">
+                    <svg width="240" height="52" viewBox="0 0 240 52" style="display: block; float: right;">
+                        <polygon points="30,0 240,0 240,52 55,52" fill="#0c2033"/>
+                        <polygon points="15,0 25,0 50,52 40,52" fill="#00d2ff"/>
+                        <polygon points="0,0 10,0 35,52 25,52" fill="#0284c7"/>
+                        <polygon points="225,0 240,0 240,52 212,52" fill="#00d2ff" opacity="0.25"/>
+                    </svg>
                 </td>
             </tr>
         </table>
