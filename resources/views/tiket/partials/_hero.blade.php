@@ -503,55 +503,48 @@
             @endphp
 
             @if($hasDesc || $hasFoto)
-            <div class="row g-3 mb-3 align-items-stretch">
+            <div class="tiket-info-strip mb-3">
 
                 @if($hasDesc)
-                {{-- ── DESKRIPSI GANGGUAN ── --}}
-                <div class="{{ $hasFoto ? 'col-12 col-lg-6' : 'col-12' }}">
-                    <div class="tiket-desc-card h-100">
-                        <div class="tiket-desc-card-header">
-                            <span class="tiket-desc-card-icon"><i class="bi bi-chat-left-text"></i></span>
-                            <span class="tiket-desc-card-title">Deskripsi Gangguan &amp; Catatan Awal</span>
-                        </div>
-                        <div class="tiket-desc-text">{{ $tiket->deskripsi }}</div>
+                {{-- DESKRIPSI --}}
+                <div class="tiket-info-strip-desc {{ $hasFoto ? '' : 'w-100' }}">
+                    <div class="tiket-info-strip-label">
+                        <i class="bi bi-chat-left-text"></i>
+                        <span>Deskripsi Gangguan &amp; Catatan Awal</span>
                     </div>
+                    <div class="tiket-desc-text">{{ $tiket->deskripsi }}</div>
                 </div>
                 @endif
 
                 @if($hasFoto)
-                {{-- ── FOTO BUKTI AWAL ── --}}
-                <div class="{{ $hasDesc ? 'col-12 col-lg-6' : 'col-12' }}">
-                    <div class="tiket-foto-bukti-card h-100">
-                        <div class="tiket-foto-bukti-header">
-                            <div class="d-flex align-items-center gap-2">
-                                <span class="tiket-foto-bukti-icon"><i class="bi bi-camera-fill"></i></span>
-                                <span class="tiket-foto-bukti-title">Foto Bukti Gangguan Awal</span>
-                                <span class="badge rounded-pill" style="background: rgba(239,68,68,0.12); color: #dc2626; font-size: 0.65rem; border: 1px solid rgba(239,68,68,0.2); padding: 2px 8px;">
-                                    {{ $fotoBuktiMasalah->count() }} Foto
-                                </span>
-                            </div>
-                            <span class="tiket-foto-bukti-hint">
-                                <i class="bi bi-arrows-fullscreen me-1"></i>Klik untuk zoom
-                            </span>
+                {{-- FOTO BUKTI --}}
+                <div class="tiket-info-strip-foto {{ $hasDesc ? '' : 'w-100' }}">
+                    <div class="tiket-info-strip-label tiket-info-strip-label--red">
+                        <i class="bi bi-camera-fill"></i>
+                        <span>Foto Bukti Awal</span>
+                        <span class="badge rounded-pill ms-1" style="background:rgba(239,68,68,0.12);color:#dc2626;font-size:0.62rem;border:1px solid rgba(239,68,68,0.25);padding:1px 7px;">
+                            {{ $fotoBuktiMasalah->count() }} Foto
+                        </span>
+                    </div>
+                    <div class="tiket-foto-bukti-grid">
+                        @foreach($fotoBuktiMasalah as $fb)
+                        <div class="tiket-foto-thumb"
+                             onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah #{{ $tiket->no_tiket }}')"
+                             title="{{ $fb->formatted_timestamp }}">
+                            <img src="{{ asset('storage/' . $fb->file_path) }}"
+                                 alt="Bukti"
+                                 loading="lazy"
+                                 onerror="this.onerror=null;this.src='{{ asset($fb->file_path) }}';">
+                            <div class="tiket-foto-thumb-overlay"><i class="bi bi-arrows-fullscreen"></i></div>
                         </div>
-                        <div class="tiket-foto-bukti-grid">
-                            @foreach($fotoBuktiMasalah as $fb)
-                            <div class="tiket-foto-thumb"
-                                 onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah Tiket #{{ $tiket->no_tiket }} — {{ $fb->formatted_timestamp }}')"
-                                 title="{{ $fb->formatted_timestamp }}">
-                                <img src="{{ asset('storage/' . $fb->file_path) }}"
-                                     alt="Bukti Masalah"
-                                     loading="lazy"
-                                     onerror="this.onerror=null; this.src='{{ asset($fb->file_path) }}';">
-                                <div class="tiket-foto-thumb-overlay"><i class="bi bi-arrows-fullscreen"></i></div>
-                            </div>
-                            @endforeach
-                        </div>
+                        @endforeach
                     </div>
                 </div>
                 @endif
+
             </div>
             @endif
+
 
             <!-- Meta Footer Strip -->
             <div class="tiket-meta-footer">

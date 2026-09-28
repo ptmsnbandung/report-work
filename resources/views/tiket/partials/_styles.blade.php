@@ -1866,85 +1866,82 @@
         white-space: pre-line;
     }
 
-    /* ── DESC CARD HEADER ── */
-    .tiket-desc-card-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.6rem;
-    }
-    .tiket-desc-card-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 26px; height: 26px;
-        background: rgba(13, 148, 136, 0.1);
-        color: #0d9488;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        flex-shrink: 0;
-    }
-    .tiket-desc-card-title {
-        font-size: 0.78rem;
-        font-weight: 700;
-        color: #0f172a;
-        letter-spacing: 0.1px;
-    }
-
-    /* ── FOTO BUKTI CARD ── */
-    .tiket-foto-bukti-card {
-        background: #fff8f8;
-        border: 1px solid #fecaca;
-        border-left: 4px solid #ef4444;
-        border-radius: 10px;
-        overflow: hidden;
+    /* ── INFO STRIP (deskripsi + foto bukti side by side) ── */
+    .tiket-info-strip {
         display: flex;
         flex-direction: column;
+        gap: 0.6rem;
     }
-    .tiket-foto-bukti-header {
+    @media (min-width: 992px) {
+        .tiket-info-strip {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .tiket-info-strip-desc {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .tiket-info-strip-foto {
+            flex: 0 0 auto;
+            min-width: 220px;
+            max-width: 50%;
+        }
+    }
+
+    .tiket-info-strip-desc,
+    .tiket-info-strip-foto {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .tiket-info-strip-desc {
+        border-left: 4px solid #0d9488;
+        padding: 0.7rem 0.9rem;
+    }
+    .tiket-info-strip-foto {
+        border-left: 4px solid #ef4444;
+        background: #fff8f8;
+        border-color: #fecaca;
+    }
+
+    .tiket-info-strip-label {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        padding: 0.55rem 0.9rem;
-        background: rgba(255,255,255,0.85);
-        border-bottom: 1px solid #fecaca;
-    }
-    .tiket-foto-bukti-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 26px; height: 26px;
-        background: rgba(239,68,68,0.1);
-        color: #dc2626;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        flex-shrink: 0;
-    }
-    .tiket-foto-bukti-title {
-        font-size: 0.78rem;
+        gap: 0.4rem;
+        font-size: 0.75rem;
         font-weight: 700;
         color: #0f172a;
+        margin-bottom: 0.45rem;
     }
-    .tiket-foto-bukti-hint {
-        font-size: 0.68rem;
-        color: #94a3b8;
+    .tiket-info-strip-label i {
+        color: #0d9488;
+        font-size: 0.82rem;
     }
+    .tiket-info-strip-label--red i {
+        color: #dc2626;
+    }
+    .tiket-info-strip-foto .tiket-info-strip-label {
+        padding: 0.55rem 0.75rem 0;
+        margin-bottom: 0;
+        border-bottom: 1px solid #fecaca;
+        padding-bottom: 0.45rem;
+    }
+
     .tiket-foto-bukti-grid {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
-        padding: 0.75rem;
+        gap: 0.45rem;
+        padding: 0.6rem 0.75rem;
         align-items: flex-start;
-        flex: 1;
     }
 
     /* ── THUMBNAIL ── */
     .tiket-foto-thumb {
         position: relative;
-        width: 84px;
-        height: 84px;
+        width: 80px;
+        height: 80px;
         border-radius: 8px;
         overflow: hidden;
         cursor: pointer;
@@ -1954,7 +1951,7 @@
         transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
     }
     .tiket-foto-thumb:hover {
-        transform: translateY(-3px) scale(1.04);
+        transform: translateY(-3px) scale(1.05);
         border-color: #ef4444;
         box-shadow: 0 6px 16px rgba(239,68,68,0.25);
     }
@@ -1966,11 +1963,11 @@
     .tiket-foto-thumb-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(transparent 55%, rgba(15,23,42,0.75) 100%);
+        background: linear-gradient(transparent 50%, rgba(15,23,42,0.8) 100%);
         display: flex;
         align-items: flex-end;
         justify-content: center;
-        padding-bottom: 4px;
+        padding-bottom: 5px;
         color: #fff;
         font-size: 0.65rem;
         opacity: 0;
@@ -1979,6 +1976,7 @@
     .tiket-foto-thumb:hover .tiket-foto-thumb-overlay {
         opacity: 1;
     }
+
 
     .tiket-meta-footer {
         display: flex;
