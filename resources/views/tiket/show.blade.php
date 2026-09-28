@@ -338,13 +338,22 @@
         scroll-behavior: auto !important;
     }
 
+    #timelineWrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
     .wa-chat-stream {
         padding: 1rem 0.85rem 2rem 0.85rem !important;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        min-height: 450px;
-        max-height: 650px;
+        height: clamp(380px, calc(100dvh - 340px), calc(100vh - 260px));
+        min-height: 380px;
+        max-height: calc(100dvh - 260px);
         overflow-y: auto;
         overflow-x: hidden;
         overflow-anchor: auto !important;
@@ -1430,8 +1439,9 @@
             padding-bottom: calc(var(--bottom-nav-height, 86px) + 6px) !important;
         }
         .wa-chat-stream {
-            min-height: clamp(360px, calc(100dvh - 270px), 650px);
-            max-height: clamp(360px, calc(100dvh - 270px), 650px);
+            height: clamp(260px, calc(100dvh - 355px), 600px) !important;
+            min-height: 240px !important;
+            max-height: calc(100dvh - 330px) !important;
             padding: 0.75rem 0.65rem 2.2rem 0.65rem !important;
             gap: 0.6rem;
             scroll-behavior: auto !important;
