@@ -91,6 +91,19 @@ class TiketController extends Controller
         try {
             $tiket = $this->tiketService->createTiket($request->validated(), $request->user());
 
+            // Simpan foto bukti masalah (opsional) jika diunggah saat open tiket
+            if ($request->hasFile('foto_masalah')) {
+                try {
+                    $dokumentasiService = app(\App\Services\DokumentasiService::class);
+                    $dokumentasiService->upload($tiket, [
+                        'kategori' => 'Bukti Masalah',
+                        'timestamp' => $tiket->tanggal_open,
+                    ], $request->file('foto_masalah'));
+                } catch (\Throwable $eDoc) {
+                    \Illuminate\Support\Facades\Log::warning("Gagal upload foto bukti awal tiket #{$tiket->no_tiket}: " . $eDoc->getMessage());
+                }
+            }
+
             return redirect()
                 ->route('tiket.show', $tiket->id)
                 ->with('success', "Tiket gangguan [{$tiket->no_tiket}] berhasil dibuat dan berstatus OPEN.");

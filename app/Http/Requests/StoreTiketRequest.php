@@ -44,6 +44,8 @@ class StoreTiketRequest extends FormRequest
             'jenis_kendala_broadband' => ['nullable', 'string', 'max:100'],
             'redaman_sebelum'         => ['nullable', 'string', 'max:20'],
             'redaman_sesudah'         => ['nullable', 'string', 'max:20'],
+            'foto_masalah'            => ['nullable', 'array'],
+            'foto_masalah.*'          => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,heic', 'max:12288'],
         ];
     }
 
@@ -62,6 +64,9 @@ class StoreTiketRequest extends FormRequest
             'tanggal_open.date'           => 'Format waktu open tiket tidak valid.',
             'sla_target_minutes.integer'  => 'Target SLA harus berupa angka menit.',
             'sla_target_minutes.min'      => 'Target SLA minimal 1 menit.',
+            'foto_masalah.*.image'        => 'File bukti kendala harus berupa gambar (JPG, PNG, WEBP, HEIC).',
+            'foto_masalah.*.mimes'        => 'Format foto harus JPEG, PNG, JPG, WEBP, atau HEIC.',
+            'foto_masalah.*.max'          => 'Ukuran foto maksimal 12 MB per gambar.',
         ];
     }
 }

@@ -1,4 +1,4 @@
-﻿<div class="container-fluid px-0">
+<div class="container-fluid px-0">
 
     <!-- ── BREADCRUMB (Desktop only to save vertical space on mobile) ── -->
     <div class="d-none d-md-block mb-3">
@@ -504,6 +504,40 @@
                     <span>Deskripsi Gangguan & Catatan Awal:</span>
                 </div>
                 <div class="tiket-desc-text">{{ $tiket->deskripsi }}</div>
+            </div>
+            @endif
+
+            @php
+                $fotoBuktiMasalah = $tiket->dokumentasis->where('kategori', 'Bukti Masalah');
+            @endphp
+            @if($fotoBuktiMasalah->count() > 0)
+            <!-- Galeri Foto Bukti Masalah Awal -->
+            <div class="p-2.5 rounded-3 mb-3" style="background: rgba(239, 68, 68, 0.04); border: 1px dashed rgba(239, 68, 68, 0.3);">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="d-flex align-items-center gap-1.5 text-danger fw-bold small">
+                        <i class="bi bi-camera-fill"></i>
+                        <span>Foto Bukti Gangguan Awal ({{ $fotoBuktiMasalah->count() }} Foto):</span>
+                    </div>
+                    <small class="text-muted" style="font-size: 0.7rem;">Klik foto untuk memperbesar</small>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    @foreach($fotoBuktiMasalah as $fb)
+                    <div class="position-relative rounded-3 overflow-hidden shadow-xs border"
+                         style="width: 80px; height: 80px; cursor: pointer; background: #0f172a;"
+                         onclick="zoomPhoto('{{ asset('storage/' . $fb->file_path) }}', 'Bukti Masalah &bull; {{ $fb->formatted_timestamp }}')">
+                        <img src="{{ asset('storage/' . $fb->file_path) }}"
+                             alt="Bukti Masalah"
+                             class="w-100 h-100"
+                             style="object-fit: cover; transition: transform 0.2s ease;"
+                             onmouseover="this.style.transform='scale(1.08)'"
+                             onmouseout="this.style.transform='scale(1)'"
+                             onerror="this.onerror=null; this.src='{{ asset($fb->file_path) }}';">
+                        <div class="position-absolute bottom-0 start-0 end-0 text-center py-0.5" style="background: rgba(0,0,0,0.6); color: #fff; font-size: 0.6rem;">
+                            <i class="bi bi-zoom-in"></i> Zoom
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             @endif
 

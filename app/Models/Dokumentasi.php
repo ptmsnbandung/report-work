@@ -85,6 +85,7 @@ class Dokumentasi extends Model
     public function getKategoriBadgeClassAttribute(): string
     {
         return match (strtolower($this->kategori)) {
+            'bukti masalah', 'foto masalah', 'kendala' => 'bg-danger text-white',
             'hasil jointing', 'jointing' => 'bg-success text-white',
             'closure terpasang', 'closure' => 'bg-info text-dark',
             'kondisi lokasi', 'lokasi' => 'bg-warning text-dark',

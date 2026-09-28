@@ -219,7 +219,7 @@
                 </div>
 
                 <div class="card-body p-3 p-md-4">
-                    <form action="{{ route('tiket.store') }}" method="POST" id="formOpenTiket">
+                    <form action="{{ route('tiket.store') }}" method="POST" id="formOpenTiket" enctype="multipart/form-data">
                         @csrf
 
                         <!-- 0. PILIHAN KATEGORI TIKET -->
@@ -568,7 +568,7 @@
                         </div>
 
                         <!-- Deskripsi Gangguan -->
-                        <div class="mb-4">
+                        <div class="mb-3">
                             <label for="deskripsi" class="form-label-custom">
                                 <i class="bi bi-card-text text-primary"></i> Deskripsi Gangguan & Informasi Awal
                                 <span class="badge bg-light text-muted ms-1 border" style="font-size: 0.6rem; padding: 2px 5px;">Opsional</span>
@@ -581,6 +581,43 @@
                             @error('deskripsi')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        <!-- ── UPLOAD FOTO BUKTI MASALAH (OPSIONAL) ── -->
+                        <div class="mb-4">
+                            <label class="form-label-custom d-flex align-items-center justify-content-between mb-1">
+                                <span>
+                                    <i class="bi bi-camera-fill text-danger"></i> Foto Bukti Gangguan / Masalah
+                                    <span class="badge bg-light text-muted ms-1 border" style="font-size: 0.6rem; padding: 2px 5px;">Opsional</span>
+                                </span>
+                                <small class="text-muted" style="font-size: 0.72rem;">Bisa pilih > 1 foto &bull; Maks 12MB/foto</small>
+                            </label>
+
+                            <div class="upload-dropzone p-3 text-center rounded-3 border-2 border-dashed position-relative"
+                                 id="dropzoneFotoMasalah"
+                                 style="background: #f8fafc; border-color: #cbd5e1; cursor: pointer; transition: all 0.2s ease;">
+                                <input type="file"
+                                       name="foto_masalah[]"
+                                       id="inputFotoMasalah"
+                                       multiple
+                                       accept="image/*"
+                                       class="position-absolute top-0 start-0 w-100 h-100 opacity-0"
+                                       style="cursor: pointer; z-index: 2;"
+                                       onchange="handleFotoMasalahSelect(this)">
+                                <div class="py-2 pointer-events-none">
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 42px; height: 42px; background: rgba(239, 68, 68, 0.1); color: #ef4444;">
+                                        <i class="bi bi-cloud-arrow-up-fill fs-5"></i>
+                                    </div>
+                                    <div class="fw-bold text-dark mb-0" style="font-size: 0.85rem;">Klik atau Tarik Foto Bukti ke Sini</div>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Foto indikator LOS, layar NMS, kabel putus, redaman OPM, atau kondisi perangkat</small>
+                                </div>
+                            </div>
+                            @error('foto_masalah.*')
+                                <div class="text-danger small mt-1"><i class="bi bi-exclamation-circle me-1"></i>{{ $message }}</div>
+                            @enderror
+
+                            <!-- Container Preview Thumbnails -->
+                            <div id="previewFotoMasalahContainer" class="row g-2 mt-2 d-none"></div>
                         </div>
 
                         <!-- Submit Action Buttons -->
@@ -941,5 +978,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial state
     selectCategory(currentCategory);
 });
+
+// ── PHOTO PREVIEW HANDLER ──
+function handleFotoMasalahSelect(input) {
+    const container = document.getElementById('previewFotoMasalahContainer');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const files = input.files;
+    if (!files || files.length === 0) {
+        container.classList.add('d-none');
+        return;
+    }
+
+    container.classList.remove('d-none');
+
+    Array.from(files).forEach((file, index) => {
+        if (!file.type.startsWith('image/')) return;
+
+        const col = document.createElement('div');
+        col.className = 'col-6 col-sm-4 col-md-3 position-relative';
+
+        const card = document.createElement('div');
+        card.className = 'card border rounded-3 overflow-hidden shadow-xs h-100 bg-light';
+
+        const img = document.createElement('img');
+        img.className = 'w-100';
+        img.style.height = '90px';
+        img.style.objectFit = 'cover';
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        const caption = document.createElement('div');
+        caption.className = 'p-1 text-truncate text-muted text-center';
+        caption.style.fontSize = '0.68rem';
+        caption.textContent = file.name;
+
+        card.appendChild(img);
+        card.appendChild(caption);
+        col.appendChild(card);
+        container.appendChild(col);
+    });
+}
 </script>
 @endpush
