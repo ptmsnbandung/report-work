@@ -410,26 +410,24 @@
     .wa-date-divider {
         display: flex;
         justify-content: center;
-        margin: 0.65rem 0;
-        position: sticky;
-        top: 6px;
-        z-index: 4;
+        margin: 0.85rem 0 0.5rem 0;
+        position: relative;
+        z-index: 2;
     }
 
     .wa-date-chip {
-        background: rgba(255, 255, 255, 0.92);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
+        background: #ffffff;
         color: #475569;
-        font-size: 0.71rem;
+        font-size: 0.72rem;
         font-weight: 600;
-        padding: 0.28rem 0.85rem;
+        padding: 0.28rem 0.9rem;
         border-radius: 999px;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
-        border: 1px solid rgba(203, 213, 225, 0.85);
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+        border: 1px solid #dcdfd8;
         display: inline-flex;
         align-items: center;
         letter-spacing: 0.15px;
+        user-select: none;
     }
 
     /* Message Row & Bubble */
