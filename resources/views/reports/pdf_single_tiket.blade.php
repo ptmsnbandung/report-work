@@ -730,14 +730,22 @@
                 <div class="sign-space"></div>
                 <div class="signature-name">
                     (
-                    @if($tiket->resume && is_array($tiket->resume->team_om) && count($tiket->resume->team_om) > 0)
+                    @if($tiket->assignedLead)
+                        {{ $tiket->assignedLead->name }}
+                    @elseif($tiket->resume && is_array($tiket->resume->team_om) && count($tiket->resume->team_om) > 0)
                         {{ $tiket->resume->team_om[0] }}
                     @else
                         {{ $tiket->closer?->name ?? 'Leader Teknis' }}
                     @endif
                     )
                 </div>
-                <div class="signature-sub">Teknisi Backbone &amp; Splicer</div>
+                <div class="signature-sub">
+                    @if($tiket->assigned_team && count($tiket->assigned_team) > 0)
+                        Leader &amp; Tim Teknisi ({{ count($tiket->assigned_team) + 1 }} Org)
+                    @else
+                        Teknisi Backbone &amp; Splicer
+                    @endif
+                </div>
             </td>
             <td class="signature-box">
                 <div class="signature-role">Mengetahui (Manager Operasional)</div>

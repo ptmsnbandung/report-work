@@ -7,6 +7,7 @@ use App\Models\NotifikasiLog;
 use App\Models\Tiket;
 use App\Models\User;
 use App\Notifications\KronologisBaruNotification;
+use App\Notifications\TiketAssignedNotification;
 use App\Notifications\TiketBaruNotification;
 use App\Notifications\TiketClosedNotification;
 use App\Notifications\TiketUpdateNotification;
@@ -21,14 +22,14 @@ class NotificationService
     ) {}
 
     /**
-     * Kirim notifikasi saat tiket baru dibuat (ke Seluruh Tim NOC: Admin, Helpdesk, Teknis, SA/CS)
+     * Kirim notifikasi saat tiket baru dibuat (ke Admin, Manager Teknis, Helpdesk, Teknis, SA/CS)
      */
     public function notifyTiketBaru(Tiket $tiket): void
     {
         $creatorId = $tiket->created_by;
 
         $recipients = User::where('is_active', true)
-            ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
+            ->whereIn('role', ['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])
             ->when($creatorId, fn($q) => $q->where('id', '!=', $creatorId))
             ->get();
 
@@ -67,6 +68,69 @@ class NotificationService
     }
 
     /**
+     * Kirim notifikasi WEB saat tiket ditugaskan / di-dispatch oleh Manager Teknis
+     * Notifikasi dikirim ke SELURUH teknisi & NOC (dengan diferensiasi untuk teknisi yang ditunjuk vs observer)
+     */
+    public function notifyTiketAssigned(Tiket $tiket, User $manager): void
+    {
+        $recipients = User::where('is_active', true)
+            ->whereIn('role', ['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])
+            ->where('id', '!=', $manager->id)
+            ->get();
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
+
+        // 1. In-App Notification (Database Notification ke Navbar Lonceng)
+        Notification::send($recipients, new TiketAssignedNotification($tiket, $manager));
+
+        // 2. Log In-App Notification
+        $leadName = $tiket->assignedLead?->name ?? 'Lead Teknis';
+        foreach ($recipients as $u) {
+            $isAssigned = $tiket->isUserAssigned($u);
+            $pesanLog = $isAssigned
+                ? "TUGAS LAPANGAN: Ditugaskan pada tiket {$tiket->no_tiket} oleh {$manager->name}"
+                : "INFO PENUGASAN: Tiket {$tiket->no_tiket} ditugaskan ke {$leadName} & Tim";
+
+            NotifikasiLog::create([
+                'id_tiket' => $tiket->id,
+                'tipe' => 'INAPP',
+                'penerima' => "{$u->name} ({$u->role})",
+                'pesan' => $pesanLog,
+                'status' => 'SENT',
+            ]);
+        }
+
+        // 3. Web Push Notification (Browser / Mobile Web Push)
+        try {
+            // A. Kirim ke Teknisi yang Ditunjuk (High Priority)
+            $assignedUsers = $recipients->filter(fn($u) => $tiket->isUserAssigned($u));
+            if ($assignedUsers->isNotEmpty()) {
+                $this->webPushService->sendToUsers(
+                    $assignedUsers,
+                    "🚨 TUGAS ANDA: {$tiket->no_tiket}",
+                    "Anda ditugaskan oleh {$manager->name} di {$tiket->backbone_segment}. Klik untuk koordinasi.",
+                    route('tiket.show', $tiket->id)
+                );
+            }
+
+            // B. Kirim ke Teknisi Lain / Observer (Info Monitoring)
+            $observerUsers = $recipients->filter(fn($u) => !$tiket->isUserAssigned($u) && $u->hasRole('teknis'));
+            if ($observerUsers->isNotEmpty()) {
+                $this->webPushService->sendToUsers(
+                    $observerUsers,
+                    "ℹ️ Penugasan Tiket: {$tiket->no_tiket}",
+                    "Tiket {$tiket->backbone_segment} telah ditugaskan ke {$leadName} & Tim. (Mode Pantau)",
+                    route('tiket.show', $tiket->id)
+                );
+            }
+        } catch (\Throwable $e) {
+            Log::warning('WebPush failed for ticket assignment: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Kirim notifikasi saat kronologis baru ditambahkan (ke Admin, Helpdesk, Teknis, SA/CS)
      * Hanya dikirim ke pengguna lain (pengirim pesan tidak akan menerima notifikasi)
      */
@@ -75,7 +139,7 @@ class NotificationService
         $senderId = $kronologis->user_id;
 
         $recipients = User::where('is_active', true)
-            ->whereIn('role', ['admin', 'helpdesk', 'teknis', 'sa_cs'])
+            ->whereIn('role', ['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])
             ->when($senderId, fn($q) => $q->where('id', '!=', $senderId))
             ->get();
 

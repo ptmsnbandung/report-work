@@ -171,7 +171,20 @@ class TiketController extends Controller
             })->markAsRead();
         }
 
-        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews'));
+        // Daftar teknisi untuk modal penugasan / dispatch
+        $allTechnicians = User::where('is_active', true)
+            ->whereIn('role', ['teknis', 'manager_teknisi'])
+            ->orderBy('name')
+            ->get();
+
+        // Hitung beban kerja aktif (Workload) teknisi
+        $technicianWorkloads = Tiket::whereIn('status', ['OPEN', 'PROSES', 'PENDING_VERIFIKASI'])
+            ->whereNotNull('assigned_lead_id')
+            ->get()
+            ->groupBy('assigned_lead_id')
+            ->map->count();
+
+        return view('tiket.show', compact('tiket', 'mentionableUsers', 'totalKronologis', 'prerequisites', 'ticketViews', 'allTechnicians', 'technicianWorkloads'));
     }
 
     /**
@@ -261,6 +274,67 @@ class TiketController extends Controller
             return redirect()
                 ->route('tiket.show', $tiket->id)
                 ->with('error', 'Gagal closing awal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Penugasan Tim Teknisi oleh Manager Teknis / Admin
+     */
+    public function assignTeknisi(Request $request, Tiket $tiket): RedirectResponse|JsonResponse
+    {
+        $request->validate([
+            'assigned_lead_id' => 'required|exists:users,id',
+            'assigned_team' => 'nullable|array',
+            'assigned_team.*' => 'exists:users,id',
+            'catatan_dispatch' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $tiket->update([
+                'assigned_lead_id' => $request->assigned_lead_id,
+                'assigned_team' => $request->assigned_team ?? [],
+                'assigned_by' => $request->user()->id,
+                'assigned_at' => now(),
+                'catatan_dispatch' => $request->catatan_dispatch,
+                'dispatch_status' => 'assigned',
+            ]);
+
+            // Kirim notifikasi web ke seluruh teknisi & NOC
+            app(\App\Services\NotificationService::class)->notifyTiketAssigned($tiket, $request->user());
+
+            // Catat otomatis ke dalam kronologis
+            $leadUser = User::find($request->assigned_lead_id);
+            $teamUsers = User::whereIn('id', $request->assigned_team ?? [])->pluck('name')->join(', ');
+            $teamDesc = $teamUsers ? " bersama tim: {$teamUsers}" : "";
+            $catatanDesc = $request->catatan_dispatch ? "\n> Catatan: {$request->catatan_dispatch}" : "";
+
+            $this->kronologisService->createKronologis($tiket, [
+                'user_id' => $request->user()->id,
+                'kategori' => 'UPDATE',
+                'informasi' => "👨‍🔧 **DISPATCH / PENUGASAN TIM**\nManager Teknis ({$request->user()->name}) menugaskan **{$leadUser?->name}**{$teamDesc} untuk menangani perbaikan tiket ini.{$catatanDesc}",
+                'timestamp' => now(),
+            ]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => "Penugasan teknisi berhasil disimpan dan notifikasi web telah dikirim.",
+                    'data' => $tiket->fresh(['assignedLead', 'assignedBy']),
+                ]);
+            }
+
+            return redirect()
+                ->route('tiket.show', $tiket->id)
+                ->with('success', "Penugasan teknisi berhasil disimpan dan notifikasi web telah dikirim.");
+        } catch (\Throwable $e) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menugaskan teknisi: ' . $e->getMessage(),
+                ], 500);
+            }
+
+            return back()->with('error', 'Gagal menugaskan teknisi: ' . $e->getMessage());
         }
     }
 

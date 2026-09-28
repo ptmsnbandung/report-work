@@ -108,6 +108,21 @@ class KronologisController extends Controller
      */
     public function store(StoreKronologisRequest $request, Tiket $tiket): RedirectResponse|JsonResponse
     {
+        // Validasi hak akses penugasan koordinasi
+        if (!$tiket->canUserUpdateKoordinasi($request->user())) {
+            $assignedLeadName = $tiket->assignedLead?->name ?? 'Tim Teknisi yang Ditunjuk';
+            $msg = "Akses dibatasi. Anda berada dalam Mode Pemantauan (Read-Only) karena tiket ini sedang ditangani oleh {$assignedLeadName}.";
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $msg,
+                ], 403);
+            }
+
+            return back()->with('error', $msg);
+        }
+
         try {
             $foto = $request->file('foto') ?? $request->file('video');
             $kronologis = $this->kronologisService->addKronologis($tiket, $request->validated(), $request->user(), $foto);

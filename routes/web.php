@@ -55,13 +55,18 @@ Route::middleware(['auth', 'role'])->group(function () {
         Route::post('/tiket/{tiket}/reject-closing-awal', [TiketController::class, 'rejectClosingAwal'])->name('tiket.reject-closing-awal');
     });
 
-    // Teknisi & Admin: Closing Awal Tiket
+    // Teknisi & Manager Teknis & Admin: Closing Awal Tiket
     Route::post('/tiket/{tiket}/closing-awal', [TiketController::class, 'closingAwal'])
-        ->middleware('role:admin,teknis')
+        ->middleware('role:admin,manager_teknisi,teknis')
         ->name('tiket.closing-awal');
 
+    // Penugasan / Assignment Teknisi (Manager Teknis & Admin)
+    Route::post('/tiket/{tiket}/assign-teknisi', [TiketController::class, 'assignTeknisi'])
+        ->middleware('role:admin,manager_teknisi')
+        ->name('tiket.assign-teknisi');
+
     // Stop Clock & Handover Shift Operations
-    Route::middleware('role:admin,helpdesk,teknis')->group(function () {
+    Route::middleware('role:admin,manager_teknisi,helpdesk,teknis')->group(function () {
         Route::post('/tiket/{tiket}/stop-clock/start', [TiketController::class, 'startStopClock'])->name('tiket.stop-clock.start');
         Route::post('/tiket/{tiket}/stop-clock/stop', [TiketController::class, 'stopStopClock'])->name('tiket.stop-clock.stop');
         Route::post('/tiket/{tiket}/handover-shift', [TiketController::class, 'handoverShift'])->name('tiket.handover-shift');
@@ -80,64 +85,64 @@ Route::middleware(['auth', 'role'])->group(function () {
     // Modul Kronologis (Fase 3)
     Route::get('/tiket/{tiket}/kronologis', [KronologisController::class, 'index'])->name('tiket.kronologis.index');
     Route::post('/tiket/{tiket}/kronologis', [KronologisController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.kronologis.store');
     Route::put('/tiket/{tiket}/kronologis/{kronologis}', [KronologisController::class, 'update'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.kronologis.update');
     Route::delete('/tiket/{tiket}/kronologis/{kronologis}', [KronologisController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.kronologis.destroy');
 
     // Modul Resume & Material (Fase 4)
     Route::post('/tiket/{tiket}/resume', [ResumeController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.resume.store');
     Route::put('/tiket/{tiket}/resume', [ResumeController::class, 'update'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.resume.update');
 
     Route::post('/tiket/{tiket}/material', [MaterialController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.material.store');
     Route::delete('/tiket/{tiket}/material/{material}', [MaterialController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.material.destroy');
 
     Route::post('/tiket/{tiket}/titik-perbaikan', [TitikPerbaikanController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.titik-perbaikan.store');
     Route::delete('/tiket/{tiket}/titik-perbaikan/{titikPerbaikan}', [TitikPerbaikanController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.titik-perbaikan.destroy');
 
     // Modul Dokumentasi & Manuver Core (Fase 5)
     Route::post('/tiket/{tiket}/dokumentasi', [DokumentasiController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.dokumentasi.store');
     Route::delete('/dokumentasi/{dokumentasi}', [DokumentasiController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.dokumentasi.destroy');
 
     Route::post('/tiket/{tiket}/manuver-core', [ManuverCoreController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.manuver-core.store');
     Route::delete('/manuver-core/{manuverCore}', [ManuverCoreController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.manuver-core.destroy');
 
     // Modul Kabel & Joint Closure (JC) / Sambungan Aset Fisik
     Route::post('/tiket/{tiket}/joint-closure', [JointClosureController::class, 'store'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.joint-closure.store');
     Route::delete('/joint-closure/{jointClosure}', [JointClosureController::class, 'destroy'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.joint-closure.destroy');
     Route::post('/joint-closure/{jointClosure}/core', [JointClosureController::class, 'addCore'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.joint-closure.add-core');
     Route::delete('/joint-closure-core/{core}', [JointClosureController::class, 'deleteCore'])
-        ->middleware('role:admin,helpdesk,teknis')
+        ->middleware('role:admin,manager_teknisi,helpdesk,teknis')
         ->name('tiket.joint-closure.delete-core');
 
     // API Helper (Geocoding & Reverse Geocode)

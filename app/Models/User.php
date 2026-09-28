@@ -75,6 +75,7 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => 'Admin Sistem',
+            'manager_teknisi' => 'Manager / Koordinator Teknis',
             'helpdesk' => 'HelpDesk NOC / SA & CS',
             'teknis' => 'Team Teknis Lapangan',
             'sa_cs' => 'HelpDesk NOC / SA & CS',
@@ -89,11 +90,17 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => 'Admin',
+            'manager_teknisi' => 'Mgr Teknis',
             'helpdesk' => 'Helpdesk',
             'teknis' => 'Teknis',
             'sa_cs' => 'Helpdesk',
             default => ucfirst($this->role),
         };
+    }
+
+    public function isManagerTeknisi(): bool
+    {
+        return $this->role === 'manager_teknisi';
     }
 
     /**

@@ -125,6 +125,20 @@
             </div>
         </div>
         <div class="col-6 col-md-4 col-lg">
+            <div class="master-stat-card border-c-blue">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="master-stat-label">Manager Teknis</span>
+                    <div class="master-stat-icon bg-info-subtle text-info">
+                        <i class="bi bi-person-gear"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="master-stat-val text-info">{{ $roleStats['manager_teknisi'] ?? 0 }}</div>
+                    <div class="master-stat-desc">Dispatch &amp; Leader</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg">
             <div class="master-stat-card border-c-teal">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <span class="master-stat-label">HelpDesk NOC</span>
@@ -134,7 +148,7 @@
                 </div>
                 <div>
                     <div class="master-stat-val text-teal">{{ $roleStats['helpdesk'] ?? 0 }}</div>
-                    <div class="master-stat-desc">Dispatch &amp; Verifikasi</div>
+                    <div class="master-stat-desc">HelpDesk NOC</div>
                 </div>
             </div>
         </div>
@@ -180,6 +194,7 @@
                 <select name="role" class="form-select form-select-sm" style="width: 170px;" onchange="this.form.submit()">
                     <option value="">Semua Role</option>
                     <option value="admin" {{ $roleFilter === 'admin' ? 'selected' : '' }}>Admin NOC</option>
+                    <option value="manager_teknisi" {{ $roleFilter === 'manager_teknisi' ? 'selected' : '' }}>Manager Teknis</option>
                     <option value="helpdesk" {{ $roleFilter === 'helpdesk' ? 'selected' : '' }}>HelpDesk</option>
                     <option value="teknis" {{ $roleFilter === 'teknis' ? 'selected' : '' }}>Team Teknis</option>
                     <option value="sa_cs" {{ $roleFilter === 'sa_cs' ? 'selected' : '' }}>SA / CS</option>
@@ -442,6 +457,7 @@
                             <label class="form-label small fw-bold text-navy">Role Hak Akses <span class="text-danger">*</span></label>
                             <select name="role" class="form-select" required>
                                 <option value="admin" {{ $u->role === 'admin' ? 'selected' : '' }}>Admin NOC</option>
+                                <option value="manager_teknisi" {{ $u->role === 'manager_teknisi' ? 'selected' : '' }}>Manager Teknis</option>
                                 <option value="helpdesk" {{ $u->role === 'helpdesk' ? 'selected' : '' }}>HelpDesk NOC</option>
                                 <option value="teknis" {{ $u->role === 'teknis' ? 'selected' : '' }}>Team Teknis Lapangan</option>
                                 <option value="sa_cs" {{ $u->role === 'sa_cs' ? 'selected' : '' }}>SA / CS</option>
@@ -534,6 +550,7 @@
                             <label class="form-label small fw-bold text-navy">Role Hak Akses <span class="text-danger">*</span></label>
                             <select name="role" class="form-select" required>
                                 <option value="teknis" selected>Team Teknis Lapangan</option>
+                                <option value="manager_teknisi">Manager Teknis</option>
                                 <option value="helpdesk">HelpDesk NOC</option>
                                 <option value="sa_cs">SA / CS</option>
                                 <option value="admin">Admin NOC</option>

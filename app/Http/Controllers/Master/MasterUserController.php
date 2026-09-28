@@ -38,6 +38,7 @@ class MasterUserController extends Controller
 
         $roleStats = [
             'admin' => User::where('role', 'admin')->count(),
+            'manager_teknisi' => User::where('role', 'manager_teknisi')->count(),
             'helpdesk' => User::where('role', 'helpdesk')->count(),
             'teknis' => User::where('role', 'teknis')->count(),
             'sa_cs' => User::where('role', 'sa_cs')->count(),
@@ -54,7 +55,7 @@ class MasterUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'role' => ['required', 'string', Rule::in(['admin', 'helpdesk', 'teknis', 'sa_cs'])],
+            'role' => ['required', 'string', Rule::in(['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])],
             'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'string', 'min:6'],
             'is_active' => ['nullable', 'boolean'],
@@ -88,7 +89,7 @@ class MasterUserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'role' => ['required', 'string', Rule::in(['admin', 'helpdesk', 'teknis', 'sa_cs'])],
+            'role' => ['required', 'string', Rule::in(['admin', 'manager_teknisi', 'helpdesk', 'teknis', 'sa_cs'])],
             'phone' => ['nullable', 'string', 'max:30'],
             'is_active' => ['nullable', 'boolean'],
         ], [

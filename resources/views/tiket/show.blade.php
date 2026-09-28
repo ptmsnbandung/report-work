@@ -3202,6 +3202,20 @@
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i> MELEBIHI SLA
                             </span>
                         @endif
+
+                        <!-- Assigned Team Badge -->
+                        @if($tiket->assigned_lead_id)
+                            <span class="badge bg-primary bg-opacity-25 text-white border border-primary border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
+                                <i class="bi bi-person-check-fill text-info me-1"></i> PIC: {{ $tiket->assignedLead?->name }}
+                                @if($tiket->assigned_team && count($tiket->assigned_team) > 0)
+                                    <span class="text-white-50 ms-0.5">(+{{ count($tiket->assigned_team) }})</span>
+                                @endif
+                            </span>
+                        @else
+                            <span class="badge bg-secondary bg-opacity-35 text-white border border-white border-opacity-25 rounded-pill px-3 py-1 ms-1 fw-bold">
+                                <i class="bi bi-person-dash me-1"></i> Belum Ditugaskan
+                            </span>
+                        @endif
                     </div>
                     <h1 class="h4 fw-bold text-white mb-0 lh-sm" style="letter-spacing: -0.2px;">{{ $tiket->status_link_impact }}</h1>
                 </div>
@@ -3221,6 +3235,20 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end mt-1 tiket-hero-dropdown-menu">
                             
+                            <!-- 0. Dispatch / Penugasan Teknisi (Manager Teknis & Admin) -->
+                            @if(auth()->user()->hasRole(['admin', 'manager_teknisi']) && $tiket->status !== 'CLOSE')
+                            <li>
+                                <button type="button" class="tiket-hero-dropdown-item text-info"
+                                        data-bs-toggle="modal" data-bs-target="#assignTeknisiModal">
+                                    <div class="tiket-dropdown-icon-box bg-info-subtle text-info">
+                                        <i class="bi bi-person-gear"></i>
+                                    </div>
+                                    <span>Tugaskan Teknisi (Dispatch)</span>
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider my-1"></li>
+                            @endif
+
                             <!-- 1. Workflow Actions (Closing / Verifikasi) -->
                             @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
                             <li>
@@ -4208,143 +4236,158 @@
                             </button>
                         </div>
 
-                        <!-- WhatsApp Direct Inline Chat Input Bar (WhatsApp-Native Pro) -->
-                        <form action="{{ route('tiket.kronologis.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="waDirectChatForm" class="wa-chat-input-bar">
-                            @csrf
-                            <input type="hidden" name="kategori" value="LAIN">
-                            <input type="hidden" name="latitude" id="waChatLatitude" value="">
-                            <input type="hidden" name="longitude" id="waChatLongitude" value="">
-                            <input type="file" name="foto" id="waChatFotoInput" accept="image/*,video/*" class="d-none">
-                            <input type="file" id="waChatVideoRecordInput" accept="video/*" capture="environment" class="d-none">
+                        @if($tiket->status !== 'CLOSE')
+                            @if($tiket->canUserUpdateKoordinasi(auth()->user()))
+                            <!-- WhatsApp Direct Inline Chat Input Bar (WhatsApp-Native Pro) -->
+                            <form action="{{ route('tiket.kronologis.store', $tiket->id) }}" method="POST" enctype="multipart/form-data" id="waDirectChatForm" class="wa-chat-input-bar">
+                                @csrf
+                                <input type="hidden" name="kategori" value="LAIN">
+                                <input type="hidden" name="latitude" id="waChatLatitude" value="">
+                                <input type="hidden" name="longitude" id="waChatLongitude" value="">
+                                <input type="file" name="foto" id="waChatFotoInput" accept="image/*,video/*" class="d-none">
+                                <input type="file" id="waChatVideoRecordInput" accept="video/*" capture="environment" class="d-none">
 
-                            <!-- Floating White Capsule Pill (Enclosing Paperclip + Textarea + Attachments) -->
-                            <div class="wa-floating-input-pill">
-                                <!-- Paperclip Attachment Dropdown Menu -->
-                                <div class="dropup position-relative d-flex align-items-center">
-                                    <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan media / lokasi">
-                                        <i class="bi bi-paperclip"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-start wa-attach-menu shadow-lg border-0" aria-labelledby="waAttachDropdownBtn">
-                                        <li>
-                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaUploadFoto">
-                                                <div class="wa-attach-icon bg-primary-subtle text-primary">
-                                                    <i class="bi bi-images"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold small text-dark">Upload Media (Foto / Video)</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Pilih foto atau video dari galeri HP / perangkat</div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaRecordVideo">
-                                                <div class="wa-attach-icon bg-danger-subtle text-danger">
-                                                    <i class="bi bi-camera-reels-fill"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold small text-dark">Rekam Video Lapangan</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Rekam langsung kamera HP (Video Ringan &amp; Cepat)</div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraWatermark">
-                                                <div class="wa-attach-icon bg-success-subtle text-success">
-                                                    <i class="bi bi-camera-fill"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp &amp; Alamat</div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraPolos">
-                                                <div class="wa-attach-icon bg-info-subtle text-info">
-                                                    <i class="bi bi-camera"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold small text-dark">Kamera Polos (Tanpa Watermark)</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Potret langsung foto kamera original</div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                        <li><hr class="dropdown-divider my-1"></li>
-                                        <li>
-                                            <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaShareLocation">
-                                                <div class="wa-attach-icon bg-danger-subtle text-danger">
-                                                    <i class="bi bi-geo-alt-fill"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-bold small text-dark">Share Lokasi Saya</div>
-                                                    <div class="text-muted" style="font-size: 0.7rem;">Sematkan koordinat GPS lapangan</div>
-                                                </div>
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <!-- Text Input Area & Attachment Chips -->
-                                <div class="wa-input-wrapper position-relative">
-                                    <!-- WhatsApp @Mention User Autocomplete Popup -->
-                                    <div id="waMentionDropdown" class="wa-mention-dropdown d-none">
-                                        <div class="wa-mention-header">
-                                            <i class="bi bi-at text-primary"></i> Tag Anggota Tim
-                                        </div>
-                                        <div class="wa-mention-list" id="waMentionList"></div>
+                                <!-- Floating White Capsule Pill (Enclosing Paperclip + Textarea + Attachments) -->
+                                <div class="wa-floating-input-pill">
+                                    <!-- Paperclip Attachment Dropdown Menu -->
+                                    <div class="dropup position-relative d-flex align-items-center">
+                                        <button type="button" class="wa-attach-btn" id="waAttachDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Lampirkan media / lokasi">
+                                            <i class="bi bi-paperclip"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-start wa-attach-menu shadow-lg border-0" aria-labelledby="waAttachDropdownBtn">
+                                            <li>
+                                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaUploadFoto">
+                                                    <div class="wa-attach-icon bg-primary-subtle text-primary">
+                                                        <i class="bi bi-images"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold small text-dark">Upload Media (Foto / Video)</div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;">Pilih foto atau video dari galeri HP / perangkat</div>
+                                                    </div>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaRecordVideo">
+                                                    <div class="wa-attach-icon bg-danger-subtle text-danger">
+                                                        <i class="bi bi-camera-reels-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold small text-dark">Rekam Video Lapangan</div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;">Rekam langsung kamera HP (Video Ringan &amp; Cepat)</div>
+                                                    </div>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraWatermark">
+                                                    <div class="wa-attach-icon bg-success-subtle text-success">
+                                                        <i class="bi bi-camera-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold small text-dark">Kamera GPS (Watermark)</div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;">Dengan Logo MSN, Timestamp &amp; Alamat</div>
+                                                    </div>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaCameraPolos">
+                                                    <div class="wa-attach-icon bg-info-subtle text-info">
+                                                        <i class="bi bi-camera"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold small text-dark">Kamera Polos (Tanpa Watermark)</div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;">Potret langsung foto kamera original</div>
+                                                    </div>
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li>
+                                                <button type="button" class="dropdown-item d-flex align-items-center gap-2 py-2" id="btnWaShareLocation">
+                                                    <div class="wa-attach-icon bg-danger-subtle text-danger">
+                                                        <i class="bi bi-geo-alt-fill"></i>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold small text-dark">Share Lokasi Saya</div>
+                                                        <div class="text-muted" style="font-size: 0.7rem;">Sematkan koordinat GPS lapangan</div>
+                                                    </div>
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
 
-                                    <!-- WhatsApp Reply Bar Preview (shows when replying to a message) -->
-                                    <div id="waReplyPreviewBar" class="wa-reply-preview-bar d-none">
-                                        <div class="wa-reply-preview-content">
-                                            <div class="wa-reply-preview-sender" id="waReplySenderText">Membalas User</div>
-                                            <div class="wa-reply-preview-text" id="waReplySnippetText">Isi pesan yang dibalas...</div>
-                                        </div>
-                                        <button type="button" class="btn-close" style="font-size: 0.6rem;" id="btnCancelWaReply" title="Batalkan Balasan"></button>
-                                    </div>
-
-                                    <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
-                                    <!-- Attachment Previews Bar (shows when photo, video or location is attached) -->
-                                    <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
-                                        <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
-                                            <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
-                                            <i class="bi bi-image text-primary" id="waPhotoDefaultIcon"></i>
-                                            <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">foto.jpg</span>
-                                            <span id="waPhotoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
-                                                <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
-                                            </span>
-                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaPhoto" title="Hapus Foto"></button>
-                                        </div>
-                                        <div id="waVideoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
-                                            <div class="position-relative d-flex align-items-center justify-content-center bg-dark text-white rounded-circle" style="width: 22px; height: 22px; overflow: hidden; flex-shrink: 0;">
-                                                <img id="waVideoThumb" src="#" class="d-none w-100 h-100" style="object-fit: cover;" alt="Video">
-                                                <i class="bi bi-camera-reels-fill text-warning" id="waVideoDefaultIcon" style="font-size: 0.65rem;"></i>
+                                    <!-- Text Input Area & Attachment Chips -->
+                                    <div class="wa-input-wrapper position-relative">
+                                        <!-- WhatsApp @Mention User Autocomplete Popup -->
+                                        <div id="waMentionDropdown" class="wa-mention-dropdown d-none">
+                                            <div class="wa-mention-header">
+                                                <i class="bi bi-at text-primary"></i> Tag Anggota Tim
                                             </div>
-                                            <span id="waVideoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">video.mp4</span>
-                                            <span id="waVideoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
-                                                <i class="bi bi-lightning-charge-fill me-0.5 text-warning"></i> <span id="waVideoSizeText">Ringan</span>
-                                            </span>
-                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaVideo" title="Hapus Video"></button>
+                                            <div class="wa-mention-list" id="waMentionList"></div>
                                         </div>
-                                        <div id="waLocationChip" class="d-none align-items-center gap-1.5 badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2 rounded-pill">
-                                            <i class="bi bi-geo-alt-fill"></i>
-                                            <span id="waLocationCoordsText">GPS Attached</span>
-                                            <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaLocation" title="Hapus Lokasi"></button>
+
+                                        <!-- WhatsApp Reply Bar Preview (shows when replying to a message) -->
+                                        <div id="waReplyPreviewBar" class="wa-reply-preview-bar d-none">
+                                            <div class="wa-reply-preview-content">
+                                                <div class="wa-reply-preview-sender" id="waReplySenderText">Membalas User</div>
+                                                <div class="wa-reply-preview-text" id="waReplySnippetText">Isi pesan yang dibalas...</div>
+                                            </div>
+                                            <button type="button" class="btn-close" style="font-size: 0.6rem;" id="btnCancelWaReply" title="Batalkan Balasan"></button>
+                                        </div>
+
+                                        <textarea name="informasi" id="waChatTextInput" class="wa-chat-textarea" rows="1" placeholder="Ketik update koordinasi ..." required></textarea>
+                                        <!-- Attachment Previews Bar (shows when photo, video or location is attached) -->
+                                        <div id="waAttachmentPreviewBar" class="wa-attach-preview-bar d-none">
+                                            <div id="waPhotoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
+                                                <img id="waPhotoThumb" src="#" class="rounded-circle border d-none" style="width: 20px; height: 20px; object-fit: cover;" alt="Foto">
+                                                <i class="bi bi-image text-primary" id="waPhotoDefaultIcon"></i>
+                                                <span id="waPhotoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">foto.jpg</span>
+                                                <span id="waPhotoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
+                                                    <i class="bi bi-check2 me-0.5"></i> <span id="waPhotoSizeText">Ready</span>
+                                                </span>
+                                                <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaPhoto" title="Hapus Foto"></button>
+                                            </div>
+                                            <div id="waVideoPreviewChip" class="d-none align-items-center gap-1.5 badge bg-white text-dark border shadow-xs me-1 py-1 px-2 rounded-pill" style="max-width: 100%;">
+                                                <div class="position-relative d-flex align-items-center justify-content-center bg-dark text-white rounded-circle" style="width: 22px; height: 22px; overflow: hidden; flex-shrink: 0;">
+                                                    <img id="waVideoThumb" src="#" class="d-none w-100 h-100" style="object-fit: cover;" alt="Video">
+                                                    <i class="bi bi-camera-reels-fill text-warning" id="waVideoDefaultIcon" style="font-size: 0.65rem;"></i>
+                                                </div>
+                                                <span id="waVideoFileName" class="text-truncate fw-semibold" style="max-width: 85px;">video.mp4</span>
+                                                <span id="waVideoSizeBadge" class="badge bg-success-subtle text-success border border-success-subtle rounded-pill py-0.5 px-1.5" style="font-size: 0.65rem;">
+                                                    <i class="bi bi-lightning-charge-fill me-0.5 text-warning"></i> <span id="waVideoSizeText">Ringan</span>
+                                                </span>
+                                                <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaVideo" title="Hapus Video"></button>
+                                            </div>
+                                            <div id="waLocationChip" class="d-none align-items-center gap-1.5 badge bg-danger-subtle text-danger border border-danger-subtle py-1 px-2 rounded-pill">
+                                                <i class="bi bi-geo-alt-fill"></i>
+                                                <span id="waLocationCoordsText">GPS Attached</span>
+                                                <button type="button" class="btn-close ms-1" style="font-size: 0.55rem;" id="btnRemoveWaLocation" title="Hapus Lokasi"></button>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <!-- Voice Note to Text (Speech Recognition) Microphone Button -->
+                                    <button type="button" class="wa-voice-btn" id="btnWaVoiceNote" title="Ketik dengan Suara (Voice Note to Text)">
+                                        <i class="bi bi-mic-fill"></i>
+                                    </button>
                                 </div>
 
-                                <!-- Voice Note to Text (Speech Recognition) Microphone Button -->
-                                <button type="button" class="wa-voice-btn" id="btnWaVoiceNote" title="Ketik dengan Suara (Voice Note to Text)">
-                                    <i class="bi bi-mic-fill"></i>
+                                <!-- Floating Submit Button -->
+                                <button type="submit" class="wa-send-btn" id="btnWaSendMsg" title="Kirim Update Kronologis">
+                                    <i class="bi bi-send-fill"></i>
                                 </button>
+                            </form>
+                            @else
+                            <!-- Mode Pemantauan (Read-Only) untuk Teknisi yang Tidak Ditunjuk -->
+                            <div class="wa-closed-notice" style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 0.85rem 1.25rem;">
+                                <div class="d-flex align-items-center justify-content-center gap-2 text-secondary small text-center flex-wrap">
+                                    <i class="bi bi-shield-lock-fill text-primary" style="font-size: 1.15rem;"></i>
+                                    <span>
+                                        <strong>Mode Pemantauan (Read-Only):</strong> 
+                                        Tiket ini sedang ditangani oleh <strong>{{ $tiket->assignedLead?->name ?? 'Tim Teknisi Lapangan' }}</strong>. 
+                                        Hanya tim yang ditugaskan, Manager Teknis, dan HelpDesk NOC yang dapat mengirim update koordinasi.
+                                    </span>
+                                </div>
                             </div>
-
-                            <!-- Floating Submit Button -->
-                            <button type="submit" class="wa-send-btn" id="btnWaSendMsg" title="Kirim Update Kronologis">
-                                <i class="bi bi-send-fill"></i>
-                            </button>
-                        </form>
+                            @endif
                         @endif
 
                         @if($tiket->status === 'CLOSE')
@@ -5543,6 +5586,126 @@
     </div>
 
 </div>
+
+<!-- ── MODAL PENUGASAN TEKNISI / DISPATCH (MANAGER TEKNIS & ADMIN) ── -->
+@if(auth()->user()->hasRole(['admin', 'manager_teknisi']) && $tiket->status !== 'CLOSE')
+<div class="modal fade" id="assignTeknisiModal" tabindex="-1" aria-labelledby="assignTeknisiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <form action="{{ route('tiket.assign-teknisi', $tiket->id) }}" method="POST">
+                @csrf
+                <div class="modal-header text-white" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-info bg-opacity-25 p-2 text-info d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                            <i class="bi bi-person-gear fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="modal-title fw-bold text-white mb-0" id="assignTeknisiModalLabel">
+                                Penugasan Teknisi Lapangan (Dispatch)
+                            </h6>
+                            <small class="text-white-50">Tiket #{{ $tiket->no_tiket }} &bull; {{ $tiket->status_link_impact }}</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body p-4 bg-light">
+                    <!-- Policy / Web Notification Info Banner -->
+                    <div class="alert alert-info border-info border-opacity-25 rounded-xl p-3 mb-3 d-flex align-items-start gap-2.5" style="background-color: #f0f9ff;">
+                        <i class="bi bi-info-circle-fill fs-5 text-info flex-shrink-0 mt-0.5"></i>
+                        <div class="small text-dark">
+                            <strong>Sistem Notifikasi Web & Hak Akses Koordinasi:</strong>
+                            <ul class="mb-0 ps-3 mt-1 text-muted">
+                                <li>Notifikasi Web (In-App & Push) akan otomatis dikirimkan ke <strong>seluruh teknisi</strong>.</li>
+                                <li><strong>Teknisi yang ditunjuk</strong> (PIC Utama & Tim) mendapatkan prioritas tugas dan hak penuh untuk mengirim chat/kronologis & foto lapangan.</li>
+                                <li>Teknisi lain yang tidak ditunjuk berada dalam <strong>Mode Pemantauan (Read-Only)</strong> untuk memonitor progres tanpa mengganggu alur koordinasi.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    @if(isset($allTechnicians) && $allTechnicians->count() > 0)
+                        <!-- 1. Leader / PIC Utama -->
+                        <div class="card border-0 shadow-sm rounded-xl p-3 mb-3 bg-white">
+                            <label class="form-label fw-bold text-dark mb-1">
+                                <i class="bi bi-person-badge-fill text-primary me-1"></i> Pilih Leader / PIC Utama Teknisi <span class="text-danger">*</span>
+                            </label>
+                            <p class="text-muted small mb-2">Penanggung jawab utama pekerjaan dan pelaporan di lapangan.</p>
+                            <select name="assigned_lead_id" id="assigned_lead_id" class="form-select select2" required style="border-radius: 10px;">
+                                <option value="">-- Pilih PIC Utama --</option>
+                                @foreach($allTechnicians as $tech)
+                                    @php
+                                        $workload = $technicianWorkloads[$tech->id] ?? 0;
+                                        $isSelected = old('assigned_lead_id', $tiket->assigned_lead_id) == $tech->id;
+                                    @endphp
+                                    <option value="{{ $tech->id }}" {{ $isSelected ? 'selected' : '' }}>
+                                        {{ $tech->name }} ({{ $tech->email ?? $tech->username }}) — Beban Aktif: {{ $workload }} Tiket
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- 2. Anggota Tim Tambahan -->
+                        <div class="card border-0 shadow-sm rounded-xl p-3 mb-3 bg-white">
+                            <label class="form-label fw-bold text-dark mb-1">
+                                <i class="bi bi-people-fill text-teal me-1"></i> Anggota Tim Tambahan (Opsional)
+                            </label>
+                            <p class="text-muted small mb-2">Pilih teknisi tambahan yang ikut mendampingi dalam penanganan tiket ini.</p>
+                            <div class="row g-2" style="max-height: 200px; overflow-y: auto; padding-right: 4px;">
+                                @php
+                                    $currentTeam = old('assigned_team', $tiket->assigned_team ?? []);
+                                    if (!is_array($currentTeam)) $currentTeam = [];
+                                @endphp
+                                @foreach($allTechnicians as $tech)
+                                    @php
+                                        $workload = $technicianWorkloads[$tech->id] ?? 0;
+                                        $isChecked = in_array($tech->id, $currentTeam);
+                                    @endphp
+                                    <div class="col-md-6">
+                                        <div class="form-check p-2 rounded border bg-light d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <input class="form-check-input ms-0 me-2" type="checkbox" name="assigned_team[]" value="{{ $tech->id }}" id="team_tech_{{ $tech->id }}" {{ $isChecked ? 'checked' : '' }}>
+                                                <label class="form-check-label small fw-semibold text-dark mb-0 cursor-pointer" for="team_tech_{{ $tech->id }}">
+                                                    {{ $tech->name }}
+                                                </label>
+                                            </div>
+                                            <span class="badge {{ $workload > 3 ? 'bg-danger' : ($workload > 0 ? 'bg-warning text-dark' : 'bg-success') }} rounded-pill" style="font-size: 0.68rem;">
+                                                {{ $workload }} Aktif
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <!-- 3. Catatan & Instruksi Khusus -->
+                        <div class="card border-0 shadow-sm rounded-xl p-3 bg-white">
+                            <label for="catatan_dispatch" class="form-label fw-bold text-dark mb-1">
+                                <i class="bi bi-chat-left-text-fill text-warning me-1"></i> Instruksi / Catatan Khusus Manager Teknis (Opsional)
+                            </label>
+                            <textarea name="catatan_dispatch" id="catatan_dispatch" class="form-control" rows="3" placeholder="Contoh: Bawa kabel dropcore 100m, koordinasi dengan PIC gedung saat tiba di lokasi..." style="border-radius: 10px; font-size: 0.85rem;">{{ old('catatan_dispatch', $tiket->catatan_dispatch) }}</textarea>
+                        </div>
+                    @else
+                        <div class="text-center py-4">
+                            <i class="bi bi-people text-muted" style="font-size: 2.5rem;"></i>
+                            <p class="text-muted mt-2">Belum ada data user dengan role Teknisi di sistem.</p>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="modal-footer bg-white border-top p-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-light px-3 py-2 fw-semibold rounded-pill" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-send-check-fill"></i>
+                        <span>Tugaskan & Kirim Notifikasi Web</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- ── MODAL INPUT RESUME PEKERJAAN (FASE 4) ── -->
 @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))

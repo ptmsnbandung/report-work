@@ -27,6 +27,12 @@ class Tiket extends Model
         'resolved_at',
         'first_response_at',
         'status',
+        'assigned_lead_id',
+        'assigned_team',
+        'assigned_by',
+        'assigned_at',
+        'catatan_dispatch',
+        'dispatch_status',
         'mttr_minutes',
         'total_stop_clock_minutes',
         'is_stop_clock',
@@ -45,6 +51,8 @@ class Tiket extends Model
             'tanggal_close' => 'datetime',
             'resolved_at' => 'datetime',
             'first_response_at' => 'datetime',
+            'assigned_at' => 'datetime',
+            'assigned_team' => 'array',
             'mttr_minutes' => 'integer',
             'total_stop_clock_minutes' => 'integer',
             'is_stop_clock' => 'boolean',
@@ -66,6 +74,16 @@ class Tiket extends Model
     public function closer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'closed_by');
+    }
+
+    public function assignedLead(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_lead_id');
+    }
+
+    public function assignedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_by');
     }
 
     public function kronologis(): HasMany
@@ -245,6 +263,99 @@ class Tiket extends Model
             'MANUVER_CORE' => 'Manuver Core (Swapping Core)',
             'KEDUA', 'KOMBINASI', 'SEMUA' => 'Jointing Lurus & Manuver Core',
             default => 'Lainnya / Normalisasi',
+        };
+    }
+
+    /**
+     * Dapatkan daftar model User untuk seluruh anggota tim yang ditugaskan.
+     */
+    public function getAssignedTeamUsersAttribute(): \Illuminate\Support\Collection
+    {
+        $teamIds = is_array($this->assigned_team) ? $this->assigned_team : [];
+        if (empty($teamIds)) {
+            return collect();
+        }
+
+        return User::whereIn('id', $teamIds)->get();
+    }
+
+    /**
+     * Dapatkan semua ID teknisi yang ditugaskan (Lead + Anggota Tim).
+     */
+    public function getAllAssignedUserIds(): array
+    {
+        $ids = [];
+        if ($this->assigned_lead_id) {
+            $ids[] = (int) $this->assigned_lead_id;
+        }
+        if (is_array($this->assigned_team)) {
+            foreach ($this->assigned_team as $tId) {
+                $ids[] = (int) $tId;
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
+     * Periksa apakah user tertentu ditugaskan pada tiket ini.
+     */
+    public function isUserAssigned(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        return in_array((int) $user->id, $this->getAllAssignedUserIds(), true);
+    }
+
+    /**
+     * Periksa apakah user diizinkan menambahkan update koordinasi / kronologis.
+     * Aturan:
+     * - Admin, Helpdesk, SA/CS, Manager Teknis: Selalu BISA.
+     * - Teknisi: BISA jika ditugaskan (Lead atau Anggota Tim), atau jika tiket belum di-dispatch sama sekali.
+     * - Teknisi lain yang tidak ditugaskan pada tiket aktif: HANYA BISA MEMANTAU (Read-only).
+     */
+    public function canUserUpdateKoordinasi(?User $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if ($user->hasRole(['admin', 'helpdesk', 'sa_cs', 'manager_teknisi'])) {
+            return true;
+        }
+
+        if ($user->hasRole('teknis')) {
+            // Jika tiket belum memiliki teknisi yang ditugaskan, teknisi diizinkan merespon/mencatat
+            if (empty($this->assigned_lead_id) && empty($this->assigned_team)) {
+                return true;
+            }
+
+            // Jika sudah ditugaskan, hanya teknisi yang ditunjuk yang bisa mengirim update
+            return $this->isUserAssigned($user);
+        }
+
+        return false;
+    }
+
+    public function getDispatchStatusLabelAttribute(): string
+    {
+        return match ($this->dispatch_status) {
+            'assigned' => 'Tim Ditugaskan',
+            'in_progress' => 'Sedang Dikerjakan',
+            'resolved' => 'Selesai Lapangan',
+            default => 'Menunggu Penugasan',
+        };
+    }
+
+    public function getDispatchStatusBadgeAttribute(): string
+    {
+        return match ($this->dispatch_status) {
+            'assigned' => 'bg-info text-dark',
+            'in_progress' => 'bg-warning text-dark',
+            'resolved' => 'bg-success text-white',
+            default => 'bg-secondary text-white',
         };
     }
 
