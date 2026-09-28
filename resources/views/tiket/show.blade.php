@@ -4200,7 +4200,7 @@
                         </button>
 
                         <!-- Gojek-Style Quick Reply Chips (Rekomendasi Chat Cepat) -->
-                        @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
+                        @if($tiket->status !== 'CLOSE' && $tiket->canUserUpdateKoordinasi(auth()->user()))
                         <div class="wa-quick-replies-wrapper" id="waQuickRepliesWrapper">
                             <button type="button" class="wa-quick-chip" data-text="Sedang menuju ke lokasi titik gangguan">
                                 <span class="wa-quick-chip-icon text-primary"><i class="bi bi-geo-alt-fill"></i></span>
@@ -4235,6 +4235,7 @@
                                 <span>Dokumentasi perbaikan</span>
                             </button>
                         </div>
+                        @endif
 
                         @if($tiket->status !== 'CLOSE')
                             @if($tiket->canUserUpdateKoordinasi(auth()->user()))
