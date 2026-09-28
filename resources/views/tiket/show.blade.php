@@ -346,14 +346,31 @@
         overflow: hidden;
     }
 
+    .card:has(#tiketTabContent) {
+        margin-bottom: 0.35rem !important;
+        padding-bottom: 0 !important;
+    }
+
+    .card:has(#tiketTabContent) .card-body {
+        padding: 0.35rem 0.5rem 0.25rem 0.5rem !important;
+    }
+
+    .app-content:has(#tiketTabContent) {
+        padding-bottom: 0.35rem !important;
+    }
+
+    .tab-pane:not(#kronologis-pane) {
+        padding: 0.85rem 0.65rem;
+    }
+
     .wa-chat-stream {
-        padding: 1rem 0.85rem 2rem 0.85rem !important;
+        padding: 0.85rem 0.85rem 0.65rem 0.85rem !important;
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-        height: clamp(380px, calc(100dvh - 340px), calc(100vh - 260px));
-        min-height: 380px;
-        max-height: calc(100dvh - 260px);
+        height: clamp(380px, calc(100dvh - 300px), calc(100vh - 210px));
+        min-height: 360px;
+        max-height: calc(100dvh - 200px);
         overflow-y: auto;
         overflow-x: hidden;
         overflow-anchor: auto !important;
@@ -966,7 +983,7 @@
        ═══════════════════════════════════════════════════════════════════ */
     .wa-chat-input-bar {
         background: transparent !important;
-        padding: 0.55rem 0.85rem calc(0.55rem + env(safe-area-inset-bottom, 0px)) 0.85rem !important;
+        padding: 0.35rem 0.75rem calc(0.4rem + env(safe-area-inset-bottom, 0px)) 0.75rem !important;
         border-top: none !important;
         display: flex;
         align-items: flex-end;
@@ -1422,18 +1439,18 @@
     /* Mobile Responsiveness */
     @media (max-width: 767.98px) {
         .card:has(#tiketTabContent) {
-            margin-bottom: 0.5rem !important;
+            margin-bottom: 0.35rem !important;
             padding-bottom: 0 !important;
         }
         .card:has(#tiketTabContent) .card-body {
-            padding-bottom: 0.25rem !important;
+            padding-bottom: 0.2rem !important;
         }
         .wa-chat-container {
             border-radius: 14px;
             margin-bottom: 0 !important;
         }
         .app-content {
-            padding-bottom: 0.5rem !important;
+            padding-bottom: 0.35rem !important;
         }
         body {
             padding-bottom: calc(var(--bottom-nav-height, 86px) + 6px) !important;
@@ -1442,7 +1459,7 @@
             height: clamp(260px, calc(100dvh - 355px), 600px) !important;
             min-height: 240px !important;
             max-height: calc(100dvh - 330px) !important;
-            padding: 0.75rem 0.65rem 2.2rem 0.65rem !important;
+            padding: 0.75rem 0.65rem 0.65rem 0.65rem !important;
             gap: 0.6rem;
             scroll-behavior: auto !important;
             overflow-anchor: auto !important;
