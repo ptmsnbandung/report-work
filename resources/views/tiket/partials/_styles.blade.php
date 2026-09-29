@@ -2478,8 +2478,103 @@
             justify-content: center;
             margin-top: 0.5rem;
         }
+        .verifikasi-banner {
+            padding: 0.85rem 1rem !important;
+        }
+        .verifikasi-actions {
+            width: 100%;
+            flex-direction: column;
+        }
+        .verifikasi-actions .btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
+
     /* ═══════════════════════════════════════════════════════════════════
+       PENDING VERIFIKASI / NOC CALLOUT BANNER
+       ═══════════════════════════════════════════════════════════════════ */
+    .verifikasi-banner {
+        background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 55%, #f8fafc 100%);
+        border: 1.5px solid #93c5fd;
+        border-radius: 16px;
+        padding: 0.95rem 1.25rem;
+        box-shadow: 0 4px 20px -3px rgba(37, 99, 235, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        margin-bottom: 1.15rem;
+        transition: all 0.25s ease;
+    }
+    .verifikasi-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        position: relative;
+    }
+    .verifikasi-icon-box::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 15px;
+        border: 1.5px solid rgba(59, 130, 246, 0.4);
+        animation: pulseRingBlue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulseRingBlue {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 0.15; transform: scale(1.08); }
+    }
+    .btn-verifikasi-reject {
+        background: #ffffff !important;
+        color: #dc2626 !important;
+        border: 1.5px solid #fca5a5 !important;
+        border-radius: 10px !important;
+        padding: 0.55rem 1.15rem !important;
+        font-size: 0.84rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.1px;
+        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.08) !important;
+        transition: all 0.2s ease !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .btn-verifikasi-reject:hover {
+        background: #fee2e2 !important;
+        border-color: #ef4444 !important;
+        color: #b91c1c !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15) !important;
+    }
+    .btn-verifikasi-approve {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.55rem 1.3rem !important;
+        font-size: 0.84rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.1px;
+        box-shadow: 0 3px 12px rgba(16, 185, 129, 0.35) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+    .btn-verifikasi-approve:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.45) !important;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #ffffff !important;
+    }
+    .btn-verifikasi-approve:active, .btn-verifikasi-reject:active {
+        transform: translateY(0);
+    }
        FIBER OPTIC JOINT CLOSURE & CABLE SPLICING (PRO STYLES)
        ═══════════════════════════════════════════════════════════════════ */
     .icon-box-indigo {

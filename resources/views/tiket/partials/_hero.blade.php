@@ -41,34 +41,47 @@
 
     <!-- ── PENDING VERIFIKASI CALLOUT BANNER ── -->
     @if($tiket->status === 'PENDING_VERIFIKASI')
-    <div class="alert alert-primary border border-primary border-opacity-50 shadow-sm rounded-xl p-3 p-md-3.5 mb-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3" style="background-color: #f0f7ff;">
-        <div class="d-flex align-items-center gap-3">
-            <div class="rounded-circle bg-primary bg-opacity-10 p-3 text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 46px; height: 46px;">
-                <i class="bi bi-hourglass-split fs-3 text-primary"></i>
+    <div class="verifikasi-banner d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3 min-w-0">
+            <div class="verifikasi-icon-box">
+                <i class="bi bi-hourglass-split"></i>
             </div>
-            <div>
-                <h6 class="fw-bold mb-1 text-navy d-flex align-items-center gap-2">
-                    <span class="badge bg-primary text-white">MENUNGGU VERIFIKASI NOC</span>
-                    <span>Pekerjaan Selesai oleh Teknisi</span>
-                </h6>
-                <div class="small text-muted">
-                    Teknisi <strong>{{ $tiket->resolver?->name ?? 'Teknisi' }}</strong> telah menyelesaikan pekerjaan lapangan pada {{ $tiket->resolved_at ? $tiket->resolved_at->format('d/m/Y H:i') : '-' }}.
-                    @if($tiket->closing_notes_teknisi)
-                    <div class="mt-1 p-2 bg-white rounded border border-primary-subtle text-dark">
-                        <strong>Catatan Teknisi:</strong> <em>{{ $tiket->closing_notes_teknisi }}</em>
-                    </div>
-                    @endif
+            <div class="min-w-0">
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                    <span class="badge" style="background: rgba(37, 99, 235, 0.15); color: #1e40af; border: 1px solid rgba(37, 99, 235, 0.3); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.4px; padding: 0.2rem 0.5rem; border-radius: 6px;">
+                        MENUNGGU VERIFIKASI NOC
+                    </span>
+                    <span class="fw-bold" style="font-size: 0.92rem; color: #0f172a; letter-spacing: -0.2px;">
+                        Pekerjaan Telah Diselesaikan oleh Teknisi
+                    </span>
                 </div>
+                <div style="font-size: 0.76rem; color: #475569;">
+                    Teknisi <strong class="text-navy">{{ $tiket->resolver?->name ?? 'Teknisi' }}</strong> telah menyelesaikan pekerjaan lapangan pada <span class="fw-semibold text-dark">{{ $tiket->resolved_at ? $tiket->resolved_at->format('d/m/Y H:i') : '-' }}</span>.
+                </div>
+                @if($tiket->closing_notes_teknisi)
+                <div class="mt-2 p-2 rounded-lg" style="background: rgba(255,255,255,0.85); border: 1px dashed #bfdbfe; font-size: 0.74rem; color: #1e293b;">
+                    <i class="bi bi-chat-quote-fill text-primary me-1"></i>
+                    <strong class="text-navy">Catatan Teknisi:</strong> <span>{{ $tiket->closing_notes_teknisi }}</span>
+                </div>
+                @endif
             </div>
         </div>
         @if(auth()->user()->hasRole(['admin', 'helpdesk']))
-        <div class="d-flex align-items-center gap-2 flex-shrink-0">
-            <button type="button" class="btn btn-danger btn-sm px-3 py-2 fw-semibold shadow-xs" data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
-                <i class="bi bi-x-circle me-1"></i> Reject (Kembalikan)
+        <div class="verifikasi-actions d-flex align-items-center gap-2 flex-shrink-0">
+            <button type="button" class="btn-verifikasi-reject" data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
+                <i class="bi bi-x-circle"></i>
+                <span>Reject (Kembalikan)</span>
             </button>
-            <button type="button" class="btn btn-success btn-sm px-3 py-2 fw-semibold shadow-xs" data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                <i class="bi bi-check2-circle me-1"></i> Verifikasi & Close Tiket
+            <button type="button" class="btn-verifikasi-approve" data-bs-toggle="modal" data-bs-target="#closeTiketModal">
+                <i class="bi bi-shield-check"></i>
+                <span>Verifikasi & Close Tiket</span>
             </button>
+        </div>
+        @else
+        <div class="flex-shrink-0">
+            <span class="badge rounded-pill px-3 py-2" style="background: rgba(37, 99, 235, 0.1); color: #1d4ed8; font-size: 0.76rem; font-weight: 600; border: 1px solid rgba(37, 99, 235, 0.25);">
+                <i class="bi bi-clock-history me-1"></i> Menunggu Verifikasi Helpdesk
+            </span>
         </div>
         @endif
     </div>
