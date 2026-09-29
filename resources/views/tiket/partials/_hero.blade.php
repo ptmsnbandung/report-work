@@ -596,25 +596,25 @@
                                 @endif
                             </div>
                             <div class="sla-step-content mt-2">
-                                <div class="sla-step-title fw-bold text-navy small">{{ $stage['title'] }}</div>
-                                <div class="sla-step-timestamp text-muted small" style="font-size: 0.7rem;">
+                                <div class="sla-step-title fw-bold text-navy">{{ $stage['title'] }}</div>
+                                <div class="sla-step-timestamp text-muted">
                                     {{ $stage['timestamp'] ?: '-' }}
                                 </div>
                                 <div class="sla-step-badge mt-1">
                                     @if(!empty($stage['badge']))
-                                        <span class="badge {{ $isCompleted ? 'bg-success bg-opacity-15 text-success' : ($isCurrent ? 'bg-primary bg-opacity-15 text-primary' : 'bg-light text-muted') }} rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                        <span class="badge {{ $isCompleted ? 'bg-success bg-opacity-15 text-success' : ($isCurrent ? 'bg-primary bg-opacity-15 text-primary' : 'bg-light text-muted') }} rounded-pill px-2 py-0.5">
                                             {{ $stage['badge'] }}
                                         </span>
                                     @elseif($isCompleted)
-                                        <span class="badge bg-success bg-opacity-15 text-success rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                        <span class="badge bg-success bg-opacity-15 text-success rounded-pill px-2 py-0.5">
                                             Selesai
                                         </span>
                                     @elseif($isCurrent)
-                                        <span class="badge bg-primary bg-opacity-15 text-primary rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                        <span class="badge bg-primary bg-opacity-15 text-primary rounded-pill px-2 py-0.5">
                                             Sedang Proses
                                         </span>
                                     @else
-                                        <span class="badge bg-light text-muted rounded-pill px-2 py-0.5" style="font-size: 0.65rem;">
+                                        <span class="badge bg-light text-muted rounded-pill px-2 py-0.5">
                                             Menunggu
                                         </span>
                                     @endif

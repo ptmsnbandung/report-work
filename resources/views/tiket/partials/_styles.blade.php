@@ -2201,18 +2201,19 @@
        ═══════════════════════════════════════════════════════════════════ */
     .sla-stepper-wrapper {
         width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
     }
     .sla-stepper-track {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        min-width: 580px;
+        width: 100%;
+        min-width: 0;
         position: relative;
     }
     .sla-step-item {
-        flex: 1;
+        flex: 1 1 0;
+        min-width: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -2241,6 +2242,7 @@
         color: #64748b;
         border: 2px solid #cbd5e1;
         transition: all 0.25s ease;
+        flex-shrink: 0;
     }
     .sla-step-line {
         position: absolute;
@@ -2275,6 +2277,76 @@
         color: #ffffff;
         border-color: #d97706;
         box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.25);
+    }
+    .sla-step-content {
+        width: 100%;
+        min-width: 0;
+    }
+    .sla-step-title {
+        font-size: 0.78rem;
+        line-height: 1.25;
+        word-break: break-word;
+    }
+    .sla-step-timestamp {
+        font-size: 0.68rem;
+        line-height: 1.2;
+    }
+    .sla-step-badge .badge {
+        font-size: 0.65rem;
+    }
+
+    @media (max-width: 767.98px) {
+        .sla-step-item {
+            padding: 0 2px;
+        }
+        .sla-step-node {
+            width: 26px;
+            height: 26px;
+            font-size: 0.72rem;
+            border-width: 1.5px;
+        }
+        .sla-step-line {
+            height: 2px;
+        }
+        .sla-step-title {
+            font-size: 0.66rem !important;
+            line-height: 1.15;
+            letter-spacing: -0.2px;
+        }
+        .sla-step-timestamp {
+            font-size: 0.58rem !important;
+            line-height: 1.1;
+        }
+        .sla-step-badge {
+            margin-top: 2px !important;
+        }
+        .sla-step-badge .badge {
+            font-size: 0.56rem !important;
+            padding: 0.12rem 0.35rem !important;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sla-step-node {
+            width: 22px;
+            height: 22px;
+            font-size: 0.6rem;
+        }
+        .sla-step-title {
+            font-size: 0.6rem !important;
+            line-height: 1.1;
+        }
+        .sla-step-timestamp {
+            font-size: 0.52rem !important;
+        }
+        .sla-step-badge .badge {
+            font-size: 0.5rem !important;
+            padding: 0.1rem 0.25rem !important;
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════════════
