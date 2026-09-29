@@ -1114,108 +1114,118 @@
 <!-- ── MODAL TAMBAH MANUVER CORE (FASE 5) ── -->
 <div class="modal fade" id="addManuverModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 14px; overflow: hidden;">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
             <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
                 @csrf
-                <div class="modal-header bg-navy text-white px-3 py-2 border-bottom border-secondary border-opacity-25">
+                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25">
                     <div class="d-flex align-items-center gap-2 overflow-hidden pe-2">
-                        <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1 text-teal flex-shrink-0" style="width: 28px; height: 28px;">
-                            <i class="bi bi-shuffle text-info" style="font-size: 0.85rem;"></i>
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1 text-teal flex-shrink-0" style="width: 32px; height: 32px;">
+                            <i class="bi bi-shuffle text-info" style="font-size: 1rem;"></i>
                         </div>
                         <div class="overflow-hidden">
-                            <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.88rem;">
+                            <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.92rem;">
                                 Tambah Record Manuver Core
                             </h6>
-                            <div class="text-white-50 text-truncate" style="font-size: 0.68rem;">Splicing &amp; Bypassing Fiber Optik</div>
+                            <div class="text-white-50 text-truncate" style="font-size: 0.7rem;">Splicing, Bypassing &amp; Pengalihan Core Fiber Optik</div>
                         </div>
                     </div>
                     <button type="button" class="btn-close btn-close-white flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-2.5 p-sm-3" style="max-height: calc(100dvh - 120px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
-                    <div class="row g-2">
-                        <!-- Titik Lokasi & Jenis Lokasi -->
-                        <div class="col-12 col-md-7">
-                            <label for="titik_manuver" class="form-label small fw-bold text-navy mb-1">
-                                Titik / Lokasi Manuver <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   class="form-control form-control-sm text-uppercase font-monospace"
-                                   id="titik_manuver"
-                                   name="titik"
-                                   placeholder="Contoh: JC-01, OTB-POP-BDG, FAT-04"
-                                   required>
-                            <!-- Quick suggestions from existing Titik Perbaikan & Joint Closures -->
-                            @if($tiket->titikPerbaikans->count() > 0 || $tiket->jointClosures->count() > 0)
-                            <div class="d-flex flex-wrap gap-1 mt-1 align-items-center">
-                                <span class="small text-muted me-1" style="font-size: 0.68rem;">Preset:</span>
-                                @foreach($tiket->titikPerbaikans as $tp)
-                                <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $tp->nama_titik }}">
-                                    {{ $tp->nama_titik }}
-                                </button>
-                                @endforeach
-                                @foreach($tiket->jointClosures as $jc)
-                                <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $jc->nama_closure }}">
-                                    {{ $jc->nama_closure }}
-                                </button>
-                                @endforeach
+                <div class="modal-body p-2.5 p-sm-3" style="max-height: calc(100dvh - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: #f8fafc;">
+                    <div class="d-flex flex-column gap-2.5">
+                        
+                        <!-- CARD 1: INFORMASI LOKASI & SIFAT MANUVER -->
+                        <div class="section-card-manuver">
+                            <div class="d-flex align-items-center gap-1.5 mb-2 pb-1.5 border-bottom">
+                                <i class="bi bi-geo-alt-fill text-primary" style="font-size: 0.85rem;"></i>
+                                <span class="fw-bold text-navy" style="font-size: 0.78rem;">1. Lokasi &amp; Status Manuver</span>
                             </div>
-                            @endif
-                        </div>
+                            <div class="row g-2">
+                                <!-- Titik Lokasi & Jenis Lokasi -->
+                                <div class="col-12 col-md-7">
+                                    <label for="titik_manuver" class="form-label mb-1">
+                                        Titik / Lokasi Manuver <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control form-control-sm text-uppercase font-monospace"
+                                           id="titik_manuver"
+                                           name="titik"
+                                           placeholder="Contoh: JC-01, OTB-POP-BDG, FAT-04"
+                                           required>
+                                    <!-- Quick suggestions from existing Titik Perbaikan & Joint Closures -->
+                                    @if($tiket->titikPerbaikans->count() > 0 || $tiket->jointClosures->count() > 0)
+                                    <div class="d-flex flex-wrap gap-1 mt-1.5 align-items-center">
+                                        <span class="small text-muted me-1" style="font-size: 0.68rem;">Preset:</span>
+                                        @foreach($tiket->titikPerbaikans as $tp)
+                                        <button type="button" class="btn btn-xs btn-outline-primary titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $tp->nama_titik }}">
+                                            {{ $tp->nama_titik }}
+                                        </button>
+                                        @endforeach
+                                        @foreach($tiket->jointClosures as $jc)
+                                        <button type="button" class="btn btn-xs btn-outline-indigo titik-preset-btn py-0 px-1.5" style="font-size: 0.68rem;" data-titik="{{ $jc->nama_closure }}">
+                                            {{ $jc->nama_closure }}
+                                        </button>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
 
-                        <div class="col-12 col-md-5">
-                            <label for="lokasi_tipe_manuver" class="form-label small fw-bold text-navy mb-1">
-                                Tipe Lokasi Aset <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select form-select-sm" id="lokasi_tipe_manuver" name="lokasi_tipe" required>
-                                <option value="CLOSURE_LAPANGAN" selected>CLOSURE LAPANGAN (JC)</option>
-                                <option value="POP">POP (Point of Presence)</option>
-                                <option value="OTB">OTB (Optical Termination Box)</option>
-                                <option value="FAT_FDT">FAT / FDT / ODC</option>
-                            </select>
-                        </div>
+                                <div class="col-12 col-md-5">
+                                    <label for="lokasi_tipe_manuver" class="form-label mb-1">
+                                        Tipe Lokasi Aset <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select form-select-sm" id="lokasi_tipe_manuver" name="lokasi_tipe" required>
+                                        <option value="CLOSURE_LAPANGAN" selected>CLOSURE LAPANGAN (JC)</option>
+                                        <option value="POP">POP (Point of Presence)</option>
+                                        <option value="OTB">OTB (Optical Termination Box)</option>
+                                        <option value="FAT_FDT">FAT / FDT / ODC</option>
+                                    </select>
+                                </div>
 
-                        <!-- Tipe Manuver (Sebelum / Sesudah) -->
-                        <div class="col-6 col-sm-6">
-                            <label class="form-label small fw-bold text-navy d-block mb-1">
-                                Status Alokasi <span class="text-danger">*</span>
-                            </label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
-                                <label class="btn btn-outline-secondary btn-sm" for="tipeSebelum">
-                                    <i class="bi bi-clock-history me-1"></i> SEBELUM
-                                </label>
+                                <!-- Tipe Manuver (Sebelum / Sesudah) -->
+                                <div class="col-6 col-sm-6">
+                                    <label class="form-label d-block mb-1">
+                                        Status Alokasi <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="tipe" id="tipeSebelum" value="SEBELUM" autocomplete="off" checked>
+                                        <label class="btn btn-outline-secondary btn-sm py-1" for="tipeSebelum" style="font-size: 0.76rem;">
+                                            <i class="bi bi-clock-history me-1"></i> SEBELUM
+                                        </label>
 
-                                <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
-                                <label class="btn btn-outline-success btn-sm" for="tipeSesudah">
-                                    <i class="bi bi-check2-circle me-1"></i> SESUDAH
-                                </label>
+                                        <input type="radio" class="btn-check" name="tipe" id="tipeSesudah" value="SESUDAH" autocomplete="off">
+                                        <label class="btn btn-outline-success btn-sm py-1" for="tipeSesudah" style="font-size: 0.76rem;">
+                                            <i class="bi bi-check2-circle me-1"></i> SESUDAH
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Durasi Status Manuver -->
+                                <div class="col-6 col-sm-6">
+                                    <label class="form-label d-block mb-1">
+                                        Sifat Manuver <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="status_manuver" id="manuverTemp" value="TEMPORARY" autocomplete="off" checked>
+                                        <label class="btn btn-outline-warning btn-sm py-1" for="manuverTemp" style="font-size: 0.76rem;">
+                                            <i class="bi bi-hourglass-split me-1"></i> SEMENTARA
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="status_manuver" id="manuverPerm" value="PERMANENT" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-sm py-1" for="manuverPerm" style="font-size: 0.76rem;">
+                                            <i class="bi bi-pin-angle-fill me-1"></i> PERMANEN
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Durasi Status Manuver -->
-                        <div class="col-6 col-sm-6">
-                            <label class="form-label small fw-bold text-navy d-block mb-1">
-                                Sifat Manuver <span class="text-danger">*</span>
-                            </label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="status_manuver" id="manuverTemp" value="TEMPORARY" autocomplete="off" checked>
-                                <label class="btn btn-outline-warning btn-sm" for="manuverTemp">
-                                    <i class="bi bi-hourglass-split me-1"></i> SEMENTARA
-                                </label>
-
-                                <input type="radio" class="btn-check" name="status_manuver" id="manuverPerm" value="PERMANENT" autocomplete="off">
-                                <label class="btn btn-outline-primary btn-sm" for="manuverPerm">
-                                    <i class="bi bi-pin-angle-fill me-1"></i> PERMANEN
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- VISUAL INTERACTIVE CABLE PATCHER FOR MANUVER CORE -->
-                        <div class="col-12">
+                        <!-- CARD 2: VISUAL INTERACTIVE CABLE PATCHER -->
+                        <div>
                             <div class="fiber-patcher-box">
                                 <div class="fiber-patcher-header">
                                     <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                        <span class="badge bg-primary text-white px-2 py-0.5 rounded-pill" style="font-size: 0.68rem;">
+                                        <span class="badge bg-primary text-white px-2.5 py-1 rounded-pill" style="font-size: 0.72rem; letter-spacing: 0.3px;">
                                             <i class="bi bi-bezier2 me-1"></i> Visual Fiber Patcher
                                         </span>
                                     </div>
@@ -1233,7 +1243,7 @@
                                 </div>
 
                                 <!-- Connection Real-time Indicator -->
-                                <div class="text-center mb-2">
+                                <div class="text-center mb-2.5">
                                     <div class="fiber-conn-status-badge" id="manuverLiveWireBadge">
                                         <span class="fiber-pulse-laser text-info"><i class="bi bi-lightning-charge-fill"></i></span>
                                         <span id="manuverLiveWireText">Tap Port Asal (Kiri) &rarr; Tap Port Tujuan (Kanan)</span>
@@ -1307,13 +1317,15 @@
                                 <!-- Connected Lines Tray (Chips) -->
                                 <div class="fiber-chips-tray" id="manuverChipsTray">
                                     <div class="d-flex align-items-center justify-content-between mb-1.5">
-                                        <span class="small fw-bold text-light" style="font-size:0.72rem;">
+                                        <span class="small fw-bold text-light" style="font-size:0.74rem;">
                                             <i class="bi bi-diagram-3 me-1 text-info"></i> Sambungan Terpasang:
                                         </span>
-                                        <span class="small text-muted font-monospace" style="font-size:0.68rem;" id="manuverTotalCoresText">0 Core</span>
+                                        <span class="small font-monospace" style="font-size:0.7rem;" id="manuverTotalCoresText">
+                                            <strong style="color: #38bdf8;">0 Core</strong> <span style="color: #94a3b8;">Terhubung</span>
+                                        </span>
                                     </div>
                                     <div class="fiber-connections-chips" id="manuverConnectionsChips">
-                                        <span class="text-muted small fst-italic py-1" style="font-size:0.7rem;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>
+                                        <span class="fst-italic py-1" style="font-size:0.72rem; color: #94a3b8;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>
                                     </div>
                                 </div>
                             </div>
@@ -1325,35 +1337,45 @@
                             </div>
                         </div>
 
-                        <!-- Core Dialihkan & Titik Kembali -->
-                        <div class="col-12 col-sm-6">
-                            <label for="core_dialihkan" class="form-label small fw-semibold text-navy mb-1">Core Yang Dialihkan (Opsional)</label>
-                            <input type="text" class="form-control form-control-sm font-monospace" id="core_dialihkan" name="core_dialihkan" placeholder="Contoh: Core 4 dialihkan ke Core 12">
+                        <!-- CARD 3: DETAIL ALOKASI & STATUS CORE ASET -->
+                        <div class="section-card-manuver">
+                            <div class="d-flex align-items-center gap-1.5 mb-2 pb-1.5 border-bottom">
+                                <i class="bi bi-info-circle-fill text-primary" style="font-size: 0.85rem;"></i>
+                                <span class="fw-bold text-navy" style="font-size: 0.78rem;">2. Detail Tambahan &amp; Keterangan</span>
+                            </div>
+                            <div class="row g-2">
+                                <!-- Core Dialihkan & Titik Kembali -->
+                                <div class="col-12 col-sm-6">
+                                    <label for="core_dialihkan" class="form-label mb-1">Core Yang Dialihkan (Opsional)</label>
+                                    <input type="text" class="form-control form-control-sm font-monospace" id="core_dialihkan" name="core_dialihkan" placeholder="Contoh: Core 4 dialihkan ke Core 12">
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <label for="titik_kembali" class="form-label mb-1">Titik Normalisasi / Kembali (Opsional)</label>
+                                    <input type="text" class="form-control form-control-sm font-monospace" id="titik_kembali" name="titik_kembali" placeholder="Contoh: OTB POP Bandung Rack 2">
+                                </div>
+
+                                <!-- Status Core Aset -->
+                                <div class="col-12 col-sm-6">
+                                    <label for="status_core_aset" class="form-label mb-1">Status Core Aset</label>
+                                    <select class="form-select form-select-sm" id="status_core_aset" name="status_core_aset">
+                                        <option value="OCCUPIED_MANUVER" selected>OCCUPIED MANUVER (Terpakai Jalur Baru)</option>
+                                        <option value="BROKEN_LOSS">BROKEN / LOSS (Core Rusak)</option>
+                                        <option value="SPARE_AVAILABLE">SPARE AVAILABLE (Tersedia)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Keterangan -->
+                                <div class="col-12 col-sm-6">
+                                    <label for="keterangan_manuver" class="form-label mb-1">Keterangan / Alasan Manuver</label>
+                                    <input type="text" class="form-control form-control-sm" id="keterangan_manuver" name="keterangan" placeholder="Contoh: Bypassing kabel putus span 14">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="col-12 col-sm-6">
-                            <label for="titik_kembali" class="form-label small fw-semibold text-navy mb-1">Titik Normalisasi / Kembali (Opsional)</label>
-                            <input type="text" class="form-control form-control-sm font-monospace" id="titik_kembali" name="titik_kembali" placeholder="Contoh: OTB POP Bandung Rack 2">
-                        </div>
-
-                        <!-- Status Core Aset -->
-                        <div class="col-12 col-sm-6">
-                            <label for="status_core_aset" class="form-label small fw-bold text-navy mb-1">Status Core Aset</label>
-                            <select class="form-select form-select-sm" id="status_core_aset" name="status_core_aset">
-                                <option value="OCCUPIED_MANUVER" selected>OCCUPIED MANUVER (Terpakai Jalur Baru)</option>
-                                <option value="BROKEN_LOSS">BROKEN / LOSS (Core Rusak)</option>
-                                <option value="SPARE_AVAILABLE">SPARE AVAILABLE (Tersedia)</option>
-                            </select>
-                        </div>
-
-                        <!-- Keterangan -->
-                        <div class="col-12 col-sm-6">
-                            <label for="keterangan_manuver" class="form-label small fw-semibold text-navy mb-1">Keterangan / Alasan Manuver</label>
-                            <input type="text" class="form-control form-control-sm" id="keterangan_manuver" name="keterangan" placeholder="Contoh: Bypassing kabel putus span 14">
-                        </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light px-3 py-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="modal-footer bg-light px-3 py-2.5 d-flex justify-content-between align-items-center flex-wrap gap-2 border-top">
                     <button type="button" class="btn btn-outline-secondary btn-sm px-3 flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
                         <i class="bi bi-x me-1"></i> Batal
                     </button>

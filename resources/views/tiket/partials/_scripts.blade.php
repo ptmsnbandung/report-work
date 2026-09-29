@@ -1,4 +1,4 @@
-﻿<script>
+<script>
 // Zoom Photo in Lightbox Modal
 window.zoomPhoto = function(url, title) {
     if (!url || url === '#' || url === 'null' || url === 'undefined') return;
@@ -1887,14 +1887,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (manuverConnectionsChips) {
             manuverConnectionsChips.innerHTML = '';
             if (manuverConnections.length === 0) {
-                manuverConnectionsChips.innerHTML = '<span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Klik port asal lalu tujuan.</span>';
+                manuverConnectionsChips.innerHTML = '<span class="fst-italic py-1" style="font-size:0.72rem; color: #94a3b8;">Belum ada core yang disambungkan. Tap port Asal lalu Tujuan.</span>';
             } else {
                 manuverConnections.forEach((conn, idx) => {
                     const chip = document.createElement('div');
                     chip.className = 'fiber-conn-chip';
                     chip.innerHTML = `
                         <span class="fiber-dot-sm" style="background-color: ${conn.color};"></span>
-                        <span>T${conn.asalTube}C${conn.asalCore} <span class="text-muted">(${conn.asalName})</span> &rarr; T${conn.tujuanTube}C${conn.tujuanCore} <span class="text-muted">(${conn.tujuanName})</span></span>
+                        <span><strong style="color:#ffffff;">T${conn.asalTube}C${conn.asalCore}</strong> <span style="color:#94a3b8; font-size:0.68rem;">(${conn.asalName})</span> <span style="color:#38bdf8; font-weight:bold;">&rarr;</span> <strong style="color:#ffffff;">T${conn.tujuanTube}C${conn.tujuanCore}</strong> <span style="color:#94a3b8; font-size:0.68rem;">(${conn.tujuanName})</span></span>
                         <button type="button" class="fiber-conn-chip-del" data-index="${idx}" title="Putuskan sambungan ini">&times;</button>
                     `;
                     chip.querySelector('.fiber-conn-chip-del').addEventListener('click', function(e) {
@@ -1913,7 +1913,7 @@ document.addEventListener('DOMContentLoaded', function() {
             manuverWireCountBadge.innerHTML = `<i class="bi bi-bezier2 me-1"></i> ${total} Sambungan Aktif`;
         }
         if (manuverTotalCoresText) {
-            manuverTotalCoresText.textContent = `${total} Core Terhubung`;
+            manuverTotalCoresText.innerHTML = `<strong style="color:#38bdf8;">${total} Core</strong> <span style="color:#94a3b8;">Terhubung</span>`;
         }
 
         // Synchronize hidden inputs for backend submission
@@ -2246,14 +2246,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (jcConnectionsChips) {
             jcConnectionsChips.innerHTML = '';
             if (jcConnections.length === 0) {
-                jcConnectionsChips.innerHTML = '<span class="text-muted small fst-italic py-1" style="font-size:0.72rem;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>';
+                jcConnectionsChips.innerHTML = '<span class="fst-italic py-1" style="font-size:0.72rem; color: #94a3b8;">Belum ada core yang disambungkan. Tap port Asal lalu Jumper.</span>';
             } else {
                 jcConnections.forEach((conn, idx) => {
                     const chip = document.createElement('div');
                     chip.className = 'fiber-conn-chip';
                     chip.innerHTML = `
                         <span class="fiber-dot-sm" style="background-color: ${conn.color};"></span>
-                        <span>T${conn.asalTube}C${conn.asalCore} <span class="text-muted">(${conn.asalName})</span> &rarr; T${conn.jumperTube}C${conn.jumperCore} <span class="text-muted">(${conn.jumperName})</span></span>
+                        <span><strong style="color:#ffffff;">T${conn.asalTube}C${conn.asalCore}</strong> <span style="color:#94a3b8; font-size:0.68rem;">(${conn.asalName})</span> <span style="color:#38bdf8; font-weight:bold;">&rarr;</span> <strong style="color:#ffffff;">T${conn.jumperTube}C${conn.jumperCore}</strong> <span style="color:#94a3b8; font-size:0.68rem;">(${conn.jumperName})</span></span>
                         <button type="button" class="fiber-conn-chip-del" data-index="${idx}" title="Putuskan sambungan ini">&times;</button>
                     `;
                     chip.querySelector('.fiber-conn-chip-del').addEventListener('click', function(e) {
@@ -2272,7 +2272,7 @@ document.addEventListener('DOMContentLoaded', function() {
             jcWireCountBadge.innerHTML = `<i class="bi bi-bezier2 me-1"></i> ${total} Sambungan Aktif`;
         }
         if (jcTotalCoresText) {
-            jcTotalCoresText.textContent = `${total} Core Terhubung`;
+            jcTotalCoresText.innerHTML = `<strong style="color:#38bdf8;">${total} Core</strong> <span style="color:#94a3b8;">Terhubung</span>`;
         }
 
         // Synchronize table input rows

@@ -3193,53 +3193,76 @@
         50% { transform: scale(1.08); opacity: 1; filter: drop-shadow(0 0 10px #38bdf8); }
     }
     .fiber-chips-tray {
-        background: rgba(15, 23, 42, 0.75);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        padding: 0.65rem 0.85rem;
-        margin-top: 0.85rem;
+        background: rgba(11, 19, 38, 0.95);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 12px;
+        padding: 0.7rem 0.9rem;
+        margin-top: 0.75rem;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
     }
     .fiber-connections-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
-        max-height: 110px;
+        gap: 0.45rem;
+        max-height: 120px;
         overflow-y: auto;
     }
     .fiber-conn-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.22rem 0.6rem;
+        gap: 0.4rem;
+        padding: 0.26rem 0.7rem;
         border-radius: 50rem;
-        background: rgba(30, 41, 59, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #f1f5f9;
-        font-size: 0.72rem;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #f8fafc;
+        font-size: 0.74rem;
         font-family: monospace;
+        font-weight: 500;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
         transition: all 0.15s ease;
     }
+    .fiber-conn-chip .text-muted,
+    .fiber-conn-chip small {
+        color: #94a3b8 !important;
+        font-weight: normal;
+    }
     .fiber-conn-chip:hover {
-        border-color: rgba(255, 255, 255, 0.35);
-        background: rgba(51, 65, 85, 0.9);
+        border-color: rgba(56, 189, 248, 0.7);
+        background: rgba(51, 65, 85, 0.95);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     }
     .fiber-conn-chip-del {
-        background: transparent;
-        border: none;
+        background: rgba(239, 68, 68, 0.15);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         color: #f87171;
         cursor: pointer;
-        padding: 0 2px;
-        margin-left: 2px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         line-height: 1;
-        transition: color 0.15s ease;
+        margin-left: 3px;
+        transition: all 0.15s ease;
     }
+    .fiber-conn-chip-del:hover {
+        background: #ef4444;
+        border-color: #dc2626;
+        color: #ffffff;
+        transform: scale(1.1);
+    }
+
     /* ═══════════════════════════════════════════════════════════════════
        COMPACT & CLEAN MODAL STYLING FOR JC & MANUVER CORE (MOBILE & DESKTOP)
        ═══════════════════════════════════════════════════════════════════ */
     #tambahJointClosureModal .modal-content,
     #addManuverModal .modal-content {
-        border-radius: 14px !important;
+        border-radius: 16px !important;
+        overflow: hidden;
     }
 
     #assignTeknisiModal .modal-header,
@@ -3262,7 +3285,16 @@
 
     #tambahJointClosureModal .modal-body,
     #addManuverModal .modal-body {
-        padding: 0.65rem !important;
+        padding: 0.85rem 1rem !important;
+        background-color: #f8fafc;
+    }
+
+    .section-card-manuver {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0.85rem;
+        box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03);
     }
 
     #tambahJointClosureModal .section-card-jc {
@@ -3282,22 +3314,28 @@
 
     #tambahJointClosureModal .form-label,
     #addManuverModal .form-label {
-        font-size: 0.73rem !important;
+        font-size: 0.76rem !important;
         font-weight: 600 !important;
         color: #1e293b !important;
-        margin-bottom: 0.15rem !important;
+        margin-bottom: 0.25rem !important;
     }
 
     #tambahJointClosureModal .form-control,
     #tambahJointClosureModal .form-select,
     #addManuverModal .form-control,
     #addManuverModal .form-select {
-        font-size: 0.78rem !important;
-        padding: 0.28rem 0.55rem !important;
-        height: 32px !important;
-        min-height: 32px !important;
-        border-radius: 6px !important;
+        font-size: 0.8rem !important;
+        padding: 0.35rem 0.65rem !important;
+        border-radius: 8px !important;
         border: 1px solid #cbd5e1 !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    #addManuverModal .form-control:focus,
+    #addManuverModal .form-select:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    }
         background-color: #ffffff !important;
         box-shadow: none !important;
         color: #0f172a !important;
