@@ -802,8 +802,8 @@
         </div>
 
         <!-- Grid Tiles -->
-        <div class="p-3 bg-light bg-opacity-40">
-            <div class="row g-2.5">
+        <div class="p-2.5 p-sm-3 bg-light bg-opacity-40">
+            <div class="row g-2 g-sm-2.5">
                 @if($isBroadband)
                 <!-- ── BROADBAND MANDATORI TILES ── -->
                 <!-- 1. Resume / Tindakan Perbaikan -->

@@ -2527,20 +2527,30 @@
             padding: 0.65rem 0.85rem;
         }
         .closing-item-tile {
-            padding: 0.55rem 0.65rem;
+            padding: 0.5rem 0.55rem;
             border-radius: 10px;
+            gap: 0.4rem;
         }
         .closing-tile-icon-box {
-            width: 28px;
-            height: 28px;
-            font-size: 0.82rem;
-            border-radius: 8px;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            font-size: 0.8rem;
+            border-radius: 7px;
         }
         .closing-tile-title {
-            font-size: 0.76rem !important;
+            font-size: 0.72rem !important;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.1px;
         }
         .closing-tile-desc {
-            font-size: 0.66rem !important;
+            font-size: 0.62rem !important;
+            line-height: 1.1;
+            margin-top: 2px;
+        }
+        .closing-tile-arrow {
+            display: none !important;
         }
         .closing-ready-banner {
             padding: 0.75rem 0.85rem;
