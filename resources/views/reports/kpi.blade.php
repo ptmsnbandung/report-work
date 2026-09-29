@@ -363,7 +363,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_verif'] }}</div>
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_verification'] }}</div>
                     <div class="kpi-stat-desc">
                         Pending hingga tiket CLOSE
                     </div>
