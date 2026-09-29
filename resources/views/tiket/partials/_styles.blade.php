@@ -2561,15 +2561,36 @@
             margin-top: 0.5rem;
         }
         .verifikasi-banner {
-            padding: 0.85rem 1rem !important;
+            padding: 0.85rem 0.95rem !important;
         }
         .verifikasi-actions {
             width: 100%;
-            flex-direction: column;
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 0.5rem !important;
         }
+        .verifikasi-actions .btn-verifikasi-reject,
+        .verifikasi-actions .btn-verifikasi-approve,
         .verifikasi-actions .btn {
-            width: 100%;
+            flex: 1 1 0;
+            width: 50% !important;
+            min-width: 0;
             justify-content: center;
+            padding: 0.55rem 0.35rem !important;
+            font-size: 0.75rem !important;
+            white-space: nowrap;
+            text-align: center;
+        }
+        .verifikasi-actions .btn-verifikasi-reject i,
+        .verifikasi-actions .btn-verifikasi-approve i {
+            font-size: 0.82rem;
+            margin-right: 2px;
+        }
+        .verifikasi-actions .btn-verifikasi-reject span,
+        .verifikasi-actions .btn-verifikasi-approve span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
     }
 
