@@ -2001,6 +2001,17 @@
         }
     }
 
+    /* ── Summary Info Toggle (mobile collapse) ── */
+    .summary-toggle-header:hover {
+        background: rgba(241, 245, 249, 0.95) !important;
+    }
+    .summary-toggle-header[aria-expanded="true"] .summary-toggle-icon {
+        transform: rotate(180deg);
+    }
+    .summary-toggle-header .summary-toggle-icon {
+        transition: transform 0.2s ease;
+    }
+
     #mapPicker, #mapPickerTitik {
         height: 350px;
         width: 100%;

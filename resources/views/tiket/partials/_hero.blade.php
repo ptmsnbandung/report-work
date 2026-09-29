@@ -373,6 +373,26 @@
 
     <!-- ── SUMMARY INFO CARD ── -->
     <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">
+        {{-- Toggle Header (mobile only) --}}
+        <div class="d-flex d-md-none align-items-center justify-content-between px-3 py-2 border-bottom summary-toggle-header"
+             role="button"
+             data-bs-toggle="collapse"
+             data-bs-target="#summaryInfoBody"
+             aria-expanded="false"
+             aria-controls="summaryInfoBody"
+             style="cursor:pointer; user-select:none; background:rgba(248,250,252,0.8);">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle-fill text-primary" style="font-size:0.9rem;"></i>
+                <span class="fw-bold text-navy" style="font-size:0.82rem;">Detail Info Tiket</span>
+                <span class="badge bg-primary-subtle text-primary rounded-pill" style="font-size:0.62rem;">{{ $tiket->isBroadband() ? ($namaPop ?: $tiket->kode_pop) : $tiket->backbone_segment }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted" style="font-size:0.72rem;">{{ $tiket->tanggal_open->format('d M H:i') }} WIB</span>
+                <i class="bi bi-chevron-down summary-toggle-icon text-muted" style="font-size:0.75rem; transition: transform 0.2s;"></i>
+            </div>
+        </div>
+        {{-- Card Body: collapsible on mobile, always visible on desktop --}}
+        <div class="collapse d-md-block" id="summaryInfoBody">
         <div class="card-body p-3 p-md-3.5">
             <!-- 4 Metric Micro-Tiles Grid -->
             <div class="row g-2 g-md-2.5 mb-2.5">
@@ -535,6 +555,7 @@
                 @endif
             </div>
         </div>
+        </div>{{-- end collapse --}}
     </div>
 
     <!-- ── VISUAL SLA TIMELINE STEPPER (POINT 5) ── -->
