@@ -461,6 +461,56 @@ class Tiket extends Model
     }
 
     /**
+     * Scope query untuk memfilter data monitoring / laporan.
+     * Aturan:
+     * - Admin & Manager Teknis: Melihat SELURUH data karyawan & seluruh tiket.
+     * - Teknisi: HANYA melihat data tiket yang ditugaskan kepadanya (Lead / Anggota Tim), diselesaikan olehnya, atau berisi kronologisnya.
+     * - Helpdesk / SA CS: HANYA melihat data tiket yang dibuat olehnya, diverifikasi/ditutup olehnya, atau berisi kronologisnya.
+     */
+    public function scopeForUserMonitoring(\Illuminate\Database\Eloquent\Builder $query, ?User $user = null): \Illuminate\Database\Eloquent\Builder
+    {
+        $user = $user ?? (function_exists('auth') ? auth()->user() : null);
+        if (!$user) {
+            return $query;
+        }
+
+        // Admin dan Manager Teknis dapat melihat seluruh data karyawan
+        if ($user->hasRole(['admin', 'manager_teknisi'])) {
+            return $query;
+        }
+
+        // Teknisi hanya melihat data dirinya sendiri
+        if ($user->hasRole('teknis')) {
+            return $query->where(function ($q) use ($user) {
+                $q->where('assigned_lead_id', $user->id)
+                  ->orWhere('resolved_by', $user->id)
+                  ->orWhereJsonContains('assigned_team', (int) $user->id)
+                  ->orWhereJsonContains('assigned_team', (string) $user->id)
+                  ->orWhereHas('kronologis', function ($kq) use ($user) {
+                      $kq->where('user_id', $user->id);
+                  });
+            });
+        }
+
+        // Helpdesk & SA CS hanya melihat data dirinya sendiri
+        if ($user->hasRole(['helpdesk', 'sa_cs'])) {
+            return $query->where(function ($q) use ($user) {
+                $q->where('created_by', $user->id)
+                  ->orWhere('closed_by', $user->id)
+                  ->orWhereHas('kronologis', function ($kq) use ($user) {
+                      $kq->where('user_id', $user->id);
+                  });
+            });
+        }
+
+        return $query->where(function ($q) use ($user) {
+            $q->where('created_by', $user->id)
+              ->orWhere('assigned_lead_id', $user->id)
+              ->orWhere('resolved_by', $user->id);
+        });
+    }
+
+    /**
      * Periksa apakah tiket sudah di-assign / di-dispatch oleh Manager Teknis
      */
     public function isAssignedByManager(): bool

@@ -349,28 +349,40 @@
         </div>
     </div>
 
+    @php
+        $userRole = auth()->user()?->role;
+        $isManager = in_array($userRole, ['admin', 'manager_teknisi']);
+        $isTeknis = $userRole === 'teknis';
+        $isHelpdesk = in_array($userRole, ['helpdesk', 'sa_cs']);
+    @endphp
+
     <!-- ── TABS: KPI TEKNISI VS KPI HELPDESK ── -->
     <div class="card border-0 shadow-sm rounded-xl overflow-hidden bg-white mb-4">
         <div class="card-header bg-white p-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2">
             <ul class="nav nav-pills nav-pills-kpi" id="kpiTabs" role="tablist">
+                @if($isManager || $isTeknis)
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="teknisi-kpi-tab" data-bs-toggle="pill" data-bs-target="#teknisi-kpi-pane" type="button" role="tab">
-                        <i class="bi bi-tools me-1.5"></i> Leaderboard KPI Teknisi Lapangan ({{ $teknisiKpi->count() }})
+                    <button class="nav-link {{ $isTeknis || $isManager ? 'active' : '' }}" id="teknisi-kpi-tab" data-bs-toggle="pill" data-bs-target="#teknisi-kpi-pane" type="button" role="tab">
+                        <i class="bi bi-tools me-1.5"></i> {{ $isManager ? 'Leaderboard KPI Teknisi Lapangan (' . $teknisiKpi->count() . ')' : 'Evaluasi Kinerja Saya (Teknisi Lapangan)' }}
                     </button>
                 </li>
+                @endif
+                @if($isManager || $isHelpdesk)
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="helpdesk-kpi-tab" data-bs-toggle="pill" data-bs-target="#helpdesk-kpi-pane" type="button" role="tab">
-                        <i class="bi bi-headset me-1.5"></i> KPI HelpDesk / NOC ({{ $helpdeskKpi->count() }})
+                    <button class="nav-link {{ $isHelpdesk ? 'active' : '' }}" id="helpdesk-kpi-tab" data-bs-toggle="pill" data-bs-target="#helpdesk-kpi-pane" type="button" role="tab">
+                        <i class="bi bi-headset me-1.5"></i> {{ $isManager ? 'KPI HelpDesk / NOC (' . $helpdeskKpi->count() . ')' : 'Evaluasi Kinerja Saya (HelpDesk / NOC)' }}
                     </button>
                 </li>
+                @endif
             </ul>
         </div>
 
         <div class="card-body p-0">
             <div class="tab-content" id="kpiTabContent">
 
+                @if($isManager || $isTeknis)
                 <!-- ════ TAB 1: KPI TEKNISI LAPANGAN ════ -->
-                <div class="tab-pane fade show active" id="teknisi-kpi-pane" role="tabpanel">
+                <div class="tab-pane fade {{ $isTeknis || $isManager ? 'show active' : '' }}" id="teknisi-kpi-pane" role="tabpanel">
                     <!-- 1A. Desktop Table View (>= md) -->
                     <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
@@ -512,9 +524,11 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
 
+                @if($isManager || $isHelpdesk)
                 <!-- ════ TAB 2: KPI HELPDESK NOC ════ -->
-                <div class="tab-pane fade" id="helpdesk-kpi-pane" role="tabpanel">
+                <div class="tab-pane fade {{ $isHelpdesk ? 'show active' : '' }}" id="helpdesk-kpi-pane" role="tabpanel">
                     <!-- 2A. Desktop Table View (>= md) -->
                     <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
@@ -604,7 +618,7 @@
                                     <div class="kpi-mobile-metric-tile d-flex justify-content-between align-items-center">
                                         <div class="text-muted" style="font-size: 0.68rem;">Rata-Rata Waktu Verifikasi</div>
                                         <span class="badge bg-purple-subtle text-purple border px-2 py-0.5 font-monospace" style="font-size: 0.75rem;">
-                                            {{ $hd['formatted_avg_verification'] }}
+                                             {{ $hd['formatted_avg_verification'] }}
                                         </span>
                                     </div>
                                 </div>
@@ -617,6 +631,7 @@
                         @endforelse
                     </div>
                 </div>
+                @endif
 
             </div>
         </div>

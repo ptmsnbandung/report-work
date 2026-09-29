@@ -350,6 +350,7 @@
                     </div>
 
                     <!-- 4. Petugas -->
+                    @if(in_array(auth()->user()?->role, ['admin', 'manager_teknisi']))
                     <div class="col-12 col-sm-6 col-lg-4">
                         <label class="form-label small fw-semibold text-navy mb-1">Petugas (Pengirim / Penerima)</label>
                         <select name="user_id" class="form-select form-select-sm">
@@ -361,6 +362,7 @@
                             @endforeach
                         </select>
                     </div>
+                    @endif
 
                     <!-- 5. Pencarian Tiket / Segment -->
                     <div class="col-12 col-sm-6 col-lg-5">

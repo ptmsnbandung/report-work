@@ -23,6 +23,7 @@ class ReportController extends Controller
      */
     public function index(Request $request): View
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -35,15 +36,15 @@ class ReportController extends Controller
         $startDate = $filters['start_date'] ?? null;
         $endDate = $filters['end_date'] ?? null;
 
-        $metrics = $this->reportService->getSummaryMetrics($filters);
-        $tikets = $this->reportService->getFilteredQuery($filters)->paginate(15)->withQueryString();
+        $metrics = $this->reportService->getSummaryMetrics($filters, $user);
+        $tikets = $this->reportService->getFilteredQuery($filters, $user)->paginate(15)->withQueryString();
 
         $segments = MasterSla::select('backbone_segment')->distinct()->orderBy('backbone_segment')->get();
-        $monthlyTrend = $this->mttrService->getMonthlyMttrTrend();
-        $topSegments = $this->mttrService->getTopSegmentsByIncident(5);
-        $categoryBreakdown = $this->mttrService->getCategoryBreakdown($startDate, $endDate);
-        $stopClockImpact = $this->mttrService->getStopClockImpactAnalytics($startDate, $endDate);
-        $hourlyDistribution = $this->mttrService->getHourlyDistribution($startDate, $endDate);
+        $monthlyTrend = $this->mttrService->getMonthlyMttrTrend(null, $user);
+        $topSegments = $this->mttrService->getTopSegmentsByIncident(5, $user);
+        $categoryBreakdown = $this->mttrService->getCategoryBreakdown($startDate, $endDate, $user);
+        $stopClockImpact = $this->mttrService->getStopClockImpactAnalytics($startDate, $endDate, $user);
+        $hourlyDistribution = $this->mttrService->getHourlyDistribution($startDate, $endDate, $user);
 
         return view('reports.index', compact(
             'tikets',
@@ -63,12 +64,13 @@ class ReportController extends Controller
      */
     public function kpi(Request $request, \App\Services\KpiService $kpiService): View
     {
+        $user = $request->user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate);
-        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate);
-        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate);
+        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate, $user);
+        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate, $user);
+        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate, $user);
 
         return view('reports.kpi', compact(
             'executiveKpi',
@@ -84,8 +86,9 @@ class ReportController extends Controller
      */
     public function mttr(Request $request): JsonResponse
     {
+        $user = $request->user();
         $year = $request->input('year') ? (int) $request->input('year') : null;
-        $trend = $this->mttrService->getMonthlyMttrTrend($year);
+        $trend = $this->mttrService->getMonthlyMttrTrend($year, $user);
 
         return response()->json([
             'status' => 'success',
@@ -98,9 +101,10 @@ class ReportController extends Controller
      */
     public function sla(Request $request): JsonResponse
     {
+        $user = $request->user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
-        $stats = $this->mttrService->getSlaComplianceStats($startDate, $endDate);
+        $stats = $this->mttrService->getSlaComplianceStats($startDate, $endDate, $user);
 
         return response()->json([
             'status' => 'success',
@@ -113,6 +117,7 @@ class ReportController extends Controller
      */
     public function exportPdf(Request $request)
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -123,7 +128,7 @@ class ReportController extends Controller
         ]);
 
         $filename = 'Rekap_Laporan_Tiket_CJP_' . date('Ymd_His') . '.pdf';
-        return $this->reportService->generateSummaryPdf($filters)->download($filename);
+        return $this->reportService->generateSummaryPdf($filters, $user)->download($filename);
     }
 
     /**
@@ -149,6 +154,7 @@ class ReportController extends Controller
      */
     public function exportExcel(Request $request): BinaryFileResponse
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -158,7 +164,7 @@ class ReportController extends Controller
             'search'
         ]);
 
-        return $this->reportService->downloadExcel($filters);
+        return $this->reportService->downloadExcel($filters, $user);
     }
 
     /**
@@ -166,6 +172,7 @@ class ReportController extends Controller
      */
     public function shifts(Request $request): View
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -175,9 +182,14 @@ class ReportController extends Controller
             'search',
         ]);
 
-        $metrics = $this->reportService->getHandoverShiftsMetrics($filters);
-        $handovers = $this->reportService->getFilteredHandoverShiftsQuery($filters)->paginate(15)->withQueryString();
-        $users = \App\Models\User::where('is_active', true)->orderBy('name')->get();
+        $metrics = $this->reportService->getHandoverShiftsMetrics($filters, $user);
+        $handovers = $this->reportService->getFilteredHandoverShiftsQuery($filters, $user)->paginate(15)->withQueryString();
+        
+        $usersQuery = \App\Models\User::where('is_active', true)->orderBy('name');
+        if (!in_array($user?->role, ['admin', 'manager_teknisi'])) {
+            $usersQuery->where('id', $user?->id);
+        }
+        $users = $usersQuery->get();
 
         return view('reports.shifts', compact(
             'handovers',
@@ -192,6 +204,7 @@ class ReportController extends Controller
      */
     public function exportShiftsPdf(Request $request)
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -202,7 +215,7 @@ class ReportController extends Controller
         ]);
 
         $filename = 'Rekap_Handover_Shift_' . date('Ymd_His') . '.pdf';
-        return $this->reportService->generateHandoverShiftsPdf($filters)->download($filename);
+        return $this->reportService->generateHandoverShiftsPdf($filters, $user)->download($filename);
     }
 
     /**
@@ -210,6 +223,7 @@ class ReportController extends Controller
      */
     public function exportShiftsExcel(Request $request): BinaryFileResponse
     {
+        $user = $request->user();
         $filters = $request->only([
             'start_date',
             'end_date',
@@ -219,7 +233,7 @@ class ReportController extends Controller
             'search',
         ]);
 
-        return $this->reportService->downloadHandoverShiftsExcel($filters);
+        return $this->reportService->downloadHandoverShiftsExcel($filters, $user);
     }
 
     /**
@@ -227,11 +241,12 @@ class ReportController extends Controller
      */
     public function exportKpiPdf(Request $request)
     {
+        $user = $request->user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
         $filename = 'Laporan_Eksekutif_KPI_' . date('Ymd_His') . '.pdf';
-        return $this->reportService->generateKpiPdf($startDate, $endDate)->download($filename);
+        return $this->reportService->generateKpiPdf($startDate, $endDate, $user)->download($filename);
     }
 
     /**
@@ -239,9 +254,10 @@ class ReportController extends Controller
      */
     public function exportKpiExcel(Request $request): BinaryFileResponse
     {
+        $user = $request->user();
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
-        return $this->reportService->downloadKpiExcel($startDate, $endDate);
+        return $this->reportService->downloadKpiExcel($startDate, $endDate, $user);
     }
 }

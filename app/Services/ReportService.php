@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exports\TiketExport;
 use App\Models\Tiket;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -17,11 +18,14 @@ class ReportService
     ) {}
 
     /**
-     * Buat query builder tiket dengan filter
+     * Buat query builder tiket dengan filter dan scoping hak akses monitoring
      */
-    public function getFilteredQuery(array $filters = []): Builder
+    public function getFilteredQuery(array $filters = [], ?User $user = null): Builder
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+
         $query = Tiket::with(['creator', 'closer', 'resume', 'materials', 'titikPerbaikans', 'dokumentasis', 'manuverCores'])
+            ->forUserMonitoring($user)
             ->orderBy('tanggal_open', 'desc');
 
         if (!empty($filters['status'])) {
@@ -59,17 +63,17 @@ class ReportService
     /**
      * Ambil data tiket terfilter
      */
-    public function getFilteredTikets(array $filters = []): Collection
+    public function getFilteredTikets(array $filters = [], ?User $user = null): Collection
     {
-        return $this->getFilteredQuery($filters)->get();
+        return $this->getFilteredQuery($filters, $user)->get();
     }
 
     /**
      * Hitung ringkasan metrik untuk halaman reporting
      */
-    public function getSummaryMetrics(array $filters = []): array
+    public function getSummaryMetrics(array $filters = [], ?User $user = null): array
     {
-        $tikets = $this->getFilteredTikets($filters);
+        $tikets = $this->getFilteredTikets($filters, $user);
 
         $totalTiket = $tikets->count();
         $totalOpen = $tikets->where('status', 'OPEN')->count();
@@ -150,10 +154,11 @@ class ReportService
     /**
      * Generate file PDF Rekapitulasi Laporan Banyak Tiket
      */
-    public function generateSummaryPdf(array $filters = [])
+    public function generateSummaryPdf(array $filters = [], ?User $user = null)
     {
-        $tikets = $this->getFilteredTikets($filters);
-        $metrics = $this->getSummaryMetrics($filters);
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $tikets = $this->getFilteredTikets($filters, $user);
+        $metrics = $this->getSummaryMetrics($filters, $user);
 
         $pdf = Pdf::loadView('reports.pdf_summary', [
             'tikets' => $tikets,
@@ -168,19 +173,30 @@ class ReportService
     /**
      * Download Excel rekap data tiket
      */
-    public function downloadExcel(array $filters = []): BinaryFileResponse
+    public function downloadExcel(array $filters = [], ?User $user = null): BinaryFileResponse
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
         $filename = 'Laporan_Tiket_Gangguan_' . date('Ymd_His') . '.xlsx';
-        return Excel::download(new TiketExport($filters), $filename);
+        return Excel::download(new TiketExport($filters, $user), $filename);
     }
 
     /**
-     * Query builder data serah terima / handover shift
+     * Query builder data serah terima / handover shift dengan filter role
      */
-    public function getFilteredHandoverShiftsQuery(array $filters = []): Builder
+    public function getFilteredHandoverShiftsQuery(array $filters = [], ?User $user = null): Builder
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+
         $query = \App\Models\TiketHandoverShift::with(['tiket', 'userFrom', 'userTo'])
             ->orderBy('created_at', 'desc');
+
+        // Jika bukan admin dan bukan manager teknisi, batasi hanya riwayat shift miliknya
+        if ($user && !$user->hasRole(['admin', 'manager_teknisi'])) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_from_id', $user->id)
+                  ->orWhere('user_to_id', $user->id);
+            });
+        }
 
         if (!empty($filters['shift_from'])) {
             $query->where('shift_from', $filters['shift_from']);
@@ -220,9 +236,9 @@ class ReportService
     /**
      * Ringkasan metrik statistik handover shift
      */
-    public function getHandoverShiftsMetrics(array $filters = []): array
+    public function getHandoverShiftsMetrics(array $filters = [], ?User $user = null): array
     {
-        $all = $this->getFilteredHandoverShiftsQuery($filters)->get();
+        $all = $this->getFilteredHandoverShiftsQuery($filters, $user)->get();
         $totalHandover = $all->count();
 
         $shiftPagi = $all->where('shift_to', 'Shift 1 (Pagi 07:00-15:00)')->count();
@@ -244,10 +260,11 @@ class ReportService
     /**
      * Generate file PDF Rekapitulasi Handover Shift
      */
-    public function generateHandoverShiftsPdf(array $filters = [])
+    public function generateHandoverShiftsPdf(array $filters = [], ?User $user = null)
     {
-        $handovers = $this->getFilteredHandoverShiftsQuery($filters)->get();
-        $metrics = $this->getHandoverShiftsMetrics($filters);
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $handovers = $this->getFilteredHandoverShiftsQuery($filters, $user)->get();
+        $metrics = $this->getHandoverShiftsMetrics($filters, $user);
 
         $pdf = Pdf::loadView('reports.pdf_shifts_summary', [
             'handovers' => $handovers,
@@ -262,21 +279,23 @@ class ReportService
     /**
      * Download Excel rekap data handover shift
      */
-    public function downloadHandoverShiftsExcel(array $filters = []): BinaryFileResponse
+    public function downloadHandoverShiftsExcel(array $filters = [], ?User $user = null): BinaryFileResponse
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
         $filename = 'Rekap_Handover_Shift_' . date('Ymd_His') . '.xlsx';
-        return Excel::download(new \App\Exports\HandoverShiftExport($filters), $filename);
+        return Excel::download(new \App\Exports\HandoverShiftExport($filters, $user), $filename);
     }
 
     /**
      * Generate file PDF Laporan KPI Eksekutif
      */
-    public function generateKpiPdf(?string $startDate = null, ?string $endDate = null)
+    public function generateKpiPdf(?string $startDate = null, ?string $endDate = null, ?User $user = null)
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
         $kpiService = new \App\Services\KpiService();
-        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate);
-        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate);
-        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate);
+        $executiveKpi = $kpiService->getExecutiveKpiSummary($startDate, $endDate, $user);
+        $teknisiKpi = $kpiService->getTeknisiKpiList($startDate, $endDate, $user);
+        $helpdeskKpi = $kpiService->getHelpdeskKpiList($startDate, $endDate, $user);
 
         $pdf = Pdf::loadView('reports.pdf_kpi_summary', [
             'executiveKpi' => $executiveKpi,
@@ -293,9 +312,10 @@ class ReportService
     /**
      * Download Excel Laporan KPI Eksekutif
      */
-    public function downloadKpiExcel(?string $startDate = null, ?string $endDate = null): BinaryFileResponse
+    public function downloadKpiExcel(?string $startDate = null, ?string $endDate = null, ?User $user = null): BinaryFileResponse
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
         $filename = 'Laporan_KPI_Kinerja_' . date('Ymd_His') . '.xlsx';
-        return Excel::download(new \App\Exports\KpiExport($startDate, $endDate), $filename);
+        return Excel::download(new \App\Exports\KpiExport($startDate, $endDate, $user), $filename);
     }
 }

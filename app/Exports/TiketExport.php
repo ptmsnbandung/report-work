@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Tiket;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -14,10 +15,12 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected array $filters;
+    protected ?User $user;
 
-    public function __construct(array $filters = [])
+    public function __construct(array $filters = [], ?User $user = null)
     {
         $this->filters = $filters;
+        $this->user = $user ?? (auth()->check() ? auth()->user() : null);
     }
 
     /**
@@ -26,6 +29,7 @@ class TiketExport implements FromCollection, WithHeadings, WithMapping, ShouldAu
     public function collection(): Collection
     {
         $query = Tiket::with(['creator', 'closer', 'resume', 'materials', 'titikPerbaikans', 'jointClosures.cores'])
+            ->forUserMonitoring($this->user)
             ->orderBy('tanggal_open', 'desc');
 
         if (!empty($this->filters['status'])) {

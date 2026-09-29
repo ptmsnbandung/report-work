@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\User;
 use App\Services\KpiService;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
@@ -13,19 +14,21 @@ class KpiExport implements FromArray, ShouldAutoSize, WithStyles
 {
     protected ?string $startDate;
     protected ?string $endDate;
+    protected ?User $user;
 
-    public function __construct(?string $startDate = null, ?string $endDate = null)
+    public function __construct(?string $startDate = null, ?string $endDate = null, ?User $user = null)
     {
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->user = $user ?? (auth()->check() ? auth()->user() : null);
     }
 
     public function array(): array
     {
         $kpiService = new KpiService();
-        $summary = $kpiService->getExecutiveKpiSummary($this->startDate, $this->endDate);
-        $teknisiList = $kpiService->getTeknisiKpiList($this->startDate, $this->endDate);
-        $helpdeskList = $kpiService->getHelpdeskKpiList($this->startDate, $this->endDate);
+        $summary = $kpiService->getExecutiveKpiSummary($this->startDate, $this->endDate, $this->user);
+        $teknisiList = $kpiService->getTeknisiKpiList($this->startDate, $this->endDate, $this->user);
+        $helpdeskList = $kpiService->getHelpdeskKpiList($this->startDate, $this->endDate, $this->user);
 
         $rows = [];
 

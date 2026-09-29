@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\TiketHandoverShift;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -14,16 +15,25 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 class HandoverShiftExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     protected array $filters;
+    protected ?User $user;
 
-    public function __construct(array $filters = [])
+    public function __construct(array $filters = [], ?User $user = null)
     {
         $this->filters = $filters;
+        $this->user = $user ?? (auth()->check() ? auth()->user() : null);
     }
 
     public function collection(): Collection
     {
         $query = TiketHandoverShift::with(['tiket', 'userFrom', 'userTo'])
             ->orderBy('created_at', 'desc');
+
+        if ($this->user && !$this->user->hasRole(['admin', 'manager_teknisi'])) {
+            $query->where(function ($q) {
+                $q->where('user_from_id', $this->user->id)
+                  ->orWhere('user_to_id', $this->user->id);
+            });
+        }
 
         if (!empty($this->filters['shift_from'])) {
             $query->where('shift_from', $this->filters['shift_from']);

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Tiket;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -40,11 +41,13 @@ class MttrService
      *
      * @param string|null $startDate
      * @param string|null $endDate
+     * @param User|null $user
      * @return array
      */
-    public function getMttrAverage(?string $startDate = null, ?string $endDate = null): array
+    public function getMttrAverage(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = Tiket::where('status', 'CLOSE')->whereNotNull('mttr_minutes');
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = Tiket::forUserMonitoring($user)->where('status', 'CLOSE')->whereNotNull('mttr_minutes');
 
         if ($startDate) {
             $query->whereDate('tanggal_open', '>=', $startDate);
@@ -70,11 +73,13 @@ class MttrService
      *
      * @param string|null $startDate
      * @param string|null $endDate
+     * @param User|null $user
      * @return array
      */
-    public function getSlaComplianceStats(?string $startDate = null, ?string $endDate = null): array
+    public function getSlaComplianceStats(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = Tiket::where('status', 'CLOSE');
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = Tiket::forUserMonitoring($user)->where('status', 'CLOSE');
 
         if ($startDate) {
             $query->whereDate('tanggal_open', '>=', $startDate);
@@ -103,10 +108,12 @@ class MttrService
      * Ambil tren MTTR bulanan untuk Chart.js (12 bulan terakhir)
      *
      * @param int|null $year
+     * @param User|null $user
      * @return array
      */
-    public function getMonthlyMttrTrend(?int $year = null): array
+    public function getMonthlyMttrTrend(?int $year = null, ?User $user = null): array
     {
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
         $year = $year ?: (int) date('Y');
 
         $labels = [
@@ -120,15 +127,16 @@ class MttrService
         $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite' ? "cast(strftime('%m', tanggal_open) as integer)" : 'MONTH(tanggal_open)';
 
-        $results = Tiket::select(
-            DB::raw("{$monthExpr} as bulan"),
-            DB::raw('ROUND(AVG(mttr_minutes)) as avg_mttr'),
-            DB::raw('COUNT(id) as total_tiket')
-        )
-        ->whereYear('tanggal_open', $year)
-        ->where('status', 'CLOSE')
-        ->groupBy(DB::raw($monthExpr))
-        ->get();
+        $results = Tiket::forUserMonitoring($user)
+            ->select(
+                DB::raw("{$monthExpr} as bulan"),
+                DB::raw('ROUND(AVG(mttr_minutes)) as avg_mttr'),
+                DB::raw('COUNT(id) as total_tiket')
+            )
+            ->whereYear('tanggal_open', $year)
+            ->where('status', 'CLOSE')
+            ->groupBy(DB::raw($monthExpr))
+            ->get();
 
         foreach ($results as $row) {
             $monthIndex = (int) $row->bulan - 1;
@@ -150,29 +158,33 @@ class MttrService
      * Ambil segment backbone dengan gangguan terbanyak
      *
      * @param int $limit
+     * @param User|null $user
      * @return array
      */
-    public function getTopSegmentsByIncident(int $limit = 5): array
+    public function getTopSegmentsByIncident(int $limit = 5, ?User $user = null): array
     {
-        return Tiket::select(
-            'backbone_segment',
-            DB::raw('COUNT(id) as total_gangguan'),
-            DB::raw('ROUND(AVG(CASE WHEN mttr_minutes IS NOT NULL THEN mttr_minutes ELSE 0 END)) as avg_mttr'),
-            DB::raw('SUM(CASE WHEN sla_status = "LEBIH" THEN 1 ELSE 0 END) as total_over_sla')
-        )
-        ->groupBy('backbone_segment')
-        ->orderByDesc('total_gangguan')
-        ->limit($limit)
-        ->get()
-        ->toArray();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        return Tiket::forUserMonitoring($user)
+            ->select(
+                'backbone_segment',
+                DB::raw('COUNT(id) as total_gangguan'),
+                DB::raw('ROUND(AVG(CASE WHEN mttr_minutes IS NOT NULL THEN mttr_minutes ELSE 0 END)) as avg_mttr'),
+                DB::raw('SUM(CASE WHEN sla_status = "LEBIH" THEN 1 ELSE 0 END) as total_over_sla')
+            )
+            ->groupBy('backbone_segment')
+            ->orderByDesc('total_gangguan')
+            ->limit($limit)
+            ->get()
+            ->toArray();
     }
 
     /**
      * Breakdown Tipe Penanganan Gangguan (Jointing Lurus vs Manuver Core dll.)
      */
-    public function getCategoryBreakdown(?string $startDate = null, ?string $endDate = null): array
+    public function getCategoryBreakdown(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = Tiket::query();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = Tiket::forUserMonitoring($user);
 
         if ($startDate) {
             $query->whereDate('tanggal_open', '>=', $startDate);
@@ -211,9 +223,12 @@ class MttrService
     /**
      * Analisis Dampak Jeda Waktu Stop Clock terhadap SLA
      */
-    public function getStopClockImpactAnalytics(?string $startDate = null, ?string $endDate = null): array
+    public function getStopClockImpactAnalytics(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = \App\Models\TiketStopClock::with('tiket');
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = \App\Models\TiketStopClock::whereHas('tiket', function ($q) use ($user) {
+            $q->forUserMonitoring($user);
+        })->with('tiket');
 
         if ($startDate) {
             $query->whereDate('start_time', '>=', $startDate);
@@ -253,9 +268,10 @@ class MttrService
     /**
      * Distribusi Jam Kejadian Gangguan (00:00 - 23:00)
      */
-    public function getHourlyDistribution(?string $startDate = null, ?string $endDate = null): array
+    public function getHourlyDistribution(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = Tiket::query();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = Tiket::forUserMonitoring($user);
 
         if ($startDate) {
             $query->whereDate('tanggal_open', '>=', $startDate);

@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\DB;
 class KpiService
 {
     /**
-     * Hitung ringkasan KPI eksekutif secara keseluruhan
+     * Hitung ringkasan KPI eksekutif secara keseluruhan (atau per user jika teknisi/helpdesk)
      */
-    public function getExecutiveKpiSummary(?string $startDate = null, ?string $endDate = null): array
+    public function getExecutiveKpiSummary(?string $startDate = null, ?string $endDate = null, ?User $user = null): array
     {
-        $query = Tiket::query();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
+        $query = Tiket::forUserMonitoring($user);
 
         if ($startDate) {
             $query->whereDate('tanggal_open', '>=', $startDate);
@@ -24,7 +25,7 @@ class KpiService
             $query->whereDate('tanggal_open', '<=', $endDate);
         }
 
-        $totalTiket = $query->count();
+        $totalTiket = (clone $query)->count();
         $closedQuery = (clone $query)->where('status', 'CLOSE');
         $totalClosed = $closedQuery->count();
 
@@ -75,15 +76,31 @@ class KpiService
     /**
      * Dapatkan KPI detail per Teknisi Lapangan
      */
-    public function getTeknisiKpiList(?string $startDate = null, ?string $endDate = null): Collection
+    public function getTeknisiKpiList(?string $startDate = null, ?string $endDate = null, ?User $user = null): Collection
     {
-        $teknisiUsers = User::where('role', 'teknis')->orderBy('name')->get();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
 
-        return $teknisiUsers->map(function ($user) use ($startDate, $endDate) {
-            $query = Tiket::where(function ($q) use ($user) {
-                $q->where('resolved_by', $user->id)
-                  ->orWhereHas('kronologis', function ($kq) use ($user) {
-                      $kq->where('user_id', $user->id);
+        // Jika user yang login adalah helpdesk/sa_cs, jangan tampilkan list evaluasi teknisi
+        if ($user && $user->hasRole(['helpdesk', 'sa_cs'])) {
+            return collect();
+        }
+
+        // Jika user yang login adalah teknisi, hanya tampilkan data dirinya sendiri
+        if ($user && $user->hasRole('teknis')) {
+            $teknisiUsers = User::where('id', $user->id)->get();
+        } else {
+            // Admin & Manager Teknis melihat seluruh teknisi
+            $teknisiUsers = User::where('role', 'teknis')->orderBy('name')->get();
+        }
+
+        return $teknisiUsers->map(function ($u) use ($startDate, $endDate) {
+            $query = Tiket::where(function ($q) use ($u) {
+                $q->where('assigned_lead_id', $u->id)
+                  ->orWhere('resolved_by', $u->id)
+                  ->orWhereJsonContains('assigned_team', (int) $u->id)
+                  ->orWhereJsonContains('assigned_team', (string) $u->id)
+                  ->orWhereHas('kronologis', function ($kq) use ($u) {
+                      $kq->where('user_id', $u->id);
                   });
             });
 
@@ -94,7 +111,10 @@ class KpiService
                 $query->whereDate('tanggal_open', '<=', $endDate);
             }
 
-            $resolvedQuery = (clone $query)->where('resolved_by', $user->id);
+            $resolvedQuery = (clone $query)->where(function ($rq) use ($u) {
+                $rq->where('resolved_by', $u->id)
+                   ->orWhere('assigned_lead_id', $u->id);
+            });
             $totalResolved = $resolvedQuery->count();
 
             $closedQuery = (clone $resolvedQuery)->where('status', 'CLOSE');
@@ -110,7 +130,7 @@ class KpiService
             $totalUpdates = 0;
             $overdueUpdates = 0;
             foreach ($allTikets as $t) {
-                $kronologis = $t->kronologis()->where('user_id', $user->id)->orderBy('timestamp', 'asc')->get();
+                $kronologis = $t->kronologis()->where('user_id', $u->id)->orderBy('timestamp', 'asc')->get();
                 if ($kronologis->count() >= 2) {
                     for ($i = 1; $i < $kronologis->count(); $i++) {
                         $diff = Carbon::parse($kronologis[$i - 1]->timestamp)->diffInMinutes(Carbon::parse($kronologis[$i]->timestamp));
@@ -130,9 +150,9 @@ class KpiService
             $score = round(($slaRate * 0.45) + ($intervalComplianceRate * 0.35) + (max(0, 100 - min(100, $avgResponse * 2)) * 0.20), 1);
 
             return [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
+                'user_id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
                 'total_resolved' => $totalResolved,
                 'total_closed' => $totalClosed,
                 'sla_compliance_rate' => $slaRate,
@@ -151,13 +171,26 @@ class KpiService
     /**
      * Dapatkan KPI detail per Helpdesk NOC
      */
-    public function getHelpdeskKpiList(?string $startDate = null, ?string $endDate = null): Collection
+    public function getHelpdeskKpiList(?string $startDate = null, ?string $endDate = null, ?User $user = null): Collection
     {
-        $hdUsers = User::whereIn('role', ['helpdesk', 'admin'])->orderBy('name')->get();
+        $user = $user ?? (auth()->check() ? auth()->user() : null);
 
-        return $hdUsers->map(function ($user) use ($startDate, $endDate) {
-            $createdQuery = Tiket::where('created_by', $user->id);
-            $closedQuery = Tiket::where('closed_by', $user->id);
+        // Jika user yang login adalah teknisi, jangan tampilkan list evaluasi helpdesk
+        if ($user && $user->hasRole('teknis')) {
+            return collect();
+        }
+
+        // Jika user yang login adalah helpdesk/sa_cs, hanya tampilkan data dirinya sendiri
+        if ($user && $user->hasRole(['helpdesk', 'sa_cs'])) {
+            $hdUsers = User::where('id', $user->id)->get();
+        } else {
+            // Admin & Manager Teknis melihat seluruh helpdesk/admin
+            $hdUsers = User::whereIn('role', ['helpdesk', 'admin', 'sa_cs'])->orderBy('name')->get();
+        }
+
+        return $hdUsers->map(function ($u) use ($startDate, $endDate) {
+            $createdQuery = Tiket::where('created_by', $u->id);
+            $closedQuery = Tiket::where('closed_by', $u->id);
 
             if ($startDate) {
                 $createdQuery->whereDate('tanggal_open', '>=', $startDate);
@@ -188,10 +221,10 @@ class KpiService
             $slaRate = $totalClosed > 0 ? round(($totalTepatSla / $totalClosed) * 100, 1) : 100.0;
 
             return [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
+                'user_id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'role' => $u->role,
                 'total_created' => $totalCreated,
                 'total_closed' => $totalClosed,
                 'total_verified' => $totalClosed,
