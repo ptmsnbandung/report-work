@@ -1999,11 +1999,14 @@
 
     @media (max-width: 575.98px) {
         .tiket-metric-tile {
-            padding: 0.65rem 0.75rem;
-            border-radius: 10px;
+            padding: 0.5rem 0.65rem;
+            border-radius: 9px;
         }
         .tiket-metric-value {
-            font-size: 0.82rem;
+            font-size: 0.78rem;
+        }
+        .tiket-metric-label {
+            font-size: 0.6rem;
         }
     }
 
@@ -2016,6 +2019,16 @@
     }
     .summary-toggle-header .summary-toggle-icon {
         transition: transform 0.2s ease;
+    }
+    /* Compact summary card-body on mobile */
+    @media (max-width: 767.98px) {
+        #summaryInfoBody .card-body {
+            padding: 0.65rem 0.75rem !important;
+        }
+        #summaryInfoBody .row.g-2 {
+            --bs-gutter-x: 0.4rem;
+            --bs-gutter-y: 0.4rem;
+        }
     }
 
     #mapPicker, #mapPickerTitik {
@@ -2328,33 +2341,37 @@
             padding: 0 2px;
         }
         .sla-step-node {
-            width: 26px;
-            height: 26px;
-            font-size: 0.72rem;
+            width: 24px;
+            height: 24px;
+            font-size: 0.68rem;
             border-width: 1.5px;
         }
         .sla-step-line {
             height: 2px;
         }
         .sla-step-title {
-            font-size: 0.66rem !important;
+            font-size: 0.63rem !important;
             line-height: 1.15;
             letter-spacing: -0.2px;
         }
         .sla-step-timestamp {
-            font-size: 0.58rem !important;
+            font-size: 0.55rem !important;
             line-height: 1.1;
         }
         .sla-step-badge {
             margin-top: 2px !important;
         }
         .sla-step-badge .badge {
-            font-size: 0.56rem !important;
-            padding: 0.12rem 0.35rem !important;
+            font-size: 0.54rem !important;
+            padding: 0.1rem 0.3rem !important;
             max-width: 100%;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+        .sla-stepper-wrapper {
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
         }
     }
 

@@ -88,7 +88,7 @@
     @endif
 
     <!-- ── TOP HEADER HERO BANNER (BRAND BLUE FULL-WIDTH) ── -->
-    <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1; overflow: visible !important;">
+    <div class="card border-0 shadow-lg rounded-xl mb-2 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1; overflow: visible !important;">
         <div class="card-body p-3 p-md-4 overflow-visible" style="overflow: visible !important;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 gap-md-3">
                 <div class="min-w-0 w-100 w-md-auto">
@@ -301,7 +301,7 @@
 
     <!-- ── BROADBAND CUSTOMER PROFILE CARD (KHUSUS BROADBAND) ── -->
     @if($tiket->isBroadband())
-    <div class="card border-0 shadow-sm rounded-xl mb-3 overflow-hidden" style="border: 1.5px solid #c7d2fe !important; background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);">
+    <div class="card border-0 shadow-sm rounded-xl mb-2 overflow-hidden" style="border: 1.5px solid #c7d2fe !important; background: linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);">
         <div class="card-header py-2.5 px-3 px-md-3.5 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: rgba(79, 70, 229, 0.06);">
             <div class="d-flex align-items-center gap-2">
                 <span class="badge text-white px-2 py-1 rounded-pill" style="background-color: #4f46e5;">
@@ -372,23 +372,23 @@
     @endif
 
     <!-- ── SUMMARY INFO CARD ── -->
-    <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white overflow-hidden">
+    <div class="card border-0 shadow-sm rounded-xl mb-2 bg-white overflow-hidden">
         {{-- Toggle Header (mobile only) --}}
-        <div class="d-flex d-md-none align-items-center justify-content-between px-3 py-2 border-bottom summary-toggle-header"
+        <div class="d-flex d-md-none align-items-center justify-content-between px-3 py-1.5 border-bottom summary-toggle-header"
              role="button"
              data-bs-toggle="collapse"
              data-bs-target="#summaryInfoBody"
              aria-expanded="false"
              aria-controls="summaryInfoBody"
-             style="cursor:pointer; user-select:none; background:rgba(248,250,252,0.8);">
-            <div class="d-flex align-items-center gap-2">
-                <i class="bi bi-info-circle-fill text-primary" style="font-size:0.9rem;"></i>
-                <span class="fw-bold text-navy" style="font-size:0.82rem;">Detail Info Tiket</span>
-                <span class="badge bg-primary-subtle text-primary rounded-pill" style="font-size:0.62rem;">{{ $tiket->isBroadband() ? ($namaPop ?: $tiket->kode_pop) : $tiket->backbone_segment }}</span>
+             style="cursor:pointer; user-select:none; background:rgba(248,250,252,0.85);">
+            <div class="d-flex align-items-center gap-1.5">
+                <i class="bi bi-info-circle-fill text-primary" style="font-size:0.8rem;"></i>
+                <span class="fw-semibold text-navy" style="font-size:0.78rem;">Info Tiket</span>
+                <span class="badge bg-primary-subtle text-primary rounded-pill" style="font-size:0.58rem;">{{ $tiket->isBroadband() ? ($namaPop ?: $tiket->kode_pop) : $tiket->backbone_segment }}</span>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <span class="text-muted" style="font-size:0.72rem;">{{ $tiket->tanggal_open->format('d M H:i') }} WIB</span>
-                <i class="bi bi-chevron-down summary-toggle-icon text-muted" style="font-size:0.75rem; transition: transform 0.2s;"></i>
+            <div class="d-flex align-items-center gap-1.5">
+                <span class="text-muted font-monospace" style="font-size:0.65rem;">{{ $tiket->tanggal_open->format('d M H:i') }}</span>
+                <i class="bi bi-chevron-down summary-toggle-icon text-muted" style="font-size:0.7rem; transition: transform 0.2s;"></i>
             </div>
         </div>
         {{-- Card Body: collapsible on mobile, always visible on desktop --}}
@@ -663,8 +663,8 @@
         @endphp
 
         @if($showIntervalAlert || $showStopClockAlert)
-        <div id="fieldReportIntervalBanner" class="card border-0 mb-3 overflow-hidden shadow-sm" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 50%, #fee2e2 100%); border: 1px solid #fca5a5 !important; border-left: 5px solid #ef4444 !important; border-radius: 14px; box-shadow: 0 4px 20px -4px rgba(239, 68, 68, 0.12);' : 'background: linear-gradient(135deg, #fffdf0 0%, #fefce8 50%, #fef3c7 100%); border: 1px solid #fde047 !important; border-left: 5px solid #f59e0b !important; border-radius: 14px; box-shadow: 0 4px 20px -4px rgba(245, 158, 11, 0.12);' }}">
-            <div class="card-body p-2 p-md-3">
+        <div id="fieldReportIntervalBanner" class="card border-0 mb-2 overflow-hidden shadow-sm" style="{{ $fieldStatus === 'OVERDUE' ? 'background: linear-gradient(135deg, #fff5f5 0%, #fef2f2 50%, #fee2e2 100%); border: 1px solid #fca5a5 !important; border-left: 4px solid #ef4444 !important; border-radius: 12px; box-shadow: 0 3px 12px -2px rgba(239, 68, 68, 0.1);' : 'background: linear-gradient(135deg, #fffdf0 0%, #fefce8 50%, #fef3c7 100%); border: 1px solid #fde047 !important; border-left: 4px solid #f59e0b !important; border-radius: 12px; box-shadow: 0 3px 12px -2px rgba(245, 158, 11, 0.1);' }}">
+            <div class="card-body p-2">
                 @if($showIntervalAlert)
                 <div id="fieldIntervalStatusRow">
                     @if($fieldStatus === 'OVERDUE')
