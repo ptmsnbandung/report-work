@@ -335,9 +335,9 @@
 <div class="modal fade" id="tambahJointClosureModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg rounded-3 overflow-hidden">
-            <form action="{{ route('tiket.joint-closure.store', $tiket->id) }}" method="POST" id="formTambahJointClosure">
+            <form action="{{ route('tiket.joint-closure.store', $tiket->id) }}" method="POST" id="formTambahJointClosure" class="d-flex flex-column h-100 min-vh-0">
                 @csrf
-                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25">
+                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25 flex-shrink-0">
                     <div class="d-flex align-items-center gap-2 overflow-hidden pe-2">
                         <i class="bi bi-diagram-3-fill text-teal fs-6 flex-shrink-0"></i>
                         <h6 class="modal-title fw-bold text-white mb-0 text-truncate" style="font-size: 0.88rem;">
@@ -346,7 +346,7 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-2 p-sm-3">
+                <div class="modal-body p-2 p-sm-3 flex-grow-1 overflow-y-auto">
                     <!-- Section 1: Identitas & Lokasi Closure -->
                     <div class="section-card-jc p-2.5 p-sm-3 bg-light rounded-3 border mb-2.5">
                         <h6 class="section-title-jc fw-bold text-navy mb-2 small text-uppercase letter-spacing-1 d-flex align-items-center gap-1.5">
@@ -663,7 +663,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light px-3 py-2 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div class="modal-footer bg-light px-3 py-2.5 d-flex align-items-center justify-content-between flex-wrap gap-2 border-top flex-shrink-0">
                     <button type="button" class="btn btn-light border btn-sm px-3 flex-fill flex-sm-grow-0" data-bs-dismiss="modal">
                         <i class="bi bi-x me-1"></i> Batal
                     </button>
@@ -1115,9 +1115,9 @@
 <div class="modal fade" id="addManuverModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
-            <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST">
+            <form action="{{ route('tiket.manuver-core.store', $tiket->id) }}" method="POST" class="d-flex flex-column h-100 min-vh-0">
                 @csrf
-                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25">
+                <div class="modal-header bg-navy text-white px-3 py-2.5 border-bottom border-secondary border-opacity-25 flex-shrink-0">
                     <div class="d-flex align-items-center gap-2 overflow-hidden pe-2">
                         <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-teal bg-opacity-25 p-1 text-teal flex-shrink-0" style="width: 32px; height: 32px;">
                             <i class="bi bi-shuffle text-info" style="font-size: 1rem;"></i>
@@ -1131,7 +1131,7 @@
                     </div>
                     <button type="button" class="btn-close btn-close-white flex-shrink-0" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-2.5 p-sm-3" style="max-height: calc(100dvh - 130px); overflow-y: auto; -webkit-overflow-scrolling: touch; background-color: #f8fafc;">
+                <div class="modal-body p-2.5 p-sm-3 flex-grow-1 overflow-y-auto" style="background-color: #f8fafc;">
                     <div class="d-flex flex-column gap-2.5">
                         
                         <!-- CARD 1: INFORMASI LOKASI & SIFAT MANUVER -->

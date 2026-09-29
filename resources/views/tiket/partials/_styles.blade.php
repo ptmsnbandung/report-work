@@ -3257,6 +3257,46 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       SCROLLABLE MODALS WITH FORMS FIX (UNIVERSAL)
+       ═══════════════════════════════════════════════════════════════════ */
+    .modal-dialog-scrollable {
+        height: calc(100% - var(--bs-modal-margin) * 2) !important;
+        max-height: calc(100dvh - var(--bs-modal-margin) * 2) !important;
+    }
+    .modal-dialog-scrollable .modal-content {
+        max-height: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+    .modal-dialog-scrollable .modal-content > form,
+    .modal-dialog-scrollable form {
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+        overflow: hidden !important;
+    }
+    .modal-dialog-scrollable .modal-header {
+        flex-shrink: 0 !important;
+    }
+    .modal-dialog-scrollable .modal-body {
+        flex: 1 1 auto !important;
+        overflow-y: auto !important;
+        min-height: 0 !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    .modal-dialog-scrollable .modal-footer {
+        flex-shrink: 0 !important;
+        background-color: #f8fafc !important;
+        border-top: 1px solid #e2e8f0 !important;
+        z-index: 10 !important;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        COMPACT & CLEAN MODAL STYLING FOR JC & MANUVER CORE (MOBILE & DESKTOP)
        ═══════════════════════════════════════════════════════════════════ */
     #tambahJointClosureModal .modal-content,
