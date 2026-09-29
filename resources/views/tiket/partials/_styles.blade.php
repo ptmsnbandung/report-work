@@ -2054,13 +2054,21 @@
     }
     @media (max-width: 575.98px) {
         .tiket-hero-actions {
-            flex-wrap: wrap;
+            display: flex !important;
+            width: 100% !important;
             gap: 0.4rem;
         }
+        .tiket-hero-actions > a,
+        .tiket-hero-actions > div {
+            flex: 1 1 0%;
+            min-width: 0;
+        }
         .tiket-hero-actions .btn-tiket-hero {
-            height: 34px;
-            padding: 0 0.85rem;
-            font-size: 0.78rem;
+            width: 100% !important;
+            height: 32px;
+            padding: 0 0.6rem;
+            font-size: 0.75rem;
+            justify-content: center;
         }
     }
 
