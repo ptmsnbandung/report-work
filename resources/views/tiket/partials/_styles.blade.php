@@ -2019,8 +2019,19 @@
     .tiket-hero-actions {
         display: inline-flex;
         align-items: center;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 0.5rem;
+    }
+    @media (max-width: 575.98px) {
+        .tiket-hero-actions {
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .tiket-hero-actions .btn-tiket-hero {
+            height: 34px;
+            padding: 0 0.85rem;
+            font-size: 0.78rem;
+        }
     }
 
     .btn-tiket-hero {

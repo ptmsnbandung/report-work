@@ -89,86 +89,89 @@
 
     <!-- ── TOP HEADER HERO BANNER (BRAND BLUE FULL-WIDTH) ── -->
     <div class="card border-0 shadow-lg rounded-xl mb-3 text-white overflow-visible" style="background: linear-gradient(135deg, #07152b 0%, #0c2147 50%, #102d66 100%); border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 10px 30px rgba(7, 21, 43, 0.35); position: relative; z-index: 1; overflow: visible !important;">
-        <div class="card-body p-3.5 p-md-4 overflow-visible" style="overflow: visible !important;">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+        <div class="card-body p-3 p-md-4 overflow-visible" style="overflow: visible !important;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 gap-md-3">
                 <div class="min-w-0 w-100 w-md-auto">
-                    <div class="d-flex align-items-center flex-wrap gap-2 mb-2">
-                        <span class="d-inline-flex align-items-center gap-2 text-white font-monospace px-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); font-size:0.78rem; font-weight:700; letter-spacing:0.5px;">
-                            <i class="bi bi-ticket-perforated-fill text-info" style="font-size: 0.95rem;"></i>
+                    {{-- Baris 1: ID + Tipe + Status --}}
+                    <div class="d-flex align-items-center flex-wrap gap-1 gap-md-2 mb-1">
+                        <span class="d-inline-flex align-items-center gap-1 text-white font-monospace px-2 px-md-3 py-1 rounded-pill" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.25); font-size:0.73rem; font-weight:700; letter-spacing:0.4px;">
+                            <i class="bi bi-ticket-perforated-fill text-info" style="font-size: 0.82rem;"></i>
                             <span>{{ $tiket->no_tiket }}</span>
                         </span>
 
                         @if($tiket->isBroadband())
-                            <span class="badge text-white px-3 py-1 rounded-pill fw-bold shadow-xs" style="background-color: #4f46e5; border: 1px solid rgba(255,255,255,0.3);">
+                            <span class="badge text-white px-2 py-1 rounded-pill fw-bold shadow-xs" style="background-color: #4f46e5; border: 1px solid rgba(255,255,255,0.3); font-size:0.68rem;">
                                 <i class="bi bi-router-fill me-1"></i> BROADBAND
                             </span>
                         @else
-                            <span class="badge bg-primary bg-opacity-75 text-white px-3 py-1 rounded-pill fw-bold shadow-xs" style="border: 1px solid rgba(255,255,255,0.3);">
+                            <span class="badge bg-primary bg-opacity-75 text-white px-2 py-1 rounded-pill fw-bold shadow-xs" style="border: 1px solid rgba(255,255,255,0.3); font-size:0.68rem;">
                                 <i class="bi bi-diagram-3-fill me-1"></i> BACKBONE
                             </span>
                         @endif
 
                         @if($tiket->status === 'OPEN')
-                            <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
+                            <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-50 rounded-pill px-2 py-1 fw-bold" id="headerStatusBadge" style="font-size:0.68rem;">
                                 <i class="bi bi-exclamation-circle-fill me-1"></i> OPEN
                             </span>
                         @elseif($tiket->status === 'PROSES')
-                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
+                            <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-50 rounded-pill px-2 py-1 fw-bold" id="headerStatusBadge" style="font-size:0.68rem;">
                                 <i class="bi bi-arrow-repeat me-1"></i> PROSES
                             </span>
                         @elseif($tiket->status === 'PENDING_VERIFIKASI')
-                            <span class="badge rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge" style="background-color: rgba(59, 130, 246, 0.3) !important; color: #93c5fd !important; border: 1px solid rgba(59, 130, 246, 0.6) !important;">
-                                <i class="bi bi-hourglass-split me-1"></i> MENUNGGU VERIFIKASI NOC
+                            <span class="badge rounded-pill px-2 py-1 fw-bold" id="headerStatusBadge" style="background-color: rgba(59, 130, 246, 0.3) !important; color: #93c5fd !important; border: 1px solid rgba(59, 130, 246, 0.6) !important; font-size:0.68rem;">
+                                <i class="bi bi-hourglass-split me-1"></i> NOC VERIF
                             </span>
                         @else
-                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold" id="headerStatusBadge">
+                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-2 py-1 fw-bold" id="headerStatusBadge" style="font-size:0.68rem;">
                                 <i class="bi bi-check-circle-fill me-1"></i> CLOSE
                             </span>
                         @endif
 
                         @if($tiket->is_stop_clock)
-                            <span class="badge bg-danger text-white border border-white border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
+                            <span class="badge bg-danger text-white border border-white border-opacity-50 rounded-pill px-2 py-1 fw-bold" style="font-size:0.68rem;">
                                 <i class="bi bi-pause-fill me-1"></i> STOP CLOCK
                             </span>
                         @endif
 
                         @if($tiket->sla_status === 'TEPAT')
-                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
-                                <i class="bi bi-shield-check me-1"></i> TEPAT SLA
+                            <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 rounded-pill px-2 py-1 fw-bold" style="font-size:0.68rem;">
+                                <i class="bi bi-shield-check me-1"></i> SLA TEPAT
                             </span>
                         @elseif($tiket->sla_status === 'LEBIH')
-                            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill px-3 py-1 ms-1 fw-bold">
-                                <i class="bi bi-exclamation-triangle-fill me-1"></i> MELEBIHI SLA
+                            <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50 rounded-pill px-2 py-1 fw-bold" style="font-size:0.68rem;">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> SLA LEBIH
                             </span>
                         @endif
 
-                        <!-- Assigned Team Badges (Menampilkan Seluruh Teknisi yang Ditunjuk) -->
+                    </div>
+                    {{-- Baris 2: Tim Teknisi / PIC --}}
+                    <div class="d-flex align-items-center flex-wrap gap-1 mb-2">
                         @if($tiket->assigned_lead_id)
-                            <span class="badge bg-primary bg-opacity-35 text-white border border-primary border-opacity-60 rounded-pill px-3 py-1 ms-1 fw-bold d-inline-flex align-items-center gap-1.5 shadow-xs" title="Leader / PIC Utama Lapangan">
-                                <i class="bi bi-person-badge-fill text-info"></i>
+                            <span class="badge bg-primary bg-opacity-35 text-white border border-primary border-opacity-60 rounded-pill px-2 py-1 fw-bold d-inline-flex align-items-center gap-1 shadow-xs" title="Leader / PIC Utama Lapangan" style="font-size:0.68rem;">
+                                <i class="bi bi-person-badge-fill text-info" style="font-size:0.7rem;"></i>
                                 <span>PIC: {{ $tiket->assignedLead?->name }}</span>
                             </span>
                             @if($tiket->assigned_team_users && $tiket->assigned_team_users->count() > 0)
                                 @foreach($tiket->assigned_team_users as $tUser)
                                     @if($tUser->id !== $tiket->assigned_lead_id)
-                                        <span class="badge rounded-pill px-2.5 py-1 ms-1 fw-semibold text-white border border-info border-opacity-40 d-inline-flex align-items-center gap-1 shadow-xs" style="background: rgba(14, 165, 233, 0.22); backdrop-filter: blur(4px);" title="Anggota Tim Lapangan">
-                                            <i class="bi bi-person-fill text-info"></i>
+                                        <span class="badge rounded-pill px-2 py-1 fw-semibold text-white border border-info border-opacity-40 d-inline-flex align-items-center gap-1 shadow-xs" style="background: rgba(14, 165, 233, 0.22); backdrop-filter: blur(4px); font-size:0.68rem;" title="Anggota Tim Lapangan">
+                                            <i class="bi bi-person-fill text-info" style="font-size:0.7rem;"></i>
                                             <span>{{ $tUser->name }}</span>
                                         </span>
                                     @endif
                                 @endforeach
                             @endif
                         @else
-                            <span class="badge bg-secondary bg-opacity-35 text-white border border-white border-opacity-25 rounded-pill px-3 py-1 ms-1 fw-bold">
+                            <span class="badge bg-secondary bg-opacity-35 text-white border border-white border-opacity-25 rounded-pill px-2 py-1 fw-semibold" style="font-size:0.68rem;">
                                 <i class="bi bi-person-dash me-1"></i> Belum Ditugaskan
                             </span>
                         @endif
                     </div>
-                    <h1 class="h4 fw-bold text-white mb-0 lh-sm" style="letter-spacing: -0.2px;">{{ $tiket->status_link_impact }}</h1>
+                    <h1 class="fw-bold text-white mb-0 lh-sm" style="font-size: clamp(1rem, 4.5vw, 1.3rem); letter-spacing: -0.2px;">{{ $tiket->status_link_impact }}</h1>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="tiket-hero-actions w-100 w-md-auto justify-content-start justify-content-md-end flex-wrap">
+                <div class="tiket-hero-actions w-100 w-md-auto justify-content-start justify-content-md-end">
                     <a href="{{ route('tiket.index') }}" class="btn-tiket-hero btn-tiket-hero-ghost">
                         <i class="bi bi-arrow-left"></i>
                         <span>Kembali</span>
