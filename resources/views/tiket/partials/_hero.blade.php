@@ -196,51 +196,6 @@
                             <li><hr class="dropdown-divider my-1"></li>
                             @endif
 
-                            <!-- 1. Workflow Actions (Closing / Verifikasi) -->
-                            @if(auth()->user()->hasRole(['teknis', 'teknisi']) && $tiket->status === 'PROSES')
-                            <li>
-                                <button type="button" class="tiket-hero-dropdown-item text-primary"
-                                        data-bs-toggle="modal" data-bs-target="#closingAwalModal">
-                                    <div class="tiket-dropdown-icon-box bg-primary-subtle text-primary">
-                                        <i class="bi bi-check2-all"></i>
-                                    </div>
-                                    <span>Closing Awal (Selesai)</span>
-                                </button>
-                            </li>
-                            @endif
-
-                            @if(auth()->user()->hasRole(['admin', 'helpdesk']) && $tiket->status !== 'CLOSE')
-                                @if($tiket->status === 'PENDING_VERIFIKASI')
-                                <li>
-                                    <button type="button" class="tiket-hero-dropdown-item text-success"
-                                            data-bs-toggle="modal" data-bs-target="#closeTiketModal">
-                                        <div class="tiket-dropdown-icon-box bg-success-subtle text-success">
-                                            <i class="bi bi-shield-check"></i>
-                                        </div>
-                                        <span>Verifikasi & Close Tiket</span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button type="button" class="tiket-hero-dropdown-item text-danger"
-                                            data-bs-toggle="modal" data-bs-target="#rejectClosingAwalModal">
-                                        <div class="tiket-dropdown-icon-box bg-danger-subtle text-danger">
-                                            <i class="bi bi-x-circle"></i>
-                                        </div>
-                                        <span>Reject Closing Awal</span>
-                                    </button>
-                                </li>
-                                @else
-                                <li>
-                                    <div class="tiket-hero-dropdown-item disabled">
-                                        <div class="tiket-dropdown-icon-box bg-secondary-subtle text-secondary">
-                                            <i class="bi bi-hourglass-split"></i>
-                                        </div>
-                                        <span class="text-muted">Menunggu Closing Awal</span>
-                                    </div>
-                                </li>
-                                @endif
-                            @endif
-
                             <!-- 2. SLA & Shift Actions -->
                             @if($tiket->status !== 'CLOSE' && auth()->user()->hasRole(['admin', 'helpdesk', 'teknis', 'teknisi']))
                                 @if(!$tiket->is_stop_clock)
