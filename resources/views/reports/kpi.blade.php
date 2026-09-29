@@ -163,9 +163,32 @@
 
     @media (max-width: 575.98px) {
         .report-hero-header {
-            padding: 1rem 1rem !important;
+            padding: 0.85rem 0.9rem !important;
             border-radius: 14px !important;
-            margin-bottom: 1rem !important;
+            margin-bottom: 0.85rem !important;
+        }
+        .report-hero-header .btn-report-export-pdf,
+        .report-hero-header .btn-report-export-excel {
+            flex: 1 1 0%;
+            justify-content: center;
+            font-size: 0.75rem !important;
+            padding: 0.35rem 0.5rem !important;
+        }
+        .report-hero-header .page-title-text {
+            font-size: 1rem !important;
+        }
+        .kpi-stat-card {
+            padding: 0.65rem 0.85rem !important;
+            border-radius: 10px !important;
+        }
+        .kpi-stat-val {
+            font-size: 1rem !important;
+        }
+        .kpi-stat-label {
+            font-size: 0.62rem !important;
+        }
+        .kpi-stat-desc {
+            font-size: 0.68rem !important;
         }
     }
 </style>
@@ -200,12 +223,12 @@
             </div>
 
             <!-- Export Buttons -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-report-export-pdf btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export PDF">
+            <div class="d-flex align-items-center gap-2 w-100 w-sm-auto flex-nowrap mt-1 mt-sm-0">
+                <a href="{{ route('reports.export.kpi.pdf', request()->query()) }}" class="btn btn-report-export-pdf btn-sm rounded-pill px-3 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" title="Export PDF">
                     <i class="bi bi-file-earmark-pdf-fill" style="color: #fca5a5;"></i>
                     <span>Export PDF</span>
                 </a>
-                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-report-export-excel btn-sm rounded-pill px-3.5 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" style="font-size: 0.78rem; min-height: 32px;" title="Export Excel">
+                <a href="{{ route('reports.export.kpi.excel', request()->query()) }}" class="btn btn-report-export-excel btn-sm rounded-pill px-3 py-1.5 shadow-xs d-inline-flex align-items-center gap-1.5" title="Export Excel">
                     <i class="bi bi-file-earmark-excel-fill" style="color: #86efac;"></i>
                     <span>Export Excel</span>
                 </a>
@@ -233,21 +256,21 @@
 
     <!-- ── DATE FILTER BAR ── -->
     <div class="card border-0 shadow-sm rounded-xl mb-3 bg-white">
-        <div class="card-body p-3">
+        <div class="card-body p-2.5 p-md-3">
             <form action="{{ route('reports.kpi') }}" method="GET" class="row g-2 align-items-end">
-                <div class="col-12 col-sm-4 col-md-3">
-                    <label class="form-label small fw-semibold text-navy mb-1">Dari Tanggal</label>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold text-navy mb-1" style="font-size: 0.75rem;">Dari Tanggal</label>
                     <input type="date" name="start_date" class="form-control form-control-sm" value="{{ $startDate }}">
                 </div>
-                <div class="col-12 col-sm-4 col-md-3">
-                    <label class="form-label small fw-semibold text-navy mb-1">Sampai Tanggal</label>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small fw-semibold text-navy mb-1" style="font-size: 0.75rem;">Sampai Tanggal</label>
                     <input type="date" name="end_date" class="form-control form-control-sm" value="{{ $endDate }}">
                 </div>
-                <div class="col-12 col-sm-4 col-md-3 d-flex gap-2">
+                <div class="col-12 col-md-3 d-flex gap-1.5 ms-auto mt-2 mt-md-0">
                     <button type="submit" class="btn btn-primary btn-sm rounded-pill px-3.5 w-100 fw-semibold" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
                         <i class="bi bi-funnel-fill me-1"></i> Filter KPI
                     </button>
-                    <a href="{{ route('reports.kpi') }}" class="btn btn-light btn-sm rounded-pill px-3" title="Reset Filter">
+                    <a href="{{ route('reports.kpi') }}" class="btn btn-light btn-sm rounded-pill px-2.5" title="Reset Filter">
                         <i class="bi bi-arrow-counterclockwise"></i>
                     </a>
                 </div>
@@ -258,7 +281,7 @@
     <!-- ── 5 EXECUTIVE KPI METRIC CARDS ── -->
     <div class="row g-2 g-md-2.5 mb-3.5">
         <!-- 1. Kepatuhan SLA -->
-        <div class="col-12 col-sm-6 col-xl">
+        <div class="col-6 col-md-4 col-xl">
             <div class="kpi-stat-card border-c-sla">
                 <div class="d-flex align-items-center justify-content-between mb-1.5">
                     <span class="kpi-stat-label">KEPATUHAN SLA</span>
@@ -277,7 +300,7 @@
         </div>
 
         <!-- 2. Rata-Rata Response Time -->
-        <div class="col-12 col-sm-6 col-xl">
+        <div class="col-6 col-md-4 col-xl">
             <div class="kpi-stat-card border-c-resp">
                 <div class="d-flex align-items-center justify-content-between mb-1.5">
                     <span class="kpi-stat-label">AVG RESPONSE TIME</span>
@@ -295,7 +318,7 @@
         </div>
 
         <!-- 3. Rata-Rata MTTR -->
-        <div class="col-12 col-sm-6 col-xl">
+        <div class="col-6 col-md-4 col-xl">
             <div class="kpi-stat-card border-c-mttr">
                 <div class="d-flex align-items-center justify-content-between mb-1.5">
                     <span class="kpi-stat-label">AVG MTTR (BERSIH)</span>
@@ -313,7 +336,7 @@
         </div>
 
         <!-- 4. Total Stop Clock -->
-        <div class="col-12 col-sm-6 col-xl">
+        <div class="col-6 col-md-4 col-xl">
             <div class="kpi-stat-card border-c-stop">
                 <div class="d-flex align-items-center justify-content-between mb-1.5">
                     <span class="kpi-stat-label">TOTAL STOP CLOCK</span>
@@ -330,19 +353,19 @@
             </div>
         </div>
 
-        <!-- 5. Durasi Verifikasi NOC -->
-        <div class="col-12 col-sm-6 col-xl">
+        <!-- 5. Rata-Rata Verifikasi NOC -->
+        <div class="col-12 col-md-4 col-xl">
             <div class="kpi-stat-card border-c-verif">
                 <div class="d-flex align-items-center justify-content-between mb-1.5">
                     <span class="kpi-stat-label">AVG VERIFIKASI NOC</span>
                     <div class="kpi-stat-icon bg-purple-subtle text-purple">
-                        <i class="bi bi-check2-all"></i>
+                        <i class="bi bi-check2-circle"></i>
                     </div>
                 </div>
                 <div>
-                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_verification'] }}</div>
+                    <div class="kpi-stat-val">{{ $executiveKpi['formatted_avg_verif'] }}</div>
                     <div class="kpi-stat-desc">
-                        Closing Awal &rarr; Closing Akhir
+                        Pending hingga tiket CLOSE
                     </div>
                 </div>
             </div>
