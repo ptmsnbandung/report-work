@@ -668,67 +668,91 @@
                 @if($showIntervalAlert)
                 <div id="fieldIntervalStatusRow">
                     @if($fieldStatus === 'OVERDUE')
-                    {{-- ── Baris 1: Ikon + Judul + CTA ── --}}
+                    {{-- ── Baris 1: Header Alert (Icon + Judul + Info Waktu) ── --}}
                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:34px;height:34px;min-width:34px;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);border-radius:9px;box-shadow:0 3px 8px rgba(239,68,68,0.3);">
-                            <i class="bi bi-exclamation-triangle-fill text-white" style="font-size:1rem;"></i>
+                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:34px;height:34px;min-width:34px;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);border-radius:10px;box-shadow:0 2px 6px rgba(239,68,68,0.25);">
+                            <i class="bi bi-exclamation-triangle-fill text-white" style="font-size:0.95rem;"></i>
                         </div>
                         <div class="flex-grow-1 min-w-0">
-                            <div class="d-flex align-items-center gap-1 mb-0.5">
-                                <span class="badge bg-danger text-white rounded-pill d-inline-flex align-items-center gap-1 px-2 py-1" style="font-size:0.62rem;letter-spacing:0.2px;">
-                                    <span class="spinner-grow spinner-grow-sm" style="width:0.35rem;height:0.35rem;" role="status"></span>
+                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                <span class="badge bg-danger text-white rounded-pill px-2 py-0.5" style="font-size:0.6rem;letter-spacing:0.2px;font-weight:700;">
+                                    <span class="spinner-grow spinner-grow-sm me-0.5" style="width:0.3rem;height:0.3rem;" role="status"></span>
                                     OVERDUE &gt; 30 MENIT
                                 </span>
+                                <span class="fw-bold text-danger-emphasis" style="font-size:0.82rem;">Wajib Kirim Update!</span>
                             </div>
-                            <div class="fw-bold text-danger-emphasis lh-sm" style="font-size:0.8rem;">Wajib Kirim Update! <span class="fw-normal text-muted" style="font-size:0.68rem;">Terakhir <strong class="text-danger">{{ $tiket->minutes_since_last_update_formatted ? $tiket->minutes_since_last_update_formatted . ' lalu' : 'belum ada' }}</strong></span></div>
+                            <div class="text-muted" style="font-size:0.68rem;line-height:1.3;margin-top:2px;">
+                                Terakhir update <strong class="text-danger">{{ $tiket->minutes_since_last_update_formatted ? $tiket->minutes_since_last_update_formatted . ' lalu' : 'belum ada' }}</strong> &bull; SOP maks. 30 menit
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ── Baris 2: Metric Chips & Tombol Kirim Update ── --}}
+                    <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                        <div class="d-flex align-items-center gap-1.5 px-2 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.95);border:1px solid rgba(252,165,165,0.7);min-width:90px;">
+                            <i class="bi bi-clock-history text-danger opacity-75" style="font-size:0.75rem;"></i>
+                            <div>
+                                <div class="text-muted" style="font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Terakhir</div>
+                                <div class="fw-bold text-navy font-monospace" style="font-size:0.75rem;line-height:1.2;">{{ $lastKronologis ? ($lastKronologis->timestamp ? $lastKronologis->timestamp->format('H:i') : $lastKronologis->created_at->format('H:i')) . ' WIB' : '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1.5 px-2 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.95);border:1px solid rgba(252,165,165,0.7);min-width:100px;">
+                            <i class="bi bi-stopwatch text-danger opacity-75" style="font-size:0.75rem;"></i>
+                            <div>
+                                <div class="text-muted" style="font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Rata-rata</div>
+                                <div class="fw-bold text-navy text-truncate" style="font-size:0.75rem;line-height:1.2;max-width:95px;">{{ $tiket->average_report_interval_formatted }}</div>
+                            </div>
                         </div>
                         @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                        <button type="button" class="btn fw-bold text-white flex-shrink-0 d-inline-flex align-items-center gap-1" style="background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);border:none;border-radius:8px;padding:0.42rem 0.75rem;font-size:0.75rem;box-shadow:0 3px 8px rgba(220,38,38,0.3);white-space:nowrap;" onclick="const kTab=document.getElementById('kronologis-tab');if(kTab)kTab.click();const waInp=document.getElementById('waChatTextInput')||document.getElementById('informasi');if(waInp){waInp.focus();waInp.scrollIntoView({behavior:'instant',block:'center'});}">
-                            <i class="bi bi-chat-left-dots-fill" style="font-size:0.8rem;"></i>
+                        <button type="button" class="btn fw-bold text-white d-inline-flex align-items-center justify-content-center gap-1 px-2.5 py-1.5 flex-fill flex-sm-grow-0" style="background:linear-gradient(135deg,#dc2626 0%,#b91c1c 100%);border:none;border-radius:8px;font-size:0.72rem;box-shadow:0 2px 6px rgba(220,38,38,0.25);white-space:nowrap;min-height:36px;" onclick="const kTab=document.getElementById('kronologis-tab');if(kTab)kTab.click();const waInp=document.getElementById('waChatTextInput')||document.getElementById('informasi');if(waInp){waInp.focus();waInp.scrollIntoView({behavior:'instant',block:'center'});}">
+                            <i class="bi bi-chat-left-dots-fill"></i>
                             <span>Kirim Update</span>
                         </button>
                         @endif
                     </div>
                     @elseif($fieldStatus === 'WARNING')
-                    {{-- ── Baris 1: Ikon + Judul + CTA ── --}}
+                    {{-- ── Baris 1: Header Alert Warning ── --}}
                     <div class="d-flex align-items-center gap-2 mb-2">
-                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:34px;height:34px;min-width:34px;background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);border-radius:9px;box-shadow:0 3px 8px rgba(245,158,11,0.3);">
-                            <i class="bi bi-hourglass-split text-white" style="font-size:1rem;"></i>
+                        <div class="d-flex align-items-center justify-content-center flex-shrink-0" style="width:34px;height:34px;min-width:34px;background:linear-gradient(135deg,#f59e0b 0%,#d97706 100%);border-radius:10px;box-shadow:0 2px 6px rgba(245,158,11,0.25);">
+                            <i class="bi bi-hourglass-split text-white" style="font-size:0.95rem;"></i>
                         </div>
                         <div class="flex-grow-1 min-w-0">
-                            <div class="d-flex align-items-center gap-1 mb-0.5">
-                                <span class="badge bg-warning text-dark rounded-pill d-inline-flex align-items-center gap-1 px-2 py-1" style="font-size:0.62rem;">
-                                    <i class="bi bi-clock-history"></i> PERINGATAN 20-30 MENIT
+                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                <span class="badge bg-warning text-dark rounded-pill px-2 py-0.5" style="font-size:0.6rem;letter-spacing:0.2px;font-weight:700;">
+                                    <i class="bi bi-clock-history me-0.5"></i> PERINGATAN 20-30 MENIT
                                 </span>
+                                <span class="fw-bold text-dark" style="font-size:0.82rem;">Siapkan Update Laporan!</span>
                             </div>
-                            <div class="fw-bold text-dark lh-sm" style="font-size:0.8rem;">Siapkan Update Laporan! <span class="fw-normal text-muted" style="font-size:0.68rem;">Terakhir <strong class="text-dark">{{ $tiket->minutes_since_last_update_formatted }} lalu</strong></span></div>
+                            <div class="text-muted" style="font-size:0.68rem;line-height:1.3;margin-top:2px;">
+                                Terakhir update <strong class="text-dark">{{ $tiket->minutes_since_last_update_formatted }} lalu</strong> &bull; SOP maks. 30 menit
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- ── Baris 2: Metric Chips & Tombol Kirim Update ── --}}
+                    <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                        <div class="d-flex align-items-center gap-1.5 px-2 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.95);border:1px solid rgba(253,224,71,0.8);min-width:90px;">
+                            <i class="bi bi-clock-history text-warning opacity-75" style="font-size:0.75rem;"></i>
+                            <div>
+                                <div class="text-muted" style="font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Terakhir</div>
+                                <div class="fw-bold text-navy font-monospace" style="font-size:0.75rem;line-height:1.2;">{{ $lastKronologis ? ($lastKronologis->timestamp ? $lastKronologis->timestamp->format('H:i') : $lastKronologis->created_at->format('H:i')) . ' WIB' : '-' }}</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-1.5 px-2 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.95);border:1px solid rgba(253,224,71,0.8);min-width:100px;">
+                            <i class="bi bi-stopwatch text-warning opacity-75" style="font-size:0.75rem;"></i>
+                            <div>
+                                <div class="text-muted" style="font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Rata-rata</div>
+                                <div class="fw-bold text-navy text-truncate" style="font-size:0.75rem;line-height:1.2;max-width:95px;">{{ $tiket->average_report_interval_formatted }}</div>
+                            </div>
                         </div>
                         @if(auth()->user()->hasRole(['admin', 'teknis', 'helpdesk']))
-                        <button type="button" class="btn fw-bold text-white flex-shrink-0 d-inline-flex align-items-center gap-1" style="background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);border:none;border-radius:8px;padding:0.42rem 0.75rem;font-size:0.75rem;box-shadow:0 3px 8px rgba(37,99,235,0.3);white-space:nowrap;" onclick="const kTab=document.getElementById('kronologis-tab');if(kTab)kTab.click();const waInp=document.getElementById('waChatTextInput')||document.getElementById('informasi');if(waInp){waInp.focus();waInp.scrollIntoView({behavior:'instant',block:'center'});}">
-                            <i class="bi bi-chat-left-dots-fill" style="font-size:0.8rem;"></i>
+                        <button type="button" class="btn fw-bold text-white d-inline-flex align-items-center justify-content-center gap-1 px-2.5 py-1.5 flex-fill flex-sm-grow-0" style="background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);border:none;border-radius:8px;font-size:0.72rem;box-shadow:0 2px 6px rgba(37,99,235,0.25);white-space:nowrap;min-height:36px;" onclick="const kTab=document.getElementById('kronologis-tab');if(kTab)kTab.click();const waInp=document.getElementById('waChatTextInput')||document.getElementById('informasi');if(waInp){waInp.focus();waInp.scrollIntoView({behavior:'instant',block:'center'});}">
+                            <i class="bi bi-chat-left-dots-fill"></i>
                             <span>Kirim Update</span>
                         </button>
                         @endif
                     </div>
                     @endif
-
-                    {{-- ── Baris 2: Metric Chips ── --}}
-                    <div class="d-flex gap-2">
-                        <div class="d-flex align-items-center gap-1.5 px-2.5 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.92);border:1px solid rgba(203,213,225,0.85);">
-                            <i class="bi bi-clock-history text-secondary" style="font-size:0.75rem;"></i>
-                            <div>
-                                <div class="text-muted" style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Update Terakhir</div>
-                                <div class="fw-bold text-navy font-monospace" style="font-size:0.78rem;line-height:1.2;">{{ $lastKronologis ? ($lastKronologis->timestamp ? $lastKronologis->timestamp->format('H:i') : $lastKronologis->created_at->format('H:i')) . ' WIB' : '-' }}</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-1.5 px-2.5 py-1.5 rounded-3 flex-fill" style="background:rgba(255,255,255,0.92);border:1px solid rgba(203,213,225,0.85);">
-                            <i class="bi bi-stopwatch text-secondary" style="font-size:0.75rem;"></i>
-                            <div>
-                                <div class="text-muted" style="font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;line-height:1;">Rata-rata</div>
-                                <div class="fw-bold text-navy" style="font-size:0.78rem;line-height:1.2;white-space:nowrap;">{{ $tiket->average_report_interval_formatted }}</div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 @endif
 
