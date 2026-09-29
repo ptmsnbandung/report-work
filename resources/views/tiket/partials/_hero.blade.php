@@ -1008,29 +1008,31 @@
 
             {{-- ── TOMBOL CLOSING AWAL (muncul saat semua syarat terpenuhi) ── --}}
             @if($prereqs['ready'] && $tiket->status === 'PROSES' && auth()->user()->hasRole(['teknis', 'teknisi']))
-            <div class="px-3 pb-3 pt-1">
-                <div class="d-flex align-items-center gap-3 rounded-xl p-3"
-                     style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1.5px solid #6ee7b7;">
-                    <div class="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
-                        <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                             style="width: 36px; height: 36px; background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 3px 10px rgba(16, 185, 129, 0.35);">
-                            <i class="bi bi-check-circle-fill" style="font-size: 1rem;"></i>
+            <div class="mt-3">
+                <div class="closing-ready-banner d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-3 min-w-0">
+                        <div class="closing-ready-icon">
+                            <i class="bi bi-check2-circle"></i>
                         </div>
                         <div class="min-w-0">
-                            <div class="fw-bold text-success" style="font-size: 0.88rem; letter-spacing: -0.1px;">
-                                Semua syarat terpenuhi! Tiket siap untuk Closing Awal.
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="badge" style="background: rgba(16, 185, 129, 0.18); color: #047857; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.4px; padding: 0.2rem 0.5rem; border-radius: 6px;">
+                                    SIAP DIAJUKAN
+                                </span>
+                                <span class="fw-bold" style="font-size: 0.9rem; color: #064e3b; letter-spacing: -0.2px;">
+                                    Semua Syarat Mandatori Lengkap!
+                                </span>
                             </div>
-                            <div class="text-muted" style="font-size: 0.72rem; margin-top: 1px;">
-                                Klik tombol di samping untuk mengajukan penyelesaian pekerjaan lapangan.
+                            <div style="font-size: 0.74rem; color: #047857; margin-top: 2px;">
+                                Seluruh data pekerjaan telah terpenuhi. Klik tombol di samping untuk mengajukan Closing Awal ke Helpdesk.
                             </div>
                         </div>
                     </div>
                     <button type="button"
-                            class="btn btn-success btn-sm rounded-pill fw-bold d-inline-flex align-items-center gap-1.5 flex-shrink-0 shadow-sm"
-                            data-bs-toggle="modal" data-bs-target="#closingAwalModal"
-                            style="padding: 0.45rem 1.1rem; font-size: 0.83rem; white-space: nowrap; background: linear-gradient(135deg, #10b981, #059669); border: none; box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);">
-                        <i class="bi bi-check2-all"></i>
-                        <span>Closing Awal</span>
+                            class="btn-closing-action flex-shrink-0"
+                            data-bs-toggle="modal" data-bs-target="#closingAwalModal">
+                        <i class="bi bi-send-check-fill"></i>
+                        <span>Ajukan Closing Awal</span>
                     </button>
                 </div>
             </div>

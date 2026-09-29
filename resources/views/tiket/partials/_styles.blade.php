@@ -2391,6 +2391,65 @@
         background: #d1fae5;
     }
 
+    .closing-ready-banner {
+        background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+        border: 1.5px solid #86efac;
+        border-radius: 14px;
+        padding: 0.85rem 1.15rem;
+        box-shadow: 0 4px 16px -2px rgba(16, 185, 129, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        transition: all 0.25s ease;
+    }
+    .closing-ready-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        position: relative;
+    }
+    .closing-ready-icon::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 14px;
+        border: 1.5px solid rgba(16, 185, 129, 0.4);
+        animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulseRing {
+        0%, 100% { opacity: 0.6; transform: scale(1); }
+        50% { opacity: 0.15; transform: scale(1.08); }
+    }
+    .btn-closing-action {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 0.55rem 1.25rem !important;
+        font-size: 0.84rem !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.1px;
+        box-shadow: 0 3px 12px rgba(5, 150, 105, 0.32) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+    }
+    .btn-closing-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(5, 150, 105, 0.45) !important;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: #ffffff !important;
+    }
+    .btn-closing-action:active {
+        transform: translateY(0);
+    }
+
     @media (max-width: 575.98px) {
         .closing-readiness-header {
             padding: 0.65rem 0.85rem;
@@ -2410,6 +2469,14 @@
         }
         .closing-tile-desc {
             font-size: 0.66rem !important;
+        }
+        .closing-ready-banner {
+            padding: 0.75rem 0.85rem;
+        }
+        .btn-closing-action {
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.5rem;
         }
     }
     /* ═══════════════════════════════════════════════════════════════════
