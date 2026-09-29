@@ -123,10 +123,38 @@
     }
 
     @media (max-width: 575.98px) {
-        .report-hero-header {
-            padding: 1rem 1rem !important;
-            border-radius: 14px !important;
-            margin-bottom: 1rem !important;
+        .stat-cards-grid {
+            --bs-gutter-x: 0.4rem !important;
+            --bs-gutter-y: 0.4rem !important;
+        }
+        .stat-metric-card {
+            padding: 0.5rem 0.55rem !important;
+            border-radius: 12px !important;
+        }
+        .stat-icon-pill {
+            width: 24px !important;
+            height: 24px !important;
+            font-size: 0.75rem !important;
+            border-radius: 6px !important;
+        }
+        .stat-label-text {
+            font-size: 0.58rem !important;
+            letter-spacing: -0.2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70%;
+        }
+        .stat-metric-number {
+            font-size: 0.95rem !important;
+            line-height: 1.1 !important;
+        }
+        .stat-desc-text {
+            font-size: 0.6rem !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
         }
     }
 </style>
