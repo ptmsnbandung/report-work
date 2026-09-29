@@ -1243,18 +1243,18 @@
 
     @media (max-width: 768px) {
         .wa-chat-input-bar {
-            padding: 0.45rem 0.6rem calc(0.45rem + env(safe-area-inset-bottom, 0px)) 0.6rem !important;
-            gap: 0.45rem !important;
+            padding: 0.35rem 0.5rem 0.35rem 0.5rem !important;
+            gap: 0.4rem !important;
         }
         .wa-floating-input-pill {
             padding: 2px 8px 2px 4px;
-            min-height: 42px;
+            min-height: 40px;
         }
         .wa-send-btn {
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
-            font-size: 1rem;
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            font-size: 0.95rem;
         }
     }
 
@@ -1475,21 +1475,21 @@
     /* Mobile Responsiveness */
     @media (max-width: 767.98px) {
         .card:has(#tiketTabContent) {
-            margin-bottom: 0.35rem !important;
+            margin-bottom: 0 !important;
             padding-bottom: 0 !important;
         }
         .card:has(#tiketTabContent) .card-body {
-            padding-bottom: 0.2rem !important;
+            padding-bottom: 0 !important;
         }
         .wa-chat-container {
             border-radius: 14px;
             margin-bottom: 0 !important;
         }
         .app-content {
-            padding-bottom: 0.35rem !important;
+            padding-bottom: 0 !important;
         }
         body {
-            padding-bottom: calc(var(--bottom-nav-height, 86px) + 6px) !important;
+            padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
         }
         .wa-chat-stream {
             height: clamp(260px, calc(100dvh - 355px), 600px) !important;
@@ -1504,6 +1504,12 @@
         .wa-scroll-bottom-btn {
             bottom: 66px;
             right: 14px;
+        }
+    }
+
+    @media (max-width: 380px) {
+        body {
+            padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
         }
     }
 
