@@ -125,6 +125,94 @@
         border-color: #e11d48 !important;
         box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4) !important;
     }
+
+    /* ── ENHANCED TABLE STYLES & ROW REFINEMENT ── */
+    .table-pro-card {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.04) !important;
+    }
+
+    .table-pro thead th {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 0.72rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        padding: 0.9rem 0.85rem !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        white-space: nowrap;
+    }
+
+    .table-pro tbody td {
+        padding: 0.95rem 0.85rem !important;
+        vertical-align: middle !important;
+        border-bottom: 1px solid #edf2f7 !important;
+    }
+
+    .table-pro tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .table-pro tbody tr:hover {
+        background-color: #f8fafc !important;
+    }
+
+    .badge-status-pro {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        font-size: 0.69rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .badge-status-pro.status-unassigned {
+        background: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #fed7aa;
+    }
+
+    .badge-status-pro.status-open {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+    }
+
+    .badge-status-pro.status-proses {
+        background: #fef3c7;
+        color: #b45309;
+        border: 1px solid #fde68a;
+    }
+
+    .badge-status-pro.status-verifikasi {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .badge-status-pro.status-close {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .pelapor-info-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        padding: 3px 7px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        max-width: 100%;
+    }
 </style>
 @endpush
 
@@ -579,7 +667,9 @@
                             @endif
                         </div>
                         <div class="d-flex align-items-center gap-1 flex-wrap justify-content-end">
-                            @if($tiket->status === 'OPEN')
+                            @if($tiket->status !== 'CLOSE' && empty($tiket->assigned_lead_id))
+                                <span class="badge-status" style="font-size:0.68rem; background-color:#fff7ed; color:#c2410c; border:1px solid #fed7aa;"><i class="bi bi-person-x"></i> BELUM DITUNJUK</span>
+                            @elseif($tiket->status === 'OPEN')
                                 <span class="badge-status badge-open" style="font-size:0.68rem;"><i class="bi bi-exclamation-circle"></i> OPEN</span>
                             @elseif($tiket->status === 'PROSES')
                                 <span class="badge-status badge-proses" style="font-size:0.68rem;"><i class="bi bi-arrow-repeat"></i> PROSES</span>
@@ -662,18 +752,18 @@
         <div class="d-none d-md-block table-responsive">
             <table class="table table-pro align-middle mb-0">
                 <colgroup>
-                    <col style="width: 20%;">
-                    <col style="width: 32%;">
+                    <col style="width: 21%;">
+                    <col style="width: 31%;">
                     <col style="width: 18%;">
-                    <col style="width: 11%;">
+                    <col style="width: 13%;">
+                    <col style="width: 8%;">
                     <col style="width: 9%;">
-                    <col style="width: 10%;">
                 </colgroup>
                 <thead>
                     <tr>
-                        <th><i class="bi bi-hash me-1"></i>No Tiket</th>
+                        <th><i class="bi bi-hash me-1"></i>No Tiket &amp; Pelapor</th>
                         <th><i class="bi bi-hdd-network me-1"></i>Kategori &amp; Link / Pelanggan</th>
-                        <th><i class="bi bi-clock-history me-1"></i>Waktu</th>
+                        <th><i class="bi bi-clock-history me-1"></i>Waktu &amp; SLA</th>
                         <th class="text-center"><i class="bi bi-activity me-1"></i>Status</th>
                         <th class="text-center"><i class="bi bi-shield-check me-1"></i>SLA</th>
                         <th class="text-center"><i class="bi bi-gear me-1"></i>Aksi</th>
@@ -724,7 +814,7 @@
                                     ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
                                     : strtoupper(substr($creatorName, 0, 2));
                             @endphp
-                            <div class="d-flex align-items-center gap-1.5 mt-1.5 overflow-hidden">
+                            <div class="pelapor-info-box overflow-hidden">
                                 <div class="user-avatar-cell flex-shrink-0" style="width: 22px; height: 22px; font-size: 0.65rem;" title="Pelapor: {{ $creatorName }}">
                                     {{ $initials }}
                                 </div>
@@ -760,17 +850,17 @@
 
                         <!-- Tanggal Open / Close & Target / MTTR -->
                         <td>
-                            <div class="d-flex flex-column gap-0.5" style="font-size: 0.71rem;">
+                            <div class="d-flex flex-column gap-1" style="font-size: 0.71rem;">
                                 <div class="d-flex align-items-center text-nowrap">
                                     <span class="time-dot time-dot-open" title="Waktu Buka"></span>
-                                    <span class="text-muted" style="font-size: 0.67rem; width: 30px;">Open:</span>
+                                    <span class="text-muted" style="font-size: 0.67rem; width: 32px;">Open:</span>
                                     <span class="fw-semibold text-dark">{{ $tiket->tanggal_open->format('d/m/y') }}</span>
                                     <span class="text-muted ms-1" style="font-size: 0.67rem;">{{ $tiket->tanggal_open->format('H:i') }}</span>
                                 </div>
                                 @if($tiket->tanggal_close)
                                 <div class="d-flex align-items-center text-nowrap">
                                     <span class="time-dot time-dot-close" title="Waktu Tutup"></span>
-                                    <span class="text-muted" style="font-size: 0.67rem; width: 30px;">Close:</span>
+                                    <span class="text-muted" style="font-size: 0.67rem; width: 32px;">Close:</span>
                                     <span class="fw-semibold text-success">{{ $tiket->tanggal_close->format('d/m/y') }}</span>
                                     <span class="text-muted ms-1" style="font-size: 0.67rem;">{{ $tiket->tanggal_close->format('H:i') }}</span>
                                 </div>
@@ -801,7 +891,11 @@
 
                         <!-- Status Badge -->
                         <td class="text-center px-1">
-                            @if($tiket->status === 'OPEN')
+                            @if($tiket->status !== 'CLOSE' && empty($tiket->assigned_lead_id))
+                                <span class="badge-status-pro status-unassigned" title="Belum dilakukan penunjukan teknisi (Unassigned)">
+                                    <span class="status-pulse-dot" style="background-color: #ea580c;"></span> BELUM DITUNJUK
+                                </span>
+                            @elseif($tiket->status === 'OPEN')
                                 <span class="badge-status-pro status-open">
                                     <span class="status-pulse-dot" style="background-color: #0284c7;"></span> OPEN
                                 </span>
@@ -810,7 +904,7 @@
                                     <span class="status-pulse-dot" style="background-color: #d97706;"></span> PROSES
                                 </span>
                             @elseif($tiket->status === 'PENDING_VERIFIKASI')
-                                <span class="badge-status-pro" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+                                <span class="badge-status-pro status-verifikasi">
                                     <span class="status-pulse-dot" style="background-color: #2563eb;"></span> VERIFIKASI
                                 </span>
                             @else
@@ -937,7 +1031,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center py-5">
+                        <td colspan="6" class="text-center py-5">
                             <div class="text-muted">
                                 <div class="mb-3">
                                     <span class="d-inline-flex align-items-center justify-content-center bg-light rounded-circle" style="width:64px;height:64px;">
