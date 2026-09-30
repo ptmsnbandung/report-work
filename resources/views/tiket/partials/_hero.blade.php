@@ -144,8 +144,15 @@
                         @endif
 
                     </div>
-                    {{-- Baris 2: Tim Teknisi / PIC --}}
+                    {{-- Baris 2: Tim Teknisi / PIC & Status Tugas Anda --}}
                     <div class="d-flex align-items-center flex-wrap gap-1 mb-2">
+                        @if(auth()->check() && $tiket->isUserAssigned(auth()->user()))
+                            <span class="badge rounded-pill px-2.5 py-1 fw-bold text-white d-inline-flex align-items-center gap-1 shadow-xs font-monospace" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); font-size:0.68rem; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);">
+                                <i class="bi bi-person-check-fill" style="font-size:0.75rem;"></i>
+                                <span>Tugas Anda {{ (int)$tiket->assigned_lead_id === (int)auth()->id() ? '(PIC)' : '' }}</span>
+                            </span>
+                        @endif
+
                         @if($tiket->assigned_lead_id)
                             <span class="badge bg-primary bg-opacity-35 text-white border border-primary border-opacity-60 rounded-pill px-2 py-1 fw-bold d-inline-flex align-items-center gap-1 shadow-xs" title="Leader / PIC Utama Lapangan" style="font-size:0.68rem;">
                                 <i class="bi bi-person-badge-fill text-info" style="font-size:0.7rem;"></i>

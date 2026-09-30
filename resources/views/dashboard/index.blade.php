@@ -505,6 +505,13 @@
                                         <i class="bi bi-ticket-perforated me-1"></i>{{ $act->no_tiket }}
                                     </span>
                                 </a>
+                                @if(auth()->check() && $act->isUserAssigned(auth()->user()))
+                                    <span class="badge rounded-pill d-inline-flex align-items-center gap-1 font-monospace"
+                                          style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-size: 0.62rem; font-weight: 700; padding: 2px 6.5px; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.35);">
+                                        <i class="bi bi-person-check-fill" style="font-size: 0.62rem;"></i>
+                                        <span>{{ (int)$act->assigned_lead_id === (int)auth()->id() ? 'Tugas Anda (PIC)' : 'Tugas Anda' }}</span>
+                                    </span>
+                                @endif
                                 @php
                                     $notifCount = ($unreadTicketNotifs[$act->id] ?? $unreadTicketNotifs[$act->no_tiket] ?? 0);
                                 @endphp
@@ -641,6 +648,13 @@
                                     <i class="bi bi-ticket-perforated me-1"></i>{{ $tiket->no_tiket }}
                                 </span>
                             </a>
+                            @if(auth()->check() && $tiket->isUserAssigned(auth()->user()))
+                                <span class="badge rounded-pill d-inline-flex align-items-center gap-1 font-monospace"
+                                      style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-size: 0.62rem; font-weight: 700; padding: 2px 6.5px; box-shadow: 0 2px 5px rgba(16, 185, 129, 0.35);">
+                                    <i class="bi bi-person-check-fill" style="font-size: 0.62rem;"></i>
+                                    <span>{{ (int)$tiket->assigned_lead_id === (int)auth()->id() ? 'Tugas Anda (PIC)' : 'Tugas Anda' }}</span>
+                                </span>
+                            @endif
                             @php
                                 $notifCount = ($unreadTicketNotifs[$tiket->id] ?? $unreadTicketNotifs[$tiket->no_tiket] ?? 0);
                             @endphp
