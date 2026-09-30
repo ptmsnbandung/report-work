@@ -27,17 +27,25 @@
 
 <!-- Mobile Bottom Quick Navigation Bar (Curved Notch App-Native) -->
 <nav class="mobile-bottom-nav">
-    <!-- Curved Notch SVG Background -->
+    <!-- Curved Notch SVG Background with Luxury Rim Light & Glass Glow -->
     <div class="mobile-bottom-nav-bg">
         <svg viewBox="0 0 400 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="bottomNavGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#07152b" />
-                    <stop offset="50%" stop-color="#0c2147" />
-                    <stop offset="100%" stop-color="#102d66" />
+                    <stop offset="0%" stop-color="#07142a" />
+                    <stop offset="35%" stop-color="#0c234b" />
+                    <stop offset="65%" stop-color="#0f2b5c" />
+                    <stop offset="100%" stop-color="#08152c" />
+                </linearGradient>
+                <linearGradient id="navRimLight" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="rgba(255, 255, 255, 0.15)" />
+                    <stop offset="30%" stop-color="rgba(147, 197, 253, 0.35)" />
+                    <stop offset="50%" stop-color="rgba(255, 255, 255, 0.75)" />
+                    <stop offset="70%" stop-color="rgba(147, 197, 253, 0.35)" />
+                    <stop offset="100%" stop-color="rgba(255, 255, 255, 0.15)" />
                 </linearGradient>
             </defs>
-            <path d="M 26 0 L 138 0 C 158 0, 168 34, 200 34 C 232 34, 242 0, 262 0 L 374 0 Q 400 0, 400 26 L 400 34 Q 400 60, 374 60 L 26 60 Q 0 60, 0 34 L 0 26 Q 0 0, 26 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
+            <path d="M 28 0 L 140 0 C 158 0, 168 31, 200 31 C 232 31, 242 0, 260 0 L 372 0 Q 400 0, 400 28 L 400 32 Q 400 60, 372 60 L 28 60 Q 0 60, 0 32 L 0 28 Q 0 0, 28 0 Z" fill="url(#bottomNavGrad)" stroke="url(#navRimLight)" stroke-width="1.2" />
         </svg>
     </div>
     <!-- 1. Home / Dashboard -->
@@ -88,7 +96,7 @@
         <i class="bi {{ $currentRoute === 'notifications.index' ? 'bi-bell-fill' : 'bi-bell' }}"></i>
         <span>Notif</span>
         @if($unreadCount > 0)
-            <span class="position-absolute top-1 translate-middle p-1 bg-danger border border-light rounded-circle" style="right: 28%; width: 7px; height: 7px;"></span>
+            <span class="bottom-nav-badge"></span>
         @endif
     </a>
 
