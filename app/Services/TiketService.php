@@ -123,6 +123,7 @@ class TiketService
             $tiket = Tiket::create([
                 'no_tiket' => $noTiket,
                 'kategori_tiket' => $kategori,
+                'wilayah' => $data['wilayah'] ?? 'Bandung',
                 'id_pelanggan' => $data['id_pelanggan'] ?? null,
                 'nama_pelanggan' => $data['nama_pelanggan'] ?? null,
                 'no_kontak_pelanggan' => $data['no_kontak_pelanggan'] ?? null,

@@ -340,6 +340,9 @@
                         <span class="badge bg-primary-subtle text-primary">{{ $tiket->titik_odp ?: 'ODP: -' }}</span>
                         <span class="badge bg-secondary-subtle text-secondary">{{ $nominalBandwith ? $nominalBandwith . ' Mbps' : ($tiket->kode_bandwith ?: 'BW: -') }}</span>
                         <span class="badge bg-light text-dark border">{{ $namaPop ?: ($tiket->kode_pop ?: 'POP: -') }}</span>
+                        @if($tiket->wilayah)
+                        <span class="badge bg-info-subtle text-info"><i class="bi bi-geo-alt-fill"></i> {{ $tiket->wilayah }}</span>
+                        @endif
                     </div>
                     @if($tiket->sn_ont)
                     <div class="text-muted small mt-1 font-monospace">
