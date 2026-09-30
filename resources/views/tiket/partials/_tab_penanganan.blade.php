@@ -1,4 +1,4 @@
-﻿                <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
+                <!-- ════ TAB: PENANGANAN CORE & JOINT CLOSURE (JC) ════ -->
                 @if($tiket->isBackbone())
                 <div class="tab-pane fade" id="penanganan-pane" role="tabpanel">
                     @php
@@ -61,24 +61,24 @@
 
                             <div class="row g-2 g-md-3" id="penangananModeSelector">
                                 <!-- Option 1: Jointing Lurus -->
-                                <div class="col-12 col-md-6">
-                                    <div class="penanganan-mode-card {{ $isJointingActive ? 'active is-selected' : '' }}"
+                                <div class="col-6">
+                                    <div class="penanganan-mode-card h-100 {{ $isJointingActive ? 'active is-selected' : '' }}"
                                          id="cardModeJointing"
                                          onclick="togglePenangananCard('JOINTING_LURUS')">
-                                        <div class="d-flex align-items-start gap-2.5 penanganan-mode-inner h-100">
-                                            <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center mt-0.5">
-                                                <i class="bi bi-diagram-3-fill"></i>
-                                            </div>
-                                            <div class="flex-grow-1 min-w-0">
-                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
-                                                    <div class="fw-bold text-navy text-truncate penanganan-title-text">1. Jointing Lurus</div>
-                                                    <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                                                        <span class="badge bg-indigo-subtle text-indigo font-monospace px-1.5 py-0.5 rounded-pill" style="font-size: 0.68rem;">{{ $tiket->jointClosures->count() }} Data JC</span>
+                                        <div class="penanganan-mode-inner h-100 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-2">
+                                                    <div class="penanganan-mode-icon-box bg-indigo-subtle text-indigo rounded-circle d-flex align-items-center justify-content-center">
+                                                        <i class="bi bi-diagram-3-fill"></i>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                                        <span class="badge bg-indigo-subtle text-indigo font-monospace px-1.5 py-0.5 rounded-pill penanganan-badge-text">{{ $tiket->jointClosures->count() }} Data JC</span>
                                                         <div class="penanganan-radio-check d-flex align-items-center">
                                                             <i class="bi {{ $isJointingActive ? 'bi-check-circle-fill text-indigo fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="fw-bold text-navy text-truncate penanganan-title-text mb-1">1. Jointing Lurus</div>
                                                 <div class="text-muted penanganan-desc-text">
                                                     Penyambungan kabel lurus eksisting &amp; jumper, mapping tube-core per tray, serta penambahan closure baru.
                                                 </div>
@@ -88,24 +88,24 @@
                                 </div>
 
                                 <!-- Option 2: Manuver Core -->
-                                <div class="col-12 col-md-6">
-                                    <div class="penanganan-mode-card {{ $isManuverActive ? 'active is-selected' : '' }}"
+                                <div class="col-6">
+                                    <div class="penanganan-mode-card h-100 {{ $isManuverActive ? 'active is-selected' : '' }}"
                                          id="cardModeManuver"
                                          onclick="togglePenangananCard('MANUVER_CORE')">
-                                        <div class="d-flex align-items-start gap-2.5 penanganan-mode-inner h-100">
-                                            <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center mt-0.5">
-                                                <i class="bi bi-shuffle"></i>
-                                            </div>
-                                            <div class="flex-grow-1 min-w-0">
-                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-1">
-                                                    <div class="fw-bold text-navy text-truncate penanganan-title-text">2. Manuver Core</div>
-                                                    <div class="d-flex align-items-center gap-1.5 flex-shrink-0">
-                                                        <span class="badge bg-purple-subtle text-purple font-monospace px-1.5 py-0.5 rounded-pill" style="font-size: 0.68rem;">{{ $tiket->manuverCores->count() }} Record</span>
+                                        <div class="penanganan-mode-inner h-100 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <div class="d-flex align-items-center justify-content-between gap-1 mb-2">
+                                                    <div class="penanganan-mode-icon-box bg-purple-subtle text-purple rounded-circle d-flex align-items-center justify-content-center">
+                                                        <i class="bi bi-shuffle"></i>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                                        <span class="badge bg-purple-subtle text-purple font-monospace px-1.5 py-0.5 rounded-pill penanganan-badge-text">{{ $tiket->manuverCores->count() }} Record</span>
                                                         <div class="penanganan-radio-check d-flex align-items-center">
                                                             <i class="bi {{ $isManuverActive ? 'bi-check-circle-fill text-purple fs-5' : 'bi-circle text-muted fs-5' }}"></i>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="fw-bold text-navy text-truncate penanganan-title-text mb-1">2. Manuver Core</div>
                                                 <div class="text-muted penanganan-desc-text">
                                                     Pengalihan alokasi core serat optik (swapping core / bypass jalur putus) sebelum dan sesudah perbaikan.
                                                 </div>

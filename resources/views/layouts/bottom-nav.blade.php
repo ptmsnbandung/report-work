@@ -25,8 +25,21 @@
     }
 @endphp
 
-<!-- Mobile Bottom Quick Navigation Bar (App-Native Pro) -->
+<!-- Mobile Bottom Quick Navigation Bar (Curved Notch App-Native) -->
 <nav class="mobile-bottom-nav">
+    <!-- Curved Notch SVG Background -->
+    <div class="mobile-bottom-nav-bg">
+        <svg viewBox="0 0 400 62" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="bottomNavGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#07152b" />
+                    <stop offset="50%" stop-color="#0c2147" />
+                    <stop offset="100%" stop-color="#102d66" />
+                </linearGradient>
+            </defs>
+            <path d="M 28 0 L 152 0 C 170 0, 172 33, 200 33 C 228 33, 230 0, 248 0 L 372 0 Q 400 0, 400 28 L 400 34 Q 400 62, 372 62 L 28 62 Q 0 62, 0 34 L 0 28 Q 0 0, 28 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
+        </svg>
+    </div>
     <!-- 1. Home / Dashboard -->
     <a href="{{ route('dashboard') }}" class="bottom-nav-item {{ $currentRoute === 'dashboard' ? 'active' : '' }}">
         <i class="bi {{ $currentRoute === 'dashboard' ? 'bi-grid-fill' : 'bi-grid' }}"></i>

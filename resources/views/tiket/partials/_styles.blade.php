@@ -1450,20 +1450,28 @@
 
     @media (max-width: 767.98px) {
         .penanganan-mode-card .penanganan-mode-inner {
-            padding: 0.75rem 0.85rem !important;
+            padding: 0.65rem 0.65rem !important;
             border-radius: 12px;
         }
         .penanganan-mode-icon-box {
-            width: 36px !important;
-            height: 36px !important;
-            font-size: 1rem !important;
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 0.95rem !important;
         }
         .penanganan-title-text {
-            font-size: 0.88rem !important;
+            font-size: 0.78rem !important;
+            line-height: 1.25 !important;
         }
         .penanganan-desc-text {
-            font-size: 0.74rem !important;
-            line-height: 1.35 !important;
+            font-size: 0.68rem !important;
+            line-height: 1.3 !important;
+        }
+        .penanganan-badge-text {
+            font-size: 0.60rem !important;
+            padding: 0.12rem 0.35rem !important;
+        }
+        .penanganan-radio-check i {
+            font-size: 1.05rem !important;
         }
     }
 
