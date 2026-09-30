@@ -1576,14 +1576,14 @@ h6 { font-size: 0.95rem; }
     right: 12px;
     max-width: 440px;
     margin: 0 auto;
-    height: 62px;
+    height: 58px;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
     z-index: 1030;
     justify-content: space-around;
     align-items: center;
-    padding: 0 6px;
+    padding: 0 4px;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1596,7 +1596,7 @@ h6 { font-size: 0.95rem; }
     z-index: 1;
     filter: 
         drop-shadow(0 10px 24px rgba(7, 21, 43, 0.65))
-        drop-shadow(0 2px 10px rgba(44, 127, 255, 0.2));
+        drop-shadow(0 2px 10px rgba(44, 127, 255, 0.18));
 }
 
 .mobile-bottom-nav-bg svg {
@@ -1613,15 +1613,15 @@ h6 { font-size: 0.95rem; }
     justify-content: center;
     color: rgba(255, 255, 255, 0.65);
     text-decoration: none;
-    font-size: 0.64rem;
+    font-size: 0.62rem;
     font-weight: 600;
     flex: 1;
-    height: 46px;
-    margin: 0 1.5px;
-    padding: 2px 2px;
+    height: 42px;
+    margin: 0 2px;
+    padding: 2px 4px;
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    border-radius: 14px;
+    border-radius: 12px;
     min-width: 0;
     z-index: 2;
 }
@@ -1638,7 +1638,7 @@ h6 { font-size: 0.95rem; }
 }
 
 .bottom-nav-item i {
-    font-size: 1.15rem;
+    font-size: 1.12rem;
     line-height: 1;
     display: inline-flex;
     align-items: center;
@@ -1660,20 +1660,20 @@ h6 { font-size: 0.95rem; }
 .bottom-nav-item.active {
     font-weight: 700;
     color: #ffffff !important;
-    background: linear-gradient(135deg, rgba(44, 127, 255, 0.45) 0%, rgba(27, 57, 218, 0.65) 100%);
-    border: 1px solid rgba(147, 197, 253, 0.5);
+    background: linear-gradient(135deg, rgba(44, 127, 255, 0.38) 0%, rgba(27, 57, 218, 0.52) 100%);
+    border: 1px solid rgba(147, 197, 253, 0.35);
     box-shadow: 
-        0 4px 14px rgba(44, 127, 255, 0.3),
-        inset 0 1px 1px rgba(255, 255, 255, 0.25);
+        0 3px 10px rgba(44, 127, 255, 0.25),
+        inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 
 .bottom-nav-item.active i {
     color: #ffffff !important;
 }
 
-/* ── Seamless Raised Floating Center Action Button (Notch Nestled) ── */
+/* ── Seamless Raised Floating Center Action Button (Clean Minimal Notch) ── */
 .bottom-nav-center {
-    flex: 1.15;
+    flex: 0 0 68px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1681,38 +1681,28 @@ h6 { font-size: 0.95rem; }
     position: relative;
     text-decoration: none !important;
     z-index: 3;
-    margin-top: -18px;
+    margin-top: -20px;
 }
 
 .bottom-nav-center-btn {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.35rem;
     box-shadow: 
-        0 8px 18px rgba(37, 99, 235, 0.6),
+        0 8px 20px rgba(37, 99, 235, 0.55),
         inset 0 1px 1.5px rgba(255, 255, 255, 0.4);
-    border: 2px solid rgba(255, 255, 255, 0.25);
+    border: 2px solid rgba(255, 255, 255, 0.28);
     transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
 }
 
 .bottom-nav-center-btn:active {
     transform: scale(0.92);
-}
-
-.bottom-nav-center-label {
-    font-size: 0.60rem;
-    font-weight: 700;
-    color: #93c5fd;
-    margin-top: 2px;
-    letter-spacing: -0.2px;
-    white-space: nowrap;
-    transition: color 0.2s ease;
 }
 
 .bottom-nav-center.active .bottom-nav-center-btn {
@@ -1722,11 +1712,6 @@ h6 { font-size: 0.95rem; }
         0 0 0 3px rgba(96, 165, 250, 0.5),
         inset 0 1px 1.5px rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
-}
-
-.bottom-nav-center.active .bottom-nav-center-label {
-    color: #ffffff;
-    font-weight: 800;
 }
 
 /* ─── SIDEBAR OVERLAY ───────────────────────────────────────────────────── */
@@ -2015,29 +2000,25 @@ h6 { font-size: 0.95rem; }
     }
 
     .bottom-nav-item {
-        font-size: 0.6rem;
-        height: 44px;
+        font-size: 0.58rem;
+        height: 40px;
         margin: 0 1px;
     }
 
     .bottom-nav-item i {
-        font-size: 1.08rem;
+        font-size: 1.05rem;
         margin-bottom: 1px;
     }
 
     .bottom-nav-center {
-        margin-top: -16px;
+        flex: 0 0 60px;
+        margin-top: -18px;
     }
 
     .bottom-nav-center-btn {
-        width: 46px;
-        height: 46px;
-        font-size: 1.25rem;
-    }
-
-    .bottom-nav-center-label {
-        font-size: 0.58rem;
-        margin-top: 1px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.2rem;
     }
 
     /* Pagination controls */
@@ -2105,17 +2086,14 @@ h6 { font-size: 0.95rem; }
     }
 
     .bottom-nav-center {
-        margin-top: -14px;
+        flex: 0 0 52px;
+        margin-top: -16px;
     }
 
     .bottom-nav-center-btn {
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         font-size: 1.1rem;
-    }
-
-    .bottom-nav-center-label {
-        font-size: 0.52rem;
     }
 
     .card {

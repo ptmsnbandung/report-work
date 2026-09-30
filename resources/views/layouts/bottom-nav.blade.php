@@ -29,7 +29,7 @@
 <nav class="mobile-bottom-nav">
     <!-- Curved Notch SVG Background -->
     <div class="mobile-bottom-nav-bg">
-        <svg viewBox="0 0 400 62" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 400 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="bottomNavGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stop-color="#07152b" />
@@ -37,7 +37,7 @@
                     <stop offset="100%" stop-color="#102d66" />
                 </linearGradient>
             </defs>
-            <path d="M 28 0 L 152 0 C 170 0, 172 33, 200 33 C 228 33, 230 0, 248 0 L 372 0 Q 400 0, 400 28 L 400 34 Q 400 62, 372 62 L 28 62 Q 0 62, 0 34 L 0 28 Q 0 0, 28 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
+            <path d="M 26 0 L 138 0 C 160 0, 172 34, 200 34 C 228 34, 240 0, 262 0 L 374 0 Q 400 0, 400 26 L 400 34 Q 400 60, 374 60 L 26 60 Q 0 60, 0 34 L 0 26 Q 0 0, 26 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
         </svg>
     </div>
     <!-- 1. Home / Dashboard -->
@@ -61,25 +61,22 @@
 
     <!-- 3. Prominent Raised Center Action Button -->
     @if($currentUser && $currentUser->hasRole(['teknis']))
-    <a href="{{ route('tiket.index', ['status' => 'AKTIF']) }}" class="bottom-nav-center {{ $isTeknisTugasSayaActive ? 'active' : '' }}">
+    <a href="{{ route('tiket.index', ['status' => 'AKTIF']) }}" class="bottom-nav-center {{ $isTeknisTugasSayaActive ? 'active' : '' }}" title="Tugas Saya" aria-label="Tugas Saya">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-tools"></i>
         </div>
-        <span class="bottom-nav-center-label">Tugas Saya</span>
     </a>
     @elseif($currentUser && $currentUser->hasRole(['admin', 'helpdesk']))
-    <a href="{{ route('tiket.create') }}" class="bottom-nav-center {{ $currentRoute === 'tiket.create' ? 'active' : '' }}">
+    <a href="{{ route('tiket.create') }}" class="bottom-nav-center {{ $currentRoute === 'tiket.create' ? 'active' : '' }}" title="Open Tiket" aria-label="Open Tiket">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-plus-lg"></i>
         </div>
-        <span class="bottom-nav-center-label">Open Tiket</span>
     </a>
     @else
-    <a href="{{ route('tiket.index') }}" class="bottom-nav-center {{ in_array($currentRoute, ['tiket.index', 'tiket.show']) ? 'active' : '' }}">
+    <a href="{{ route('tiket.index') }}" class="bottom-nav-center {{ in_array($currentRoute, ['tiket.index', 'tiket.show']) ? 'active' : '' }}" title="Pantau" aria-label="Pantau">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-ticket-detailed-fill"></i>
         </div>
-        <span class="bottom-nav-center-label">Pantau</span>
     </a>
     @endif
 
