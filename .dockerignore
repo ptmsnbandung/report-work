@@ -1,0 +1,14 @@
+node_modules
+vendor
+.git
+.env
+.phpunit.result.cache
+storage/*.key
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+npm-debug.log
+yarn-error.log
+.DS_Store
+Thumbs.db

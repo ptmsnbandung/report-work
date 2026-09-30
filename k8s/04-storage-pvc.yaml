@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: work-report-storage-pvc
+  namespace: work-report
+spec:
+  accessModes:
+    - ReadWriteMany # Memungkinkan seluruh pod web membaca & menulis foto secara bersamaan
+  resources:
+    requests:
+      storage: 20Gi

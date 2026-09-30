@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: work-report-scheduler
+  namespace: work-report
+spec:
+  schedule: "* * * * *" # Every 1 minute
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: scheduler
+              image: ptmsn/work-report:latest
+              imagePullPolicy: IfNotPresent
+              command: ["php", "artisan", "schedule:run"]
+              envFrom:
+                - configMapRef:
+                    name: work-report-config
+                - secretRef:
+                    name: work-report-secrets
