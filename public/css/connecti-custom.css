@@ -1581,9 +1581,9 @@ h6 { font-size: 0.95rem; }
     border: none !important;
     box-shadow: none !important;
     z-index: 1030;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    padding: 0 4px;
+    padding: 0 10px;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1611,14 +1611,15 @@ h6 { font-size: 0.95rem; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.60);
     text-decoration: none;
     font-size: 0.62rem;
     font-weight: 600;
     flex: 1;
+    max-width: 58px;
     height: 42px;
-    margin: 0 2px;
-    padding: 2px 4px;
+    margin: 0 auto;
+    padding: 3px 4px;
     transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     border-radius: 12px;
@@ -1660,20 +1661,23 @@ h6 { font-size: 0.95rem; }
 .bottom-nav-item.active {
     font-weight: 700;
     color: #ffffff !important;
-    background: linear-gradient(135deg, rgba(44, 127, 255, 0.38) 0%, rgba(27, 57, 218, 0.52) 100%);
-    border: 1px solid rgba(147, 197, 253, 0.35);
-    box-shadow: 
-        0 3px 10px rgba(44, 127, 255, 0.25),
-        inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.35) 0%, rgba(29, 78, 216, 0.48) 100%);
+    border: 1px solid rgba(147, 197, 253, 0.32);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.22);
+    max-width: 52px;
 }
 
 .bottom-nav-item.active i {
-    color: #ffffff !important;
+    color: #60a5fa !important;
+    transform: scale(1.08);
 }
 
 /* ── Seamless Raised Floating Center Action Button (Clean Minimal Notch) ── */
 .bottom-nav-center {
-    flex: 0 0 68px;
+    flex: 0 0 82px;
+    width: 82px;
+    max-width: 82px;
+    min-width: 82px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2002,7 +2006,12 @@ h6 { font-size: 0.95rem; }
     .bottom-nav-item {
         font-size: 0.58rem;
         height: 40px;
-        margin: 0 1px;
+        max-width: 52px;
+        margin: 0 auto;
+    }
+
+    .bottom-nav-item.active {
+        max-width: 48px;
     }
 
     .bottom-nav-item i {
@@ -2011,7 +2020,10 @@ h6 { font-size: 0.95rem; }
     }
 
     .bottom-nav-center {
-        flex: 0 0 60px;
+        flex: 0 0 74px;
+        width: 74px;
+        max-width: 74px;
+        min-width: 74px;
         margin-top: -18px;
     }
 
@@ -2077,8 +2089,13 @@ h6 { font-size: 0.95rem; }
     .bottom-nav-item {
         font-size: 0.54rem;
         height: 38px;
-        margin: 0 0.5px;
+        max-width: 46px;
+        margin: 0 auto;
         padding: 1px;
+    }
+
+    .bottom-nav-item.active {
+        max-width: 44px;
     }
 
     .bottom-nav-item i {
@@ -2086,7 +2103,10 @@ h6 { font-size: 0.95rem; }
     }
 
     .bottom-nav-center {
-        flex: 0 0 52px;
+        flex: 0 0 66px;
+        width: 66px;
+        max-width: 66px;
+        min-width: 66px;
         margin-top: -16px;
     }
 
