@@ -23,6 +23,7 @@ class UpdateTiketRequest extends FormRequest
 
         return [
             'kategori_tiket'          => ['nullable', 'string', 'in:BACKBONE,BROADBAND'],
+            'wilayah'                 => [$isBroadband ? 'required' : 'nullable', 'string', 'in:Bandung,Soreang,BANDUNG,SOREANG'],
             'status_link_impact'      => [$isBroadband ? 'nullable' : 'required', 'string', 'max:150'],
             'backbone_segment'        => [$isBroadband ? 'nullable' : 'required', 'string', 'max:100'],
             'tanggal_open'            => ['required', 'date'],

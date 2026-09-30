@@ -175,6 +175,7 @@ class TiketService
 
         $updateData = [
             'kategori_tiket' => $data['kategori_tiket'] ?? $tiket->kategori_tiket,
+            'wilayah' => array_key_exists('wilayah', $data) ? $data['wilayah'] : $tiket->wilayah,
             'id_pelanggan' => array_key_exists('id_pelanggan', $data) ? $data['id_pelanggan'] : $tiket->id_pelanggan,
             'nama_pelanggan' => array_key_exists('nama_pelanggan', $data) ? $data['nama_pelanggan'] : $tiket->nama_pelanggan,
             'no_kontak_pelanggan' => array_key_exists('no_kontak_pelanggan', $data) ? $data['no_kontak_pelanggan'] : $tiket->no_kontak_pelanggan,

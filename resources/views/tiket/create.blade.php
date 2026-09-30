@@ -514,7 +514,7 @@
 
                             <!-- Backbone Segment -->
                             <div class="row g-3 mb-3">
-                                <div class="col-12 col-md-8">
+                                <div class="col-12">
                                     <label for="backbone_segment" class="form-label-custom">
                                         <i class="bi bi-diagram-3 text-primary"></i> Segment / Backbone
                                         <span class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.6rem; padding: 2px 5px;">Wajib</span>
@@ -534,18 +534,6 @@
                                     @error('backbone_segment')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div>
-                                <div class="col-12 col-md-4">
-                                    <label for="wilayah_backbone" class="form-label-custom">
-                                        <i class="bi bi-geo-alt-fill text-primary"></i> Wilayah
-                                        <span class="badge bg-danger-subtle text-danger ms-1" style="font-size: 0.6rem; padding: 2px 5px;">Wajib</span>
-                                    </label>
-                                    <select class="form-select form-select-custom"
-                                            id="wilayah_backbone"
-                                            onchange="const w = document.getElementById('wilayah'); if(w) w.value = this.value;">
-                                        <option value="Bandung" {{ old('wilayah', 'Bandung') === 'Bandung' ? 'selected' : '' }}>Bandung</option>
-                                        <option value="Soreang" {{ old('wilayah') === 'Soreang' ? 'selected' : '' }}>Soreang</option>
-                                    </select>
                                 </div>
                             </div>
                             <div class="input-hint-box mb-3">
@@ -985,10 +973,8 @@ function populateImsCustomer(item) {
         const fullSearchContext = (addr + ' ' + pop + ' ' + odp + ' ' + name).toLowerCase();
         if (fullSearchContext.includes('soreang') || fullSearchContext.includes('srng') || fullSearchContext.includes('sor-')) {
             elWilayah.value = 'Soreang';
-            if (elWilayahBackbone) elWilayahBackbone.value = 'Soreang';
         } else {
             elWilayah.value = 'Bandung';
-            if (elWilayahBackbone) elWilayahBackbone.value = 'Bandung';
         }
     }
 
