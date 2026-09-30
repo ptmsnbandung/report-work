@@ -37,7 +37,7 @@
                     <stop offset="100%" stop-color="#102d66" />
                 </linearGradient>
             </defs>
-            <path d="M 26 0 L 130 0 C 156 0, 168 38, 200 38 C 232 38, 244 0, 270 0 L 374 0 Q 400 0, 400 26 L 400 34 Q 400 60, 374 60 L 26 60 Q 0 60, 0 34 L 0 26 Q 0 0, 26 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
+            <path d="M 26 0 L 138 0 C 158 0, 168 34, 200 34 C 232 34, 242 0, 262 0 L 374 0 Q 400 0, 400 26 L 400 34 Q 400 60, 374 60 L 26 60 Q 0 60, 0 34 L 0 26 Q 0 0, 26 0 Z" fill="url(#bottomNavGrad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.2" />
         </svg>
     </div>
     <!-- 1. Home / Dashboard -->
@@ -65,18 +65,21 @@
         <div class="bottom-nav-center-btn">
             <i class="bi bi-tools"></i>
         </div>
+        <span class="bottom-nav-center-dot"></span>
     </a>
     @elseif($currentUser && $currentUser->hasRole(['admin', 'helpdesk']))
     <a href="{{ route('tiket.create') }}" class="bottom-nav-center {{ $currentRoute === 'tiket.create' ? 'active' : '' }}" title="Open Tiket" aria-label="Open Tiket">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-plus-lg"></i>
         </div>
+        <span class="bottom-nav-center-dot"></span>
     </a>
     @else
     <a href="{{ route('tiket.index') }}" class="bottom-nav-center {{ in_array($currentRoute, ['tiket.index', 'tiket.show']) ? 'active' : '' }}" title="Pantau" aria-label="Pantau">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-ticket-detailed-fill"></i>
         </div>
+        <span class="bottom-nav-center-dot"></span>
     </a>
     @endif
 

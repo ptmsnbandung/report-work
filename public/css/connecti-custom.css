@@ -1674,10 +1674,10 @@ h6 { font-size: 0.95rem; }
 
 /* ── Seamless Raised Floating Center Action Button (Clean Minimal Notch) ── */
 .bottom-nav-center {
-    flex: 0 0 82px;
-    width: 82px;
-    max-width: 82px;
-    min-width: 82px;
+    flex: 0 0 84px;
+    width: 84px;
+    max-width: 84px;
+    min-width: 84px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1685,31 +1685,42 @@ h6 { font-size: 0.95rem; }
     position: relative;
     text-decoration: none !important;
     z-index: 3;
-    margin-top: -34px;
+    transform: translateY(-25px);
+    margin-top: 0;
 }
 
 .bottom-nav-center-btn {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     box-shadow: 
-        0 10px 26px rgba(37, 99, 235, 0.65),
-        0 3px 8px rgba(0, 0, 0, 0.35),
+        0 8px 24px rgba(37, 99, 235, 0.65),
+        0 4px 10px rgba(0, 0, 0, 0.28),
         inset 0 1.5px 2px rgba(255, 255, 255, 0.45);
-    border: 2px solid rgba(255, 255, 255, 0.32);
+    border: 2.5px solid rgba(255, 255, 255, 0.35);
     transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.22s ease;
 }
 
-.bottom-nav-center-btn:hover {
+.bottom-nav-center-dot {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: transparent;
+    margin-top: 5px;
+    transition: all 0.2s ease;
+}
+
+.bottom-nav-center:hover .bottom-nav-center-btn {
     transform: translateY(-2px) scale(1.05);
     box-shadow: 
-        0 12px 30px rgba(37, 99, 235, 0.75),
+        0 12px 28px rgba(37, 99, 235, 0.75),
         0 4px 10px rgba(0, 0, 0, 0.4),
         inset 0 1.5px 2px rgba(255, 255, 255, 0.55);
 }
@@ -1721,10 +1732,15 @@ h6 { font-size: 0.95rem; }
 .bottom-nav-center.active .bottom-nav-center-btn {
     background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     box-shadow: 
-        0 12px 30px rgba(37, 99, 235, 0.85),
+        0 10px 28px rgba(37, 99, 235, 0.85),
         0 0 0 3px rgba(96, 165, 250, 0.5),
         inset 0 1.5px 2px rgba(255, 255, 255, 0.55);
-    transform: translateY(-3px) scale(1.03);
+    transform: translateY(-2px) scale(1.03);
+}
+
+.bottom-nav-center.active .bottom-nav-center-dot {
+    background-color: #60a5fa;
+    box-shadow: 0 0 6px rgba(96, 165, 250, 0.8);
 }
 
 /* ─── SIDEBAR OVERLAY ───────────────────────────────────────────────────── */
@@ -2033,7 +2049,8 @@ h6 { font-size: 0.95rem; }
         width: 76px;
         max-width: 76px;
         min-width: 76px;
-        margin-top: -30px;
+        transform: translateY(-24px);
+        margin-top: 0;
     }
 
     .bottom-nav-center-btn {
@@ -2116,7 +2133,8 @@ h6 { font-size: 0.95rem; }
         width: 68px;
         max-width: 68px;
         min-width: 68px;
-        margin-top: -26px;
+        transform: translateY(-20px);
+        margin-top: 0;
     }
 
     .bottom-nav-center-btn {
