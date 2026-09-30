@@ -213,6 +213,35 @@
         border-radius: 6px;
         max-width: 100%;
     }
+
+    /* ── BLUE THEME FOR TABLE HEADER CARD (GAMBAR 2) ── */
+    .table-pro-card .table-pro-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 55%, #2563eb 100%) !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+    .table-pro-card .table-pro-header .table-header-icon {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(6px);
+    }
+    .table-pro-card .table-pro-header h6 {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.2px;
+    }
+    .table-pro-card .table-pro-header .text-muted {
+        color: rgba(224, 242, 254, 0.85) !important;
+    }
+    .table-pro-card .table-pro-header .header-badge {
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(6px);
+        font-weight: 700;
+        font-size: 0.72rem;
+    }
 </style>
 @endpush
 
@@ -782,8 +811,12 @@
                                     </span>
                                 </a>
                                 @if($tiket->isBroadband())
-                                    <span class="badge text-white px-1.5 py-0.5 rounded-pill font-monospace" style="background-color: #4f46e5; font-size: 0.62rem;">
+                                    <span class="badge text-white px-1.5 py-0.5 rounded-pill font-monospace" style="background-color: #4f46e5; font-size: 0.62rem;" title="Kategori: Broadband User">
                                         BRD
+                                    </span>
+                                @else
+                                    <span class="badge text-white px-1.5 py-0.5 rounded-pill font-monospace" style="background-color: #0284c7; font-size: 0.62rem;" title="Kategori: Backbone FO">
+                                        BCK
                                     </span>
                                 @endif
                                 @if(auth()->check() && $tiket->isUserAssigned(auth()->user()))
