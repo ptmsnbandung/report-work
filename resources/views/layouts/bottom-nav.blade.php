@@ -73,21 +73,18 @@
         <div class="bottom-nav-center-btn">
             <i class="bi bi-tools"></i>
         </div>
-        <span class="bottom-nav-center-label">Tugas Saya</span>
     </a>
     @elseif($currentUser && $currentUser->hasRole(['admin', 'helpdesk']))
     <a href="{{ route('tiket.create') }}" class="bottom-nav-center {{ $currentRoute === 'tiket.create' ? 'active' : '' }}" title="Open Tiket" aria-label="Open Tiket">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-plus-lg"></i>
         </div>
-        <span class="bottom-nav-center-label">Open Tiket</span>
     </a>
     @else
     <a href="{{ route('tiket.index') }}" class="bottom-nav-center {{ in_array($currentRoute, ['tiket.index', 'tiket.show']) ? 'active' : '' }}" title="Pantau" aria-label="Pantau">
         <div class="bottom-nav-center-btn">
             <i class="bi bi-ticket-detailed-fill"></i>
         </div>
-        <span class="bottom-nav-center-label">Pantau</span>
     </a>
     @endif
 
