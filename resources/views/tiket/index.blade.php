@@ -662,14 +662,12 @@
         <div class="d-none d-md-block table-responsive">
             <table class="table table-pro align-middle mb-0">
                 <colgroup>
-                    <col style="width: 16%;">
-                    <col style="width: 23%;">
-                    <col style="width: 14%;">
-                    <col style="width: 9%;">
-                    <col style="width: 9%;">
-                    <col style="width: 8%;">
-                    <col style="width: 10%;">
+                    <col style="width: 20%;">
+                    <col style="width: 32%;">
+                    <col style="width: 18%;">
                     <col style="width: 11%;">
+                    <col style="width: 9%;">
+                    <col style="width: 10%;">
                 </colgroup>
                 <thead>
                     <tr>
@@ -677,16 +675,14 @@
                         <th><i class="bi bi-hdd-network me-1"></i>Kategori &amp; Link / Pelanggan</th>
                         <th><i class="bi bi-clock-history me-1"></i>Waktu</th>
                         <th class="text-center"><i class="bi bi-activity me-1"></i>Status</th>
-                        <th class="text-center"><i class="bi bi-stopwatch me-1"></i>Target / MTTR</th>
                         <th class="text-center"><i class="bi bi-shield-check me-1"></i>SLA</th>
-                        <th><i class="bi bi-person me-1"></i>Pelapor</th>
                         <th class="text-center"><i class="bi bi-gear me-1"></i>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($tikets as $tiket)
                     <tr>
-                        <!-- No Tiket -->
+                        <!-- No Tiket & Pelapor -->
                         <td>
                             <div class="d-inline-flex align-items-center gap-1.5 flex-wrap">
                                 <a href="{{ route('tiket.show', $tiket->id) }}" class="text-decoration-none d-inline-block">
@@ -719,6 +715,24 @@
                                     </span>
                                 @endif
                             </div>
+
+                            <!-- Pelapor (Dibawah No Tiket) -->
+                            @php
+                                $creatorName = $tiket->creator?->name ?? 'Sistem';
+                                $words = explode(' ', trim($creatorName));
+                                $initials = count($words) >= 2 
+                                    ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
+                                    : strtoupper(substr($creatorName, 0, 2));
+                            @endphp
+                            <div class="d-flex align-items-center gap-1.5 mt-1.5 overflow-hidden">
+                                <div class="user-avatar-cell flex-shrink-0" style="width: 22px; height: 22px; font-size: 0.65rem;" title="Pelapor: {{ $creatorName }}">
+                                    {{ $initials }}
+                                </div>
+                                <div class="user-info-text overflow-hidden" style="min-width: 0; line-height: 1.15;">
+                                    <div class="fw-semibold text-navy text-truncate user-name-text" style="font-size: 0.74rem;" title="{{ $creatorName }}">{{ $creatorName }}</div>
+                                    <div class="text-muted text-truncate user-role-text" style="font-size: 0.65rem;" title="{{ $tiket->creator?->role_label ?? '-' }}">{{ $tiket->creator?->role_label ?? '-' }}</div>
+                                </div>
+                            </div>
                         </td>
 
                         <!-- Segment & Link Impact / Pelanggan -->
@@ -744,7 +758,7 @@
                             </div>
                         </td>
 
-                        <!-- Tanggal Open / Close -->
+                        <!-- Tanggal Open / Close & Target / MTTR -->
                         <td>
                             <div class="d-flex flex-column gap-0.5" style="font-size: 0.71rem;">
                                 <div class="d-flex align-items-center text-nowrap">
@@ -766,6 +780,22 @@
                                     <span class="badge-not-closed">Belum Tutup</span>
                                 </div>
                                 @endif
+
+                                <!-- Target & MTTR (Dibawah Waktu) -->
+                                <div class="mt-1 pt-1 border-top border-light-subtle d-flex flex-column gap-0.5" style="font-size: 0.70rem;">
+                                    <div class="text-nowrap" title="{{ $tiket->sla_target_minutes }} Menit">
+                                        <span class="text-muted" style="font-size: 0.67rem;">Target:</span>
+                                        <strong class="text-dark">{{ $tiket->sla_target_minutes ? round($tiket->sla_target_minutes / 60, 1) . ' Jam' : '-' }}</strong>
+                                    </div>
+                                    @if($tiket->status === 'CLOSE')
+                                    <div class="text-nowrap">
+                                        <span class="text-muted" style="font-size: 0.67rem;">MTTR:</span>
+                                        <strong class="{{ $tiket->sla_status === 'LEBIH' ? 'text-danger' : 'text-success' }}">
+                                            {{ $tiket->formatted_mttr }}
+                                        </strong>
+                                    </div>
+                                    @endif
+                                </div>
                             </div>
                         </td>
 
@@ -798,22 +828,6 @@
                             @endif
                         </td>
 
-                        <!-- Target SLA & MTTR -->
-                        <td class="text-center px-1">
-                            <div class="d-flex flex-column align-items-center lh-sm" style="font-size: 0.72rem;">
-                                <div class="text-nowrap" title="{{ $tiket->sla_target_minutes }} Menit">
-                                    <span class="text-muted">Target:</span>
-                                    <strong class="text-slate-800">{{ $tiket->sla_target_minutes ? round($tiket->sla_target_minutes / 60, 1) . ' Jam' : '-' }}</strong>
-                                </div>
-                                <div class="text-nowrap mt-0.5">
-                                    <span class="text-muted">MTTR:</span>
-                                    <strong class="{{ $tiket->status === 'CLOSE' ? ($tiket->sla_status === 'LEBIH' ? 'text-danger' : 'text-success') : 'text-muted' }}">
-                                        {{ $tiket->formatted_mttr }}
-                                    </strong>
-                                </div>
-                            </div>
-                        </td>
-
                         <!-- Status SLA -->
                         <td class="text-center px-1">
                             @if($tiket->sla_status === 'TEPAT')
@@ -829,26 +843,6 @@
                                     -
                                 </span>
                             @endif
-                        </td>
-
-                        <!-- Pelapor -->
-                        <td class="px-1">
-                            @php
-                                $creatorName = $tiket->creator?->name ?? 'Sistem';
-                                $words = explode(' ', trim($creatorName));
-                                $initials = count($words) >= 2 
-                                    ? strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1))
-                                    : strtoupper(substr($creatorName, 0, 2));
-                            @endphp
-                            <div class="d-flex align-items-center gap-1.5 overflow-hidden">
-                                <div class="user-avatar-cell" title="{{ $creatorName }}">
-                                    {{ $initials }}
-                                </div>
-                                <div class="user-info-text overflow-hidden" style="min-width: 0;">
-                                    <div class="fw-semibold text-navy text-truncate user-name-text" title="{{ $creatorName }}">{{ $creatorName }}</div>
-                                    <div class="text-muted text-truncate user-role-text" title="{{ $tiket->creator?->role_label ?? '-' }}">{{ $tiket->creator?->role_label ?? '-' }}</div>
-                                </div>
-                            </div>
                         </td>
 
                         <!-- Action Buttons -->
