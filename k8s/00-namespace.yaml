@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: work-report
-  labels:
-    app.kubernetes.io/name: work-report
-    app.kubernetes.io/part-of: ptmsn-infrastructure
